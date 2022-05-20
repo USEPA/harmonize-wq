@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 This will import when run from CI because sys.path[0] == cur_dir
-DIRPATH = r'D:\D_code\HWBI_update\ESI\WQP\package\tests'
+DIRPATH = r'D:\D_code\HWBI_update\ESI\harmonize-wq\harmonize_wq\tests'
 
 This script doesn't test query/download of the data using dataretrieval,
 instead the script is focused on processing, tidying and harmonizing data
@@ -14,10 +14,10 @@ import os
 import pytest
 import geopandas
 import pandas
-from package import harmonize
-from package import convert
-from package import wrangle
-from package import clean
+from harmonize_wq import harmonize
+from harmonize_wq import convert
+from harmonize_wq import wrangle
+from harmonize_wq import clean
 
 # CI
 DIRPATH = os.path.dirname(os.path.realpath(__file__))

@@ -16,10 +16,10 @@ import pint
 from pyproj import Transformer
 from shapely.geometry import shape
 from numpy import nan
-from package import domains
-from package import basis
-from package import convert
-#from package import wrangle
+from harmonize_wq import domains
+from harmonize_wq import basis
+from harmonize_wq import convert
+#from harmonize_wq import wrangle
 
 
 class WQCharData():

@@ -8,9 +8,9 @@ This module contains functions to help re-shape the WQP dataframe
 """
 import pandas
 from io import StringIO
-from package import domains
-from package.harmonize import df_checks
-from package.clean import datetime, harmonize_depth
+from harmonize_wq import domains
+from harmonize_wq.harmonize import df_checks
+from harmonize_wq.clean import datetime, harmonize_depth
 import dataretrieval.wqp as wqp
 import dataretrieval.utils
 

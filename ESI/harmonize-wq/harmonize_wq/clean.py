@@ -10,9 +10,9 @@ subsets of the dataset to clean/correct additional columns.
 #import pandas
 from warnings import warn
 import dataretrieval.utils
-from package import harmonize
-from package import domains
-from package import wrangle
+from harmonize_wq import harmonize
+from harmonize_wq import domains
+from harmonize_wq import wrangle
 
 def datetime(df_in):
     """

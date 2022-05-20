@@ -1,1 +1,1 @@
-from package import harmonize
+from harmonize_wq import harmonize

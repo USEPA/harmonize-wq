@@ -8,7 +8,7 @@ Module with basis dictionaries and functions
 """
 from numpy import nan
 from warnings import warn
-from package import harmonize
+from harmonize_wq import harmonize
 
 
 def unit_basis_dict(out_col):
