@@ -2,8 +2,7 @@
 """
 Created on Tue Sep  7 14:08:08 2021
 
-Functions for harmonizing and tidying data retrieved from WQP
-Notes: non-numeric examples: '', '*Not Reported', 'Not Reported', '*Non-detect'
+Class and functions for harmonizing data retrieved from Water Quality Portal
 
 @author: jbousqui
 """
@@ -19,7 +18,7 @@ from numpy import nan
 from harmonize_wq import domains
 from harmonize_wq import basis
 from harmonize_wq import convert
-#from harmonize_wq import wrangle
+from harmonize_wq import wrangle
 
 
 class WQCharData():
@@ -47,15 +46,23 @@ class WQCharData():
     Methods
     -------
     coerce_measure()
-        Identifies bad measure values, and flags them. Copies measure
-        values to out_col, with bad measures as NaN.
     check_units()
-    convert_units()
-    replace_unit_by_str()
-    replace_unit_by_dict()
+    infer_units()
+    check_basis()
     update_ureg()
     update_units()
+    measure_mask()
+    unit_mask()
     char_val()
+    convert_units()
+    apply_conversion()
+    dimensions_list()
+    replace_unit_by_str()
+    replace_unit_by_dict()
+    fraction()
+    handle_dimensions()
+    moles_convert()
+
     """
     def __init__(self, df_in, char_val):
         """
@@ -594,7 +601,6 @@ def replace_in_col(df_in, col, old_val, new_val, mask):
 #     out_list = [val.to(ureg(units)) for val in val_list]
 #     # Re-index to return series
 #     return pandas.Series(out_list, index=quantity_series.index)
-
 #timeit: 27.08
 def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='raise'):
     """
@@ -844,51 +850,6 @@ def dimension_handling(unit, units, quant=None, ureg=None):
     return {}, []
 
 
-def get_bounding_box(shp, idx=0):
-    """
-    Return bounding box for shp.
-
-    Parameters
-    ----------
-    shp : spatial file
-        Any geometry that is readable by geopandas.
-    idx : integer, optional
-        Index for geometry to get bounding box for.
-        The default is 0 to return the first bounding box.
-
-    Returns
-    -------
-        Coordinates for bounding box as string and seperated by ', '.
-    """
-    shp = as_gdf(shp)
-
-    xmin = shp.bounds['minx'][idx]
-    xmax = shp.bounds['maxx'][idx]
-    ymin = shp.bounds['miny'][idx]
-    ymax = shp.bounds['maxy'][idx]
-
-    return ','.join(map(str, [xmin, ymin, xmax, ymax]))
-
-
-def as_gdf(shp):
-    """
-    Returns a geodataframe for shp if shp is not already a geodataframe.
-
-    Parameters
-    ----------
-    shp : string
-        Filename for something that needs to be a geodataframe.
-
-    Returns
-    -------
-    shp : geopandas.GeoDataFrame
-        GeoDataFrame for shp if it isn't already a geodataframe.
-    """
-    if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
-        shp = geopandas.read_file(shp, driver='ESRI Shapefile')
-    return shp
-
-
 def clip_stations(aoi_gdf, stations_gdf):
     """
     Clip it to area of interest. aoi_gdf is first transformed to stations_gdf
@@ -906,14 +867,13 @@ def clip_stations(aoi_gdf, stations_gdf):
     pandas.DataFrame
         stations_gdf points clipped to the aoi_gdf.
     """
-    stations_gdf = as_gdf(stations_gdf)  # Ensure it is geodataframe
-    aoi_gdf = as_gdf(aoi_gdf)  # Ensure it is geodataframe
+    stations_gdf = wrangle.as_gdf(stations_gdf)  # Ensure it is geodataframe
+    aoi_gdf = wrangle.as_gdf(aoi_gdf)  # Ensure it is geodataframe
     # Transform aoi to stations CRS (should be 4326)
     aoi_prj = aoi_gdf.to_crs(stations_gdf.crs)
     return geopandas.clip(stations_gdf, aoi_prj)  # Return clipped geodataframe
 
 
-# Harmonization functions
 def harmonize_locations(df_in, out_EPSG=4326,
                         intermediate_columns=False, **kwargs):
     """
@@ -1065,8 +1025,8 @@ def salinity(wqp):
     """
     #Units = '0/00', 'PSS', 'mg/mL @25C', nan, 'ppt', 'ppth'
     wqp.check_basis(basis_col='ResultTemperatureBasisText')  # Moves '@25C' out
-    # Replace know problem units, fix and flag missing units
-    wqp.check_units()
+
+    wqp.check_units()  # Replace know problem units, fix and flag missing units
 
     # Check/fix dimensionality issues
     for unit in wqp.dimensions_list():
@@ -1085,16 +1045,29 @@ def turbidity(wqp):
     Standardizes 'Turbidity' characteristic using and returning
     the WQP Characteristic Info Object.
 
-    Special units: 'NTU' - 400-680nm (EPA 180.1)
-                   'NTRU' -
-                   'FNU' - 780-900nm (ISO 7027)
-                   'JTU' - candle instead of formazin standard
-    Conversions: 1.267 NTU = FNU Gohin (2011) Ocean Sci., 7, 705–732
-                                 https://doi.org/10.5194/os-7-705-2011
-                 cm <-> NTU see convert.cm_to_NTU()
-                 1-3 mg/l = NTU
-                 JTU = NTU @40 but has different bounds
-                 NTRU = NTU
+    See USGS Report Chapter A6. Section 6.7. Turbidity
+        https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf
+    See ASTM D\315-17 for equivalent unit definitions:
+        'NTU'  - 400-680nm (EPA 180.1), range 0.0-40
+        'NTRU' - 400-680nm (2130B), range 0-10,000
+        'NTMU' - 400-680nm
+        'FNU'  - 780-900nm (ISO 7027), range 0-1000
+        'FNRU' - 780-900nm (ISO 7027), range 0-10,000
+        'FAU'  - 780-900nm, range 20-1000
+    Older methods:
+        'FTU' - lacks instrumentation specificity
+        'SiO2' (ppm or mg/l) - concentration of calibration standard (=JTU)
+        'JTU' - candle instead of formazin standard, near 40 NTU these may be
+                equivalent, but highly variable
+    Conversions used:
+        cm <-> NTU see convert.cm_to_NTU()
+        https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
+
+    Alternative conversions not currectly used by default:
+        convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
+                                https://doi.org/10.5194/os-7-705-2011
+        convert.SiO2_to_NTU linear relation from equivalents in manuals
+        convert.JTU_to_NTU linear relation from equivalents in manuals
 
     Parameters
     ----------
@@ -1107,20 +1080,17 @@ def turbidity(wqp):
         WQP Characteristic Info Object with updated attributes
     """
     #units = ['cm', 'mg/l SiO2', 'JTU', 'NTU', 'NTRU']
-    #counts = [3, 36, 3481, 127358, 135]
 
-    #TODO: These units exist but have not been encountered yet
-    #nephelometric turbidity multibeam unit (NTMU);
+    #These units exist but have not been encountered yet
     #formazin nephelometric multibeam unit (FNMU);
-    #formazin nephelometric ratio unit (FNRU); formazin backscatter unit (FBU);
+    #formazin backscatter unit (FBU);
     #backscatter units (BU); attenuation units (AU)
 
-    # Replace know problem units, fix and flag missing units
-    wqp.check_units()
+    wqp.check_units()  # Replace know problem units, fix and flag missing units
 
     # Custom dimensionality conversion
     for unit in wqp.dimensions_list():
-        if wqp.units in ['NTU', 'NTRU', 'mg/l']:
+        if wqp.units in ['NTU', 'NTRU']:
             wqp.apply_conversion(convert.cm_to_NTU, unit)
         elif wqp.ureg(wqp.units).check({'[length]': 1}):
             wqp.apply_conversion(convert.NTU_to_cm, unit)
@@ -1143,8 +1113,8 @@ def sediment(wqp):
     wqp : WQP Characteristic Info Object.
         WQP Characteristic Info Object with updated attributes
     """
-    #TODO: ParticleSizeBasis to check_basis?
-    #wqp.check_basis(basis_col='ResultParticleSizeBasisText)
+    #'< 0.0625 mm', < 0.125 mm, < 0.25 mm, < 0.5 mm, < 1 mm, < 2 mm, < 4 mm
+    wqp.check_basis(basis_col='ResultParticleSizeBasisText')
 
     #units = ['%', 'kg/ha', 'g', 'mg/L', 'g/l', 'tons/day', 'mg/l', 'ton/d/ft']
 
@@ -1227,23 +1197,13 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     else:
         units_out = domains.OUT_UNITS[out_col]
 
-    #TODO: this may need a try/except
-    unit_col = 'Units'
-    unit_flag = wqp.col.unit_in
-    c_mask = wqp.c_mask
     # Update local units registry to define characteristic specific units
-    wqp.update_ureg()
+    wqp.update_ureg()  # This is done based on out_col/char_val
 
-    harmonize_map = {'DO': dissolved_oxygen,
-                     'Salinity': salinity,
-                     'Turbidity':  turbidity,
-                     'Sediment': sediment,
-                     }
     # Use out_col to dictate function
     if out_col in ['pH', 'Secchi']:
         wqp.check_units()  # Fix and flag missing units
-        # NOTE: pH undefined units ('std units', 'None', etc.) -> units,
-        # TODO: replace above pH units to quiet warnings?
+        # NOTE: pH undefined units -> NAN -> units,
     elif out_col in ['Conductivity', 'Chlorophyll']:
         # Replace know problem units, fix and flag missing units
         wqp.check_units()
@@ -1273,9 +1233,17 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
         wqp.replace_unit_by_str(' ', '')  # Replace in results column
         wqp.check_units()  # Fix and flag missing units
     else:
-        wqp = harmonize_map[out_col](wqp)
-    #TODO: this may need a try/except
-    #warn("WARNING: '{}' not available yet.".format(out_col))
+        harmonize_map = {'DO': dissolved_oxygen,
+                     'Salinity': salinity,
+                     'Turbidity':  turbidity,
+                     'Sediment': sediment,
+                     }
+        try:
+            wqp = harmonize_map[out_col](wqp)
+        except KeyError:
+            # out_col not recognized
+            warn("WARNING: '{}' not available yet.".format(out_col))
+            raise
 
     # Update values in out_col with standard units
     wqp.convert_units(errors=errors)
@@ -1292,14 +1260,19 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
         frac_dict = wqp.fraction(frac_dict)  # Run sample fraction on WQP
 
     df_out = wqp.df
-    #TODO: Add detection limits - wrangle.add_detection(df, char_val)
-    #TODO: add activities? Quality filters?
+
+    #TODO: add activities/detection limits and filter on quality? e.g., cols:
+    #'ResultStatusIdentifier' = ['Historical', 'Accepted', 'Final']
+    #'ResultValueTypeName' = ['Actual', 'Estimated', 'Calculated']
+    #'ResultDetectionConditionText' = ['*Non-detect', '*Present <QL', '*Not Reported', 'Not Detected']
+    #df_out = wrangle.add_activities_to_df(df_out, wqp.c_mask)
+    #df_out = wrangle.add_detection(df_out, char_val)
 
     # Functionality only available w/ generic
     if report:
-        print_report(df_out.loc[c_mask], out_col, unit_flag)
+        print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
     if not intermediate_columns:
-        df_out = df_out.drop([unit_col], axis=1)  # Drop intermediate columns
+        df_out = df_out.drop(['Units'], axis=1)  # Drop intermediate columns
     return df_out
 
 

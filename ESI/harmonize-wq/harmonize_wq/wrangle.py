@@ -7,6 +7,7 @@ This module contains functions to help re-shape the WQP dataframe
 @author: jbousqui
 """
 import pandas
+import geopandas
 from io import StringIO
 from harmonize_wq import domains
 from harmonize_wq.harmonize import df_checks
@@ -411,6 +412,51 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
         assert len(merged_results) == len(df1), len(merged_results) - len(df1)
 
     return merged_results
+
+
+def as_gdf(shp):
+    """
+    Returns a geodataframe for shp if shp is not already a geodataframe.
+
+    Parameters
+    ----------
+    shp : string
+        Filename for something that needs to be a geodataframe.
+
+    Returns
+    -------
+    shp : geopandas.GeoDataFrame
+        GeoDataFrame for shp if it isn't already a geodataframe.
+    """
+    if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
+        shp = geopandas.read_file(shp, driver='ESRI Shapefile')
+    return shp
+
+
+def get_bounding_box(shp, idx=0):
+    """
+    Return bounding box for shp.
+
+    Parameters
+    ----------
+    shp : spatial file
+        Any geometry that is readable by geopandas.
+    idx : integer, optional
+        Index for geometry to get bounding box for.
+        The default is 0 to return the first bounding box.
+
+    Returns
+    -------
+        Coordinates for bounding box as string and seperated by ', '.
+    """
+    shp = as_gdf(shp)
+
+    xmin = shp.bounds['minx'][idx]
+    xmax = shp.bounds['maxx'][idx]
+    ymin = shp.bounds['miny'][idx]
+    ymax = shp.bounds['maxy'][idx]
+
+    return ','.join(map(str, [xmin, ymin, xmax, ymax]))
 
 
 def to_simple_shape(gdf, out_shp):

@@ -69,7 +69,7 @@ def test_get_bounding_box():
                 '27.47487752677648',
                 '-82.37480995151799',
                 '28.12535740372124']
-    actual = harmonize.get_bounding_box(AOI).split(',')
+    actual = wrangle.get_bounding_box(AOI).split(',')
     assert actual == expected
 
 
@@ -851,11 +851,28 @@ def test_harmonize_turbidity():
     assert str(actual.iloc[1]['Turbidity'].units) == expected_unit
     expected_val = float(actual.iloc[1][orig_val_col])  # Original value
     assert actual.iloc[1]['Turbidity'].magnitude == expected_val  # Unchanged
+
     # Inspect specific result - where units converted
     assert actual.iloc[58433][orig_unit_col] == 'cm'  # Confirm orig unit
     assert str(actual.iloc[58433]['Turbidity'].units) == expected_unit
     assert actual.iloc[58433][orig_val_col] == '60'  # Confirm original measure
     assert actual.iloc[58433]['Turbidity'].magnitude == 8.17455929421168  #16.046015096322353
+    # JTU -> NTU
+    assert actual.iloc[100158][orig_unit_col] == 'JTU'  # Confirm orig unit
+    assert str(actual.iloc[100158]['Turbidity'].units) == expected_unit
+    assert actual.iloc[100158][orig_val_col] == 5.0  # Confirm original measure
+    assert actual.iloc[100158]['Turbidity'].magnitude == 5.0  #95.0773
+    # mg/l SiO2 -> NTU
+    assert actual.iloc[126494][orig_unit_col] == 'mg/l SiO2'  # Original unit
+    assert str(actual.iloc[126494]['Turbidity'].units) == expected_unit
+    assert actual.iloc[126494][orig_val_col] == '4.0'  # Confirm original measure
+    assert actual.iloc[126494]['Turbidity'].magnitude == 4.0  #30.378500000000003
+    # NTRU == NTU
+    assert actual.iloc[124849][orig_unit_col] == 'NTRU'  # Confirm orig unit
+    assert str(actual.iloc[124849]['Turbidity'].units) == expected_unit
+    assert actual.iloc[124849][orig_val_col] == '0.7'  # Confirm original measure
+    assert actual.iloc[124849]['Turbidity'].magnitude == 0.7
+
     # Inspect specific result - where units missing
     assert str(actual.iloc[132736][orig_unit_col]) == 'nan'  # Confirm missing
     # Confirm expected flag - for missing/infered units

@@ -89,7 +89,7 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     return Q_.to('g', 'chemistry', mw = m_w / ureg('mol/g'))
 
 # Unit conversions functions not in Pint
-@u_reg.wraps(u_reg.milligram/u_reg.liter, u_reg.centimeter)
+@u_reg.wraps(u_reg.dimensionless, u_reg.centimeter)
 def cm_to_NTU(val):
     """
     Convert Turbidity measured in centimeters to NTU
@@ -104,12 +104,12 @@ def cm_to_NTU(val):
         The turbidity value in NTU.
 
     """
-    # TODO: Currently exports to 1/3 mg/ml since NTU is not defined in u_reg
+    # TODO: Currently exports None since NTU is not defined in u_reg
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
     #turbidity/turbiditytube/turbiditytubeconversionchart
     # Graphaed table conversions (average for each bound) and
     #used exponential curve (R2>.99)
-    return (3941.8 * (val**-1.509))/3
+    return 3941.8 * (val**-1.509)
 
 
 def NTU_to_cm(val):
@@ -132,6 +132,20 @@ def NTU_to_cm(val):
     # Graphaed table conversions (average for each bound) and
     #used exponential curve (R2>.99)
     return 241.27 * (val**-0.662)
+
+
+def JTU_to_NTU(val):
+    """Linear relationship, 1 -> 19, 0.053 -> 1, 0.4 -> 7.5 """
+    return 19.025*val - 0.0477
+
+
+def SiO2_to_NTU(val):
+    """Linear relationship, 2.5 -> 19, 0.13 -> 1, 1 -> 7.5"""
+    return 7.6028 *val - 0.0327
+
+
+def FNU_to_NTU(val):
+    return val * 1.267
 
 
 @u_reg.wraps(u_reg.gram/u_reg.kilogram, (u_reg.gram/u_reg.liter,

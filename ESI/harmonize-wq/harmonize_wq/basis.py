@@ -147,7 +147,10 @@ def update_result_basis(df_in, basis_col, unit_col):
     if basis_col == 'ResultTemperatureBasisText':
         df = basis_from_unit(df, STP_dict(), unit_col, basis_col)
         # NOTE: in the test case 25 deg C -> @25C
-        # TODO: make units aware?
+    elif basis_col == 'ResultParticleSizeBasisText':
+        # NOTE: These are normally 'less than x mm', no errors so far to fix
+        df = df
+    # TODO: make units aware?
     return df
 
 
