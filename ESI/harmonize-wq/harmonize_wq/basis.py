@@ -140,7 +140,6 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     """
     #expected cols not added: 'ResultWeightBasisText', 'ResultTimeBasisText'
-    #'ResultParticleSizeBasisText'
     df = df_in.copy()
 
     # Basis from unit
@@ -150,6 +149,12 @@ def update_result_basis(df_in, basis_col, unit_col):
     elif basis_col == 'ResultParticleSizeBasisText':
         # NOTE: These are normally 'less than x mm', no errors so far to fix
         df = df
+    elif basis_col == 'ResultWeightBasisText':
+        df = df
+    elif basis_col == 'ResultTimeBasisText':
+        df = df
+    else:
+        raise ValueError('{} not recognized basis column'.format(basis_col))
     # TODO: make units aware?
     return df
 
