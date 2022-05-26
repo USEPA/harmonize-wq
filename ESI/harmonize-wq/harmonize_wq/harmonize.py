@@ -18,7 +18,6 @@ from numpy import nan
 from harmonize_wq import domains
 from harmonize_wq import basis
 from harmonize_wq import convert
-from harmonize_wq import wrangle
 
 
 class WQCharData():
@@ -848,30 +847,6 @@ def dimension_handling(unit, units, quant=None, ureg=None):
         return {unit: unit + ' / H2O'}, []
     warn('WARNING: Unexpected dimensionality')
     return {}, []
-
-
-def clip_stations(aoi_gdf, stations_gdf):
-    """
-    Clip it to area of interest. aoi_gdf is first transformed to stations_gdf
-    projection.
-
-    Parameters
-    ----------
-    aoi_gdf : pandas.DataFrame
-        Polygon representing the area of interest.
-    stations_gdf : pandas.DataFrame
-        Points representing the stations.
-
-    Returns
-    -------
-    pandas.DataFrame
-        stations_gdf points clipped to the aoi_gdf.
-    """
-    stations_gdf = wrangle.as_gdf(stations_gdf)  # Ensure it is geodataframe
-    aoi_gdf = wrangle.as_gdf(aoi_gdf)  # Ensure it is geodataframe
-    # Transform aoi to stations CRS (should be 4326)
-    aoi_prj = aoi_gdf.to_crs(stations_gdf.crs)
-    return geopandas.clip(stations_gdf, aoi_prj)  # Return clipped geodataframe
 
 
 def harmonize_locations(df_in, out_EPSG=4326,

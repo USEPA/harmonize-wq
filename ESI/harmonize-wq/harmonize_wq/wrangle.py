@@ -10,7 +10,7 @@ import pandas
 import geopandas
 from io import StringIO
 from harmonize_wq import domains
-from harmonize_wq.harmonize import df_checks
+from harmonize_wq import harmonize
 from harmonize_wq.clean import datetime, harmonize_depth
 import dataretrieval.wqp as wqp
 import dataretrieval.utils
@@ -242,7 +242,7 @@ def add_activities_to_df(df_in, mask=None):
     df_out = df_in.copy()
     # Check df for loc_field
     loc_col = 'MonitoringLocationIdentifier'
-    df_checks(df_out, [loc_col])  #harmonize.df_checks
+    harmonize.df_checks(df_out, [loc_col])
     # List of unique sites and characteristicNames
     if mask:
         loc_list = list(set(df_out.loc[mask, loc_col].dropna()))
@@ -288,7 +288,7 @@ def add_detection(df_in, char_val):
     # Check df for loc_field
     loc_col = 'MonitoringLocationIdentifier'
     res_id = 'ResultIdentifier'
-    df_checks(df_out, [loc_col, res_id])
+    harmonize.df_checks(df_out, [loc_col, res_id])
     c_mask = df_out['CharacteristicName'] == char_val  # Mask to limit rows
     loc_series = df_out.loc[c_mask, loc_col]  # Location Series
     res_series = df_out.loc[c_mask, res_id]  # Location Series
@@ -457,6 +457,30 @@ def get_bounding_box(shp, idx=0):
     ymax = shp.bounds['maxy'][idx]
 
     return ','.join(map(str, [xmin, ymin, xmax, ymax]))
+
+
+def clip_stations(aoi_gdf, stations_gdf):
+    """
+    Clip it to area of interest. aoi_gdf is first transformed to stations_gdf
+    projection.
+
+    Parameters
+    ----------
+    aoi_gdf : pandas.DataFrame
+        Polygon representing the area of interest.
+    stations_gdf : pandas.DataFrame
+        Points representing the stations.
+
+    Returns
+    -------
+    pandas.DataFrame
+        stations_gdf points clipped to the aoi_gdf.
+    """
+    stations_gdf = as_gdf(stations_gdf)  # Ensure it is geodataframe
+    aoi_gdf = as_gdf(aoi_gdf)  # Ensure it is geodataframe
+    # Transform aoi to stations CRS (should be 4326)
+    aoi_prj = aoi_gdf.to_crs(stations_gdf.crs)
+    return geopandas.clip(stations_gdf, aoi_prj)  # Return clipped geodataframe
 
 
 def to_simple_shape(gdf, out_shp):
