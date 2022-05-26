@@ -139,7 +139,7 @@ def update_result_basis(df_in, basis_col, unit_col):
         Updated copy of df_in.
 
     """
-    #expected cols not added: 'ResultWeightBasisText', 'ResultTimeBasisText'
+    # TODO: make these columns units aware?
     df = df_in.copy()
 
     # Basis from unit
@@ -155,7 +155,7 @@ def update_result_basis(df_in, basis_col, unit_col):
         df = df
     else:
         raise ValueError('{} not recognized basis column'.format(basis_col))
-    # TODO: make units aware?
+
     return df
 
 
