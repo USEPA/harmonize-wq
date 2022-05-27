@@ -6,8 +6,8 @@ Module with basis dictionaries and functions
 
 @author: jbousqui
 """
-from numpy import nan
 from warnings import warn
+from numpy import nan
 from harmonize_wq import harmonize
 
 
@@ -39,7 +39,7 @@ def unit_basis_dict(out_col):
     return dictionary[out_col]
 
 
-def STP_dict():
+def stp_dict():
     """
     Standard temperature and pressure dictionary to define basis from units.
 
@@ -102,6 +102,21 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
 
 
 def basis_from_methodSpec(df_in):
+    """
+    Moves speciation from 'MethodSpecificationName' column to new 'Speciation'
+    Column
+
+    Parameters
+    ----------
+    df_in : pandas.DataFrame
+        DataFrame that will be updated.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        Updated copy of df_in.
+
+    """
     # Basis from MethodSpecificationName
     old_col = 'MethodSpecificationName'
     df = df_in.copy()
@@ -135,28 +150,28 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     Returns
     -------
-    df : pandas.DataFrame
+    df_out : pandas.DataFrame
         Updated copy of df_in.
 
     """
     # TODO: make these columns units aware?
-    df = df_in.copy()
+    #df = df_in.copy()
 
     # Basis from unit
     if basis_col == 'ResultTemperatureBasisText':
-        df = basis_from_unit(df, STP_dict(), unit_col, basis_col)
+        df_out = basis_from_unit(df_in.copy(), stp_dict(), unit_col, basis_col)
         # NOTE: in the test case 25 deg C -> @25C
     elif basis_col == 'ResultParticleSizeBasisText':
         # NOTE: These are normally 'less than x mm', no errors so far to fix
-        df = df
+        df_out = df_in.copy()
     elif basis_col == 'ResultWeightBasisText':
-        df = df
+        df_out = df_in.copy()
     elif basis_col == 'ResultTimeBasisText':
-        df = df
+        df_out = df_in.copy()
     else:
         raise ValueError('{} not recognized basis column'.format(basis_col))
 
-    return df
+    return df_out
 
 
 def set_basis(df_in, mask, basis, basis_col='Speciation'):
@@ -177,17 +192,17 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
 
     Returns
     -------
-    df : pandas.DataFrame
+    df_out : pandas.DataFrame
         Updated copy of df_in
 
     """
-    df = df_in.copy()
+    df_out = df_in.copy()
     # Add Basis column if it doesn't exist
-    if basis_col not in df.columns:
-        df[basis_col] = nan
+    if basis_col not in df_out.columns:
+        df_out[basis_col] = nan
     # Populate Basis column where expected value with basis
-    df.loc[mask, basis_col] = basis
-    return df
+    df_out.loc[mask, basis_col] = basis
+    return df_out
 
 
 def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
