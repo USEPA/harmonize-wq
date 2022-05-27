@@ -1005,8 +1005,13 @@ def salinity(wqp):
     # Check/fix dimensionality issues (Type III)
     for unit in wqp.dimensions_list():
         if wqp.ureg(wqp.units).dimensionless:
-            # Convert to dimensionless, e.g., 'mg/l' -> 'PSU'/'PSS'/'ppth'
-            wqp.apply_conversion(convert.density_to_PSU, unit)
+            # Convert to dimensionless
+            if wqp.ureg(unit).check({'[length]': -3, '[mass]': 1}):
+                # Density, e.g., 'mg/l' -> 'PSU'/'PSS'/'ppth'
+                wqp.apply_conversion(convert.density_to_PSU, unit)
+            else:
+                # Will cause dimensionality error, kick it there for handling
+                continue
         elif wqp.ureg(wqp.units).check({'[length]': -3, '[mass]': 1}):
             # Convert to density, e.g., PSU -> 'mg/l'
             wqp.apply_conversion(convert.PSU_to_density, unit)
