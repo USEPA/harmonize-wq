@@ -487,13 +487,15 @@ def test_harmonize_salinity():
     """
     Test function standardizes Salinity results correctly
 
+    Units in test data: '0/00', 'PSS', 'mg/mL @25C', nan, 'ppt', 'ppth'
+
     Global Constants
     ----------
     NARROW_RESULTS2 : pandas.DataFrame
         Read from data/wqp_results2.txt.
     """
     actual = harmonize.harmonize_generic(NARROW_RESULTS2, 'Salinity',
-                                             units_out='PSS')
+                                         units_out='PSS')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 12181392  # Test size
@@ -517,10 +519,12 @@ def test_harmonize_salinity():
     assert actual.iloc[0][orig_val_col] == '40'  # Confirm original measure
     assert actual.iloc[0]['Salinity'].magnitude == 40
     # Inspect specific result - where units converted (mg/ml)
+    #TODO: need a different test value (something weird here)
     assert actual.iloc[335435][orig_unit_col] == 'mg/mL @25C'  # Confirm unit
     assert str(actual.iloc[335435]['Salinity'].units)
     assert actual.iloc[335435][orig_val_col] == 120.0  # Confirm measure
     assert actual.iloc[335435]['Salinity'].magnitude == 125.28127999999992  #157.1
+    #4.014
     print(actual.iloc[335435]['Salinity'].magnitude)
 
     # Inspect specific result - where units missing
@@ -829,6 +833,8 @@ def test_harmonize_turbidity():
     """
     Test function standardizes Turbidity results correctly
 
+    Units in test data: 'cm', 'mg/l SiO2', 'JTU', 'NTU', 'NTRU'
+
     Global Constants
     ----------
     NARROW_RESULTS5 : pandas.DataFrame
@@ -898,6 +904,13 @@ def test_harmonize_turbidity():
 def test_harmonize_sediment():
     """
     Test function standardizes Sediment results correctly
+
+    Units in test data: '%', mg/L', 'g/l', ''mg/l',
+
+    Un-fixabl units in test data: mass/area (kg/ha),
+                                  mass (g),
+                                  mass/time (ton/day),
+                                  mass/length/time (ton/day/ft)
 
     Global Constants
     ----------
