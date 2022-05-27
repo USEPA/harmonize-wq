@@ -867,12 +867,12 @@ def test_harmonize_turbidity():
     assert actual.iloc[100158][orig_unit_col] == 'JTU'  # Confirm orig unit
     assert str(actual.iloc[100158]['Turbidity'].units) == expected_unit
     assert actual.iloc[100158][orig_val_col] == 5.0  # Confirm original measure
-    assert actual.iloc[100158]['Turbidity'].magnitude == 5.0  #95.0773
+    assert actual.iloc[100158]['Turbidity'].magnitude == 95.0773
     # mg/l SiO2 -> NTU
     assert actual.iloc[126494][orig_unit_col] == 'mg/l SiO2'  # Original unit
     assert str(actual.iloc[126494]['Turbidity'].units) == expected_unit
     assert actual.iloc[126494][orig_val_col] == '4.0'  # Confirm original measure
-    assert actual.iloc[126494]['Turbidity'].magnitude == 4.0  #30.378500000000003
+    assert actual.iloc[126494]['Turbidity'].magnitude == 30.378500000000003
     # NTRU == NTU
     assert actual.iloc[124849][orig_unit_col] == 'NTRU'  # Confirm orig unit
     assert str(actual.iloc[124849]['Turbidity'].units) == expected_unit

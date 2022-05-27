@@ -3,7 +3,7 @@
 Created on Tue Feb  1 16:41:35 2022
 
 Module with functions to convert from one unit to another, sometimes using
-pint decorators
+pint decorators. Contains several unit conversions functions not in Pint.
 
 @author: jbousqui
 """
@@ -27,6 +27,10 @@ PERIODIC_MW = {'Organic carbon': 180.16,
 # NOTE: for a more complete handling of MW: CalebBell/chemicals
 
 u_reg = pint.UnitRegistry()  # For use in wrappers
+#TODO: find more elegant way to do this with all definitions
+u_reg.define('NTU = [turbidity]')
+u_reg.define('Jackson_Turbidity_Units = [] = JTU')
+u_reg.define('SiO2 = []')
 
 
 def mass_to_moles(ureg, char_val, Q_):
@@ -88,8 +92,8 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
         raise ValueError("Characteristic Name or basis (Speciation) required")
     return Q_.to('g', 'chemistry', mw = m_w / ureg('mol/g'))
 
-# Unit conversions functions not in Pint
-@u_reg.wraps(u_reg.dimensionless, u_reg.centimeter)
+
+@u_reg.wraps(u_reg.NTU, u_reg.centimeter)
 def cm_to_NTU(val):
     """
     Convert Turbidity measured in centimeters to NTU
@@ -112,6 +116,7 @@ def cm_to_NTU(val):
     return 3941.8 * (val**-1.509)
 
 
+@u_reg.wraps(u_reg.centimeter, u_reg.NTU)
 def NTU_to_cm(val):
     """
     Convert Turbidity measured in NTU to centimeters
@@ -134,11 +139,17 @@ def NTU_to_cm(val):
     return 241.27 * (val**-0.662)
 
 
+@u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def JTU_to_NTU(val):
     """Linear relationship, 1 -> 19, 0.053 -> 1, 0.4 -> 7.5 """
+    # Alternative relation (Macneina 1990): NTU = JTU **0.943
+    # from Maceina, M. J., & Soballe, D. M. (1990).
+    #      Wind-related limnological variation in Lake Okeechobee, Florida.
+    #      Lake and Reservoir Management, 6(1), 93-100.
     return 19.025*val - 0.0477
 
 
+@u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def SiO2_to_NTU(val):
     """Linear relationship, 2.5 -> 19, 0.13 -> 1, 1 -> 7.5"""
     return 7.6028 *val - 0.0327
@@ -181,6 +192,8 @@ def density_to_PSU(val,
     else:
         PSU = ((float(val)+1000)*ref)-1000
     #print('{} mg/ml == {} ppth'.format(val, PSU))
+    #multiply by 33.45 @26C, 33.44 @25C
+
     return PSU
 
 

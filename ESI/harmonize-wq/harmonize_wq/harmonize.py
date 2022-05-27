@@ -803,6 +803,7 @@ def units_dimension(series_in, units, ureg=None):
 
 def dimension_handling(unit, units, quant=None, ureg=None):
     """
+    Handles and routes common dimension conversions/contexts
 
     Parameters
     ----------
@@ -966,10 +967,9 @@ def dissolved_oxygen(wqp):
     wqp : WQP Characteristic Info Object.
         WQP Characteristic Info Object with updated attributes
     """
-    # Replace know problem units, fix and flag missing units
-    wqp.check_units()
+    wqp.check_units()  # Replace know problem units, fix and flag missing units
 
-    # Check/fix dimensionality issues
+    # Check/fix dimensionality issues (Type III)
     for unit in wqp.dimensions_list():
         if wqp.ureg(wqp.units).check({'[length]': -3, '[mass]': 1}):
             # Convert to density, e.g., % or ppm -> mg/l (assumes STP for now)
@@ -984,8 +984,9 @@ def dissolved_oxygen(wqp):
 
 def salinity(wqp):
     """
-    Standardizes 'Salinity' characteristic using and returning
-    the WQP Characteristic Info Object.
+    Standardizes 'Salinity' characteristic using and returning the WQP
+    Characteristic Info Object.
+    Note: PSU=PSS=ppth
     Note: 'ppt' is picopint in pint so it is changed to 'ppth'
 
     Parameters
@@ -998,12 +999,10 @@ def salinity(wqp):
     wqp : WQP Characteristic Info Object.
         WQP Characteristic Info Object with updated attributes
     """
-    #Units = '0/00', 'PSS', 'mg/mL @25C', nan, 'ppt', 'ppth'
     wqp.check_basis(basis_col='ResultTemperatureBasisText')  # Moves '@25C' out
-
     wqp.check_units()  # Replace know problem units, fix and flag missing units
 
-    # Check/fix dimensionality issues
+    # Check/fix dimensionality issues (Type III)
     for unit in wqp.dimensions_list():
         if wqp.ureg(wqp.units).dimensionless:
             # Convert to dimensionless, e.g., 'mg/l' -> 'PSU'/'PSS'/'ppth'
@@ -1041,8 +1040,11 @@ def turbidity(wqp):
     Alternative conversions not currectly used by default:
         convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
                                 https://doi.org/10.5194/os-7-705-2011
-        convert.SiO2_to_NTU linear relation from equivalents in manuals
-        convert.JTU_to_NTU linear relation from equivalents in manuals
+        convert.SiO2_to_NTU linear relation from Otilia et al. 2013
+        convert.JTU_to_NTU linear relation from Otilia et al. 2013
+        Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
+            "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
+            https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
 
     Parameters
     ----------
@@ -1054,8 +1056,6 @@ def turbidity(wqp):
     wqp : WQP Characteristic Info Object.
         WQP Characteristic Info Object with updated attributes
     """
-    #units = ['cm', 'mg/l SiO2', 'JTU', 'NTU', 'NTRU']
-
     #These units exist but have not been encountered yet
     #formazin nephelometric multibeam unit (FNMU);
     #formazin backscatter unit (FBU);
@@ -1063,13 +1063,24 @@ def turbidity(wqp):
 
     wqp.check_units()  # Replace know problem units, fix and flag missing units
 
-    # Custom dimensionality conversion
+    # Check/fix dimensionality issues (Type III)
     for unit in wqp.dimensions_list():
-        if wqp.units in ['NTU', 'NTRU']:
-            wqp.apply_conversion(convert.cm_to_NTU, unit)
+        if wqp.ureg(wqp.units).check({'[turbidity]': 1}):
+            if wqp.ureg(unit).dimensionless:
+                if unit=='JTU':
+                    wqp.apply_conversion(convert.JTU_to_NTU, unit)
+                elif unit=='SiO2':
+                    wqp.apply_conversion(convert.SiO2_to_NTU, unit)
+                else:
+                    raise ValueError('Bad Turbidity unit: {}'.format(unit))
+            elif wqp.ureg(unit).check({'[length]': 1}):
+                wqp.apply_conversion(convert.cm_to_NTU, unit)
+            else:
+                raise ValueError('Bad Turbidity unit: {}'.format(unit))
         elif wqp.ureg(wqp.units).check({'[length]': 1}):
             wqp.apply_conversion(convert.NTU_to_cm, unit)
-
+        else:
+            raise ValueError('Bad Turbidity unit: {}'.format(wqp.units))
     return wqp
 
 
@@ -1091,12 +1102,9 @@ def sediment(wqp):
     #'< 0.0625 mm', < 0.125 mm, < 0.25 mm, < 0.5 mm, < 1 mm, < 2 mm, < 4 mm
     wqp.check_basis(basis_col='ResultParticleSizeBasisText')
 
-    #units = ['%', 'kg/ha', 'g', 'mg/L', 'g/l', 'tons/day', 'mg/l', 'ton/d/ft']
+    wqp.check_units()  # Replace know problem units, fix and flag missing units
 
-    # Replace know problem units, fix and flag missing units
-    wqp.check_units()
-
-    # Check/fix dimensionality issues
+    # Check/fix dimensionality issues (Type I)
     # Convert mg/l <-> dimensionless Premiss: 1 liter water ~ 1 kg mass)
     wqp.replace_unit_by_dict(wqp.handle_dimensions()[0], wqp.measure_mask())
 
@@ -1209,10 +1217,10 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
         wqp.check_units()  # Fix and flag missing units
     else:
         harmonize_map = {'DO': dissolved_oxygen,
-                     'Salinity': salinity,
-                     'Turbidity':  turbidity,
-                     'Sediment': sediment,
-                     }
+                         'Salinity': salinity,
+                         'Turbidity':  turbidity,
+                         'Sediment': sediment,
+                         }
         try:
             wqp = harmonize_map[out_col](wqp)
         except KeyError:
