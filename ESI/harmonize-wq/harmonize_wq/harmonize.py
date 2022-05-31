@@ -1077,15 +1077,18 @@ def turbidity(wqp):
                 elif unit=='SiO2':
                     wqp.apply_conversion(convert.SiO2_to_NTU, unit)
                 else:
-                    raise ValueError('Bad Turbidity unit: {}'.format(unit))
+                    #raise ValueError('Bad Turbidity unit: {}'.format(unit))
+                    warn('Bad Turbidity unit: {}'.format(unit))
             elif wqp.ureg(unit).check({'[length]': 1}):
                 wqp.apply_conversion(convert.cm_to_NTU, unit)
             else:
-                raise ValueError('Bad Turbidity unit: {}'.format(unit))
+                #raise ValueError('Bad Turbidity unit: {}'.format(unit))
+                warn('Bad Turbidity unit: {}'.format(unit))
         elif wqp.ureg(wqp.units).check({'[length]': 1}):
             wqp.apply_conversion(convert.NTU_to_cm, unit)
         else:
-            raise ValueError('Bad Turbidity unit: {}'.format(wqp.units))
+            #raise ValueError('Bad Turbidity unit: {}'.format(wqp.units))
+            warn('Bad Turbidity unit: {}'.format(unit))
     return wqp
 
 
