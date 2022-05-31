@@ -95,7 +95,7 @@ def registry_adds_list(out_col):
                                'Nephelometric_Turbidity_Multibeam_Units = NTU = NTMU',
                                'Formazin_Nephelometric_Units = NTU = FNU',
                                'Formazin_Nephelometric_Ratio_Units = FNRU = FNU',
-                               'Formazin_Turbidity_Units = FNU = FTU = FAU',
+                               'Formazin_Turbidity_Units = NTU = FNU = FTU = FAU',
                                'Jackson_Turbidity_Units = [] = JTU',
                                'SiO2 = []'],
                  'Sediment': pct_list,
