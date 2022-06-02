@@ -98,15 +98,16 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
         df_out = df_out.drop(df_out[mask].index)
 
     for out_col in col_list:
-        new_col = col_prefix + '_' + out_col
+        #TODO: variable names (out_col vs col_out) could be better
         # Currently written to drop NaN qa flags, to keep them filter on char
         if isinstance(out_col, list):
-            out_cols = out_col
-            for col_out in out_cols:
+            for col_out in out_col:
+                new_col = col_prefix + '_' + col_out
                 mask = df_out[col_out].notna()
                 df_out.loc[mask, new_col] = df_out.loc[mask, result_col]
         else:
             mask = df_out[out_col].notna()
+            new_col = col_prefix + '_' + out_col
             # Create characteristic specific QA field
             df_out.loc[mask, new_col] = df_out.loc[mask, result_col]
 

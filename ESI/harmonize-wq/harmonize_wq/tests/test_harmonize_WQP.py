@@ -1160,6 +1160,8 @@ def test_split_col(harmonized_tables):
     assert 'MethodID_Nitrogen' in actual_methods.columns
     assert 'MethodID_Conductivity' in actual_methods.columns
     assert col not in actual_methods.columns
+    
+    #TODO: test when out_col is list (i.e., Phosphorus)
 
 
 #@pytest.mark.skip(reason="no change")
