@@ -108,9 +108,8 @@ def merged_tables():
                 'ActivityMediaSubdivisionName',
                 'ActivityEndDate',
                 'ActivityEndTime/Time',
-                'ActivityEndTime/TimeZoneCode']
-    merged_table = wrangle.merge_tables(df1, df2, df2_cols=df2_cols)
-    return merged_table
+                'ActivityEndTime/TimeZoneCode'] 
+    return wrangle.merge_tables(df1, df2, df2_cols=df2_cols)
 
 
 @pytest.fixture(scope='session')
