@@ -14,6 +14,7 @@ import os
 import pytest
 import geopandas
 import pandas
+from harmonize_wq import location
 from harmonize_wq import harmonize
 from harmonize_wq import convert
 from harmonize_wq import wrangle
@@ -166,7 +167,7 @@ def test_harmonize_locations():
     STATIONS : pandas.DataFrame
         Read from data/wqp_sites.txt.
     """
-    actual = harmonize.harmonize_locations(STATIONS)
+    actual = location.harmonize_locations(STATIONS)
 
     crs_col = 'HorizontalCoordinateReferenceSystemDatumName'
     expected_flag = crs_col + ': Bad datum OTHER, EPSG:4326 assumed'
