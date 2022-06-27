@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harmonize_wq"
+version = "0.0.3"
+authors = [
+  { name="Justin Bousquin", email="Bousquin.Justin@epa.gov" },
+]
+description = "Package to standardize, clean and wrangle Water Quality Portal data into more analytic-ready formats"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License ::  CC0",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/USEPA/harmonize-wq"
+"Bug Tracker" = "https://github.com/USEPA/harmonize-wq/issues"
