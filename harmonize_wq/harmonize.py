@@ -6,7 +6,6 @@ Class and functions for harmonizing data retrieved from Water Quality Portal
 
 @author: jbousqui
 """
-from math import sqrt
 from types import SimpleNamespace
 from warnings import warn
 import pandas
@@ -15,6 +14,7 @@ from numpy import nan
 from harmonize_wq import domains
 from harmonize_wq import basis
 from harmonize_wq import convert
+from harmonize_wq import visualize
 
 
 class WQCharData():
@@ -148,7 +148,7 @@ class WQCharData():
             try:
                 self.ureg(unit)
             except pint.UndefinedUnitError:
-                #WARNING: Does not catch '%' or bad units in ureg (eg deg F)
+                # WARNING: Does not catch '%' or bad units in ureg (eg deg F)
                 # If bad, flag and replace
                 problem = "'{}' UNDEFINED UNIT".format(unit)
                 warn("WARNING: " + problem)
@@ -179,7 +179,7 @@ class WQCharData():
         self.df = add_qa_flag(self.df, unit_mask, flag)  # Assign flag
         # Update with infered unit
         self.df.loc[unit_mask, unit_col] = self.units
-        #Note: .fillna(self.units) is slightly faster but hits datatype issues
+        # Note: .fillna(self.units) is slightly faster but hits datatype issues
 
     def check_basis(self, basis_col='MethodSpecificationName'):
         """
@@ -259,8 +259,8 @@ class WQCharData():
         specified units.
         """
         if col:
-            return self.measure_mask() & (self.df[col]==unit)
-        return self.measure_mask() & (self.df[self.col.unit_out]==unit)
+            return self.measure_mask() & (self.df[col] == unit)
+        return self.measure_mask() & (self.df[self.col.unit_out] == unit)
 
     def char_val(self):
         """"Returns built-in char_val based on out_col attribute"""
@@ -1109,58 +1109,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
 
     # Functionality only available w/ generic
     if report:
-        print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
+        visualize.print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
     if not intermediate_columns:
         df_out = df_out.drop(['Units'], axis=1)  # Drop intermediate columns
     return df_out
-
-
-def print_report(results_in, out_col, unit_col_in, threshold=None):
-    """
-    Prints a standardized report of changes made
-
-    Parameters
-    ----------
-    results_in : pandas.Dataframe
-        DataFrame with subset of results.
-    out_col : string
-        Name of column in results_in with final result.
-    unit_col_in : string
-        Name of column with original units.
-    threshold : dict, optional
-        Dictionary with min and max keys. The default is None.
-
-    Returns
-    -------
-    None.
-
-    """
-    # Series with just usable results.
-    results = results_in[out_col].dropna()
-    # Series with infered units
-    inferred = results_in.loc[((results_in[out_col].notna()) &
-                               (results_in[unit_col_in].isna()))]
-    # Series with just magnitude
-    results_s = pandas.Series([x.magnitude for x in results])
-    # Number of usable results
-    print('-Usable results-\n{}'.format(results_s.describe()))
-    # Number measures unused
-    print('Unusable results: {}'.format(len(results_in)-len(results)))
-    # Number of infered result units
-    print('Usable results with inferred units: {}'.format(len(inferred)))
-    # Results outside thresholds
-    if not threshold:
-        #TODO: Default mean +/-1 standard deviation works here but generally 6
-        threshold = {'min': 0.0,
-                     'max': results_s.mean() + (6 * results_s.std())}
-    inside = results_s[(results_s<=threshold['max']) &
-                       (results_s>=threshold['min'])]
-    print('Results outside threshold ({} to {}): {}'.format(threshold['min'],
-                                                            threshold['max'],
-                                                            len(results) - len(inside)))
-
-    # Graphic representation of stats
-    inside.hist(bins=int(sqrt(inside.count())))
-    #TODO: two histograms overlaid?
-    #inferred_s = pandas.Series([x.magnitude for x in inferred])
-    #pandas.Series([x.magnitude for x in inferred]).hist()

@@ -1,0 +1,136 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun 27 15:57:16 2022
+
+This module contains functions to help visualize data.
+
+@author: jbousqui
+"""
+import pandas
+import geopandas
+from math import sqrt
+from harmonize_wq import wrangle
+
+
+def print_report(results_in, out_col, unit_col_in, threshold=None):
+    """
+    Prints a standardized report of changes made
+
+    Parameters
+    ----------
+    results_in : pandas.Dataframe
+        DataFrame with subset of results.
+    out_col : string
+        Name of column in results_in with final result.
+    unit_col_in : string
+        Name of column with original units.
+    threshold : dict, optional
+        Dictionary with min and max keys. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    # Series with just usable results.
+    results = results_in[out_col].dropna()
+    # Series with infered units
+    inferred = results_in.loc[((results_in[out_col].notna()) &
+                               (results_in[unit_col_in].isna()))]
+    # Series with just magnitude
+    results_s = pandas.Series([x.magnitude for x in results])
+    # Number of usable results
+    print('-Usable results-\n{}'.format(results_s.describe()))
+    # Number measures unused
+    print('Unusable results: {}'.format(len(results_in)-len(results)))
+    # Number of infered result units
+    print('Usable results with inferred units: {}'.format(len(inferred)))
+    # Results outside thresholds
+    if not threshold:
+        # TODO: Default mean +/-1 standard deviation works here but generally 6
+        threshold = {'min': 0.0,
+                     'max': results_s.mean() + (6 * results_s.std())}
+    inside = results_s[(results_s <= threshold['max']) &
+                       (results_s >= threshold['min'])]
+    diff = len(results) - len(inside)
+    print('Results outside threshold ({} to {}): {}'.format(threshold['min'],
+                                                            threshold['max'],
+                                                            diff))
+
+    # Graphic representation of stats
+    inside.hist(bins=int(sqrt(inside.count())))
+    # TODO: two histograms overlaid?
+    #inferred_s = pandas.Series([x.magnitude for x in inferred])
+    #pandas.Series([x.magnitude for x in inferred]).hist()
+
+
+def map_counts(df_in, gdf, col=None):
+    """
+    Return geodatadrame summarized by count of results for each station
+
+    Parameters
+    ----------
+    df_in : pandas.Dataframe
+        DataFrame with subset of results.
+    gdf : geopandas.GeoDataFrame
+        Geodataframe with monitoring locations.
+
+    Returns
+    -------
+    geopandas.GeoDataFrame
+
+    Example
+    -------
+    cnt_gdf = harmonize.visualize.map_counts(df, stations_clipped)
+    cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
+
+    """
+    # Column for station
+    loc_id = 'MonitoringLocationIdentifier'
+    # TODO: col is going to be used to restrict results, if none use all
+    if col is None:
+        cols = [loc_id, col]
+        df_in = df_in.loc[df_in[col].notna(), cols].copy()
+        # TODO: cols needed?
+    # Map counts of all results
+    df_cnt = df_in.groupby(loc_id).size().to_frame('cnt')
+    df_cnt.reset_index(inplace=True)
+
+    # Join it to geometry
+    merge_cols = ['MonitoringLocationIdentifier']
+    gdf_cols = ['geometry', 'QA_flag']
+    results_df = wrangle.merge_tables(df_cnt, gdf, gdf_cols, merge_cols)
+    return geopandas.GeoDataFrame(results_df, geometry='geometry')
+
+
+def map_measure(df_in, gdf, col):
+    """
+    Return geodataframe summarized by average of results for each station
+
+    Parameters
+    ----------
+    df_in : pandas.Dataframe
+        DataFrame with subset of results.
+    gdf : geopandas.GeoDataFrame
+        Geodataframe with monitoring locations.
+    col : string
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    # Aggregate data by station to look at results spatially
+    cols = ['MonitoringLocationIdentifier', col]
+    df = df_in.loc[df_in[col].notna(), cols].copy()
+    # Col w/ magnitude seperate from unit
+    avg = [x.magnitude for x in df['col']]
+    df['magnitude'] = pandas.Series(avg, index=df[col].index) 
+    df_agg = df.groupby('MonitoringLocationIdentifier').size().to_frame('cnt')
+    cols = ['MonitoringLocationIdentifier', 'magnitude']
+    df_agg['mean'] = df[cols].groupby('MonitoringLocationIdentifier').mean()
+    df_agg.reset_index(inplace=True)
+    # TODO: not returning geodataframe yet (placeholder)
+    # Currently returns aggregate table that may be useful too?
+    return df_agg
