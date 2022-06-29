@@ -9,8 +9,7 @@ US EPA’s [Water Quality Portal (WQP)](https://www.waterqualitydata.us/) aggreg
 
 Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
 
-For more complete tutorial information, see:
-https://github.com/USEPA/harmonize-wq/tree/main/demos
+For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
 
 ## Quick Start
 harmonize_wq can be installed from git using pip:
