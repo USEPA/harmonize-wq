@@ -445,7 +445,7 @@ def as_gdf(shp):
     return shp
 
 
-def get_bounding_box(shp, idx=0):
+def get_bounding_box(shp, idx=None):
     """
     Return bounding box for shp.
 
@@ -455,7 +455,7 @@ def get_bounding_box(shp, idx=0):
         Any geometry that is readable by geopandas.
     idx : integer, optional
         Index for geometry to get bounding box for.
-        The default is 0 to return the first bounding box.
+        The default is None to return the total extent bounding box.
 
     Returns
     -------
@@ -463,12 +463,16 @@ def get_bounding_box(shp, idx=0):
     """
     shp = as_gdf(shp)
 
-    xmin = shp.bounds['minx'][idx]
-    xmax = shp.bounds['maxx'][idx]
-    ymin = shp.bounds['miny'][idx]
-    ymax = shp.bounds['maxy'][idx]
+    if idx is None:
+        bBox = shp.total_bounds
+    else:
+        xmin = shp.bounds['minx'][idx]
+        xmax = shp.bounds['maxx'][idx]
+        ymin = shp.bounds['miny'][idx]
+        ymax = shp.bounds['maxy'][idx]
+        bBox = [xmin, ymin, xmax, ymax]
 
-    return ','.join(map(str, [xmin, ymin, xmax, ymax]))
+    return ','.join(map(str, bBox))
 
 
 def clip_stations(aoi_gdf, stations_gdf):
