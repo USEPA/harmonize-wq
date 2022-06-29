@@ -126,6 +126,17 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 #    return series
 
 
+def collapse_results(df_in, cols=None):
+    df = df_in.copy()
+    # TODO: use date instead of datetime if na?   (date_idx)
+    idx_cols = ['MonitoringLocationIdentifier',
+                'Activity_datetime',
+                'ActivityIdentifier',
+                'OrganizationIdentifier']
+    df_indexed = df.groupby(by=idx_cols, dropna=False)
+
+    return df_indexed
+
 # def combine_results(df_in):
 #     """
 #     NOT IN USE
