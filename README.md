@@ -14,9 +14,66 @@ https://github.com/USEPA/harmonize-wq/tree/main/demos
 
 ## Quick Start
 harmonize_wq can be installed from git using pip:
-```python
+```
 pip install git+git://github.com/USEPA/harmonize-wq.git
 ```
+
+## Example Workflow
+### dataretrieval Query for a geojson
+
+```python
+import dataretrieval.wqp as wqp
+
+# Get extent for area of interest
+aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+bBox = ','.join(map(str, aoi_gdf.total_bounds))
+
+# Build query
+query = {'characteristicName': ['Temperature, water',
+                                'Depth, Secchi disk depth',
+                                ]}
+query['bBox'] = bBox
+query['dataProfile'] = 'narrowResult'
+
+# Run query
+res_narrow, md_narrow = wqp.get_results(**query)
+
+# Look at dataframe of downloaded results
+res_narrow
+```
+
+### Harmonize and clean all results
+
+```python
+from harmonize_wq import harmonize
+from harmonize_wq import clean
+
+df_harmonized = harmonize.harmonize_all(res_narrow, errors='raise')
+df_harmonized
+
+# Clean up other columns of data
+df_cleaned = clean.datetime(df_harmonized)  # datetime
+df_cleaned = clean.harmonize_depth(df_cleaned)  # Sample depth
+df_cleaned
+```
+
+### Transform results from long to wide format
+There are many columns in the dataframe that are characteristic specific, that is they have different values for the same sample depending on the characteristic. To ensure one result for each sample after the transformation of the data these columns must either be split, generating a new column for each characteristic with values, or moved out from the table if not being used.
+
+```python
+from harmonize_wq import wrangle
+
+# Split QA column into multiple characteristic specific QA columns
+df_full = wrangle.split_col(df_cleaned)
+
+# Divide table into columns of interest (main_df) and characteristic specific metadata (chars_df)
+main_df, chars_df = wrangle.split_table(df_full)
+
+# Combine rows with the same sample organization, activity, location, and datetime
+df_wide = wrangle.collapse_results(main_df)
+
+```
+
 
 ## Issue Tracker
 harmonize_wq is under development. Please report any bugs and enhancement ideas using the issue track:
