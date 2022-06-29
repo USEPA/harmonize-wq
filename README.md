@@ -23,22 +23,22 @@ pip install git+git://github.com/USEPA/harmonize-wq.git
 
 ```python
 import dataretrieval.wqp as wqp
+from harmonize_wq import wrangle
 
-# Get extent for area of interest
+# File for area of interest
 aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
-bBox = ','.join(map(str, aoi_gdf.total_bounds))
 
 # Build query
 query = {'characteristicName': ['Temperature, water',
                                 'Depth, Secchi disk depth',
                                 ]}
-query['bBox'] = bBox
+query['bBox'] = wrangle.get_bounding_box(aoi_url)
 query['dataProfile'] = 'narrowResult'
 
 # Run query
 res_narrow, md_narrow = wqp.get_results(**query)
 
-# Look at dataframe of downloaded results
+# dataframe of downloaded results
 res_narrow
 ```
 
