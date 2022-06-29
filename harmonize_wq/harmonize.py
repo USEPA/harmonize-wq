@@ -150,7 +150,7 @@ class WQCharData():
             except pint.UndefinedUnitError:
                 # WARNING: Does not catch '%' or bad units in ureg (eg deg F)
                 # If bad, flag and replace
-                problem = "'{}' UNDEFINED UNIT".format(unit)
+                problem = "'{}' UNDEFINED UNIT for {}".format(unit, self.out_col)
                 warn("WARNING: " + problem)
                 flag = unit_qa_flag(unit_col, problem, self.units, flag_col)
                 # New mask for bad units
