@@ -128,13 +128,19 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
 def collapse_results(df_in, cols=None):
     df = df_in.copy()
+
+    # Drop obvious duplicates (doesn't tend to eliminate many)
+    df = df.drop_duplicates()
+
     # TODO: use date instead of datetime if na?   (date_idx)
     idx_cols = ['MonitoringLocationIdentifier',
                 'Activity_datetime',
                 'ActivityIdentifier',
                 'OrganizationIdentifier']
-    df_indexed = df.groupby(by=idx_cols, dropna=False)
-
+    df_indexed = df.groupby(by=idx_cols, dropna=False).first()
+    # TODO: warn about multi-lines with values (only returns first)
+    problems = df.groupby(by=idx_cols, dropna=False).first(min_count=2)
+    problems = problems.dropna(axis=1, how='all')
     return df_indexed
 
 # def combine_results(df_in):
