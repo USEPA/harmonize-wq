@@ -12,6 +12,7 @@ have a url method to update.
 from zipfile import ZipFile
 from io import BytesIO
 import requests
+import pint
 import pandas
 #from numpy import nan
 
