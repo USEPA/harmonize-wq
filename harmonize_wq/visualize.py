@@ -157,5 +157,6 @@ def summary_table(df_in, col):
     df_agg = df.groupby(loc_id).size().to_frame('cnt')
     cols = [loc_id, 'magnitude']
     df_agg['mean'] = df[cols].groupby(loc_id).mean()
+    df_agg.reset_index(inplace=True)
 
-    return df_agg.reset_index(inplace=True)
+    return df_agg
