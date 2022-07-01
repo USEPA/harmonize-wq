@@ -82,7 +82,7 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     """
     if basis:
         # Clean-up basis
-        print(basis)
+        #print(basis)
         if basis.startswith('as '):
             basis = basis[3:]
         m_w = PERIODIC_MW[basis]
