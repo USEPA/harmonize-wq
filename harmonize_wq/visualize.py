@@ -88,7 +88,7 @@ def map_counts(df_in, gdf, col=None):
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'
     # TODO: col is going to be used to restrict results, if none use all
-    if col is None:
+    if col is not None:
         cols = [loc_id, col]
         df_in = df_in.loc[df_in[col].notna(), cols].copy()
         # TODO: cols needed?
@@ -121,16 +121,21 @@ def map_measure(df_in, gdf, col):
     None.
 
     """
+    # Column for station
+    loc_id = 'MonitoringLocationIdentifier'
     # Aggregate data by station to look at results spatially
-    cols = ['MonitoringLocationIdentifier', col]
+    cols = [loc_id, col]
     df = df_in.loc[df_in[col].notna(), cols].copy()
     # Col w/ magnitude seperate from unit
-    avg = [x.magnitude for x in df['col']]
-    df['magnitude'] = pandas.Series(avg, index=df[col].index) 
-    df_agg = df.groupby('MonitoringLocationIdentifier').size().to_frame('cnt')
-    cols = ['MonitoringLocationIdentifier', 'magnitude']
-    df_agg['mean'] = df[cols].groupby('MonitoringLocationIdentifier').mean()
+    avg = [x.magnitude for x in df[col]]
+    df['magnitude'] = pandas.Series(avg, index=df[col].index)
+    df_agg = df.groupby(loc_id).size().to_frame('cnt')
+    cols = [loc_id, 'magnitude']
+    df_agg['mean'] = df[cols].groupby(loc_id).mean()
     df_agg.reset_index(inplace=True)
-    # TODO: not returning geodataframe yet (placeholder)
-    # Currently returns aggregate table that may be useful too?
-    return df_agg
+    # Join it to geometry
+    merge_cols = [loc_id]
+    gdf_cols = ['geometry', 'QA_flag']
+    results_df = wrangle.merge_tables(df_agg, gdf, gdf_cols, merge_cols)
+
+    return geopandas.GeoDataFrame(results_df, geometry='geometry')
