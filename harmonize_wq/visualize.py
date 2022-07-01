@@ -114,11 +114,36 @@ def map_measure(df_in, gdf, col):
     gdf : geopandas.GeoDataFrame
         Geodataframe with monitoring locations.
     col : string
-        DESCRIPTION.
+        Column name in df_in to aggregate results for.
 
     Returns
     -------
-    None.
+    geopandas.GeoDataFrame
+
+    """
+    df_agg = summary_table(df_in, col)
+    # Join it to geometry
+    merge_cols = ['MonitoringLocationIdentifier']
+    gdf_cols = ['geometry', 'QA_flag']
+    results_df = wrangle.merge_tables(df_agg, gdf, gdf_cols, merge_cols)
+
+    return geopandas.GeoDataFrame(results_df, geometry='geometry')
+
+
+def summary_table(df_in, col):
+    """
+    Return summary table with rows for each station, count and average
+
+    Parameters
+    ----------
+    df_in : pandas.Dataframe
+        DataFrame with subset of results.
+    col : string
+        Column name in df_in to summarize results for.
+
+    Returns
+    -------
+    pandas.DataFrame
 
     """
     # Column for station
@@ -132,10 +157,5 @@ def map_measure(df_in, gdf, col):
     df_agg = df.groupby(loc_id).size().to_frame('cnt')
     cols = [loc_id, 'magnitude']
     df_agg['mean'] = df[cols].groupby(loc_id).mean()
-    df_agg.reset_index(inplace=True)
-    # Join it to geometry
-    merge_cols = [loc_id]
-    gdf_cols = ['geometry', 'QA_flag']
-    results_df = wrangle.merge_tables(df_agg, gdf, gdf_cols, merge_cols)
 
-    return geopandas.GeoDataFrame(results_df, geometry='geometry')
+    return df_agg.reset_index(inplace=True)
