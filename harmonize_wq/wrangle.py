@@ -379,7 +379,7 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
         Columns in df2 to add to df1. The default is 'all', for all columns
         not already in df1.
     merge_cols : string, optional
-        Columns in both DataFrames to use in join. The default is.
+        Columns in both DataFrames to use in join.
         The default is 'activity', for a subset of columns in the activity df2.
 
     Returns
@@ -388,7 +388,7 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
         Updated copy of df_in.
 
     """
-    #TODO: change merge_cols default to all?
+    # TODO: change merge_cols default to all?
     col2_list = list(df2.columns)
 
     test = merge_cols == 'activity'  # Special activity test = true/false
