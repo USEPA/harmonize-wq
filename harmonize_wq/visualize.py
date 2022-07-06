@@ -121,9 +121,16 @@ def map_measure(df_in, gdf, col):
     geopandas.GeoDataFrame
 
     """
-    df_agg = summary_table(df_in, col)
-    # Join it to geometry
     merge_cols = ['MonitoringLocationIdentifier']
+
+    if merge_cols[0] not in df_in.columns:
+        df_temp = df_in.reset_index()  # May be part of index already
+    else:
+        df_temp = df_in.copy()
+
+    df_agg = summary_table(df_temp, col)
+
+    # Join it to geometry
     gdf_cols = ['geometry', 'QA_flag']
     results_df = wrangle.merge_tables(df_agg, gdf, gdf_cols, merge_cols)
 
