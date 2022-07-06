@@ -185,6 +185,7 @@ def characteristic_cols(category=None):
             'ResultMeasure/MeasureUnitCode': 'measure',
             'MeasureQualifierCode': 'measure',
             'ResultStatusIdentifier': 'QA',
+            'ResultIdentifier': 'measure',
             'StatisticalBaseCode': 'measure',
             'ResultValueTypeName': 'measure',
             'ResultWeightBasisText': 'Basis',
