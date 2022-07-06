@@ -73,6 +73,22 @@ df_wide = wrangle.collapse_results(main_df)
 
 ```
 
+The number of columns in the resulting table is greatly reduced
+
+Output Column | Type | Source | Changes
+--- | --- | --- | ---
+MonitoringLocationIdentifier | Defines row | MonitoringLocationIdentifier | NA 
+Activity_datetime | Defines row | ActivityStartDate, ActivityStartTime/Time, ActivityStartTime/TimeZoneCode | Combined and UTC
+ActivityIdentifier | Defines row | ActivityIdentifier | NA
+OrganizationIdentifier | Defines row | OrganizationIdentifier | NA 
+OrganizationFormalName | Metadata| OrganizationFormalName | NA
+ProviderName | Metadata | ProviderName | NA
+StartDate | Metadata | ActivityStartDate | Preserves date where time NAT
+Depth | Metadata | ResultDepthHeightMeasure/MeasureValue, ResultDepthHeightMeasure/MeasureUnitCode | standardized to meters
+Secchi | Result | ResultMeasureValue, ResultMeasure/MeasureUnitCode | standardized to meters
+QA_Secchi | QA | NA | harmonization processing quality issues
+Temperature | Result | ResultMeasureValue, ResultMeasure/MeasureUnitCode | standardized to degrees Celcius
+QA_Temperature | QA | NA | harmonization processing quality issues
 
 ## Issue Tracker
 harmonize_wq is under development. Please report any bugs and enhancement ideas using the issue track:
