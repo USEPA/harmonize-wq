@@ -447,7 +447,8 @@ def as_gdf(shp):
         GeoDataFrame for shp if it isn't already a geodataframe.
     """
     if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
-        shp = geopandas.read_file(shp, driver='ESRI Shapefile')
+        #shp = geopandas.read_file(shp, driver='ESRI Shapefile')
+        shp = geopandas.read_file(shp)
     return shp
 
 
