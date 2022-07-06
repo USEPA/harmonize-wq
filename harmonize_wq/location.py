@@ -10,8 +10,10 @@ from pyproj import Transformer
 from shapely.geometry import shape
 import geopandas
 import pandas
+import dataretrieval.wqp as wqp
 from harmonize_wq import harmonize
 from harmonize_wq import domains
+from harmonize_wq import wrangle
 
 
 def infer_CRS(df_in,
@@ -162,3 +164,46 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
     df_in.loc[d_mask, 'geom'] = pandas.Series(new_geoms,
                                               index=df_in.loc[d_mask].index)
     return df_in
+
+
+def get_harmonized_stations(query, aoi=None):
+    """
+    Queries the Water Quality Portal (https://waterquality.data.us) for staions
+    with data matching the query, harmonizes those stations location
+    information and clips it to the Area Of Interest (aoi) if specified.
+
+    See www.waterqualitydata.us/webservices_documentation for API reference
+
+    Parameters
+    ----------
+    query : dict
+        Water Quality Portal query as dictionary
+    aoi : geopandas.GeoDataFrame, optional
+        Area of interest to clip stations to.
+        The default None returns all stations in the query extent.
+
+    Returns
+    -------
+    stations_gdf : geopandas.GeoDataFrame
+        Harmonized stations.
+    stations : pandas.DataFrame
+        Raw station results from WQP.
+    site_md : TYPE
+        WQP query metadata.
+
+    """
+    # TODO: **kwargs instead of query dict?
+
+    # Query stations (can be slow)
+    if 'dataProfile' in query.keys():
+        query.pop('dataProfile')  # TODO: this changes query arg (mutable)
+    stations, site_md = wqp.what_sites(**query)
+
+    # Harmonize stations
+    stations_gdf = harmonize_locations(stations)
+
+    if aoi is not None:
+        # Clip Stations to area of interest
+        stations_gdf = wrangle.clip_stations(aoi, stations_gdf)
+
+    return stations_gdf, stations, site_md
