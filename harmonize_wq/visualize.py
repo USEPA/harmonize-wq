@@ -60,8 +60,8 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     # Graphic representation of stats
     inside.hist(bins=int(sqrt(inside.count())))
     # TODO: two histograms overlaid?
-    #inferred_s = pandas.Series([x.magnitude for x in inferred])
-    #pandas.Series([x.magnitude for x in inferred]).hist()
+    # inferred_s = pandas.Series([x.magnitude for x in inferred])
+    # pandas.Series([x.magnitude for x in inferred]).hist()
 
 
 def map_counts(df_in, gdf, col=None):
