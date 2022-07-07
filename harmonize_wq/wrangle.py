@@ -175,10 +175,10 @@ def collapse_results(df_in, cols=None):
 #                   'ActivityIdentifier',
 #                   'OrganizationIdentifier']
 #     # Columns to skip in this table (NOTE: ResultIdentifier is Char unique)
-#     ignore_cols = ['StartDate', 'Activity_datetime', 'OrganizationFormalName',
+#    ignore_cols = ['StartDate', 'Activity_datetime', 'OrganizationFormalName',
 #                    'ProviderName', 'QA_flag', 'ResultIdentifier']
 #     df_sm = df.drop(columns=ignore_cols, errors='ignore')
-#     # Note: determine when there are duplicates - e.g, diff ResultIdentifiers?
+#  # Note: determine when there are duplicates - e.g, diff ResultIdentifiers?
 #     df_sm = df_sm.drop_duplicates()  # This doesn't tend to eliminate many
 
 #     # Group by multi-index
@@ -198,7 +198,7 @@ def collapse_results(df_in, cols=None):
 
 #     # Quick read out about pass/fails
 #     print('{} groups had multiple unique values, {} rows'.format(len(fails),
-#                                                                  len(df_fails)))
+#                                                              len(df_fails)))
 #     # Note: df_first replace None w/ nan?
 #     return df_passing, df_fails
 
@@ -313,7 +313,7 @@ def add_detection(df_in, char_val):
     # Get results
     detect_df = get_detection_by_loc(loc_series, res_series, char_val)
     # Merge results to table
-    df_merged = wrangle.merge_tables(df_out, detect_df, merge_cols='all')
+    df_merged = merge_tables(df_out, detect_df, merge_cols='all')
     return df_merged
 
 
