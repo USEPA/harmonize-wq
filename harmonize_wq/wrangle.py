@@ -482,25 +482,24 @@ def get_bounding_box(shp, idx=None):
     return ','.join(map(str, bBox))
 
 
-def clip_stations(aoi_gdf, stations_gdf):
+def clip_stations(stations, aoi):
     """
-    Clip it to area of interest. aoi_gdf is first transformed to stations_gdf
-    projection.
+    Clip it to area of interest. aoi is first transformed to stations CRS.
 
     Parameters
     ----------
-    aoi_gdf : pandas.DataFrame
-        Polygon representing the area of interest.
-    stations_gdf : pandas.DataFrame
+    stations : geopandas.GeoDataFrame
         Points representing the stations.
+    aoi : geopandas.GeoDataFrame
+        Polygon representing the area of interest.
 
     Returns
     -------
     pandas.DataFrame
         stations_gdf points clipped to the aoi_gdf.
     """
-    stations_gdf = as_gdf(stations_gdf)  # Ensure it is geodataframe
-    aoi_gdf = as_gdf(aoi_gdf)  # Ensure it is geodataframe
+    stations_gdf = as_gdf(stations)  # Ensure it is geodataframe
+    aoi_gdf = as_gdf(aoi)  # Ensure it is geodataframe
     # Transform aoi to stations CRS (should be 4326)
     aoi_prj = aoi_gdf.to_crs(stations_gdf.crs)
     return geopandas.clip(stations_gdf, aoi_prj)  # Return clipped geodataframe
