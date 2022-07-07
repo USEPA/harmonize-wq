@@ -87,18 +87,18 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
     # Drop rows where result na
     for i, char in enumerate(char_list):
-        mask = (df_out['CharacteristicName']==char)
+        mask = (df_out['CharacteristicName'] == char)
         if isinstance(col_list[i], list):
             # All columns with that suffix must be nan
             for col in col_list[i]:
                 mask = mask & (df_out[col].isna())
         else:
-            #TODO: catch KeyError where characteristic not harmonized
+            # TODO: catch KeyError where characteristic not harmonized
             mask = mask & (df_out[col_list[i]].isna())
         df_out = df_out.drop(df_out[mask].index)
 
     for out_col in col_list:
-        #TODO: variable names (out_col vs col_out) could be better
+        # TODO: variable names (out_col vs col_out) could be better
         # Currently written to drop NaN qa flags, to keep them filter on char
         if isinstance(out_col, list):
             for col_out in out_col:
@@ -119,10 +119,10 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
 # def split_unit(series):
     # If results are being written to another format that does not support
-    #pint objects the units must be recorded. If in the standard ureg it seems
-    #to write them as string, otherwise it errors. Ideally we'd either transfer
-    #the units to within the column name or in a seperate column (not preffered
-    #, only is multiple units).
+    # pint objects the units must be recorded. If in the standard ureg it seems
+    # to write them as string, otherwise it errors. Ideally we'd either
+    # transfer the units to within the column name or in a seperate column (not
+    # preffered, only is multiple units).
 #    return series
 
 
@@ -344,9 +344,9 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
 
     """
     # TODO: implement fully
-    #DetectionQuantitationLimitTypeName
-    #DetectionQuantitationLimitMeasure/MeasureValue
-    #DetectionQuantitationLimitMeasure/MeasureUnitCode
+    # DetectionQuantitationLimitTypeName
+    # DetectionQuantitationLimitMeasure/MeasureValue
+    # DetectionQuantitationLimitMeasure/MeasureUnitCode
     result_idx = list(set(result_id_series.dropna()))  # List of result IDs
     id_list = list(set(loc_series.dropna()))  # List of unique location IDs
     # Split list - query by full list may cause the query url to be too long
@@ -403,7 +403,7 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
                       ]
     elif merge_cols == 'all':
         # Use ALL shared columns. For activity this is +=
-        #'OrganizationIdentifier', 'OrganizationFormalName', 'ProviderName'
+        # 'OrganizationIdentifier', 'OrganizationFormalName', 'ProviderName'
         merge_cols = [x for x in list(df1.columns) if x in col2_list]
     else:
         # Check columns in both tables
@@ -447,7 +447,6 @@ def as_gdf(shp):
         GeoDataFrame for shp if it isn't already a geodataframe.
     """
     if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
-        #shp = geopandas.read_file(shp, driver='ESRI Shapefile')
         shp = geopandas.read_file(shp)
     return shp
 
@@ -526,8 +525,8 @@ def to_simple_shape(gdf, out_shp):
     # Identify possible results columns before renaming columns
     possible_results = [col for col in cols if col not in names_dict.keys()]
     gdf = gdf.rename(columns=renaming_dict)  # Rename columns
-    #TODO: old_field should be assigned to alias
-    #field_map1...
+    # TODO: old_field should be assigned to alias
+    # field_map1...
 
     # Results columns need to be str not pint (.astype(str))
     # Narrow based on out_col lookup dictionary
@@ -535,13 +534,12 @@ def to_simple_shape(gdf, out_shp):
     # TODO: check based on suffix: e.g. Phosphorus
     # Rename each column w/ units and write results as str
     for col in results_cols:
-        gdf[col]= gdf[col].astype(str)
+        gdf[col] = gdf[col].astype(str)
     # Drop dateime
     gdf = gdf.drop(columns=['Activity_datetime'])
-    #date yyyy-mm-dd (shp)
-    #schema = geopandas.io.file.infer_schema(gdf)
-    #schema['properties']['StartDate'] = 'date'
-    #schema['properties']['Activity_datetime'] = 'str'
-    #warnings.warn(schema)
+    # date yyyy-mm-dd (shp)
+    # schema = geopandas.io.file.infer_schema(gdf)
+    # schema['properties']['StartDate'] = 'date'
+    # schema['properties']['Activity_datetime'] = 'str'
+    # warnings.warn(schema)
     gdf.to_file(out_shp)
-    #arcpy.management.AlterField()
