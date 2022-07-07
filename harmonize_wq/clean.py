@@ -7,12 +7,12 @@ subsets of the dataset to clean/correct additional columns.
 
 @author: jbousqui
 """
-#import pandas
 from warnings import warn
 import dataretrieval.utils
 from harmonize_wq import harmonize
 from harmonize_wq import domains
 from harmonize_wq import wrangle
+
 
 def datetime(df_in):
     """
@@ -29,13 +29,14 @@ def datetime(df_in):
         Dataframe with the converted date and datetime columns.
 
     """
+    # Expected columns
+    date, time, tz = ('ActivityStartDate',
+                      'ActivityStartTime/Time',
+                      'ActivityStartTime/TimeZoneCode')
     df_out = df_in.copy()
     # Backup date (if time is NA datetime is NaT)
-    df_out['StartDate'] = df_out['ActivityStartDate']
-    df_out = dataretrieval.utils.format_datetime(df_out,
-                                             'ActivityStartDate',
-                                             'ActivityStartTime/Time',
-                                             'ActivityStartTime/TimeZoneCode')
+    df_out['StartDate'] = df_out[date]
+    df_out = dataretrieval.utils.format_datetime(df_out, date, time, tz)
     df_out = df_out.rename(columns={'datetime': 'Activity_datetime'})
 
     return df_out
@@ -64,16 +65,16 @@ def harmonize_depth(df_in, units='meter'):
     unit_col = 'ResultDepthHeightMeasure/MeasureUnitCode'
     # Note: there are also 'Activity' cols for both of these & top/bottom depth
 
-    harmonize.df_checks(df_out, [meas_col, unit_col]) # Check columns are in df
+    harmonize.df_checks(df_out, [meas_col, unit_col])  # Confirm columns in df
     na_mask = df_out[meas_col].notna()  # Mask NA to speed up processing
-    #TODO: if units missing?
+    # TODO: if units missing?
     params = {'quantity_series': df_out.loc[na_mask, meas_col],
               'unit_series': df_out.loc[na_mask, unit_col],
-              'units': units,}
+              'units': units, }
     df_out.loc[na_mask, "Depth"] = harmonize.convert_unit_series(**params)
 
-    #TODO: where result depth is missing use activity depth?
-    #TODO: drop old cols like datetime does (.pop them)
+    # TODO: where result depth is missing use activity depth?
+    # TODO: drop old cols like datetime does (.pop them)
 
     return df_out
 
@@ -102,15 +103,14 @@ def methods_check(df_in, char_val, methods=None):
     if methods is None:
         methods = domains.accepted_methods()
     method_col = 'ResultAnalyticalMethod/MethodIdentifier'
-    #if char_val:
     df2 = df_in.copy()
-    #TODO: check df for method_col
-    char_mask = df2['CharacteristicName']==char_val
+    # TODO: check df for method_col
+    char_mask = df2['CharacteristicName'] == char_val
     methods = [item['Method'] for item in methods[char_val]]
     methods_used = list(set(df2.loc[char_mask, method_col].dropna()))
     accept = [method for method in methods_used if method in methods]
-    #reject = [method for method in methods_used if method not in methods]
-    #TODO: think about how this would be best implemented
+    # reject = [method for method in methods_used if method not in methods]
+    # TODO: think about how this would be best implemented
     return accept
     # Originally planned to loop over entire list of characteristics
     # else:
@@ -146,9 +146,9 @@ def wet_dry_checks(df_in, mask=None):
     # QA - Sample Media, fix assigned 'Water' that are actually 'Sediment'
     qa_flag = '{}: Water changed to Sediment'.format(media_col)
     # Create mask for bad data
-    media_mask = ((df_out['ResultSampleFractionText']=='Bed Sediment') &
-                  (df_out['ResultWeightBasisText']=='Dry') &
-                  (df_out['ActivityMediaName']=='Water'))
+    media_mask = ((df_out['ResultSampleFractionText'] == 'Bed Sediment') &
+                  (df_out['ResultWeightBasisText'] == 'Dry') &
+                  (df_out['ActivityMediaName'] == 'Water'))
     # Use mask if user specified, else run on all rows
     if mask:
         media_mask = mask & (media_mask)
@@ -183,7 +183,7 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
         # Set characteristic mask
         c_mask = df2['CharacteristicName'] == char_val
         # Adding activities fails on len(df)==0, a do-nothing, end it early
-        if len(df2[c_mask])==0:
+        if len(df2[c_mask]) == 0:
             return df2
 
     # Set variables for columns and check they're in df
@@ -200,16 +200,16 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
             df2 = wrangle.add_activities_to_df(df2)  # no mask, runs on all
         harmonize.df_checks(df2, [media_col])  # Check it's been added
         # if ERROR?
-        #print('Query and join activities first')
+        # print('Query and join activities first')
 
     # Fix wet/dry columns
     df2 = wet_dry_checks(df2)  # Changed from df_in?
 
     # Filter wet/dry rows
     if wet_dry == 'wet':
-        media_mask = df2[media_col]=='Water'
+        media_mask = df2[media_col] == 'Water'
     elif wet_dry == 'dry':
-        media_mask = df2[media_col]=='Sediment'
+        media_mask = df2[media_col] == 'Sediment'
 
     # Filter characteristic rows
     if char_val:
