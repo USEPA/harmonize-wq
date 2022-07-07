@@ -30,25 +30,25 @@ AOI = geopandas.read_file(r'https://github.com/USEPA/Coastal_Ecological_Indicato
 # results for dataretrieval.wqp.what_sites(**query)
 STATIONS = pandas.read_csv(os.path.join(test_dir, 'wqp_sites.txt'))
 # These are split by parameter sets of 2 to keep them small but not mono-param
-#'Phosphorus' & 'Temperature, water'
+# 'Phosphorus' & 'Temperature, water'
 NARROW_RESULTS = pandas.read_csv(os.path.join(test_dir, 'wqp_results.txt'))
 ACTIVITIES = pandas.read_csv(os.path.join(test_dir, 'wqp_activities.txt'))
-#'Depth, Secchi disk depth' & Dissolved Oxygen
+# 'Depth, Secchi disk depth' & Dissolved Oxygen
 NARROW_RESULTS1 = pandas.read_csv(os.path.join(test_dir, 'wqp_results1.txt'))
-#pH & Salinity
+# pH & Salinity
 NARROW_RESULTS2 = pandas.read_csv(os.path.join(test_dir, 'wqp_results2.txt'))
-#Nitrogen & Conductivity
+# Nitrogen & Conductivity
 NARROW_RESULTS3 = pandas.read_csv(os.path.join(test_dir, 'wqp_results3.txt'))
-#Chlorophyll_a & Organic_carbon
+# Chlorophyll_a & Organic_carbon
 NARROW_RESULTS4 = pandas.read_csv(os.path.join(test_dir, 'wqp_results4.txt'))
-#Turbidity & Sediment
+# Turbidity & Sediment
 NARROW_RESULTS5 = pandas.read_csv(os.path.join(test_dir, 'wqp_results5.txt'))
-#Nutrients and sediment additional characteristics
-#NARROW_RESULTS6 = pandas.read_csv(os.path.join(test_dir, 'wqp_results6.txt'))
-#Fecal Coliform and Ecoli
+# Nutrients and sediment additional characteristics
+# NARROW_RESULTS6 = pandas.read_csv(os.path.join(test_dir, 'wqp_results6.txt'))
+# Fecal Coliform and Ecoli
 NARROW_RESULTS7 = pandas.read_csv(os.path.join(test_dir, 'wqp_results7.txt'))
 
-#fixture to eventually test output writing (.shp)
+# fixture to eventually test output writing (.shp)
 # @pytest.fixture(scope="session")
 # def out_dir(tmp_path_factory):
 #     #return tmp_path_factory.mktemp("data") / "roads.shp"
@@ -109,7 +109,7 @@ def merged_tables():
                 'ActivityMediaSubdivisionName',
                 'ActivityEndDate',
                 'ActivityEndTime/Time',
-                'ActivityEndTime/TimeZoneCode'] 
+                'ActivityEndTime/TimeZoneCode']
     return wrangle.merge_tables(df1, df2, df2_cols=df2_cols)
 
 
@@ -126,7 +126,8 @@ def harmonized_tables():
 
     """
     harmonized_table = harmonize.harmonize_generic(NARROW_RESULTS3, 'Nitrogen')
-    harmonized_table = harmonize.harmonize_generic(harmonized_table, 'Conductivity')
+    harmonized_table = harmonize.harmonize_generic(harmonized_table,
+                                                   'Conductivity')
     return harmonized_table
 
 
@@ -175,15 +176,15 @@ def test_harmonize_locations():
     assert isinstance(actual, geopandas.geodataframe.GeoDataFrame)  # Test type
     assert actual.crs.name == 'WGS 84'  # Test for expected CRS
     assert actual.size == 1063506
-    #TODO: confirm original fields un-altered
+    # TODO: confirm original fields un-altered
     # Test for expected columns
     for col in ['QA_flag', 'geometry']:
         assert col in actual.columns
     # Test new fields have expected dtype
     assert actual['geometry'].dtype == 'geometry'
-    #assert actual['EPSG'].dtype == 'float64'  # Converted to int() later
+    # assert actual['EPSG'].dtype == 'float64'  # Converted to int() later
     # Test flag & fix when un-recognized CRS (test on row[CRS]=='OTHER')
-    #assert actual.iloc[3522]['EPSG'] == 4326.0  # Test fixed in new col
+    # assert actual.iloc[3522]['EPSG'] == 4326.0  # Test fixed in new col
     assert actual.iloc[3522]['QA_flag'] == expected_flag  # Test flag
     # No changes not changes
     # Converted converted
@@ -202,8 +203,8 @@ def test_harmonize_phosphorus(merged_tables):
         Read from data/wqp_results.txt.
     """
     # TODO: Test for expected dimensionalityError with NARROW_RESULTS?
-    actual = harmonize.harmonize_generic(merged_tables, 'Phosphorus')  #mg/l
-    #TODO: test conversion to moles and other non-standard units
+    actual = harmonize.harmonize_generic(merged_tables, 'Phosphorus')  # mg/l
+    # TODO: test conversion to moles and other non-standard units
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 17256240  # Test size
@@ -225,8 +226,8 @@ def test_harmonize_phosphorus(merged_tables):
     expected_unit = 'milligram / liter'  # Desired units
     # TP
     out_col = 'TP_Phosphorus'
-    actual.loc[((actual['CharacteristicName']=='Phosphorus') &
-                (actual['ResultSampleFractionText']=='Total') &
+    actual.loc[((actual['CharacteristicName'] == 'Phosphorus') &
+                (actual['ResultSampleFractionText'] == 'Total') &
                 (actual[out_col].notna())), out_col]
     # Inspect specific result - where units are not converted
     assert actual.iloc[2866][orig_unit_col] == 'mg/l'  # Confirm orig unit
@@ -235,14 +236,16 @@ def test_harmonize_phosphorus(merged_tables):
     assert actual.iloc[2866][out_col].magnitude == expected_val  # Unchanged
     # Inspect specific result - where units converted
     # Basis in units 'mg/l as P'
-    assert actual.iloc[134674][orig_unit_col] == 'mg/l as P'  # Confirm orig unit
+    # Confirm original unit
+    assert actual.iloc[134674][orig_unit_col] == 'mg/l as P'
     assert str(actual.iloc[134674][out_col].units) == expected_unit
-    assert actual.iloc[134674][orig_val_col] == 0.29  # Confirm original measure
+    # Confirm original measure
+    assert actual.iloc[134674][orig_val_col] == 0.29
     assert actual.iloc[134674][out_col].magnitude == 0.29
     # Basis in units 'mg/l PO4'
     assert actual.iloc[142482][orig_unit_col] == 'mg/l PO4'  # Confirm orig unit
     assert str(actual.iloc[142482][out_col].units) == expected_unit
-    #TODO: None with different units that get converted
+    # TODO: None with different units that get converted
     # Inspect specific result - where units missing
     assert str(actual.iloc[9738][orig_unit_col]) == 'nan'  # Confirm missing
     # Confirm expected flag - for missing/infered units
@@ -264,10 +267,10 @@ def test_harmonize_phosphorus(merged_tables):
     actual_flags = actual.iloc[19902]['QA_flag'].split('; ')
     assert actual_flags[0] == expected_flag
 
-    #TDP
+    # TDP
     out_col = 'TDP_Phosphorus'
-    actual.loc[((actual['CharacteristicName']=='Phosphorus') &
-                (actual['ResultSampleFractionText']=='Dissolved') &
+    actual.loc[((actual['CharacteristicName'] == 'Phosphorus') &
+                (actual['ResultSampleFractionText'] == 'Dissolved') &
                 (actual[out_col].notna())), out_col]
     # Inspect specific result - where units are not converted
     assert actual.iloc[673][orig_unit_col] == 'mg/l'  # Confirm orig unit
@@ -281,9 +284,9 @@ def test_harmonize_phosphorus(merged_tables):
     assert str(actual.iloc[idx][out_col].units) == expected_unit
     assert actual.iloc[idx][orig_val_col] == 0.38  # Confirm original measure
     assert actual.iloc[idx][out_col].magnitude == 0.38
-    #TODO: None with different units that get converted
+    # TODO: None with different units that get converted
     # Inspect specific result - where units missing
-    #TODO: None missing units w/ value
+    # TODO: None missing units w/ value
     # Inspect specific result - where value missing
     assert str(actual.iloc[138475][orig_val_col]) == 'nan'  # Confirm missing
     # Confirm expected flag - for missing values
@@ -291,12 +294,12 @@ def test_harmonize_phosphorus(merged_tables):
     actual_flags = actual.iloc[138475]['QA_flag'].split('; ')
     assert actual_flags[0] == expected_flag
     # Inspect specific result - un-usable non-numeric values
-    #TODO: no bad value
+    # TODO: no bad value
 
     # Other
     out_col = 'Other_Phosphorus'
     # NOTE: these are neither labled 'Total' nor 'Dissolved'
-    actual.loc[((actual['CharacteristicName']=='Phosphorus') &
+    actual.loc[((actual['CharacteristicName'] == 'Phosphorus') &
                 (actual['ResultSampleFractionText'].isna()) &
                 (actual[out_col].notna())), out_col]
     # Inspect specific result - where units are not converted
@@ -305,9 +308,9 @@ def test_harmonize_phosphorus(merged_tables):
     expected_val = float(actual.iloc[19665][orig_val_col])  # Original value
     assert actual.iloc[19665][out_col].magnitude == expected_val  # Unchanged
     # Inspect specific result - where units converted
-    #TODO: None with different units that get converted
+    # TODO: None with different units that get converted
     # Inspect specific result - where units missing
-    #TODO: None missing units w/ value
+    # TODO: None missing units w/ value
     # Inspect specific result - where value missing
     assert str(actual.iloc[177611][orig_val_col]) == 'nan'  # Confirm missing
     # Confirm expected flag - for missing values
@@ -315,7 +318,7 @@ def test_harmonize_phosphorus(merged_tables):
     actual_flags = actual.iloc[177611]['QA_flag'].split('; ')
     assert actual_flags[0] == expected_flag
     # Inspect specific result - un-usable non-numeric values
-    #TODO: no bad value
+    # TODO: no bad value
 
 
 #@pytest.mark.skip(reason="no change")
@@ -336,7 +339,7 @@ def test_harmonize_temperature():
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 13301685  # Test size #14784040
     assert 'Temperature' in actual.columns  # Check for column
-    assert len(actual['Temperature'].dropna()) == 346210  # Number of results #359505
+    assert len(actual['Temperature'].dropna()) == 346210  # Number of results
     # Confirm orginal data was not altered
     orig_val_col = 'ResultMeasureValue'  # Values
     assert actual[orig_val_col].equals(NARROW_RESULTS[orig_val_col])
@@ -385,7 +388,7 @@ def test_harmonize_secchi():
         Read from data/wqp_results1.txt.
     """
     actual = harmonize.harmonize_generic(NARROW_RESULTS1,
-                                             'Depth, Secchi disk depth')
+                                         'Depth, Secchi disk depth')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 11818094  # Test size
@@ -427,6 +430,7 @@ def test_harmonize_secchi():
     expected_flag = 'ResultMeasureValue: "Not Reported" result cannot be used'
     assert actual.iloc[347589]['QA_flag'] == expected_flag
 
+
 #@pytest.mark.skip(reason="no change")
 def test_harmonize_DO():
     """
@@ -438,7 +442,7 @@ def test_harmonize_DO():
         Read from data/wqp_results1.txt.
     """
     actual = harmonize.harmonize_generic(NARROW_RESULTS1,
-                                             'Dissolved oxygen (DO)')
+                                         'Dissolved oxygen (DO)')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 11818094  # Test size
@@ -460,7 +464,7 @@ def test_harmonize_DO():
     assert str(actual.iloc[4]['DO'].units) == expected_unit
     assert actual.iloc[4][orig_val_col] == '68.7'  # Confirm original measure
     assert actual.iloc[4]['DO'].magnitude == 5.676222371166
-    #TODO: add tests for 99637 in ppm? Currently ppm == mg/l
+    # TODO: add tests for 99637 in ppm? Currently ppm == mg/l
     # Inspect specific result - where units missing
     assert str(actual.iloc[6816][orig_unit_col]) == 'nan'  # Confirm missing
     # Confirm expected flag - for missing/infered units
@@ -519,12 +523,12 @@ def test_harmonize_salinity():
     assert actual.iloc[0][orig_val_col] == '40'  # Confirm original measure
     assert actual.iloc[0]['Salinity'].magnitude == 40
     # Inspect specific result - where units converted (mg/ml)
-    #TODO: need a different test value (something weird here)
+    # TODO: need a different test value (something weird here)
     assert actual.iloc[335435][orig_unit_col] == 'mg/mL @25C'  # Confirm unit
     assert str(actual.iloc[335435]['Salinity'].units)
     assert actual.iloc[335435][orig_val_col] == 120.0  # Confirm measure
-    assert actual.iloc[335435]['Salinity'].magnitude == 125.28127999999992  #157.1
-    #4.014
+    assert actual.iloc[335435]['Salinity'].magnitude == 125.28127999999992
+    # 157.1; 4.014
     print(actual.iloc[335435]['Salinity'].magnitude)
 
     # Inspect specific result - where units missing
@@ -558,7 +562,7 @@ def test_harmonize_pH():
     NARROW_RESULTS2 : pandas.DataFrame
         Read from data/wqp_results2.txt.
     """
-    #actual1 = harmonize.harmonize_pH(NARROW_RESULTS2, units='dimensionless')
+    # actual1 = harmonize.harmonize_pH(NARROW_RESULTS2, units='dimensionless')
     actual = harmonize.harmonize_generic(NARROW_RESULTS2, 'pH')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
@@ -613,7 +617,7 @@ def test_harmonize_nitrogen():
     NARROW_RESULTS3 : pandas.DataFrame
         Read from data/wqp_results3.txt.
     """
-    #actual1 = harmonize.harmonize_Nitrogen(NARROW_RESULTS3, units='mg/l')
+    # actual1 = harmonize.harmonize_Nitrogen(NARROW_RESULTS3, units='mg/l')
     actual = harmonize.harmonize_generic(NARROW_RESULTS3, 'Nitrogen')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
@@ -656,9 +660,9 @@ def test_harmonize_nitrogen():
     expected_flag = 'ResultMeasureValue: "Not reported" result cannot be used'
     assert actual.iloc[240]['QA_flag'].split('; ')[0] == expected_flag
 
-    #TODO: add test case where 'g/kg'
-    #TODO: add test case where 'cm3/g @STP'
-    #TODO: add test case where 'cm3/g STP'
+    # TODO: add test case where 'g/kg'
+    # TODO: add test case where 'cm3/g @STP'
+    # TODO: add test case where 'cm3/g STP'
 
 
 #@pytest.mark.skip(reason="no change")
@@ -675,7 +679,7 @@ def test_harmonize_conductivity():
     actual = harmonize.harmonize_generic(NARROW_RESULTS3, 'Conductivity')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
-    assert actual.size == 16236 #10332  # Test size
+    assert actual.size == 16236  # Test size
     assert 'Conductivity' in actual.columns  # Check for column
     assert len(actual['Conductivity'].dropna()) == 59  # Number of results
     # Confirm orginal data was not altered
@@ -918,8 +922,8 @@ def test_harmonize_sediment():
         Read from data/wqp_results5.txt.
     """
     actual = harmonize.harmonize_generic(NARROW_RESULTS5,
-                                             char_val='Sediment',
-                                             units_out='g/kg')
+                                         char_val='Sediment',
+                                         units_out='g/kg')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8628100  # Test size
@@ -960,7 +964,7 @@ def test_harmonize_sediment():
     # Confirm expected flag - for un-usable value
     expected_flag = 'ResultMeasureValue: "Not Reported" result cannot be used'
     assert actual.iloc[132739]['QA_flag'].split('; ')[0] == expected_flag
-    #TODO: add units mg/l
+    # TODO: add units mg/l
 
 
 #@pytest.mark.skip(reason="not implemented")
@@ -1160,8 +1164,8 @@ def test_split_col(harmonized_tables):
     assert 'MethodID_Nitrogen' in actual_methods.columns
     assert 'MethodID_Conductivity' in actual_methods.columns
     assert col not in actual_methods.columns
-    
-    #TODO: test when out_col is list (i.e., Phosphorus)
+
+    # TODO: test when out_col is list (i.e., Phosphorus)
 
 
 #@pytest.mark.skip(reason="no change")
@@ -1183,37 +1187,37 @@ def test_split_table(harmonized_tables):
     assert list(actual_main.columns) == expected
     expected = ['ResultDetectionConditionText',
                 'MethodSpecificationName', 'CharacteristicName',
-                 'ResultSampleFractionText', 'ResultMeasureValue',
-                 'ResultMeasure/MeasureUnitCode', 'MeasureQualifierCode',
-                 'ResultStatusIdentifier', 'StatisticalBaseCode',
-                 'ResultValueTypeName', 'ResultWeightBasisText',
-                 'ResultTimeBasisText', 'ResultTemperatureBasisText',
-                 'ResultParticleSizeBasisText', 'PrecisionValue',
-                 'ResultCommentText', 'USGSPCode',
-                 'ResultDepthHeightMeasure/MeasureValue',
-                 'ResultDepthHeightMeasure/MeasureUnitCode',
-                 'ResultDepthAltitudeReferencePointText',
-                 'SubjectTaxonomicName', 'SampleTissueAnatomyName',
-                 'ResultAnalyticalMethod/MethodIdentifier',
-                 'ResultAnalyticalMethod/MethodIdentifierContext',
-                 'ResultAnalyticalMethod/MethodName',
-                 'MethodDescriptionText', 'LaboratoryName',
-                 'AnalysisStartDate', 'ResultLaboratoryCommentText',
-                 'ActivityTypeCode', 'ActivityMediaName',
-                 'ActivityMediaSubdivisionName', 'ActivityEndDate',
-                 'ActivityEndTime/Time', 'ActivityEndTime/TimeZoneCode',
-                 'ActivityDepthHeightMeasure/MeasureValue',
-                 'ActivityDepthHeightMeasure/MeasureUnitCode',
-                 'ActivityDepthAltitudeReferencePointText',
-                 'ActivityTopDepthHeightMeasure/MeasureValue',
-                 'ActivityTopDepthHeightMeasure/MeasureUnitCode',
-                 'ActivityBottomDepthHeightMeasure/MeasureValue',
-                 'ActivityBottomDepthHeightMeasure/MeasureUnitCode',
-                 'ActivityConductingOrganizationText',
-                 'ActivityCommentText', 'SampleAquifer',
-                 'HydrologicCondition', 'HydrologicEvent',
-                 'SampleCollectionMethod/MethodIdentifier',
-                 'SampleCollectionMethod/MethodIdentifierContext',
-                 'SampleCollectionMethod/MethodName',
-                 'SampleCollectionEquipmentName', 'PreparationStartDate',]
+                'ResultSampleFractionText', 'ResultMeasureValue',
+                'ResultMeasure/MeasureUnitCode', 'MeasureQualifierCode',
+                'ResultStatusIdentifier', 'StatisticalBaseCode',
+                'ResultValueTypeName', 'ResultWeightBasisText',
+                'ResultTimeBasisText', 'ResultTemperatureBasisText',
+                'ResultParticleSizeBasisText', 'PrecisionValue',
+                'ResultCommentText', 'USGSPCode',
+                'ResultDepthHeightMeasure/MeasureValue',
+                'ResultDepthHeightMeasure/MeasureUnitCode',
+                'ResultDepthAltitudeReferencePointText',
+                'SubjectTaxonomicName', 'SampleTissueAnatomyName',
+                'ResultAnalyticalMethod/MethodIdentifier',
+                'ResultAnalyticalMethod/MethodIdentifierContext',
+                'ResultAnalyticalMethod/MethodName',
+                'MethodDescriptionText', 'LaboratoryName',
+                'AnalysisStartDate', 'ResultLaboratoryCommentText',
+                'ActivityTypeCode', 'ActivityMediaName',
+                'ActivityMediaSubdivisionName', 'ActivityEndDate',
+                'ActivityEndTime/Time', 'ActivityEndTime/TimeZoneCode',
+                'ActivityDepthHeightMeasure/MeasureValue',
+                'ActivityDepthHeightMeasure/MeasureUnitCode',
+                'ActivityDepthAltitudeReferencePointText',
+                'ActivityTopDepthHeightMeasure/MeasureValue',
+                'ActivityTopDepthHeightMeasure/MeasureUnitCode',
+                'ActivityBottomDepthHeightMeasure/MeasureValue',
+                'ActivityBottomDepthHeightMeasure/MeasureUnitCode',
+                'ActivityConductingOrganizationText',
+                'ActivityCommentText', 'SampleAquifer',
+                'HydrologicCondition', 'HydrologicEvent',
+                'SampleCollectionMethod/MethodIdentifier',
+                'SampleCollectionMethod/MethodIdentifierContext',
+                'SampleCollectionMethod/MethodName',
+                'SampleCollectionEquipmentName', 'PreparationStartDate', ]
     assert list(actual_chars.columns) == expected
