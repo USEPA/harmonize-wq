@@ -14,7 +14,6 @@ from io import BytesIO
 import requests
 import pint
 import pandas
-#from numpy import nan
 
 
 BASE_URL = 'https://cdx.epa.gov/wqx/download/DomainValues/'
@@ -23,16 +22,16 @@ UNITS_REPLACE = {'Secchi': {},
                  'DO': {'%': 'percent'},
                  'Temperature': {},
                  'Salinity': {'ppt': 'ppth',
-                              '0/00': 'ppth',},
+                              '0/00': 'ppth'},
                  'pH': {'None': 'dimensionless',
                         'std units': 'dimensionless'},
                  'Nitrogen': {'cm3/g @STP': 'cm3/g',
                               'cm3/g STP': 'cm3/g',
-                              '%': 'percent',},
+                              '%': 'percent'},
                  'Conductivity': {'uS': 'uS/cm',
-                                  'umho': 'umho/cm',},
+                                  'umho': 'umho/cm'},
                  'Carbon': {'% by wt': '%',
-                            '%': 'percent',},
+                            '%': 'percent'},
                  'Chlorophyll': {'mg/cm3': 'mg/cm**3',
                                  'mg/m3': 'mg/m**3',
                                  'mg/m2': 'mg/m**3',
@@ -42,10 +41,10 @@ UNITS_REPLACE = {'Secchi': {},
                  'Sediment': {'%': 'percent'},
                  'Fecal_Coliform': {'#/100ml': 'CFU/(100ml)',
                                     'CFU': 'CFU/(100ml)',
-                                    'MPN': 'MPN/(100ml)',},
+                                    'MPN': 'MPN/(100ml)'},
                  'E_coli': {'#/100ml': 'CFU/(100ml)',
                             'CFU': 'CFU/(100ml)',
-                            'MPN': 'MPN/(100ml)',},
+                            'MPN': 'MPN/(100ml)'},
                  'Phosphorus': {'%': 'percent'},
                  }
 
@@ -67,7 +66,7 @@ OUT_UNITS = {'Secchi': 'm',
 
 
 def registry_adds_list(out_col):
-    #TODO: 'PSU' = 'PSS' ~ ppth/1.004715
+    # TODO: 'PSU' = 'PSS' ~ ppth/1.004715
 
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
     # Standard pint unit registry additions for dimensionless portions
@@ -137,8 +136,8 @@ def out_col_lookup():
         {WQP CharacteristicName:Column Name}.
 
     """
-    #TODO: something special for phosphorus? Currently return suffix.
-    #'Phosphorus' -> ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']
+    # TODO: something special for phosphorus? Currently return suffix.
+    # 'Phosphorus' -> ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']
     return {'Depth, Secchi disk depth': 'Secchi',
             'Dissolved oxygen (DO)': 'DO',
             'Temperature, water': 'Temperature',
@@ -313,7 +312,7 @@ def characteristic_cols(category=None):
             'PreparationStartDate': 'analysis',}
     if category:
         # List of key where value is category
-        col_list = [key for key, value in cols.items() if value==category]
+        col_list = [key for key, value in cols.items() if value == category]
     else:
         col_list = list(cols.keys())  # All keys/cols
     return col_list
@@ -369,13 +368,13 @@ def xy_datum():
             "ASTRO": {"Description": 'Midway Astro 1961',
                       "EPSG": 4727},
             "GUAM": {"Description": 'Guam 1963',
-                      "EPSG": 4675},
+                     "EPSG": 4675},
             "JHNSN": {"Description": 'Johnson Island 1961',
                       "EPSG": 4725},
             "OLDHI": {"Description": 'Old Hawaiian Datum',
                       "EPSG": 4135},
             "PR": {"Description": 'Puerto Rico Datum',
-                      "EPSG": 6139},
+                   "EPSG": 6139},
             "SGEOR": {"Description": 'St. George Island Datum',
                       "EPSG": 4138},
             "SLAWR": {"Description": 'St. Lawrence Island Datum',
@@ -383,13 +382,13 @@ def xy_datum():
             "SPAUL": {"Description": 'St. Paul Island Datum',
                       "EPSG": 4137},
             "WAKE": {"Description": 'Wake-Eniwetok 1960',
-                      "EPSG": 6732},
+                     "EPSG": 6732},
             "WGS72": {"Description": 'World Geodetic System 1972',
                       "EPSG": 6322},
             "WGS84": {"Description": 'World Geodetic System 1984',
                       "EPSG": 4326},
             "HARN": {"Description": 'High Accuracy Reference Network for NAD83',
-                      "EPSG": 4152},
+                     "EPSG": 4152},
             }
 
 
@@ -559,7 +558,7 @@ def stations_rename():
             'MonitoringLocationTypeName': 'loc_type',
             'MonitoringLocationDescriptionText': 'loc_desc',
             'HUCEightDigitCode': 'HUC08_code',
-            'DrainageAreaMeasure/MeasureValue':'DA_val',
+            'DrainageAreaMeasure/MeasureValue': 'DA_val',
             'DrainageAreaMeasure/MeasureUnitCode': 'DA_unit',
             'ContributingDrainageAreaMeasure/MeasureValue': 'CA_val',
             'ContributingDrainageAreaMeasure/MeasureUnitCode': 'CA_unit',
@@ -591,6 +590,7 @@ def stations_rename():
             'ActivityIdentifier': 'activity_ID',
             'ResultIdentifier': 'result_ID',
             }
+
 
 def accepted_methods():
     """
