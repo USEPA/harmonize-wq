@@ -14,7 +14,7 @@ from numpy import nan
 from harmonize_wq import domains
 from harmonize_wq import basis
 from harmonize_wq import convert
-from harmonize_wq import visualize
+from harmonize_wq import visualize as viz
 
 
 class WQCharData():
@@ -60,6 +60,7 @@ class WQCharData():
     moles_convert()
 
     """
+
     def __init__(self, df_in, char_val):
         """
         Create class based off rows of dataframe for characteristic.
@@ -72,7 +73,7 @@ class WQCharData():
             Expected characteristicName.
         """
         df_out = df_in.copy()
-        #self.check_df(df)
+        # self.check_df(df)
         df_checks(df_out)
         c_mask = df_out['CharacteristicName'] == char_val
         self.c_mask = c_mask
@@ -80,7 +81,7 @@ class WQCharData():
         cols = {'unit_in': 'ResultMeasure/MeasureUnitCode',
                 'unit_out': 'Units',
                 'measure': 'ResultMeasureValue',
-                'basis': 'Speciation',}
+                'basis': 'Speciation', }
         self.col = SimpleNamespace(**cols)
         df_out.loc[c_mask, self.col.unit_out] = df_out.loc[c_mask,
                                                            self.col.unit_in]
@@ -310,7 +311,7 @@ class WQCharData():
             Mask to use to identify what is being converted.
             The default is None, creating a unit mask based on unit.
         """
-        #TODO: QA flag inexact conversions?
+        # TODO: QA flag inexact conversions?
         df_out = self.df
         if u_mask is None:
             u_mask = self.unit_mask(unit)
@@ -322,12 +323,12 @@ class WQCharData():
             #print(old_vals.iloc[0]*unit)
             # string to avoid altered ureg issues
             new_quants = [convert_fun(str(x*unit)) for x in old_vals]
-        #1run=6505.62ms (may be slower) vs apply (5888.43ms)
+        # 1run=6505.62ms (may be slower) vs apply (5888.43ms)
         #new_vals = old_vals.apply(lambda x: convert_fun(x*unit).magnitude)
         new_vals = [quant.magnitude for quant in new_quants]
         df_out.loc[u_mask, self.out_col] = new_vals
         df_out.loc[u_mask, self.col.unit_out] = str(new_quants[0].units)
-        #self.units <- was used previously, sus when units is not default
+        # self.units <- was used previously, sus when units is not default
 
         self.df = df_out
 
@@ -372,8 +373,8 @@ class WQCharData():
 
     def replace_unit_by_dict(self, val_dict, mask=None):
         """
-        A simple way to do multiple replace_in_col() replacements of val_dict key
-        with val_dict value.
+        A simple way to do multiple replace_in_col() replacements of val_dict
+        key with val_dict value.
 
         Parameters
         ----------
@@ -1100,16 +1101,16 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
 
     df_out = wqp.df
 
-    #TODO: add activities/detection limits and filter on quality? e.g., cols:
-    #'ResultStatusIdentifier' = ['Historical', 'Accepted', 'Final']
-    #'ResultValueTypeName' = ['Actual', 'Estimated', 'Calculated']
-    #'ResultDetectionConditionText' = ['*Non-detect', '*Present <QL', '*Not Reported', 'Not Detected']
-    #df_out = wrangle.add_activities_to_df(df_out, wqp.c_mask)
-    #df_out = wrangle.add_detection(df_out, char_val)
+    # TODO: add activities/detection limits and filter on quality? e.g., cols:
+    # 'ResultStatusIdentifier' = ['Historical', 'Accepted', 'Final']
+    # 'ResultValueTypeName' = ['Actual', 'Estimated', 'Calculated']
+    # 'ResultDetectionConditionText' = ['*Non-detect', '*Present <QL', '*Not Reported', 'Not Detected']
+    # df_out = wrangle.add_activities_to_df(df_out, wqp.c_mask)
+    # df_out = wrangle.add_detection(df_out, char_val)
 
     # Functionality only available w/ generic
     if report:
-        visualize.print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
+        viz.print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
     if not intermediate_columns:
         df_out = df_out.drop(['Units'], axis=1)  # Drop intermediate columns
     return df_out
