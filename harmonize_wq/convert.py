@@ -9,7 +9,7 @@ pint decorators. Contains several unit conversions functions not in Pint.
 """
 import pint
 
-#TODO: does this constant belong here or in domains?
+# TODO: does this constant belong here or in domains?
 PERIODIC_MW = {'Organic carbon': 180.16,
                'C6H12O6': 180.16,
                'Phosphorus': 30.97,
@@ -22,12 +22,12 @@ PERIODIC_MW = {'Organic carbon': 180.16,
                'NH4': 18.04,
                'NH3': 17.03,
                'SiO3': 76.08,
-              }
+               }
 # Molecular weight assumptions: Organic carbon = C6H12O6
 # NOTE: for a more complete handling of MW: CalebBell/chemicals
 
 u_reg = pint.UnitRegistry()  # For use in wrappers
-#TODO: find more elegant way to do this with all definitions
+# TODO: find more elegant way to do this with all definitions
 u_reg.define('NTU = [turbidity]')
 u_reg.define('Jackson_Turbidity_Units = [] = JTU')
 u_reg.define('SiO2 = []')
@@ -54,7 +54,7 @@ def mass_to_moles(ureg, char_val, Q_):
     """
     # TODO: Not used yet
     m_w = PERIODIC_MW[char_val]
-    return Q_.to('moles', 'chemistry', mw = m_w * ureg('g/mol'))
+    return Q_.to('moles', 'chemistry', mw=m_w * ureg('g/mol'))
 
 
 def moles_to_mass(ureg, Q_, basis=None, char_val=None):
@@ -82,7 +82,7 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     """
     if basis:
         # Clean-up basis
-        #print(basis)
+        # print(basis)
         if basis.startswith('as '):
             basis = basis[3:]
         m_w = PERIODIC_MW[basis]
@@ -90,7 +90,7 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
         m_w = PERIODIC_MW[char_val]
     else:
         raise ValueError("Characteristic Name or basis (Speciation) required")
-    return Q_.to('g', 'chemistry', mw = m_w / ureg('mol/g'))
+    return Q_.to('g', 'chemistry', mw=m_w / ureg('mol/g'))
 
 
 @u_reg.wraps(u_reg.NTU, u_reg.centimeter)
@@ -110,9 +110,9 @@ def cm_to_NTU(val):
     """
     # TODO: Currently exports None since NTU is not defined in u_reg
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
-    #turbidity/turbiditytube/turbiditytubeconversionchart
+    # turbidity/turbiditytube/turbiditytubeconversionchart
     # Graphaed table conversions (average for each bound) and
-    #used exponential curve (R2>.99)
+    # used exponential curve (R2>.99)
     return 3941.8 * (val**-1.509)
 
 
@@ -133,9 +133,9 @@ def NTU_to_cm(val):
     """
     # TODO: add wrapper
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
-    #turbidity/turbiditytube/turbiditytubeconversionchart
+    # turbidity/turbiditytube/turbiditytubeconversionchart
     # Graphaed table conversions (average for each bound) and
-    #used exponential curve (R2>.99)
+    # used exponential curve (R2>.99)
     return 241.27 * (val**-0.662)
 
 
@@ -152,7 +152,7 @@ def JTU_to_NTU(val):
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def SiO2_to_NTU(val):
     """Linear relationship, 2.5 -> 19, 0.13 -> 1, 1 -> 7.5"""
-    return 7.6028 *val - 0.0327
+    return 7.6028 * val - 0.0327
 
 
 def FNU_to_NTU(val):
@@ -160,8 +160,8 @@ def FNU_to_NTU(val):
 
 
 @u_reg.wraps(u_reg.gram/u_reg.kilogram, (u_reg.gram/u_reg.liter,
-                                   u_reg.standard_atmosphere,
-                                   u_reg.degree_Celsius))
+                                         u_reg.standard_atmosphere,
+                                         u_reg.degree_Celsius))
 def density_to_PSU(val,
                    pressure=1*u_reg("atm"),
                    temperature=u_reg.Quantity(25, u_reg("degC"))):
@@ -187,12 +187,12 @@ def density_to_PSU(val,
     # Standard Reference Value
     ref = 35.16504/35.0
     # density of pure water is ~1000 mg/mL
-    if val>1000:
+    if val > 1000:
         PSU = (float(val)*ref)-1000
     else:
         PSU = ((float(val)+1000)*ref)-1000
-    #print('{} mg/ml == {} ppth'.format(val, PSU))
-    #multiply by 33.45 @26C, 33.44 @25C
+    # print('{} mg/ml == {} ppth'.format(val, PSU))
+    # multiply by 33.45 @26C, 33.44 @25C
 
     return PSU
 
@@ -224,7 +224,7 @@ def PSU_to_density(val,
     """
     p, t = pressure, temperature
 
-    #Pure water density (see SMOW, Craig 1961)
+    # Pure water density (see SMOW, Craig 1961)
     x = [999.842594,
          6.793952e-2 * t,
          -9.095290e-3 * t**2,
@@ -283,7 +283,7 @@ def DO_saturation(val,
 
     """
     p, t = pressure, temperature
-    if p==1 & (t==25):
+    if p == 1 & (t == 25):
         Cp = 8.262332418
     else:
         Pwv = 11.8571-(3840.7/(t+273.15))-(216961/((t+273.15)**2))
@@ -291,7 +291,7 @@ def DO_saturation(val,
     #      (1-EXP(Pwv)/p) *
     #      (1-(0.000975-(0.00001426*t)+(0.00000006436*(t**2)))*p)) /
     #     (1-EXP(Pwv))/(1-(0.000975-(0.00001426*t)+(0.00000006436*(t**2))))
-    return float(val) * Cp  #Divide by 100?
+    return float(val) * Cp  # Divide by 100?
 
 
 @u_reg.wraps(None, (u_reg.milligram/u_reg.liter,
@@ -318,10 +318,10 @@ def DO_concentration(val,
         Dissolved Oxygen as saturation (dimensionless).
 
     """
-    #TODO: switch to kelvin?
-    #https://www.waterontheweb.org/under/waterquality/oxygen.html#:~:
-    #text=Oxygen%20saturation%20is%20calculated%20as,
-    #concentration%20at%20100%25%20saturation%20decreases.
+    # TODO: switch to kelvin?
+    # https://www.waterontheweb.org/under/waterquality/oxygen.html#:~:
+    # text=Oxygen%20saturation%20is%20calculated%20as,
+    # concentration%20at%20100%25%20saturation%20decreases.
     p, t = pressure, temperature
     standard = 0.000975 - (0.00001426*t) + (0.00000006436*(t**2))
     numerator = ((1-Pwv)/p)*(1-(standard*p))
@@ -386,14 +386,25 @@ def conductivity_to_PSU(val,
     # Was rt
     c = c[0] + (c[1] * t) + (c[2] * t**2) + (c[3] * t**3) + (c[4] * t**4)
 
-    Rp = 1 + (p * e[0] + e[1] * p**2 + e[2] * p**3)/(1 + D[0] * t + D[1] * t**2 + (D[2] + D[3] * t) * R)
+    Rp = (1 + (p * e[0] + e[1] * p**2 + e[2] * p**3) /
+          (1 + D[0] * t + D[1] * t**2 + (D[2] + D[3] * t) * R))
     Rt1 = R/(Rp * c)
-    dS = (b[0] + b[1] * Rt1**(1/2) + b[2] * Rt1**(2/2) + b[3] * Rt1**(3/2) + b[4] * Rt1**(4/2) + b[5] * Rt1**(5/2)) * (t - 15)/(1 + K * (t - 15))
-    S = a[0] + a[1] * Rt1**(1/2) + a[2] * Rt1**(2/2) + a[3] * Rt1**(3/2) + a[4] * Rt1**(4/2) + a[5] * Rt1**(5/2) + dS
+    dS = ((b[0] + b[1] * Rt1**(1/2) +
+           b[2] * Rt1**(2/2) +
+           b[3] * Rt1**(3/2) +
+           b[4] * Rt1**(4/2) +
+           b[5] * Rt1**(5/2)) *
+          (t - 15)/(1 + K * (t - 15)))
+    S = (a[0] + a[1] * Rt1**(1/2) +
+         a[2] * Rt1**(2/2) + a[3] * Rt1**(3/2) +
+         a[4] * Rt1**(4/2) + a[5] * Rt1**(5/2) + dS)
 
-    #TODO: implement these two lines? Shouldn't encounter NaN.
-    #S[is.na(S<0)]<-NA  # if <0 or NA set as nan
-    #S[S<2 & !is.na(S)]<- S[S<2 & !is.na(S)] - a[0]/(1 + 1.5 * (400 * Rt1) + (400 * Rt1)**2) - (b[0] * (t - 15)/(1 + K * (t - 15)))/(1 + (100 * Rt1)**(1/2) + (100 * Rt1)**(3/2))
-    #S = S - a[0]/(1 + 1.5 * (400 * Rt1) + (400 * Rt1)**2) - (b[0] * (t - 15)/(1 + K * (t - 15)))/(1 + (100 * Rt1)**(1/2) + (100 * Rt1)**(3/2))
+    # TODO: implement these two lines? Shouldn't encounter NaN.
+    # S[is.na(S<0)]<-NA  # if <0 or NA set as nan
+    # S[S<2 & !is.na(S)]<- S[S<2 & !is.na(S)] - a[0]/(1 + 1.5 * (400 * Rt1) +
+    # (400 * Rt1)**2) - (b[0] * (t - 15)/(1 + K * (t - 15)))/
+    # (1 + (100 * Rt1)**(1/2) + (100 * Rt1)**(3/2))
+    # S = S - a[0]/(1 + 1.5 * (400 * Rt1) + (400 * Rt1)**2) - (b[0] * (t - 15)/
+    # (1 + K * (t - 15)))/(1 + (100 * Rt1)**(1/2) + (100 * Rt1)**(3/2))
 
     return round(S, 3)
