@@ -28,14 +28,14 @@ def unit_basis_dict(out_col):
          The structure is {Basis: {standard units: [unit strings with basis]}}.
     """
     dictionary = {'Phosphorus': {'as P': {'mg/l': ['mg/l as P', 'mg/l P'],
-                                     'mg/kg': ['mg/kg as P', 'mg/kg P'],},
-                            'as PO4': {'mg/l': ['mg/l as PO4',
-                                                'mg/l PO4'],
-                                       'mg/kg': ['mg/kg as PO4', 'mg/kg PO4'],}
-                            },
-             'Nitrogen': {'as N': {'mg/l': ['mg/l as N', 'mg/l N'],}},
-             'Carbon': {},
-             }
+                                          'mg/kg': ['mg/kg as P', 'mg/kg P']},
+                                 'as PO4': {'mg/l': ['mg/l as PO4',
+                                                     'mg/l PO4'],
+                                            'mg/kg': ['mg/kg as PO4',
+                                                      'mg/kg PO4']}},
+                  'Nitrogen': {'as N': {'mg/l': ['mg/l as N', 'mg/l N']}},
+                  'Carbon': {},
+                  }
     return dictionary[out_col]
 
 
@@ -49,7 +49,7 @@ def stp_dict():
         DESCRIPTION.
 
     """
-    return {'@25C': {'mg/mL': ['mg/mL @25C'],}}
+    return {'@25C': {'mg/mL': ['mg/mL @25C']}}
 
 
 def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
@@ -80,7 +80,7 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
         for (new_unit, old_units) in basis_dict[base].items():
             for old_unit in old_units:
                 # TODO: Test if old_unit in unit_col first?
-                mask = df[unit_col]==old_unit  # Update mask
+                mask = df[unit_col] == old_unit  # Update mask
                 if basis_col in df.columns:
                     # Add flags anywhere the values are updated
                     flag1 = '{}: updated from '.format(basis_col)
@@ -91,12 +91,12 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
                         flag = '{}{} to {} (units)'.format(flag1, old_basis,
                                                            base)
                         if old_basis != base:
-                            qa_mask = mask & (df[basis_col]==old_basis)
+                            qa_mask = mask & (df[basis_col] == old_basis)
                             warn('Mismatched {}'.format(flag))
                             df = harmonize.add_qa_flag(df, qa_mask, flag)
                 # Add/update basis from unit
                 set_basis(df, mask, base, basis_col)
-                df[unit_col] = [new_unit if x==old_unit else x
+                df[unit_col] = [new_unit if x == old_unit else x
                                 for x in df[unit_col]]
     return df
 
@@ -120,16 +120,16 @@ def basis_from_methodSpec(df_in):
     # Basis from MethodSpecificationName
     old_col = 'MethodSpecificationName'
     df = df_in.copy()
-    #TODO: this seems overly-complex to do a pop from one column to another
+    # TODO: this seems overly-complex to do a pop from one column to another
     # List unique basis
     basis_list = list(set(df[old_col].dropna()))
     for base in basis_list:
-        mask = df[old_col]==base
+        mask = df[old_col] == base
         df = set_basis(df, mask, base)
         # Remove basis from MethodSpecificationName
-        df[old_col] = [nan if x==base else x for x in df[old_col]]
+        df[old_col] = [nan if x == base else x for x in df[old_col]]
     # Test we didn't miss any methodSpec
-    assert set(df[old_col].dropna())==set(), (set(df[old_col].dropna()))
+    assert set(df[old_col].dropna()) == set(), (set(df[old_col].dropna()))
 
     return df
 
@@ -155,7 +155,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     """
     # TODO: make these columns units aware?
-    #df = df_in.copy()
+    # df = df_in.copy()
 
     # Basis from unit
     if basis_col == 'ResultTemperatureBasisText':
