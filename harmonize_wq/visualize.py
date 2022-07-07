@@ -128,7 +128,7 @@ def map_measure(df_in, gdf, col):
     else:
         df_temp = df_in.copy()
 
-    df_agg = summary_table(df_temp, col)
+    df_agg = station_summary(df_temp, col)
 
     # Join it to geometry
     gdf_cols = ['geometry', 'QA_flag']
@@ -137,9 +137,9 @@ def map_measure(df_in, gdf, col):
     return geopandas.GeoDataFrame(results_df, geometry='geometry')
 
 
-def summary_table(df_in, col):
+def station_summary(df_in, col):
     """
-    Return summary table with rows for each station, count and average
+    Return summary table with rows for each station, count and column average
 
     Parameters
     ----------
