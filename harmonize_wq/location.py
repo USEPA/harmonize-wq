@@ -204,6 +204,6 @@ def get_harmonized_stations(query, aoi=None):
 
     if aoi is not None:
         # Clip Stations to area of interest
-        stations_gdf = wrangle.clip_stations(aoi, stations_gdf)
+        stations_gdf = wrangle.clip_stations(stations_gdf, aoi)
 
     return stations_gdf, stations, site_md
