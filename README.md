@@ -14,7 +14,7 @@ For more complete tutorial information, see: [demos](https://github.com/USEPA/ha
 ## Quick Start
 harmonize_wq can be installed from git using pip:
 ```
-pip install git+git://github.com/USEPA/harmonize-wq.git
+pip install git+https://github.com/USEPA/harmonize-wq.git
 ```
 
 ## Example Workflow
