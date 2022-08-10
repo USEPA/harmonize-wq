@@ -33,10 +33,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
       
-      - name: Install package and dependencies
+      - name: Install package
+        run: python -m pip install --no-deps .
+      
+      - name: Install dependencies via pip
+        if: ${{ matrix.os }} == 'ubuntu-latest' or ${{ matrix.os }} == 'macos-latest'
+        run: pip install -r requirements.txt
+      
+      - name: Set environment variables
+        if: ${{ matrix.os }} == 'windows-latest'
         run: |
-          python -m pip install --no-deps .
-          pip install -r requirements.txt
+          echo "CONDA_ENV_FILE=environment.yml" >> $GITHUB_ENV
+      
+      - name: Use micromamba to install dependencies via conda for windows
+        if: ${{ matrix.os }} == 'windows-latest'
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          environment-file: ${{ env.CONDA_ENV_FILE }}
+          micromamba-version: 'latest'
       
       - name: Run pytest
         run: pytest -v harmonize_wq
