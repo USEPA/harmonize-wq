@@ -15,38 +15,79 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-#Install R and Python dependencies
-```{r}
+## Install R and Python dependencies
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 install.packages("reticulate")
 library(reticulate)
 
-py_install("pandas")
-py_install("conda")
-py_install("scipy")
-py_install("poetry")
-py_install("pint",pip=TRUE)
-py_install("dataretrieval",pip=TRUE)
-py_install("pip install git+https://github.com/USEPA/harmonize-wq.git", pip=TRUE)
-
 conda_create("r-reticulate")
 
+conda_install("r-reticulate", "pandas")
+conda_install("r-reticulate", "pip")
+conda_install("r-reticulate", "poetry")
+conda_install("r-reticulate", "git")
 conda_install("r-reticulate", "geopandas")
+conda_install("r-reticulate", "scipy")
+conda_install("r-reticulate", "pint")
+conda_install("r-reticulate", "dataretrieval")
+
+#below only work with py install
+py_install("conda", pip = TRUE, envname = "r-reticulate")
+py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "r-reticulate")
+py_install("wrangle", pip = TRUE, envname = "r-reticulate")
+py_install("harmonize", pip = TRUE, envname = "r-reticulate")
+py_install("clean", pip = TRUE, envname = "r-reticulate")
 
 use_condaenv("r-reticulate")
 
+import("conda")
+import("pandas")
+import("pip")
+import("poetry")
+import("geopandas")
+import("scipy")
+import("pint") 
+import("wrangle")
+import("harmonize")
+import("clean")
+
 ```
 
+## Simple example workflow for temperatures
 
-#Install harmonize-wq and dependencies
+dataretrieval Query for a geojson
 ```{python}
-
-import("geopandas")
-import("harmonize-wq")
-import("pandas")
-import("conda")
-import("scipy")
-import("pint")
 import dataretrieval.wqp as wqp
 
+#does not work
+from harmonize_wq import wrangle
+
+# File for area of interest
+#aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+aoi_url = r'D:\code\harmonize-wq\harmonize_wq\tests\data\PPBays_NCCA.geojson'  #Local file (temporary)
+
+# Build query
+query = {'characteristicName': ['Temperature, water',
+                                'Depth, Secchi disk depth',
+                                ]}
+query['bBox'] = wrangle.get_bounding_box(aoi_url)
+query['dataProfile'] = 'narrowResult'
+
+# Run query
+res_narrow, md_narrow = wqp.get_results(**query)
+
+# dataframe of downloaded results
+res_narrow
+```
+Harmonize and clean all results
+
+```{python}
+df_harmonized = harmonize.harmonize_all(res_narrow, errors='raise')
+df_harmonized
+
+# Clean up other columns of data
+df_cleaned = clean.datetime(df_harmonized)  # datetime
+df_cleaned = clean.harmonize_depth(df_cleaned)  # Sample depth
+df_cleaned
 ```
 
