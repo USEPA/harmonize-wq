@@ -1,0 +1,52 @@
+---
+title: "R markdown for harmonize-wq"
+author: "Cristina Mullin"
+date: '2022-08-30'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+#Install R and Python dependencies
+```{r}
+install.packages("reticulate")
+library(reticulate)
+
+py_install("pandas")
+py_install("conda")
+py_install("scipy")
+py_install("poetry")
+py_install("pint",pip=TRUE)
+py_install("dataretrieval",pip=TRUE)
+py_install("pip install git+https://github.com/USEPA/harmonize-wq.git", pip=TRUE)
+
+conda_create("r-reticulate")
+
+conda_install("r-reticulate", "geopandas")
+
+use_condaenv("r-reticulate")
+
+```
+
+
+#Install harmonize-wq and dependencies
+```{python}
+
+import("geopandas")
+import("harmonize-wq")
+import("pandas")
+import("conda")
+import("scipy")
+import("pint")
+import dataretrieval.wqp as wqp
+
+```
+
