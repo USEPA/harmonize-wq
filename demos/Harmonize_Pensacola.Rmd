@@ -1,22 +1,39 @@
 ---
-title: "R markdown for harmonize-wq"
+title: "R markdown for harmonize-wq Harmonize_Pensacola"
 author: "Cristina Mullin"
-date: '2022-08-30'
-output: html_document
+date: '2022-08-31'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Harmonize_Pensacola R Markdown}
+  %\usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+## R Markdown
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
 
-## R Markdown
+Standardize, clean and wrangle Water Quality Portal data in Pensacola and Perdido Bays into more analytic-ready formats using the harmonize_wq package
+US EPA’s Water Quality Portal (WQP) aggregates water quality, biological, and physical data provided by many organizations and has become an essential resource with tools to query and retrieval data using python or R. Given the variety of data and variety of data originators, using the data in analysis often requires data cleaning to ensure it meets the required quality standards and data wrangling to get it in a more analytic-ready format. Recognizing the definition of analysis-ready varies depending on the analysis, the harmonixe_wq package is intended to be a flexible water quality specific framework to help:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Identify differences in data units (including speciation and basis)
+Identify differences in sampling or analytic methods
+Resolve data errors using transparent assumptions
+Reduce data to the columns that are most commonly needed
+Transform data from long to wide format
+Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+The first part of this notebook walks through a typical harmonization process on data retrieved from Perdido and Pensacola Bays, FL. The second part of the notebook takes a deeper dive into exactly what is done to each water quality characteristic result and some ways to leverage additional functions in the package for special use cases.
 
 ## Install R and Python dependencies
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
+
 install.packages("reticulate")
 library(reticulate)
 
@@ -25,39 +42,11 @@ conda_install("wq-reticulate", "geopandas")
 conda_install("wq-reticulate", "pint")
 conda_install("wq-reticulate", "dataretrieval")
 
-#conda_install("r-reticulate", "pandas")
-#conda_install("r-reticulate", "pip")
-#conda_install("r-reticulate", "poetry")
-#conda_install("r-reticulate", "git")
-#conda_install("r-reticulate", "geopandas")
-#conda_install("r-reticulate", "scipy")
-#conda_install("r-reticulate", "pint")
-#conda_install("r-reticulate", "dataretrieval")
-
 #below only work with py install
 py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq-reticulate")
 use_condaenv("wq-reticulate")
 import("harmonize_wq")
 import("dataretrieval")
-
-#py_install("conda", pip = TRUE, envname = "r-reticulate")
-#py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "r-reticulate")
-#py_install("wrangle", pip = TRUE, envname = "r-reticulate")
-#py_install("harmonize", pip = TRUE, envname = "r-reticulate")
-#py_install("clean", pip = TRUE, envname = "r-reticulate")
-
-#use_condaenv("r-reticulate")
-
-#import("conda")
-#import("pandas")
-#import("pip")
-#import("poetry")
-#import("geopandas")
-#import("scipy")
-#import("pint") 
-#import("wrangle")
-#import("harmonize")
-#import("clean")
 
 ```
 
@@ -65,19 +54,20 @@ import("dataretrieval")
 
 dataretrieval Query for a geojson
 ```{python}
+
 import dataretrieval.wqp as wqp
 
 #does not work
 from harmonize_wq import wrangle
 
 # File for area of interest
-#aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
-aoi_url = r'D:\code\harmonize-wq\harmonize_wq\tests\data\PPBays_NCCA.geojson'  #Local file (temporary)
+aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
 
-# Build query
+# Build query and get data with dataretrieval
 query = {'characteristicName': ['Temperature, water',
                                 'Depth, Secchi disk depth',
                                 ]}
+#use harmonize-wq to wrangle
 query['bBox'] = wrangle.get_bounding_box(aoi_url)
 query['dataProfile'] = 'narrowResult'
 
@@ -87,9 +77,13 @@ res_narrow, md_narrow = wqp.get_results(**query)
 # dataframe of downloaded results
 res_narrow
 ```
+
 Harmonize and clean all results
 
 ```{python}
+from harmonize_wq import harmonize
+from harmonize_wq import clean
+
 df_harmonized = harmonize.harmonize_all(res_narrow, errors='raise')
 df_harmonized
 
@@ -97,5 +91,57 @@ df_harmonized
 df_cleaned = clean.datetime(df_harmonized)  # datetime
 df_cleaned = clean.harmonize_depth(df_cleaned)  # Sample depth
 df_cleaned
+```
+
+
+##Transform results from long to wide format
+
+There are many columns in the dataframe that are characteristic specific, that is they have different values for the same sample depending on the characteristic. To ensure one result for each sample after the transformation of the data these columns must either be split, generating a new column for each characteristic with values, or moved out from the table if not being used.
+
+```{python}
+from harmonize_wq import wrangle
+
+# Split QA column into multiple characteristic specific QA columns
+df_full = wrangle.split_col(df_cleaned)
+
+# Divide table into columns of interest (main_df) and characteristic specific metadata (chars_df)
+main_df, chars_df = wrangle.split_table(df_full)
+
+# Combine rows with the same sample organization, activity, location, and datetime
+df_wide = wrangle.collapse_results(main_df)
+
+# Reduced columns
+df_wide.columns
+```
+
+## Map results
+
+```{python}
+from harmonize_wq import location
+from harmonize_wq import visualize
+
+# Get harmonized stations clipped to the Area of Interest
+stations_gdf, stations, site_md = location.get_harmonized_stations(query, aoi=aoi_url)
+
+# Map average temperature results at each station
+gdf_temperature = visualize.map_measure(df_wide, stations_gdf, 'Temperature')
+gdf_temperature.plot(column='mean', cmap='OrRd', legend=True)
+```
+
+import the required libraries. Check requirements.txt for dependencies that should be installed.
+```{python}
+import os
+import pandas
+import geopandas
+from harmonize_wq import harmonize
+from harmonize_wq import convert
+from harmonize_wq import wrangle
+from harmonize_wq import clean
+import dataretrieval.wqp as wqp
+```
+
+Download location data using dataretrieval
+```{python}
+
 ```
 
