@@ -37,14 +37,21 @@ The first part of this notebook walks through a typical harmonization process on
 install.packages("reticulate")
 library(reticulate)
 
+# If Conda is installed somewhere else you can specify it, e.g.,:
+#options(reticulate.conda_binary = "~bin\\Python\\Scripts\\conda.exe")
+
 conda_create("wq-reticulate")
 conda_install("wq-reticulate", "geopandas")
 conda_install("wq-reticulate", "pint")
 conda_install("wq-reticulate", "dataretrieval")
 
-#below only work with py install
+# Only works with py install (pip), which defaults to vrtualenevs,
+#envname may need to be the full path, e.g.: "~opt/anaconda3/envs/wq-reticulate"
 py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq-reticulate")
+
 use_condaenv("wq-reticulate")
+
+# Use these reticulate imports to test the modules are installed
 import("harmonize_wq")
 import("dataretrieval")
 
@@ -54,6 +61,9 @@ import("dataretrieval")
 
 dataretrieval Query for a geojson
 ```{python}
+
+# Outside of a markdown file run python code w/ reticulate using:
+#reticulate::repl_python()
 
 import dataretrieval.wqp as wqp
 
