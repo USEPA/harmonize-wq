@@ -47,7 +47,7 @@ conda_install("wq-reticulate", "dataretrieval")
 
 # Only works with py install (pip), which defaults to vrtualenevs,
 #envname may need to be the full path, e.g.: "~opt/anaconda3/envs/wq-reticulate"
-py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq-reticulate")
+py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "~opt/anaconda3/envs/wq-reticulate")
 
 use_condaenv("wq-reticulate")
 
@@ -60,14 +60,13 @@ import("dataretrieval")
 ## Simple example workflow for temperatures
 
 dataretrieval Query for a geojson
-```{python}
+```{python include=FALSE}
 
 # Outside of a markdown file run python code w/ reticulate using:
 #reticulate::repl_python()
 
 import dataretrieval.wqp as wqp
 
-#does not work
 from harmonize_wq import wrangle
 
 # File for area of interest
@@ -77,12 +76,13 @@ aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_
 query = {'characteristicName': ['Temperature, water',
                                 'Depth, Secchi disk depth',
                                 ]}
+
 #use harmonize-wq to wrangle
 query['bBox'] = wrangle.get_bounding_box(aoi_url)
 query['dataProfile'] = 'narrowResult'
 
 # Run query
-res_narrow, md_narrow = wqp.get_results(**query)
+res_narrow, md_narrow = wqp.get_results(**query) 
 
 # dataframe of downloaded results
 res_narrow
