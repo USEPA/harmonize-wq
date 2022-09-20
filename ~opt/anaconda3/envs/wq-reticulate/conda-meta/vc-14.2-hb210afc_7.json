@@ -1,0 +1,36 @@
+{
+  "build": "hb210afc_7",
+  "build_number": 7,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "vs2015_runtime >=14.28.29325"
+  ],
+  "extracted_package_dir": "C:\\Users\\cmulli01\\AppData\\Local\\R-MINI~1\\pkgs\\vc-14.2-hb210afc_7",
+  "features": "",
+  "files": [
+    ".nonadmin"
+  ],
+  "fn": "vc-14.2-hb210afc_7.tar.bz2",
+  "license": "BSD-3-Clause",
+  "license_family": "BSD",
+  "link": {
+    "source": "C:\\Users\\cmulli01\\AppData\\Local\\R-MINI~1\\pkgs\\vc-14.2-hb210afc_7",
+    "type": 1
+  },
+  "md5": "079ed576a6c8f0c9b0bbaca0b786daa3",
+  "name": "vc",
+  "package_tarball_full_path": "C:\\Users\\cmulli01\\AppData\\Local\\R-MINI~1\\pkgs\\vc-14.2-hb210afc_7.tar.bz2",
+  "paths_data": {
+    "paths": [],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "3d83e269e1225e4bb8914fbec2f9be4b7d2cd153f2b779092c8a92d263b7eda8",
+  "size": 14406,
+  "subdir": "win-64",
+  "timestamp": 1661985287424,
+  "track_features": "vc14",
+  "url": "https://conda.anaconda.org/conda-forge/win-64/vc-14.2-hb210afc_7.tar.bz2",
+  "version": "14.2"
+}

@@ -1,0 +1,46 @@
+{
+  "build": "hcfcfb64_0",
+  "build_number": 0,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "libsqlite 3.39.3 hcfcfb64_0",
+    "vc >=14.2,<15",
+    "vs2015_runtime >=14.29.30139"
+  ],
+  "extracted_package_dir": "C:\\Users\\cmulli01\\AppData\\Local\\R-MINI~1\\pkgs\\sqlite-3.39.3-hcfcfb64_0",
+  "features": "",
+  "files": [
+    "Library/bin/sqlite3.exe",
+    ".nonadmin"
+  ],
+  "fn": "sqlite-3.39.3-hcfcfb64_0.tar.bz2",
+  "license": "Unlicense",
+  "link": {
+    "source": "C:\\Users\\cmulli01\\AppData\\Local\\R-MINI~1\\pkgs\\sqlite-3.39.3-hcfcfb64_0",
+    "type": 1
+  },
+  "md5": "bac5b716687d389aee9b6de839aa62bf",
+  "name": "sqlite",
+  "package_tarball_full_path": "C:\\Users\\cmulli01\\AppData\\Local\\R-MINI~1\\pkgs\\sqlite-3.39.3-hcfcfb64_0.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/bin/sqlite3.exe",
+        "path_type": "hardlink",
+        "sha256": "4f96074b1ad6b25231e076c9733ea085d4975da54069c227717d04c40035adc1",
+        "sha256_in_prefix": "4f96074b1ad6b25231e076c9733ea085d4975da54069c227717d04c40035adc1",
+        "size_in_bytes": 1846272
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "b935a9fa62159e936f9911fa428d503d8127d0b4cf519aab7487fcbb745e5665",
+  "size": 672209,
+  "subdir": "win-64",
+  "timestamp": 1662397481949,
+  "track_features": "",
+  "url": "https://conda.anaconda.org/conda-forge/win-64/sqlite-3.39.3-hcfcfb64_0.tar.bz2",
+  "version": "3.39.3"
+}
