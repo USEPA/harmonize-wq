@@ -34,15 +34,21 @@ The first part of this notebook walks through a typical harmonization process on
 ## Install R and Python dependencies
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 
-install.packages("reticulate")
+#install.packages("reticulate")
 library(reticulate)
 
 # If Conda is installed somewhere else you can specify it, e.g.,:
 #options(reticulate.conda_binary = "~bin\\Python\\Scripts\\conda.exe")
 
 conda_create("~opt/anaconda3/envs/wq-reticulate")
+
 conda_install("~opt/anaconda3/envs/wq-reticulate", "geopandas")
 conda_install("~opt/anaconda3/envs/wq-reticulate", "pint")
+
+#not sure if this is needed
+conda_install("~opt/anaconda3/envs/wq-reticulate", "r-rmarkdown")
+
+#may need to switch to use R version of dataRetrieval
 conda_install("~opt/anaconda3/envs/wq-reticulate", "dataretrieval")
 
 # Only works with py install (pip), which defaults to virtualenvs,
@@ -61,13 +67,10 @@ use_condaenv("~opt/anaconda3/envs/wq-reticulate")
 # Use these reticulate imports to test the modules are installed
 import harmonize_wq
 import dataretrieval
-
 import os
 import pandas
 import geopandas
 import dataretrieval.wqp as wqp
-import dataretrieval.wqp as wqp
-
 from harmonize_wq import harmonize
 from harmonize_wq import convert
 from harmonize_wq import wrangle
