@@ -40,27 +40,34 @@ library(reticulate)
 # If Conda is installed somewhere else you can specify it, e.g.,:
 #options(reticulate.conda_binary = "~bin\\Python\\Scripts\\conda.exe")
 
-conda_create("~opt/anaconda3/envs/wq-reticulate")
+##Note: changed conda location to:
+#options(reticulate.conda_binary = "C:\\Users\\cmulli01\\Anaconda3\\Scripts\\conda.exe")
+conda_create("wq-reticulate")
 
-conda_install("~opt/anaconda3/envs/wq-reticulate", "geopandas")
-conda_install("~opt/anaconda3/envs/wq-reticulate", "pint")
+conda_install("wq-reticulate", "geopandas")
+conda_install("wq-reticulate", "pint")
 
 #not sure if this is needed
-conda_install("~opt/anaconda3/envs/wq-reticulate", "r-rmarkdown")
+#conda_install("wq-reticulate", "r-rmarkdown")
 
 #may need to switch to use R version of dataRetrieval
-conda_install("~opt/anaconda3/envs/wq-reticulate", "dataretrieval")
+conda_install("wq-reticulate", "dataretrieval")
 
 # Only works with py install (pip), which defaults to virtualenvs,
 #envname may need to be the full path, e.g.: "~opt/anaconda3/envs/wq-reticulate"
-py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "~opt/anaconda3/envs/wq-reticulate")
+py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "C:\Users\cmulli01\AppData\Local\R-MINI~1\envs\wq-reticulate")
 
 use_condaenv("~opt/anaconda3/envs/wq-reticulate")
 
+# use these for testing, but then can remove
+import("harmonize_wq")
+import("dataretrieval")
 ```
 
 ## Import the required libraries. Check requirements.txt for dependencies that should be installed.
 ```{python}
+conda_python(envpath, "~opt/anaconda3/envs/wq-reticulate")
+
 # Outside of a markdown file run python code w/ reticulate using:
 # reticulate::repl_python()
 
