@@ -1,6 +1,6 @@
 ---
 title: "R markdown for harmonize-wq Harmonize_Pensacola"
-author: "Cristina Mullin"
+author: "Justin Bousquin, Cristina Mullin, Marc Weber"
 date: '2022-08-31'
 output: rmarkdown::html_vignette
 vignette: >
@@ -84,6 +84,28 @@ from harmonize_wq import wrangle
 from harmonize_wq import clean
 from harmonize_wq import location
 from harmonize_wq import visualize
+
+```
+
+## Steps I got to work    
+1) Re-install [miniforge](https://github.com/conda-forge/miniforge)
+2) At conda prompt:
+  - conda create --name wq_harmonize
+  - activate wq_harmonize
+  - conda install geopandas pip dataretrieval pint
+  - pip install git+https://github.com/USEPA/harmonize-wq.git
+
+## Steps Cristina needed
+Once miniforge is installed. Go to your start menu and open the Miniforge Prompt
+Then complete steps above from Marc
+
+## Install R and Python dependencies
+```{r, results = 'hide', message = FALSE, warning = FALSE}
+
+# install.packages("reticulate")
+library(reticulate)
+options(reticulate.conda_binary ='C:/Users/cmulli01/AppData/Local/miniforge3/Scripts/conda.exe')
+use_condaenv("wq_harmonize")
 
 ```
 
