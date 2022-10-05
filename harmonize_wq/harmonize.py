@@ -634,7 +634,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
         ureg = pint.UnitRegistry()
     Q_ = ureg.Quantity
 
-    lst_series = list()
+    lst_series = [pandas.Series(dtype='object')]
     for unit in list(set(unit_series)):
         # Filter quantity_series by unit_series where == unit
         f_quant_series = quantity_series.where(unit_series==unit).dropna()
