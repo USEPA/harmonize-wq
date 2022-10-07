@@ -647,7 +647,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
         ureg = pint.UnitRegistry()
     Q_ = ureg.Quantity
 
-    out_series = pandas.Series(dtype='object')
+    lst_series = [pandas.Series(dtype='object')]
     for unit in list(set(unit_series)):
         # Filter quantity_series by unit_series where == unit
         f_quant_series = quantity_series.where(unit_series==unit).dropna()
@@ -666,10 +666,9 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
                 else:
                     # errors=='raise', or anything else just in case
                     raise exception
-        # Re-index
-        result_series = pandas.Series(result_list, index=f_quant_series.index)
-        out_series = out_series.append(result_series)  # Append to full series
-    return out_series
+        # Re-index and add series to list
+        lst_series.append(pandas.Series(result_list, index=f_quant_series.index))
+    return pandas.concat(lst_series)
 
 
 def add_qa_flag(df_in, mask, flag):
