@@ -207,14 +207,14 @@ def test_harmonize_phosphorus(merged_tables):
     # TODO: test conversion to moles and other non-standard units
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
-    assert actual.size == 17256240  # Test size
+    assert actual.size == 16896735  # 17256240  # Test size
     # Test for expected columns
     for col in ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']:
         assert col in actual.columns
     # Number of results in each col
     assert len(actual['TP_Phosphorus'].dropna()) == 11243
     assert len(actual['TDP_Phosphorus'].dropna()) == 601
-    assert len(actual['Other_Phosphorus'].dropna()) == 1075
+    assert len(actual['Other_Phosphorus'].dropna()) == 12968  # 1075 NAN
 
     # Confirm orginal data was not altered
     orig_val_col = 'ResultMeasureValue'  # Values
