@@ -1,4 +1,4 @@
-geopandas>=0.10.2           # Has additional dependencies (pandas, numpy, shapely, fiona, etc.), tested on 0.10.2
+geopandas>=0.10.2, <0.13           # Has additional dependencies (pandas, numpy, shapely, fiona, etc.), tested on 0.10.2
 pint>=0.18          # May work on earlier versions but this is what it was tested on
 dataretrieval>=0.7  # Current version 0.7, v0.8 should include some of the functions currently built-in here for activities/detection queries
 
