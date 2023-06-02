@@ -8,12 +8,10 @@ This module contains functions to help re-shape the WQP dataframe
 """
 import pandas
 import geopandas
-from io import StringIO
 from harmonize_wq import domains
 from harmonize_wq import harmonize
 from harmonize_wq.clean import datetime, harmonize_depth
 import dataretrieval.wqp as wqp
-import dataretrieval.utils
 
 
 def split_table(df_in):
