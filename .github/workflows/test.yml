@@ -3,7 +3,7 @@ name: test
 on:
   push:
     branches:
-      [dev]
+      [dev, update_dataretrieval_v1.0.1]
   pull_request:
     branches:
       [main]
