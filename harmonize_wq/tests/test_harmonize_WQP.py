@@ -1178,7 +1178,9 @@ def test_split_table(harmonized_tables):
                 'Conductivity', 'Activity_datetime',
                 'Depth']
     assert list(actual_main.columns) == expected
-    expected = ['ResultDetectionConditionText',
+    expected = ['ActivityStartDate', 'ActivityStartTime/Time',
+                'ActivityStartTime/TimeZoneCode',
+                'ResultDetectionConditionText',
                 'MethodSpecificationName', 'CharacteristicName',
                 'ResultSampleFractionText', 'ResultMeasureValue',
                 'ResultMeasure/MeasureUnitCode', 'MeasureQualifierCode',
@@ -1196,8 +1198,6 @@ def test_split_table(harmonized_tables):
                 'ResultAnalyticalMethod/MethodName',
                 'MethodDescriptionText', 'LaboratoryName',
                 'AnalysisStartDate', 'ResultLaboratoryCommentText',
-                'ActivityStartDate', 'ActivityStartTime/Time',
-                'ActivityStartTime/TimeZoneCode',
                 'ActivityTypeCode', 'ActivityMediaName',
                 'ActivityMediaSubdivisionName', 'ActivityEndDate',
                 'ActivityEndTime/Time', 'ActivityEndTime/TimeZoneCode',
