@@ -34,8 +34,7 @@ def datetime(df_in):
                       'ActivityStartTime/Time',
                       'ActivityStartTime/TimeZoneCode')
     df_out = df_in.copy()
-    # Backup date (if time is NA datetime is NaT)
-    df_out['StartDate'] = df_out[date]
+    # NOTE: even if date, if time is NA datetime is NaT
     df_out = dataretrieval.utils.format_datetime(df_out, date, time, tz)
     df_out = df_out.rename(columns={'datetime': 'Activity_datetime'})
 

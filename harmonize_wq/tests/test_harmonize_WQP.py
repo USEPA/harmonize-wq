@@ -1136,14 +1136,6 @@ def test_accept_methods(merged_tables):
 def test_datetime(harmonized_tables):
     # Testit
     actual = clean.datetime(harmonized_tables)
-    # Check for dropped fields
-    drop_fields = ['ActivityStartDate',
-                   'ActivityStartTime/Time',
-                   'ActivityStartTime/TimeZoneCode']
-    for field in drop_fields:
-        assert field not in actual.columns
-    # Type for date field (not formated, just str)
-    #actual['StartDate']
     # Type for time field
     assert isinstance(actual['Activity_datetime'][0],
                       pandas._libs.tslibs.timestamps.Timestamp)
@@ -1183,7 +1175,8 @@ def test_split_table(harmonized_tables):
                 'DetectionQuantitationLimitMeasure/MeasureValue',
                 'DetectionQuantitationLimitMeasure/MeasureUnitCode',
                 'ProviderName', 'QA_flag', 'Nitrogen', 'Speciation',
-                'Conductivity', 'StartDate', 'Activity_datetime', 'Depth']
+                'Conductivity', 'Activity_datetime',
+                'Depth']
     assert list(actual_main.columns) == expected
     expected = ['ResultDetectionConditionText',
                 'MethodSpecificationName', 'CharacteristicName',
@@ -1203,6 +1196,8 @@ def test_split_table(harmonized_tables):
                 'ResultAnalyticalMethod/MethodName',
                 'MethodDescriptionText', 'LaboratoryName',
                 'AnalysisStartDate', 'ResultLaboratoryCommentText',
+                'ActivityStartDate', 'ActivityStartTime/Time',
+                'ActivityStartTime/TimeZoneCode',
                 'ActivityTypeCode', 'ActivityMediaName',
                 'ActivityMediaSubdivisionName', 'ActivityEndDate',
                 'ActivityEndTime/Time', 'ActivityEndTime/TimeZoneCode',
