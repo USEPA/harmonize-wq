@@ -234,7 +234,7 @@ def get_activities_by_loc(characteristic_names, locations):
     for loc_que in [locations[x:x+seg] for x in range(0, len(locations), seg)]:
         query = {'characteristicName': characteristic_names,
                  'siteid': loc_que}
-        activities_list.append(what_activities(**query))
+        activities_list.append(wqp.what_activities(**query))
     # Combine the dataframe results
     activities = pandas.concat(activities_list).drop_duplicates()
     return activities
