@@ -63,6 +63,16 @@ def infer_CRS(df_in,
     return df_out
 
 
+def check_precision(df_in, col, limit=3):
+    df_out = df_in.copy()
+    digits = [str(x).split('.')[1] for x in df_out[col]]
+    idx = [i for i, x in enumerate(digits) if int(x) < 3]
+    flag = '{}: Imprecise: lessthan3decimaldigits'.format(col)
+    c_mask = df_out.index.isin(idx)
+    df_out = harmonize.add_qa_flag(df_out, c_mask, flag)
+    return df_out
+
+
 def harmonize_locations(df_in, out_EPSG=4326,
                         intermediate_columns=False, **kwargs):
     """
@@ -105,6 +115,10 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
     # Check columns are in df
     harmonize.df_checks(df2, [crs_col, lat_col, lon_col])
+
+    # Check location precision
+    df2 = check_precision(df2, lat_col)
+    df2 = check_precision(df2, lon_col)
 
     # Create tuple column
     df2['geom_orig'] = list(zip(df2[lon_col], df2[lat_col]))
