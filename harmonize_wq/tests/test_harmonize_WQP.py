@@ -191,7 +191,7 @@ def test_harmonize_locations():
     # Missing unit infered
     # Check QA_flag
     # Check for precision flag
-    actual_imprecise = actual.iloc[3437]['QA_flag']
+    actual_imprecise = actual.iloc[302]['QA_flag']
     expected_imprecise = 'LatitudeMeasure: Imprecise: lessthan3decimaldigits'
     assert actual_imprecise == expected_imprecise
 

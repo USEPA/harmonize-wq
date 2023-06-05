@@ -98,9 +98,8 @@ def check_precision(df_in, col, limit=3):
 
     """
     df_out = df_in.copy()
-    digits = [str(x).split('.')[1] for x in df_out[col]]  # List of precision
-    idx = [i for i, x in enumerate(digits) if int(x) < 3]  # List of failing
-    c_mask = df_out.index.isin(idx)  # Create mask using index
+    # Create T/F mask based on len of everything after the decimal
+    c_mask = [len(str(x).split('.')[1]) < limit for x in df_out[col]]
     flag = '{}: Imprecise: lessthan{}decimaldigits'.format(col, limit)
     df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
