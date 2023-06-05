@@ -78,6 +78,34 @@ def harmonize_depth(df_in, units='meter'):
     return df_out
 
 
+def check_precision(df_in, col, limit=3):
+    """
+    Note - be cautious of float type and real vs representable precision
+
+    Parameters
+    ----------
+    df_in : pandas.DataFrame
+        DataFrame with the required ResultDepthHeight columns.
+    unit_col : string
+        Desired column in df_in.
+    limit : integer, optional
+        Number of decimal places under which to detect. The default is 3.
+
+    Returns
+    -------
+    df_out : pandas.DataFrame
+        Dataframe with the quality assurance flag for precision
+
+    """
+    df_out = df_in.copy()
+    digits = [str(x).split('.')[1] for x in df_out[col]]  # List of precision
+    idx = [i for i, x in enumerate(digits) if int(x) < 3]  # List of failing
+    c_mask = df_out.index.isin(idx)  # Create mask using index
+    flag = '{}: Imprecise: lessthan{}decimaldigits'.format(col, limit)
+    df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flags
+    return df_out
+
+
 def methods_check(df_in, char_val, methods=None):
     """
     Check methods against list of accepted methods.
