@@ -34,8 +34,7 @@ def datetime(df_in):
                       'ActivityStartTime/Time',
                       'ActivityStartTime/TimeZoneCode')
     df_out = df_in.copy()
-    # Backup date (if time is NA datetime is NaT)
-    df_out['StartDate'] = df_out[date]
+    # NOTE: even if date, if time is NA datetime is NaT
     df_out = dataretrieval.utils.format_datetime(df_out, date, time, tz)
     df_out = df_out.rename(columns={'datetime': 'Activity_datetime'})
 
@@ -76,6 +75,33 @@ def harmonize_depth(df_in, units='meter'):
     # TODO: where result depth is missing use activity depth?
     # TODO: drop old cols like datetime does (.pop them)
 
+    return df_out
+
+
+def check_precision(df_in, col, limit=3):
+    """
+    Note - be cautious of float type and real vs representable precision
+
+    Parameters
+    ----------
+    df_in : pandas.DataFrame
+        DataFrame with the required ResultDepthHeight columns.
+    unit_col : string
+        Desired column in df_in.
+    limit : integer, optional
+        Number of decimal places under which to detect. The default is 3.
+
+    Returns
+    -------
+    df_out : pandas.DataFrame
+        Dataframe with the quality assurance flag for precision
+
+    """
+    df_out = df_in.copy()
+    # Create T/F mask based on len of everything after the decimal
+    c_mask = [len(str(x).split('.')[1]) < limit for x in df_out[col]]
+    flag = '{}: Imprecise: lessthan{}decimaldigits'.format(col, limit)
+    df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
 
 

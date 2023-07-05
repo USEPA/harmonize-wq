@@ -8,12 +8,10 @@ This module contains functions to help re-shape the WQP dataframe
 """
 import pandas
 import geopandas
-from io import StringIO
 from harmonize_wq import domains
 from harmonize_wq import harmonize
 from harmonize_wq.clean import datetime, harmonize_depth
 import dataretrieval.wqp as wqp
-import dataretrieval.utils
 
 
 def split_table(df_in):
@@ -203,15 +201,6 @@ def collapse_results(df_in, cols=None):
 #     return df_passing, df_fails
 
 
-def what_detection_limits(**kwargs):
-    '''This is only here until PR is merged to add it to data retrieval'''
-    kwargs['zip'] = 'no'
-    kwargs['mimeType'] = 'csv'
-    url = wqp.wqp_url('data/ResultDetectionQuantitationLimit')
-    response = dataretrieval.utils.query(url, payload=kwargs, delimiter=';')
-    return pandas.read_csv(StringIO(response.text), delimiter=',')
-
-
 def get_activities_by_loc(characteristic_names, locations):
     """
     Quick attempt to segment batch what_activities - may not stay
@@ -234,7 +223,7 @@ def get_activities_by_loc(characteristic_names, locations):
     for loc_que in [locations[x:x+seg] for x in range(0, len(locations), seg)]:
         query = {'characteristicName': characteristic_names,
                  'siteid': loc_que}
-        activities_list.append(what_activities(**query))
+        activities_list.append(wqp.what_activities(**query))
     # Combine the dataframe results
     activities = pandas.concat(activities_list).drop_duplicates()
     return activities
@@ -274,15 +263,6 @@ def add_activities_to_df(df_in, mask=None):
     # Merge results
     df_merged = merge_tables(df_out, act_df)
     return df_merged
-
-
-def what_activities(**kwargs):
-    '''This is only here until PR is merged to add it to data retrieval'''
-    kwargs['zip'] = 'no'
-    kwargs['mimeType'] = 'csv'
-    url = wqp.wqp_url('data/Activity')
-    response = dataretrieval.utils.query(url, payload=kwargs, delimiter=';')
-    return pandas.read_csv(StringIO(response.text), delimiter=',')
 
 
 def add_detection(df_in, char_val):
@@ -356,7 +336,7 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
         query = {'siteid': id_que}
         if char_val:
             query['characteristicName'] = char_val
-        detection_list.append(what_detection_limits(**query))
+        detection_list.append(wqp.what_detection_limits(**query))
     # Combine the dataframe results in the list
     detection_df = pandas.concat(detection_list).drop_duplicates()
     # Filter on resultID

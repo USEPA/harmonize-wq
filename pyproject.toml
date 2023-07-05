@@ -7,7 +7,7 @@ packages = ["harmonize_wq"]
 
 [project]
 name = "harmonize_wq"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
   { name="Justin Bousquin", email="Bousquin.Justin@epa.gov" },
 ]

@@ -14,6 +14,7 @@ import dataretrieval.wqp as wqp
 from harmonize_wq import harmonize
 from harmonize_wq import domains
 from harmonize_wq import wrangle
+from harmonize_wq import clean
 
 
 def infer_CRS(df_in,
@@ -105,6 +106,10 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
     # Check columns are in df
     harmonize.df_checks(df2, [crs_col, lat_col, lon_col])
+
+    # Check location precision
+    df2 = clean.check_precision(df2, lat_col)
+    df2 = clean.check_precision(df2, lon_col)
 
     # Create tuple column
     df2['geom_orig'] = list(zip(df2[lon_col], df2[lat_col]))

@@ -391,7 +391,7 @@ class WQCharData():
             replace_in_col(self.df, col, item[0], item[1], mask)
 
     def fraction(self, frac_dict=None, suffix=None,
-                   fract_col='ResultSampleFractionText'):
+                 fract_col='ResultSampleFractionText'):
         """
         Create columns for sample fractions, use frac_dict to set their names.
 
@@ -413,10 +413,23 @@ class WQCharData():
             frac_dict updated to include any frac_col not already defined.
         """
         c_mask = self.c_mask
-        if frac_dict is None:
-            frac_dict = {}
         if suffix is None:
             suffix = self.out_col
+
+        catch_all = 'Other_{}'.format(suffix)
+        if frac_dict is None:
+            frac_dict = {catch_all: ''}
+        else:
+            if catch_all not in frac_dict.keys():
+                frac_dict[catch_all] = ['']
+        if not isinstance(frac_dict[catch_all], list):
+            frac_dict[catch_all] = [frac_dict[catch_all]]
+        # Get all domain values
+        for key in domains.get_domain_dict('ResultSampleFraction').keys():
+            if key not in frac_dict.values():
+                frac_dict[catch_all] += [key]
+        # Flatten for some uses
+        samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
 
         # Check for sample fraction column
         df_checks(self.df, ['ResultSampleFractionText'])
@@ -424,35 +437,35 @@ class WQCharData():
         self.df = replace_in_col(self.df, fract_col, ' ', nan, c_mask)
 
         df_out = self.df
+
         # Make column for any unexpected Sample Fraction values, loudly
         for s_f in set(df_out[fract_col].dropna()):
-            if s_f not in frac_dict.values():
+            if s_f not in samp_fract_set:
                 char = '{}_{}'.format(s_f.replace(' ', '_'), suffix)
                 frac_dict[char] = s_f
                 prob = '"{}" column for {}, may be error'.format(char, s_f)
                 warn('Warning: ' + prob)
         # Test we didn't skip any SampleFraction
+        samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
         for s_f in set(df_out[fract_col].dropna()):
-            assert s_f in frac_dict.values(), '{} check in {}'.format(s_f,
+            assert s_f in samp_fract_set, '{} check in {}'.format(s_f,
                                                                       fract_col)
-
         # Create out columns for each sample fraction
         for frac in frac_dict.items():
             col = frac[0]  # New column name
-            if frac[1] in set(df_out.loc[c_mask, fract_col].dropna()):
-                # New subset mask for sample frac
-                f_mask = (c_mask & (df_out[fract_col]==frac[1]))
-                df_out[col] = nan  # Add column
-                # Copy measure to new col (new col name from char_list)
-                df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
-            elif frac[1] == '':
-                # Values where sample fraction missing
-                if df_out.loc[c_mask, fract_col].isnull().values.any():
-                    # New subset mask
-                    f_mask = (c_mask & (df_out[fract_col].isnull()))
-                    df_out[col] = nan  # Add column
-                    # Copy measure to new col
+            for smp_frac in frac[1]:
+                if smp_frac in set(df_out.loc[c_mask, fract_col].dropna()):
+                    # New subset mask for sample frac
+                    f_mask = (c_mask & (df_out[fract_col]==smp_frac))
+                    # Copy measure to new col (new col name from char_list)
                     df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
+                elif smp_frac == '':
+                    # Values where sample fraction missing go to catch all
+                    if df_out.loc[c_mask, fract_col].isnull().values.any():
+                        # New subset mask
+                        f_mask = (c_mask & (df_out[fract_col].isnull()))
+                        # Copy measure to new col
+                        df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
         self.df = df_out
 
         return frac_dict
@@ -634,7 +647,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
         ureg = pint.UnitRegistry()
     Q_ = ureg.Quantity
 
-    out_series = pandas.Series(dtype='object')
+    lst_series = [pandas.Series(dtype='object')]
     for unit in list(set(unit_series)):
         # Filter quantity_series by unit_series where == unit
         f_quant_series = quantity_series.where(unit_series==unit).dropna()
@@ -653,10 +666,9 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
                 else:
                     # errors=='raise', or anything else just in case
                     raise exception
-        # Re-index
-        result_series = pandas.Series(result_list, index=f_quant_series.index)
-        out_series = out_series.append(result_series)  # Append to full series
-    return out_series
+        # Re-index and add series to list
+        lst_series.append(pandas.Series(result_list, index=f_quant_series.index))
+    return pandas.concat(lst_series)
 
 
 def add_qa_flag(df_in, mask, flag):
@@ -1093,9 +1105,9 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     # Total is TP (digested) from the whole water sample (vs total dissolved)
     # Dissolved is TDP (total) filtered water digested (vs undigested DIP)
     if out_col == 'Phosphorus':
-        frac_dict = {'TP_Phosphorus': 'Total',
-                     'TDP_Phosphorus': 'Dissolved',
-                     'Other_Phosphorus': '',}
+        frac_dict = {'TP_Phosphorus': ['Total'],
+                     'TDP_Phosphorus': ['Dissolved'],
+                     'Other_Phosphorus': [''],}
         # Make columns for Sample Fractions, loudly if unexpected (not in dict)
         frac_dict = wqp.fraction(frac_dict)  # Run sample fraction on WQP
 
