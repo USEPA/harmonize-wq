@@ -360,13 +360,12 @@ def characteristic_cols(category=None):
 
 def xy_datum():
     """
-    Get dictionary of possible values (key) and dictionary values for their
-    "Description" (string, Not currently used) or EPSG code (int).
-    source url:
-        '{}HorizontalCoordinateReferenceSystemDatum_CSV.zip'.format(BASE_URL)
+    Get dictionary where key is expected string and value is dictionary with
+    "Description": string (Not currently used) and "EPSG": int (4-digit code).
 
     NOTES:
     -------
+    source url: f'{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip'
     Aything not in dict will be nan (must be int), i.e.:
         "OTHER": {"Description": 'Other',
                   "EPSG": nan},
