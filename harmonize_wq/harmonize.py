@@ -898,19 +898,19 @@ def turbidity(wqp):
         'FTU' - lacks instrumentation specificity
         'SiO2' (ppm or mg/l) - concentration of calibration standard (=JTU)
         'JTU' - candle instead of formazin standard, near 40 NTU these may be
-                equivalent, but highly variable
+        equivalent, but highly variable
     Conversions used:
         cm <-> NTU see convert.cm_to_NTU()
         https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
 
     Alternative conversions not currectly used by default:
         convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
-                                https://doi.org/10.5194/os-7-705-2011
+        https://doi.org/10.5194/os-7-705-2011
         convert.SiO2_to_NTU linear relation from Otilia et al. 2013
         convert.JTU_to_NTU linear relation from Otilia et al. 2013
         Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
-            "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
-            https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
+        "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
+        https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
 
     Parameters
     ----------
