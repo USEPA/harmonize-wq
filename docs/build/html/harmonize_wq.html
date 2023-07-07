@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>harmonize_wq package &mdash; harmonize_wq 0.2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing to harmonize_wq" href="contributing.html" />
+    <link rel="prev" title="harmonize_wq" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            harmonize_wq
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing harmonize_wq</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">harmonize_wq</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">harmonize_wq package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.basis">harmonize_wq.basis module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.basis.basis_from_methodSpec"><code class="docutils literal notranslate"><span class="pre">basis_from_methodSpec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.basis.basis_from_unit"><code class="docutils literal notranslate"><span class="pre">basis_from_unit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.basis.basis_qa_flag"><code class="docutils literal notranslate"><span class="pre">basis_qa_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.basis.set_basis"><code class="docutils literal notranslate"><span class="pre">set_basis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.basis.stp_dict"><code class="docutils literal notranslate"><span class="pre">stp_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.basis.unit_basis_dict"><code class="docutils literal notranslate"><span class="pre">unit_basis_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.basis.update_result_basis"><code class="docutils literal notranslate"><span class="pre">update_result_basis()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.clean">harmonize_wq.clean module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.clean.check_precision"><code class="docutils literal notranslate"><span class="pre">check_precision()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.clean.datetime"><code class="docutils literal notranslate"><span class="pre">datetime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.clean.harmonize_depth"><code class="docutils literal notranslate"><span class="pre">harmonize_depth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.clean.methods_check"><code class="docutils literal notranslate"><span class="pre">methods_check()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.clean.wet_dry_checks"><code class="docutils literal notranslate"><span class="pre">wet_dry_checks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.clean.wet_dry_drop"><code class="docutils literal notranslate"><span class="pre">wet_dry_drop()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.convert">harmonize_wq.convert module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.DO_concentration"><code class="docutils literal notranslate"><span class="pre">DO_concentration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.DO_saturation"><code class="docutils literal notranslate"><span class="pre">DO_saturation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.FNU_to_NTU"><code class="docutils literal notranslate"><span class="pre">FNU_to_NTU()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.JTU_to_NTU"><code class="docutils literal notranslate"><span class="pre">JTU_to_NTU()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.NTU_to_cm"><code class="docutils literal notranslate"><span class="pre">NTU_to_cm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.PSU_to_density"><code class="docutils literal notranslate"><span class="pre">PSU_to_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.SiO2_to_NTU"><code class="docutils literal notranslate"><span class="pre">SiO2_to_NTU()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.cm_to_NTU"><code class="docutils literal notranslate"><span class="pre">cm_to_NTU()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.conductivity_to_PSU"><code class="docutils literal notranslate"><span class="pre">conductivity_to_PSU()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.density_to_PSU"><code class="docutils literal notranslate"><span class="pre">density_to_PSU()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.mass_to_moles"><code class="docutils literal notranslate"><span class="pre">mass_to_moles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.convert.moles_to_mass"><code class="docutils literal notranslate"><span class="pre">moles_to_mass()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.domains">harmonize_wq.domains module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.accepted_methods"><code class="docutils literal notranslate"><span class="pre">accepted_methods()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.bacteria_reg"><code class="docutils literal notranslate"><span class="pre">bacteria_reg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.characteristic_cols"><code class="docutils literal notranslate"><span class="pre">characteristic_cols()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.get_domain_dict"><code class="docutils literal notranslate"><span class="pre">get_domain_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.out_col_lookup"><code class="docutils literal notranslate"><span class="pre">out_col_lookup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.registry_adds_list"><code class="docutils literal notranslate"><span class="pre">registry_adds_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.stations_rename"><code class="docutils literal notranslate"><span class="pre">stations_rename()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.domains.xy_datum"><code class="docutils literal notranslate"><span class="pre">xy_datum()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.harmonize">harmonize_wq.harmonize module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.WQCharData"><code class="docutils literal notranslate"><span class="pre">WQCharData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.add_qa_flag"><code class="docutils literal notranslate"><span class="pre">add_qa_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.convert_unit_series"><code class="docutils literal notranslate"><span class="pre">convert_unit_series()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.df_checks"><code class="docutils literal notranslate"><span class="pre">df_checks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.dimension_handling"><code class="docutils literal notranslate"><span class="pre">dimension_handling()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.dissolved_oxygen"><code class="docutils literal notranslate"><span class="pre">dissolved_oxygen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.harmonize_all"><code class="docutils literal notranslate"><span class="pre">harmonize_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.harmonize_generic"><code class="docutils literal notranslate"><span class="pre">harmonize_generic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.replace_in_col"><code class="docutils literal notranslate"><span class="pre">replace_in_col()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.salinity"><code class="docutils literal notranslate"><span class="pre">salinity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.sediment"><code class="docutils literal notranslate"><span class="pre">sediment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.turbidity"><code class="docutils literal notranslate"><span class="pre">turbidity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.unit_qa_flag"><code class="docutils literal notranslate"><span class="pre">unit_qa_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.harmonize.units_dimension"><code class="docutils literal notranslate"><span class="pre">units_dimension()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.location">harmonize_wq.location module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.location.get_harmonized_stations"><code class="docutils literal notranslate"><span class="pre">get_harmonized_stations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.location.harmonize_locations"><code class="docutils literal notranslate"><span class="pre">harmonize_locations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.location.infer_CRS"><code class="docutils literal notranslate"><span class="pre">infer_CRS()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.location.transform_vector_of_points"><code class="docutils literal notranslate"><span class="pre">transform_vector_of_points()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.visualize">harmonize_wq.visualize module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.visualize.map_counts"><code class="docutils literal notranslate"><span class="pre">map_counts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.visualize.map_measure"><code class="docutils literal notranslate"><span class="pre">map_measure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.visualize.print_report"><code class="docutils literal notranslate"><span class="pre">print_report()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.visualize.station_summary"><code class="docutils literal notranslate"><span class="pre">station_summary()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq.wrangle">harmonize_wq.wrangle module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.add_activities_to_df"><code class="docutils literal notranslate"><span class="pre">add_activities_to_df()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.add_detection"><code class="docutils literal notranslate"><span class="pre">add_detection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.as_gdf"><code class="docutils literal notranslate"><span class="pre">as_gdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.clip_stations"><code class="docutils literal notranslate"><span class="pre">clip_stations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.collapse_results"><code class="docutils literal notranslate"><span class="pre">collapse_results()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.get_activities_by_loc"><code class="docutils literal notranslate"><span class="pre">get_activities_by_loc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.get_bounding_box"><code class="docutils literal notranslate"><span class="pre">get_bounding_box()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.get_detection_by_loc"><code class="docutils literal notranslate"><span class="pre">get_detection_by_loc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.merge_tables"><code class="docutils literal notranslate"><span class="pre">merge_tables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.split_col"><code class="docutils literal notranslate"><span class="pre">split_col()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.split_table"><code class="docutils literal notranslate"><span class="pre">split_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#harmonize_wq.wrangle.to_simple_shape"><code class="docutils literal notranslate"><span class="pre">to_simple_shape()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-harmonize_wq">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to harmonize_wq</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">harmonize_wq</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">harmonize_wq</a></li>
+      <li class="breadcrumb-item active">harmonize_wq package</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="harmonize-wq-package">
+<h1>harmonize_wq package<a class="headerlink" href="#harmonize-wq-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-harmonize_wq.basis">
+<span id="harmonize-wq-basis-module"></span><h2>harmonize_wq.basis module<a class="headerlink" href="#module-harmonize_wq.basis" title="Permalink to this heading"></a></h2>
+<p>Functions to process chracteristic basis or return basis dictionary.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.basis.basis_from_methodSpec">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.basis.</span></span><span class="sig-name descname"><span class="pre">basis_from_methodSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.basis.basis_from_methodSpec" title="Permalink to this definition"></a></dt>
+<dd><p>Moves speciation from ‘MethodSpecificationName’ column to new ‘Speciation’
+Column</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.basis.basis_from_unit">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.basis.</span></span><span class="sig-name descname"><span class="pre">basis_from_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Speciation'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.basis.basis_from_unit" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a standardized Basis column in DataFrame from units column and
+standardizes units in units column based on basis_dict</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>basis_dict</strong><span class="classifier">dictionary</span></dt><dd><p>Dictionary with structure {basis:{new_unit:[old_units]}}.</p>
+</dd>
+<dt><strong>unit_col</strong><span class="classifier">str</span></dt><dd><p>string for the column name in df to be used.</p>
+</dd>
+<dt><strong>basis_col</strong><span class="classifier">str, optional</span></dt><dd><p>string for the basis column name in df to be used.
+The default is ‘Speciation’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.basis.basis_qa_flag">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.basis.</span></span><span class="sig-name descname"><span class="pre">basis_qa_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trouble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MethodSpecificationName'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.basis.basis_qa_flag" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a QA_flag string for the MethodsSpeciation column if different
+from the basis specified in units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trouble</strong><span class="classifier">str</span></dt><dd><p>Problem encountered (e.g., unit_basis != speciation).</p>
+</dd>
+<dt><strong>basis</strong><span class="classifier">str</span></dt><dd><p>The basis from the unit that replaced the original speciation.</p>
+</dd>
+<dt><strong>spec_col</strong><span class="classifier">str, optional</span></dt><dd><p>Column currently being checked. Default is ‘MethodSpecificationName’</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>string</dt><dd><p>Flag to use in QA_flag column.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.basis.set_basis">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.basis.</span></span><span class="sig-name descname"><span class="pre">set_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Speciation'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.basis.set_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Update DataFrame.basis_col to basis where DataFrame.col is expected_val.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>mask</strong><span class="classifier">pandas.Series</span></dt><dd><p>Row conditional mask to limit rows (e.g. to specific unit/speciation).</p>
+</dd>
+<dt><strong>basis</strong><span class="classifier">string</span></dt><dd><p>The string to use for basis.</p>
+</dd>
+<dt><strong>basis_col</strong><span class="classifier">string, optional</span></dt><dd><p>The new or existing column for basis string.
+The default is ‘Speciation’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.basis.stp_dict">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.basis.</span></span><span class="sig-name descname"><span class="pre">stp_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.basis.stp_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Standard temperature and pressure dictionary to define basis from units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>dict</dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.basis.unit_basis_dict">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.basis.</span></span><span class="sig-name descname"><span class="pre">unit_basis_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.basis.unit_basis_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Characteristic specific basis dictionary to define basis from units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>out_col</strong><span class="classifier">string</span></dt><dd><p>Column name where results are written (char_val derived)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary with logic for determining basis from units string and
+standard pint units to replace those with.
+The structure is {Basis: {standard units: [unit strings with basis]}}.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.basis.update_result_basis">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.basis.</span></span><span class="sig-name descname"><span class="pre">update_result_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.basis.update_result_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Basis from result col that is not moved to a new col</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>basis_col</strong><span class="classifier">string</span></dt><dd><p>Column in df_in with result basis to update. Expected values are
+‘ResultTemperatureBasisText’</p>
+</dd>
+<dt><strong>unit_col</strong><span class="classifier">string</span></dt><dd><p>Column in df_in with units that may contain basis.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq.clean">
+<span id="harmonize-wq-clean-module"></span><h2>harmonize_wq.clean module<a class="headerlink" href="#module-harmonize_wq.clean" title="Permalink to this heading"></a></h2>
+<p>Functions that can be applied to the entire dataset or subsets of the
+dataset to clean/correct additional columns.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.clean.check_precision">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.clean.</span></span><span class="sig-name descname"><span class="pre">check_precision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.clean.check_precision" title="Permalink to this definition"></a></dt>
+<dd><p>Note - be cautious of float type and real vs representable precision</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with the required ResultDepthHeight columns.</p>
+</dd>
+<dt><strong>unit_col</strong><span class="classifier">string</span></dt><dd><p>Desired column in df_in.</p>
+</dd>
+<dt><strong>limit</strong><span class="classifier">integer, optional</span></dt><dd><p>Number of decimal places under which to detect. The default is 3.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Dataframe with the quality assurance flag for precision</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.clean.datetime">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.clean.</span></span><span class="sig-name descname"><span class="pre">datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.clean.datetime" title="Permalink to this definition"></a></dt>
+<dd><p>Format time using dataretrieval and ActivityStart</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with the expected activity date time columns.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Dataframe with the converted date and datetime columns.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.clean.harmonize_depth">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.clean.</span></span><span class="sig-name descname"><span class="pre">harmonize_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'meter'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.clean.harmonize_depth" title="Permalink to this definition"></a></dt>
+<dd><p>Note - doesn’t currently pass errors or ureg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with the required ResultDepthHeight columns.</p>
+</dd>
+<dt><strong>units</strong><span class="classifier">string, optional</span></dt><dd><p>Desired units. The default is ‘meter’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with new Depth colummn replacing ResultDepthHeight columns.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.clean.methods_check">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.clean.</span></span><span class="sig-name descname"><span class="pre">methods_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.clean.methods_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check methods against list of accepted methods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>char_val</strong><span class="classifier">string</span></dt><dd><p>Characteristic name.</p>
+</dd>
+<dt><strong>methods</strong><span class="classifier">dictionary, optional</span></dt><dd><p>Dictionary where key is characteristic column name and value is list of
+dictionaries each with Source and Method keys. This allows updated
+methods dictionaries to be used. The default None, uses the built-in
+domains.accepted_methods().</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.clean.wet_dry_checks">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.clean.</span></span><span class="sig-name descname"><span class="pre">wet_dry_checks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.clean.wet_dry_checks" title="Permalink to this definition"></a></dt>
+<dd><p>Fix known errors in MediaName based on WeightBasis and SampleFraction
+columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>mask</strong><span class="classifier">pandas.Series</span></dt><dd><p>Row conditional (bool) mask to limit df rows to check/fix</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated DataFrame</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.clean.wet_dry_drop">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.clean.</span></span><span class="sig-name descname"><span class="pre">wet_dry_drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wet_dry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wet'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.clean.wet_dry_drop" title="Permalink to this definition"></a></dt>
+<dd><p>Restrict to only water or only sediment samples</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>wet_dry</strong><span class="classifier">string, optional</span></dt><dd><p>Which values (Water/Sediment) to keep. The default is ‘wet’ (Water)</p>
+</dd>
+<dt><strong>char_val</strong><span class="classifier">string, optional</span></dt><dd><p>Apply to specific characteristic name. The default is None (for all).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df2</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq.convert">
+<span id="harmonize-wq-convert-module"></span><h2>harmonize_wq.convert module<a class="headerlink" href="#module-harmonize_wq.convert" title="Permalink to this heading"></a></h2>
+<p>Functions to convert from one unit to another, sometimes using
+pint decorators. Contains several unit conversion functions not in Pint.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.DO_concentration">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">DO_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure=&lt;Quantity(1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'standard_atmosphere')&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature=&lt;Quantity(25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'degree_Celsius')&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.DO_concentration" title="Permalink to this definition"></a></dt>
+<dd><p>Convert Dissolved Oxygen from concentration (e.g., mg/ml) to saturation (%)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">pint.quantity.build_quantity_class</span></dt><dd><p>The DO value (converted to mg/L)</p>
+</dd>
+<dt><strong>pressure</strong><span class="classifier">pint.Quanitity, optional</span></dt><dd><p>The pressure value. The default is 1*ureg(“atm”).</p>
+</dd>
+<dt><strong>temperature</strong><span class="classifier">TYPE, optional</span></dt><dd><p>The temperature value. The default is ureg.Quantity(25, ureg(“degC”)).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>Dissolved Oxygen as saturation (dimensionless).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.DO_saturation">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">DO_saturation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure=&lt;Quantity(1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'standard_atmosphere')&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature=&lt;Quantity(25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'degree_Celsius')&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.DO_saturation" title="Permalink to this definition"></a></dt>
+<dd><p>Convert Dissolved Oxygen as percent saturation (%) to mg/l concentration.
+Defaults assume STP where pressure is 1 atmosphere and temperature 25C.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">pint.quantity.build_quantity_class</span></dt><dd><p>The Dissolved Oxygen saturation value in dimensionless percent.</p>
+</dd>
+<dt><strong>pressure</strong><span class="classifier">pint.Quanitity, optional</span></dt><dd><p>The pressure value. The default is 1*ureg(“atm”).</p>
+</dd>
+<dt><strong>temperature</strong><span class="classifier">pint.Quanitity, optional</span></dt><dd><p>The temperature value. The default is ureg.Quantity(25, ureg(“degC”)).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pint.Quantity</dt><dd><p>Value in mg/l.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.FNU_to_NTU">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">FNU_to_NTU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.FNU_to_NTU" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.JTU_to_NTU">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">JTU_to_NTU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.JTU_to_NTU" title="Permalink to this definition"></a></dt>
+<dd><p>Linear relationship, 1 -&gt; 19, 0.053 -&gt; 1, 0.4 -&gt; 7.5</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.NTU_to_cm">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">NTU_to_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.NTU_to_cm" title="Permalink to this definition"></a></dt>
+<dd><p>Convert Turbidity measured in NTU to centimeters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">pint.Quanitity</span></dt><dd><p>The turbidity value in NTU.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>The turbidity value in centimeters.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.PSU_to_density">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">PSU_to_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure=&lt;Quantity(1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'standard_atmosphere')&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature=&lt;Quantity(25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'degree_Celsius')&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.PSU_to_density" title="Permalink to this definition"></a></dt>
+<dd><p>Convert salinity as Practical Salinity Units to density (mass/volume)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">pint.Quanitity</span></dt><dd><p>The salinty value in dimensionless PSU.</p>
+</dd>
+<dt><strong>pressure</strong><span class="classifier">pint.Quanitity, optional</span></dt><dd><p>The pressure value. The default is 1*ureg(“atm”).</p>
+</dd>
+<dt><strong>temperature</strong><span class="classifier">pint.Quanitity, optional</span></dt><dd><p>The temperature value. The default is ureg.Quantity(25, ureg(“degC”)).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>density</strong><span class="classifier">pint.quantity.build_quantity_class</span></dt><dd><p>The salinity value in density units (mg/ml).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.SiO2_to_NTU">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">SiO2_to_NTU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.SiO2_to_NTU" title="Permalink to this definition"></a></dt>
+<dd><p>Linear relationship, 2.5 -&gt; 19, 0.13 -&gt; 1, 1 -&gt; 7.5</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.cm_to_NTU">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">cm_to_NTU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.cm_to_NTU" title="Permalink to this definition"></a></dt>
+<dd><p>Convert Turbidity measured in centimeters to NTU</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">pint.Quanitity</span></dt><dd><p>The turbidity value in centimeters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>The turbidity value in NTU.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.conductivity_to_PSU">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">conductivity_to_PSU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure=&lt;Quantity(0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'standard_atmosphere')&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature=&lt;Quantity(25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'degree_Celsius')&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.conductivity_to_PSU" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate salinity (PSU) from conductivity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">pint.quantity.build_quantity_class</span></dt><dd><p>The conductivity value (converted to microsiemens / centimeter)</p>
+</dd>
+<dt><strong>pressure</strong><span class="classifier">pint.Quanitity, optional</span></dt><dd><p>The pressure value. The default is 0*ureg(“atm”).</p>
+</dd>
+<dt><strong>temperature</strong><span class="classifier">TYPE, optional</span></dt><dd><p>The temperature value. The default is ureg.Quantity(25, ureg(“degC”)).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pint.Quantity</dt><dd><p>Estimated salinity (PSU).</p>
+</dd>
+<dt>Additional Notes:</dt><dd></dd>
+<dt>Conductivity to salinity conversion PSS 1978 method</dt><dd></dd>
+<dt>c-numeric conducitivity in uS (microseimens).</dt><dd></dd>
+<dt>t-numeric celcius temperature (defauls to 25)</dt><dd></dd>
+<dt>P-numeric optional pressure (defaults to 0)</dt><dd></dd>
+<dt>References:</dt><dd></dd>
+<dt>IOC, SCOR and IAPSO, 2010: The international thermodynamic</dt><dd><p>equation of seawater – 2010: Calculation and use of thermodynamic
+properties. Intergovernmental Oceanographic Commission, Manuals
+and Guides No. 56, UNESCO (English), 196 pp</p>
+</dd>
+<dt>code: Alan D. Jassby and James E. Cloern (2015). wq: Some tools for</dt><dd><p>exploring water quality monitoring data. R package v0.4.4.
+See the wq::ec2pss function.</p>
+</dd>
+<dt>Function: <a class="reference external" href="https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R">https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R</a></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.density_to_PSU">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">density_to_PSU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure=&lt;Quantity(1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'standard_atmosphere')&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature=&lt;Quantity(25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'degree_Celsius')&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.density_to_PSU" title="Permalink to this definition"></a></dt>
+<dd><p>Convert absolute salinity as density (mass/volume) to Practical Salinity
+Units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val</strong><span class="classifier">pint.quantity.build_quantity_class</span></dt><dd><p>The salinty value in density units.</p>
+</dd>
+<dt><strong>pressure</strong><span class="classifier">pint.quantity.build_quantity_class, optional</span></dt><dd><p>The pressure value. The default is 1*ureg(“atm”).</p>
+</dd>
+<dt><strong>temperature</strong><span class="classifier">pint.quantity.build_quantity_class, optional</span></dt><dd><p>The temperature value. The default is ureg.Quantity(25, ureg(“degC”)).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>PSU</strong><span class="classifier">pint.quantity.build_quantity_class</span></dt><dd><p>The salinity value in dimensionless PSU.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.mass_to_moles">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">mass_to_moles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ureg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.mass_to_moles" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a mass to moles substance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ureg</strong><span class="classifier">pint.UnitRegistry</span></dt><dd><p>Unit Registry Object with any custom units defined.</p>
+</dd>
+<dt><strong>char_val</strong><span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt><strong>Q_</strong><span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pint.Quantity</dt><dd><p>Value in moles of substance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.convert.moles_to_mass">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.convert.</span></span><span class="sig-name descname"><span class="pre">moles_to_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ureg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.convert.moles_to_mass" title="Permalink to this definition"></a></dt>
+<dd><p>Converts moles substance to mass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ureg</strong><span class="classifier">pint.UnitRegistry</span></dt><dd><p>Unit Registry Object with any custom units defined.</p>
+</dd>
+<dt><strong>Q_</strong><span class="classifier">ureg.Quantity</span></dt><dd><p>Quantity (measure and units).</p>
+</dd>
+<dt><strong>basis</strong><span class="classifier">str, optional</span></dt><dd><p>Speciation (basis) of measure to determine molecular weight.
+Default is None.</p>
+</dd>
+<dt><strong>char_val</strong><span class="classifier">str, optional</span></dt><dd><p>Characteristic Name to use when converting moles substance to mass.
+Default is None.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pint.Quantity</dt><dd><p>Value in mass (g).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq.domains">
+<span id="harmonize-wq-domains-module"></span><h2>harmonize_wq.domains module<a class="headerlink" href="#module-harmonize_wq.domains" title="Permalink to this heading"></a></h2>
+<p>Functions to return domain lists with all potential values, mainly for use
+as filters. Small or frequently utilized domains may be hardcoded. A url
+based method can be used to get the most up to date domain list.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.accepted_methods">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">accepted_methods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.accepted_methods" title="Permalink to this definition"></a></dt>
+<dd><p>Accepted methods for each characteristic.</p>
+<p>Note: Source should be in ‘ResultAnalyticalMethod/MethodIdentifierContext’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary where key is characteristic column name and value is list of
+dictionaries each with Source and Method keys.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.bacteria_reg">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">bacteria_reg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ureg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.bacteria_reg" title="Permalink to this definition"></a></dt>
+<dd><p>Generate standard pint unit registry with bacteria units defined.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ureg</strong><span class="classifier">pint.UnitRegistry, optional</span></dt><dd><p>Unit Registry Object with any custom units defined. Default None
+starts with new unit registry</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>unit_registry</strong><span class="classifier">pint.UnitRegistry</span></dt><dd><p>Unit registry with dimensionless bacteria units defined.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.characteristic_cols">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">characteristic_cols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.characteristic_cols" title="Permalink to this definition"></a></dt>
+<dd><p>Return characteristic specific columns, can subset those by category.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>categoy</strong><span class="classifier">string, optional</span></dt><dd><p>Subset results: ‘Basis’, ‘Bio’, ‘Depth’, ‘QA’, ‘activity’, ‘analysis’,
+‘depth’, ‘measure’, ‘sample’.
+The default is None.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>col_list</strong><span class="classifier">list</span></dt><dd><p>List of columns.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.get_domain_dict">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">get_domain_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.get_domain_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieves domain values as dictionary for specified table</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>table</strong><span class="classifier">string</span></dt><dd><p>csv table name (without extension).</p>
+</dd>
+<dt><strong>cols</strong><span class="classifier">list, optional</span></dt><dd><p>Columns to use as {key, value}.
+The default is None, [‘Name’, ‘Description’].</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dictionary</dt><dd><p>Dictionary where {cols[0]: cols[1]}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.out_col_lookup">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">out_col_lookup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.out_col_lookup" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>dict</dt><dd><p>{WQP CharacteristicName:Column Name}.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.registry_adds_list">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">registry_adds_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.registry_adds_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.stations_rename">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">stations_rename</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.stations_rename" title="Permalink to this definition"></a></dt>
+<dd><p>ESRI places a length restriction on shapefile field names. This returns a
+dictionary with the original water quality portal field name (as key) and
+shortend column name for writing as shp. We suggest using the longer
+original name as the field alias when writing as .shp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>field_mapping</strong><span class="classifier">dictionary</span></dt><dd><p>dictionary where key = WQP field name and value = short name for shp.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.domains.xy_datum">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.domains.</span></span><span class="sig-name descname"><span class="pre">xy_datum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.domains.xy_datum" title="Permalink to this definition"></a></dt>
+<dd><p>Get dictionary where key is expected string and value is dictionary with
+“Description”: string (Not currently used) and “EPSG”: int (4-digit code).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>dict</dt><dd><dl class="simple">
+<dt>Dictionary where exhaustive:</dt><dd><p>{HorizontalCoordinateReferenceSystemDatumName: {Description:str,
+EPSG:int}}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>source url: f’{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip’
+Anything not in dict will be nan, i.e. must be int so these are missing:
+“OTHER”: {“Description”: ‘Other’, “EPSG”: nan},
+“UNKWN”: {“Description”: ‘Unknown’, “EPSG”: nan}</p>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq.harmonize">
+<span id="harmonize-wq-harmonize-module"></span><h2>harmonize_wq.harmonize module<a class="headerlink" href="#module-harmonize_wq.harmonize" title="Permalink to this heading"></a></h2>
+<p>Class and functions for harmonizing data retrieved from EPA’s Water Quality
+Portal (WQP)</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">WQCharData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to represent Water Quality Portal results for a specifc
+characteristic</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with results for the specific characteristic</p>
+</dd>
+<dt><strong>c_mask</strong><span class="classifier">pandas.Series</span></dt><dd><p>Row conditional (bool) mask to limit df rows to only those for the
+specific characteristic</p>
+</dd>
+<dt><strong>col</strong><span class="classifier">SimpleNamespace</span></dt><dd><p>Standrad df column names for unit_in, unit_out, and measure</p>
+</dd>
+<dt><strong>out_col</strong><span class="classifier">str</span></dt><dd><p>Column name in df for results, set using char_val</p>
+</dd>
+<dt><strong>ureg = pint.UnitRegistry()</strong></dt><dd><p>Pint unit registry, starts set to standard unit registry</p>
+</dd>
+<dt><strong>units: str</strong></dt><dd><p>Units all results in out_col will be converted into. Default units are
+returned from domains.OUT_UNITS[out_col].</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 72%" />
+<col style="width: 28%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>coerce_measure()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>check_units()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>infer_units()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>check_basis()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>update_ureg()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>update_units()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>measure_mask()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>unit_mask()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>char_val()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_units()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>apply_conversion()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>dimensions_list()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>replace_unit_by_str()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>replace_unit_by_dict()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>fraction()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>handle_dimensions()</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>moles_convert()</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.apply_conversion">
+<span class="sig-name descname"><span class="pre">apply_conversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">convert_fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.apply_conversion" title="Permalink to this definition"></a></dt>
+<dd><p>Apply special dimension changing conversions using functions in convert
+module and applying them across all cases of current unit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>convert_fun</strong><span class="classifier">function</span></dt><dd><p>Conversion function to apply.</p>
+</dd>
+<dt><strong>unit</strong><span class="classifier">string</span></dt><dd><p>Current unit.</p>
+</dd>
+<dt><strong>u_mask</strong><span class="classifier">pandas.Series, optional</span></dt><dd><p>Mask to use to identify what is being converted.
+The default is None, creating a unit mask based on unit.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.char_val">
+<span class="sig-name descname"><span class="pre">char_val</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.char_val" title="Permalink to this definition"></a></dt>
+<dd><p>“Returns built-in char_val based on out_col attribute</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.check_basis">
+<span class="sig-name descname"><span class="pre">check_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MethodSpecificationName'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.check_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Determine speciation (basis) for measure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>basis_col</strong><span class="classifier">str, optional</span></dt><dd><p>Basis column name. Default is ‘MethodSpecificationName’ which is
+replaced by ‘Speciation’, others are updated in place.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.check_units">
+<span class="sig-name descname"><span class="pre">check_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.check_units" title="Permalink to this definition"></a></dt>
+<dd><p>Checks for bad units that are missing (assumes default_unit) or
+unrecoginzed as valid by unit registry (ureg). Does not check for units
+in the correct dimensions, or a mistaken identity (e.g. ‘deg F’
+recognized as ‘degree * farad’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>flag_col</strong><span class="classifier">string, optional</span></dt><dd><p>Column to reference in QA_flags.
+The default None uses unit_col instead.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.coerce_measure">
+<span class="sig-name descname"><span class="pre">coerce_measure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.coerce_measure" title="Permalink to this definition"></a></dt>
+<dd><p>Identifies bad measure values, and flags them. Copies measure
+values to out_col, with bad measures as NaN.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.convert_units">
+<span class="sig-name descname"><span class="pre">convert_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.convert_units" title="Permalink to this definition"></a></dt>
+<dd><p>Update object dataframe’s out-col to convert from old units to
+default_unit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>default_unit</strong><span class="classifier">str, optional</span></dt><dd><p>Units to convert values to. Default None uses units attribute.</p>
+</dd>
+<dt><strong>errors</strong><span class="classifier">string, optional</span></dt><dd><p>Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
+If ‘raise’, invalid dimension conversions will raise an exception.
+If ‘skip’, invalid dimension conversions will not be converted.
+If ‘ignore’, invalid dimension conversions will be NaN.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.dimensions_list">
+<span class="sig-name descname"><span class="pre">dimensions_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.dimensions_list" title="Permalink to this definition"></a></dt>
+<dd><p>Use character object to retrieve list of unique dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>m_mask</strong><span class="classifier">pandas.Series, optional</span></dt><dd><p>Conditional mask to limit rows.
+The default None, uses measure_mask().</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>list</dt><dd><p>List of units with mis-matched dimensions.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.fraction">
+<span class="sig-name descname"><span class="pre">fraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frac_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fract_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ResultSampleFractionText'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.fraction" title="Permalink to this definition"></a></dt>
+<dd><p>Create columns for sample fractions, use frac_dict to set their names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>frac_dict</strong><span class="classifier">dictionary, optional</span></dt><dd><p>Dictionary where {fraction_name : new_col}.
+The default None starts with an empty dictionary.</p>
+</dd>
+<dt><strong>suffix</strong><span class="classifier">string, optional</span></dt><dd><p>String to add to the end of any new column name.
+The default None, uses out_col attribute.</p>
+</dd>
+<dt><strong>fract_col</strong><span class="classifier">string, optional</span></dt><dd><p>Column name where sample fraction is defined.
+The default is ‘ResultSampleFractionText’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>frac_dict</strong><span class="classifier">dictionary</span></dt><dd><p>frac_dict updated to include any frac_col not already defined.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.handle_dimensions">
+<span class="sig-name descname"><span class="pre">handle_dimensions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.handle_dimensions" title="Permalink to this definition"></a></dt>
+<dd><p>Input/output for dimension handling.</p>
+<p>Note: this is done one dimension at a time, except for mole
+conversions which are further divided by basis (one at a time)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dimension_dict</strong><span class="classifier">dictionary</span></dt><dd><p>Dictionary with old_unit:new_unit.</p>
+</dd>
+<dt><strong>mol_list</strong><span class="classifier">list</span></dt><dd><p>List of Mole (substance) units.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.infer_units">
+<span class="sig-name descname"><span class="pre">infer_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.infer_units" title="Permalink to this definition"></a></dt>
+<dd><p>Replace missing units with desired unit and add QA_flag about it in df.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>unit_col</strong><span class="classifier">string</span></dt><dd><p>Unit column in df_in.</p>
+</dd>
+<dt><strong>flag_col</strong><span class="classifier">string, optional</span></dt><dd><p>Column to reference in QA_flags.
+The default None uses unit_col instead.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.measure_mask">
+<span class="sig-name descname"><span class="pre">measure_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.measure_mask" title="Permalink to this definition"></a></dt>
+<dd><p>Get mask that is characteristic specific (c_mask) and only has valid
+col measures (Non-NA).
+:param col: DataFrame column name to use. Default None uses self.out_col
+:type col: str, optional</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.moles_convert">
+<span class="sig-name descname"><span class="pre">moles_convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.moles_convert" title="Permalink to this definition"></a></dt>
+<dd><p>Update out_col with moles converted and reduce unit_col to units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mol_list</strong><span class="classifier">list</span></dt><dd><p>List of Mole (substance) units.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.replace_unit_by_dict">
+<span class="sig-name descname"><span class="pre">replace_unit_by_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.replace_unit_by_dict" title="Permalink to this definition"></a></dt>
+<dd><p>A simple way to do multiple replace_in_col() replacements of val_dict
+key with val_dict value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>val_dict</strong><span class="classifier">dictionary</span></dt><dd><p>Occurrences of key in the unit column are replaced with the value.</p>
+</dd>
+<dt><strong>mask</strong><span class="classifier">pandas.Series, optional</span></dt><dd><p>Conditional mask to limit rows.
+The default None, uses the c_mask attribute.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.replace_unit_by_str">
+<span class="sig-name descname"><span class="pre">replace_unit_by_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.replace_unit_by_str" title="Permalink to this definition"></a></dt>
+<dd><p>Simple way to replace all instances of old str with new str in units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>old</strong><span class="classifier">str</span></dt><dd><p>sub-string to find and replace</p>
+</dd>
+<dt><strong>new</strong><span class="classifier">str</span></dt><dd><p>sub-string to replace old sub-string</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.unit_mask">
+<span class="sig-name descname"><span class="pre">unit_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.unit_mask" title="Permalink to this definition"></a></dt>
+<dd><p>Get mask that is characteristic specific (c_mask) and has the
+specified units.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.update_units">
+<span class="sig-name descname"><span class="pre">update_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">units_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.update_units" title="Permalink to this definition"></a></dt>
+<dd><p>Update object units attribute to convert everything into.
+:param units_out: Units to convert results into.
+:type units_out: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.WQCharData.update_ureg">
+<span class="sig-name descname"><span class="pre">update_ureg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.WQCharData.update_ureg" title="Permalink to this definition"></a></dt>
+<dd><p>Update class unit registry to define units based on out_col</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.add_qa_flag">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">add_qa_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.add_qa_flag" title="Permalink to this definition"></a></dt>
+<dd><p>Adds flag to “QA_field” column in df_in</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>mask</strong><span class="classifier">pandas.Series</span></dt><dd><p>Row conditional mask to limit rows.</p>
+</dd>
+<dt><strong>flag</strong><span class="classifier">string</span></dt><dd><p>Text to populate the new flag with.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.convert_unit_series">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">convert_unit_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quantity_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ureg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.convert_unit_series" title="Permalink to this definition"></a></dt>
+<dd><p>Convert list of quantities (quantity_list), each with a specified old unit,
+to a quantity in units using pint constructor method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>quantity_series</strong><span class="classifier">pandas.Series</span></dt><dd><p>List of quantities. Values should be numeric, must not include NaN.</p>
+</dd>
+<dt><strong>unit_series</strong><span class="classifier">pandas.Series</span></dt><dd><p>List of units for each quantity in quantity_series. Values should be
+string, must not include NaN.</p>
+</dd>
+<dt><strong>units</strong><span class="classifier">string</span></dt><dd><p>Desired units.</p>
+</dd>
+<dt><strong>ureg</strong><span class="classifier">pint.UnitRegistry, optional</span></dt><dd><p>Unit Registry Object with any custom units defined. The default is None</p>
+</dd>
+<dt><strong>errors</strong><span class="classifier">string, optional</span></dt><dd><p>Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
+If ‘raise’, invalid dimension conversions will raise an exception.
+If ‘skip’, invalid dimension conversions will not be converted.
+If ‘ignore’, invalid dimension conversions will return the NaN.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pandas.Series</dt><dd><p>Converted values from quantity_series in units with original index.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.df_checks">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">df_checks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.df_checks" title="Permalink to this definition"></a></dt>
+<dd><p>Checks pandas.DataFrame for columns</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be checked.</p>
+</dd>
+<dt><strong>columns</strong><span class="classifier">list, optional</span></dt><dd><p>List of strings for column names. Default None, uses:
+‘ResultMeasure/MeasureUnitCode’,’ResultMeasureValue’,’CharacteristicName’</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.dimension_handling">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">dimension_handling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ureg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.dimension_handling" title="Permalink to this definition"></a></dt>
+<dd><p>Handles and routes common dimension conversions/contexts</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>unit</strong><span class="classifier">str</span></dt><dd><p>Current unit.</p>
+</dd>
+<dt><strong>units</strong><span class="classifier">str</span></dt><dd><p>Desired units.</p>
+</dd>
+<dt><strong>quant</strong><span class="classifier">pint.quantity, optional</span></dt><dd><p>Required for conversions to/from moles</p>
+</dd>
+<dt><strong>ureg</strong><span class="classifier">pint.UnitRegistry, optional</span></dt><dd><p>Unit Registry Object with any custom units defined. The default is None</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary with old_unit:new_unit.</p>
+</dd>
+<dt>list</dt><dd><p>List of Mole (substance) units.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.dissolved_oxygen">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">dissolved_oxygen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wqp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.dissolved_oxygen" title="Permalink to this definition"></a></dt>
+<dd><p>Standardizes ‘Dissolved oxygen (DO)’ characteristic using and returning
+the WQP Characteristic Info Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQCharData Object</span></dt><dd><p>WQP Characteristic Info Object.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQP Characteristic Info Object.</span></dt><dd><p>WQP Characteristic Info Object with updated attributes</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.harmonize_all">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">harmonize_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.harmonize_all" title="Permalink to this definition"></a></dt>
+<dd><p>Run harmonization on characteristicNames in table with existing functions.
+All results are standardized to default units. Intermediate columns are
+not retained.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with the expected columns.</p>
+</dd>
+<dt><strong>errors</strong><span class="classifier">string, optional</span></dt><dd><p>Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
+If ‘raise’, invalid dimension conversions will raise an exception.
+If ‘skip’, invalid dimension conversions will not be converted.
+If ‘ignore’, invalid dimension conversions will return the NaN.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.harmonize_generic">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">harmonize_generic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.harmonize_generic" title="Permalink to this definition"></a></dt>
+<dd><p>Harmonize a given char_val using the appropriate function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with the expected activity date time columns.</p>
+</dd>
+<dt><strong>char_val</strong><span class="classifier">string</span></dt><dd><p>Expected characteristicName.</p>
+</dd>
+<dt><strong>units_out</strong><span class="classifier">string, optional</span></dt><dd><p>Desired units to convert values into. The default is None.</p>
+</dd>
+<dt><strong>errors</strong><span class="classifier">string, optional</span></dt><dd><p>Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
+If ‘raise’, then invalid dimension conversions will raise an exception.
+If ‘skip’, then invalid dimension conversions will not be converted.
+If ‘ignore’, then invalid dimension conversions will return the NaN.</p>
+</dd>
+<dt><strong>intermediate_columns</strong><span class="classifier">Boolean, optional</span></dt><dd><p>Return intermediate columns. Default ‘False’ does not return these.</p>
+</dd>
+<dt><strong>report</strong><span class="classifier">bool, optional</span></dt><dd><p>Print a change summary report. The default is False.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.replace_in_col">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">replace_in_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.replace_in_col" title="Permalink to this definition"></a></dt>
+<dd><p>Simple string replacement for a column at rows filtered by mask</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>col</strong><span class="classifier">string</span></dt><dd><p>Column of DataFrame to update old_val to _new_val.</p>
+</dd>
+<dt><strong>old_val</strong><span class="classifier">string</span></dt><dd><p>Old value to replace.</p>
+</dd>
+<dt><strong>new_val</strong><span class="classifier">string</span></dt><dd><p>New value to use.</p>
+</dd>
+<dt><strong>mask</strong><span class="classifier">pandas.Series</span></dt><dd><p>Row conditional mask to only update a sub-set of rows.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated DataFrame.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.salinity">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">salinity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wqp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.salinity" title="Permalink to this definition"></a></dt>
+<dd><p>Standardizes ‘Salinity’ characteristic using and returning the WQP
+Characteristic Info Object.
+Note: PSU=PSS=ppth
+Note: ‘ppt’ is picopint in pint so it is changed to ‘ppth’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQCharData Object</span></dt><dd><p>WQP Characteristic Info Object.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQP Characteristic Info Object.</span></dt><dd><p>WQP Characteristic Info Object with updated attributes</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.sediment">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">sediment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wqp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.sediment" title="Permalink to this definition"></a></dt>
+<dd><p>Standardizes ‘Sediment’ characteristic using and returning
+the WQP Characteristic Info Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQCharData Object</span></dt><dd><p>WQP Characteristic Info Object.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQP Characteristic Info Object.</span></dt><dd><p>WQP Characteristic Info Object with updated attributes</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.turbidity">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">turbidity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wqp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.turbidity" title="Permalink to this definition"></a></dt>
+<dd><p>Standardizes ‘Turbidity’ characteristic using and returning
+the WQP Characteristic Info Object.</p>
+<dl class="simple">
+<dt>See USGS Report Chapter A6. Section 6.7. Turbidity</dt><dd><p><a class="reference external" href="https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf">https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf</a></p>
+</dd>
+<dt>See ASTM DÍ-17 for equivalent unit definitions:</dt><dd><p>‘NTU’  - 400-680nm (EPA 180.1), range 0.0-40
+‘NTRU’ - 400-680nm (2130B), range 0-10,000
+‘NTMU’ - 400-680nm
+‘FNU’  - 780-900nm (ISO 7027), range 0-1000
+‘FNRU’ - 780-900nm (ISO 7027), range 0-10,000
+‘FAU’  - 780-900nm, range 20-1000</p>
+</dd>
+<dt>Older methods:</dt><dd><p>‘FTU’ - lacks instrumentation specificity
+‘SiO2’ (ppm or mg/l) - concentration of calibration standard (=JTU)
+‘JTU’ - candle instead of formazin standard, near 40 NTU these may be
+equivalent, but highly variable</p>
+</dd>
+<dt>Conversions used:</dt><dd><p>cm &lt;-&gt; NTU see convert.cm_to_NTU()
+<a class="reference external" href="https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/">https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/</a></p>
+</dd>
+<dt>Alternative conversions not currectly used by default:</dt><dd><p>convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
+<a class="reference external" href="https://doi.org/10.5194/os-7-705-2011">https://doi.org/10.5194/os-7-705-2011</a>
+convert.SiO2_to_NTU linear relation from Otilia et al. 2013
+convert.JTU_to_NTU linear relation from Otilia et al. 2013
+Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
+“MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES.”
+<a class="reference external" href="https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf">https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf</a></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQCharData Object</span></dt><dd><p>WQP Characteristic Info Object.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>wqp</strong><span class="classifier">WQP Characteristic Info Object.</span></dt><dd><p>WQP Characteristic Info Object with updated attributes</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.unit_qa_flag">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">unit_qa_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trouble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.unit_qa_flag" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a QA_flag flag string for the units column. If unit_col is a copy
+flag_col can specify the original column name for the flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>unit_col</strong><span class="classifier">string</span></dt><dd><p>Column currently being checked. Used in string when flag_col is None</p>
+</dd>
+<dt><strong>trouble</strong><span class="classifier">string</span></dt><dd><p>Unit problem encountered (e.g., missing).</p>
+</dd>
+<dt><strong>unit</strong><span class="classifier">string</span></dt><dd><p>The default unit that replaced the problem unit.</p>
+</dd>
+<dt><strong>flag_col</strong><span class="classifier">string, optional</span></dt><dd><p>String to use when refering to the unit_col. If None, unit_col is used.
+The default is None.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>string</dt><dd><p>Flag to use in QA_flag column.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.harmonize.units_dimension">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.harmonize.</span></span><span class="sig-name descname"><span class="pre">units_dimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ureg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.harmonize.units_dimension" title="Permalink to this definition"></a></dt>
+<dd><p>List of unique units not in desired units dimension</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>series_in</strong><span class="classifier">pandas.Series</span></dt><dd><p>Series of units.</p>
+</dd>
+<dt><strong>units</strong><span class="classifier">string</span></dt><dd><p>Desired units.</p>
+</dd>
+<dt><strong>ureg</strong><span class="classifier">pint.UnitRegistry, optional</span></dt><dd><p>Unit Registry Object with any custom units defined. The default is None</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dim_list</strong><span class="classifier">list</span></dt><dd><p>List of units with mis-matched dimensions.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq.location">
+<span id="harmonize-wq-location-module"></span><h2>harmonize_wq.location module<a class="headerlink" href="#module-harmonize_wq.location" title="Permalink to this heading"></a></h2>
+<p>Functions to clean/correct location data.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.location.get_harmonized_stations">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.location.</span></span><span class="sig-name descname"><span class="pre">get_harmonized_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aoi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.location.get_harmonized_stations" title="Permalink to this definition"></a></dt>
+<dd><p>Queries the Water Quality Portal (<a class="reference external" href="https://waterquality.data.us">https://waterquality.data.us</a>) for staions
+with data matching the query, harmonizes those stations location
+information and clips it to the Area Of Interest (aoi) if specified.</p>
+<p>See www.waterqualitydata.us/webservices_documentation for API reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>query</strong><span class="classifier">dict</span></dt><dd><p>Water Quality Portal query as dictionary</p>
+</dd>
+<dt><strong>aoi</strong><span class="classifier">geopandas.GeoDataFrame, optional</span></dt><dd><p>Area of interest to clip stations to.
+The default None returns all stations in the query extent.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>stations_gdf</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>Harmonized stations.</p>
+</dd>
+<dt><strong>stations</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Raw station results from WQP.</p>
+</dd>
+<dt><strong>site_md</strong><span class="classifier">TYPE</span></dt><dd><p>WQP query metadata.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.location.harmonize_locations">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.location.</span></span><span class="sig-name descname"><span class="pre">harmonize_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_EPSG</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4326</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.location.harmonize_locations" title="Permalink to this definition"></a></dt>
+<dd><p>Takes a DataFrame with lat/lon in multiple Coordinate Reference Systems,
+transforms them to outCRS and converts to GeoDataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with the required columns to be converted to GeoDataFrame.</p>
+</dd>
+<dt><strong>out_EPSG</strong><span class="classifier">Integer, optional</span></dt><dd><p>EPSG factory code for desired output Coordinate Reference System datum.
+The default is 4326, for the WGS84 Datum used by WQP queries.</p>
+</dd>
+<dt><strong>intermediate_columns</strong><span class="classifier">Boolean, optional</span></dt><dd><p>Return intermediate columns. Default ‘False’ does not return these.</p>
+</dd>
+<dt><strong>Keyword Arguments:</strong></dt><dd></dd>
+<dt><strong>crs_col</strong><span class="classifier">string, optional</span></dt><dd><p>Name of column in DataFrame with the Coordinate Reference System datum.
+The default is ‘HorizontalCoordinateReferenceSystemDatumName’.</p>
+</dd>
+<dt><strong>lat_col</strong><span class="classifier">string, optional</span></dt><dd><p>Name of column in DataFrame with the lattitude coordinate.
+The default is ‘LatitudeMeasure’.</p>
+</dd>
+<dt><strong>lon_col</strong><span class="classifier">string, optional</span></dt><dd><p>Name of column in DataFrame with the longitude coordinate.
+The default is ‘LongitudeMeasure’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>gdf</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>GeoDataFrame of df_in with coordinates in out_EPSG datum.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.location.infer_CRS">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.location.</span></span><span class="sig-name descname"><span class="pre">infer_CRS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_EPSG</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EPSG'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_crs_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crs_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'HorizontalCoordinateReferenceSystemDatumName'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.location.infer_CRS" title="Permalink to this definition"></a></dt>
+<dd><p>Replace missing or unrecognized Coordinate Reference System (CRS) with
+desired CRS and add QA_flag about it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>out_EPSG</strong><span class="classifier">string</span></dt><dd><p>Desired CRS to use.</p>
+</dd>
+<dt><strong>out_col</strong><span class="classifier">string, optional</span></dt><dd><p>Column in df to write out_EPSG to. The default is ‘EPSG’.</p>
+</dd>
+<dt><strong>bad_crs_val</strong><span class="classifier">string, optional</span></dt><dd><p>Bad Coordinate Reference System (CRS) datum name value to replace.
+The default is None for missing datum.</p>
+</dd>
+<dt><strong>crs_col</strong><span class="classifier">string, optional</span></dt><dd><p>Datum column in df_in. The default is
+‘HorizontalCoordinateReferenceSystemDatumName’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.location.transform_vector_of_points">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.location.</span></span><span class="sig-name descname"><span class="pre">transform_vector_of_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_EPSG</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.location.transform_vector_of_points" title="Permalink to this definition"></a></dt>
+<dd><p>Transform points by vector (sub-set by datum)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>datum</strong><span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt><strong>out_EPSG</strong><span class="classifier">Integer</span></dt><dd><p>EPSG factory code for desired output Coordinate Reference System datum.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq.visualize">
+<span id="harmonize-wq-visualize-module"></span><h2>harmonize_wq.visualize module<a class="headerlink" href="#module-harmonize_wq.visualize" title="Permalink to this heading"></a></h2>
+<p>Functions to help visualize data.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.visualize.map_counts">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.visualize.</span></span><span class="sig-name descname"><span class="pre">map_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.visualize.map_counts" title="Permalink to this definition"></a></dt>
+<dd><p>Return geodatadrame summarized by count of results for each station</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.Dataframe</span></dt><dd><p>DataFrame with subset of results.</p>
+</dd>
+<dt><strong>gdf</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>Geodataframe with monitoring locations.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>geopandas.GeoDataFrame</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Return a geodataframe summarized by counts and plot it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cnt_gdf</span> <span class="o">=</span> <span class="n">harmonize</span><span class="o">.</span><span class="n">visualize</span><span class="o">.</span><span class="n">map_counts</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">stations_clipped</span><span class="p">)</span>
+<span class="n">cnt_gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">&#39;cnt&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.visualize.map_measure">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.visualize.</span></span><span class="sig-name descname"><span class="pre">map_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.visualize.map_measure" title="Permalink to this definition"></a></dt>
+<dd><p>Return geodataframe summarized by average of results for each station</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.Dataframe</span></dt><dd><p>DataFrame with subset of results.</p>
+</dd>
+<dt><strong>gdf</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>Geodataframe with monitoring locations.</p>
+</dd>
+<dt><strong>col</strong><span class="classifier">string</span></dt><dd><p>Column name in df_in to aggregate results for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>geopandas.GeoDataFrame</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.visualize.print_report">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.visualize.</span></span><span class="sig-name descname"><span class="pre">print_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_col_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.visualize.print_report" title="Permalink to this definition"></a></dt>
+<dd><p>Prints a standardized report of changes made</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results_in</strong><span class="classifier">pandas.Dataframe</span></dt><dd><p>DataFrame with subset of results.</p>
+</dd>
+<dt><strong>out_col</strong><span class="classifier">string</span></dt><dd><p>Name of column in results_in with final result.</p>
+</dd>
+<dt><strong>unit_col_in</strong><span class="classifier">string</span></dt><dd><p>Name of column with original units.</p>
+</dd>
+<dt><strong>threshold</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary with min and max keys. The default is None.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.visualize.station_summary">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.visualize.</span></span><span class="sig-name descname"><span class="pre">station_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.visualize.station_summary" title="Permalink to this definition"></a></dt>
+<dd><p>Return summary table with rows for each station, count and column average</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.Dataframe</span></dt><dd><p>DataFrame with subset of results.</p>
+</dd>
+<dt><strong>col</strong><span class="classifier">string</span></dt><dd><p>Column name in df_in to summarize results for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pandas.DataFrame</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq.wrangle">
+<span id="harmonize-wq-wrangle-module"></span><h2>harmonize_wq.wrangle module<a class="headerlink" href="#module-harmonize_wq.wrangle" title="Permalink to this heading"></a></h2>
+<p>Functions to help re-shape the WQP dataframe</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.add_activities_to_df">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">add_activities_to_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.add_activities_to_df" title="Permalink to this definition"></a></dt>
+<dd><p>Add activities to dataframe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>mask</strong><span class="classifier">pandas.Series</span></dt><dd><p>Row conditional mask to sub-set rows to get activities for</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_merged</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Table with added info from activities table by location id.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.add_detection">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">add_detection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.add_detection" title="Permalink to this definition"></a></dt>
+<dd><p>Add detection quantitation information for results where available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>char_val</strong><span class="classifier">string</span></dt><dd><p>Specific characteristic name to apply to</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_merged</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Table with added info from detection quantitation table columns.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.as_gdf">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">as_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.as_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a geodataframe for shp if shp is not already a geodataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shp</strong><span class="classifier">string</span></dt><dd><p>Filename for something that needs to be a geodataframe.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>shp</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>GeoDataFrame for shp if it isn’t already a geodataframe.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.clip_stations">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">clip_stations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aoi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.clip_stations" title="Permalink to this definition"></a></dt>
+<dd><p>Clip it to area of interest. aoi is first transformed to stations CRS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>stations</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>Points representing the stations.</p>
+</dd>
+<dt><strong>aoi</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>Polygon representing the area of interest.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>pandas.DataFrame</dt><dd><p>stations_gdf points clipped to the aoi_gdf.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.collapse_results">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">collapse_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.collapse_results" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.get_activities_by_loc">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">get_activities_by_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">characteristic_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.get_activities_by_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Quick attempt to segment batch what_activities - may not stay</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>characteristic_names</strong><span class="classifier">list</span></dt><dd><p>List of characteristic names to retrieve activities for.</p>
+</dd>
+<dt><strong>locations</strong><span class="classifier">list</span></dt><dd><p>List of location IDs to retrieve activities for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>activities</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Dataframe from dataRetrieval.what_activities().</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.get_bounding_box">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">get_bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.get_bounding_box" title="Permalink to this definition"></a></dt>
+<dd><p>Return bounding box for shp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shp</strong><span class="classifier">spatial file</span></dt><dd><p>Any geometry that is readable by geopandas.</p>
+</dd>
+<dt><strong>idx</strong><span class="classifier">integer, optional</span></dt><dd><p>Index for geometry to get bounding box for.
+The default is None to return the total extent bounding box.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Coordinates for bounding box as string and seperated by ‘, ‘.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.get_detection_by_loc">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">get_detection_by_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_id_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.get_detection_by_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve detection quantitation results by location, and characteristic
+name (Optional). ResultIdentifier can not be used to search location id is
+used instead and then results are limited by ResultIdentifiers.</p>
+<dl class="simple">
+<dt>NOTES: There can be multiple Result Detection Quantitation limits / result</dt><dd><p>A result may have a resultid without any corresponding data in the
+Detection Quantitation limits table (nan in full result table).</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>loc_series</strong><span class="classifier">pandas.Series</span></dt><dd><p>Series of location IDs to retrieve detection limits for.</p>
+</dd>
+<dt><strong>result_id_series</strong><span class="classifier">pandas.Series</span></dt><dd><p>Series of result IDs to limit retrieved data.</p>
+</dd>
+<dt><strong>char_val</strong><span class="classifier">string, optional.</span></dt><dd><p>Specific characteristic name to retrieve detection limits for.
+The default None, uses all characteristicNames</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df_out</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Detection Quantitation limits table corresponding to input arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.merge_tables">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">merge_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df2_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'activity'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.merge_tables" title="Permalink to this definition"></a></dt>
+<dd><p>Merges two tables (df1 &amp; df2), adding df2_cols to df1 where merge_cols
+match.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df1</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>df2</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with new columns (df2_cols) that will be added to df_in.</p>
+</dd>
+<dt><strong>df2_cols</strong><span class="classifier">string, optional</span></dt><dd><p>Columns in df2 to add to df1. The default is ‘all’, for all columns
+not already in df1.</p>
+</dd>
+<dt><strong>merge_cols</strong><span class="classifier">string, optional</span></dt><dd><p>Columns in both DataFrames to use in join.
+The default is ‘activity’, for a subset of columns in the activity df2.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>merged_results</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated copy of df_in.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.split_col">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">split_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QA_flag'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QA'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.split_col" title="Permalink to this definition"></a></dt>
+<dd><p>Splits column so that each value is in a characteristic specific column</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be updated.</p>
+</dd>
+<dt><strong>result_col</strong><span class="classifier">string, optional</span></dt><dd><p>Column name with results to split. The default is ‘QA_flag’.</p>
+</dd>
+<dt><strong>col_prefix</strong><span class="classifier">string, optional</span></dt><dd><p>Prefix to be added to new result column names. The default is ‘QA’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Updated DataFrame.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.split_table">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">split_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_in</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.split_table" title="Permalink to this definition"></a></dt>
+<dd><p>Splits dataframe in two, one with main results columns and one with
+Characteristic based metadata.</p>
+<p>Note: runs datetime() and harmonize_depth() if expected columns are missing</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_in</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame that will be used to generate results.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>main_df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with main results.</p>
+</dd>
+<dt><strong>chars_df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with Chracteristic based metadata.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="harmonize_wq.wrangle.to_simple_shape">
+<span class="sig-prename descclassname"><span class="pre">harmonize_wq.wrangle.</span></span><span class="sig-name descname"><span class="pre">to_simple_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_shp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#harmonize_wq.wrangle.to_simple_shape" title="Permalink to this definition"></a></dt>
+<dd><p>Simplifies GeoDataFrame for better export to shapefile. Adopts and adapts
+‘Simple’ from NWQMC/pywqp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>gdf</strong><span class="classifier">geopandas.GeoDataFrame</span></dt><dd><p>The GeoDataFrame to be exported to shapefile.</p>
+</dd>
+<dt><strong>shp_out: string</strong></dt><dd><p>Shapefile directory and file name to be written.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-harmonize_wq">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-harmonize_wq" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="harmonize_wq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing to harmonize_wq" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, US Environmental Protection Agency.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
