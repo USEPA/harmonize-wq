@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct 22 10:01:10 2021
-
-Module with basis dictionaries and functions
-
-@author: jbousqui
+    Functions to process chracteristic basis or return basis dictionary.
 """
 from warnings import warn
 from numpy import nan

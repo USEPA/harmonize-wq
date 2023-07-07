@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr  6 11:02:01 2022
-
-This module contains functions to help re-shape the WQP dataframe
-
-@author: jbousqui
+    Functions to help re-shape the WQP dataframe
 """
 import pandas
 import geopandas

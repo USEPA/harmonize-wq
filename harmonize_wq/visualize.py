@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 27 15:57:16 2022
-
-This module contains functions to help visualize data.
-
-@author: jbousqui
+    Functions to help visualize data.
 """
 import pandas
 import geopandas

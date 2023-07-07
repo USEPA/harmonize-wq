@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 27 15:34:30 2022
-
-This module contains functions to clean/correct location data.
-
-@author: jbousqui
+    Functions to clean/correct location data.
 """
 from pyproj import Transformer
 from shapely.geometry import shape

@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Aug 13 06:58:16 2021
-
-Source files for domain lists with all potential values (to filter on)
-
-For small or frequently utilized domains I've hard coded dictionaries and
-have a url method to update.
-
-@author: jbousqui
+    Functions to return domain lists with all potential values, mainly for use
+    as filters. Small or frequently utilized domains may be hardcoded. A url
+    based method can be used to get the most up to date domain list.
 """
 import requests
 import pint

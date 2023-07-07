@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Feb  1 16:41:35 2022
-
-Module with functions to convert from one unit to another, sometimes using
-pint decorators. Contains several unit conversions functions not in Pint.
-
-@author: jbousqui
+    Functions to convert from one unit to another, sometimes using
+    pint decorators. Contains several unit conversion functions not in Pint.
 """
 import pint
 

@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon May  9 11:43:25 2022
-
-This module contains functions that can be applied to the entire dataset or
-subsets of the dataset to clean/correct additional columns.
-
-@author: jbousqui
+    Functions that can be applied to the entire dataset or subsets of the
+    dataset to clean/correct additional columns.
 """
 from warnings import warn
 import dataretrieval.utils

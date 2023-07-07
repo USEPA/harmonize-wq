@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Sep  7 14:08:08 2021
-
-Class and functions for harmonizing data retrieved from Water Quality Portal
-
-@author: jbousqui
+    Class and functions for harmonizing data retrieved from EPA's Water Quality
+    Portal (WQP)
 """
 from types import SimpleNamespace
 from warnings import warn
