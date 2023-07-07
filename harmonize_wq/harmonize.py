@@ -35,27 +35,6 @@ class WQCharData():
     units: str
         Units all results in out_col will be converted into. Default units are
         returned from domains.OUT_UNITS[out_col].
-
-    Methods
-    -------
-    coerce_measure()
-    check_units()
-    infer_units()
-    check_basis()
-    update_ureg()
-    update_units()
-    measure_mask()
-    unit_mask()
-    char_val()
-    convert_units()
-    apply_conversion()
-    dimensions_list()
-    replace_unit_by_str()
-    replace_unit_by_dict()
-    fraction()
-    handle_dimensions()
-    moles_convert()
-
     """
 
     def __init__(self, df_in, char_val):
