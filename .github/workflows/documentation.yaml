@@ -21,6 +21,7 @@ jobs:
       - name: Sphinx to gh-pages Action
         uses: uibcdf/action-sphinx-docs-to-gh-pages@v1.1.0-beta
         with:
+          branch: doc
           dir_docs: docs
           sphinxapiopts: '--separate -o . ../'
           sphinxapiexclude: '../*setup* ../*.ipynb'
