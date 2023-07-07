@@ -18,11 +18,13 @@ jobs:
       - name: Sphinx build
         run: |
           sphinx-build doc _build
-      - name: Sphinx to gh-pages Action
-        uses: uibcdf/action-sphinx-docs-to-gh-pages@v1.1.0-beta
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          branch: doc
-          dir_docs: docs
-          sphinxapiopts: '--separate -o . ../'
-          sphinxapiexclude: '../*setup* ../*.ipynb'
-          sphinxopts: ''
+          # Upload entire repository
+          path: './docs/_build/html'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
