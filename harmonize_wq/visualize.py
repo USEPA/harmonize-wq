@@ -75,15 +75,16 @@ def map_counts(df_in, gdf, col=None):
     gdf : geopandas.GeoDataFrame
         Geodataframe with monitoring locations.
 
+    Examples
+    --------
+    Return a geodataframe summarized by counts and plot it::
+        
+        cnt_gdf = harmonize.visualize.map_counts(df, stations_clipped)
+        cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
+
     Returns
     -------
     geopandas.GeoDataFrame
-
-    Example
-    -------
-    cnt_gdf = harmonize.visualize.map_counts(df, stations_clipped)
-    cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
-
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'

@@ -363,21 +363,19 @@ def xy_datum():
     Get dictionary where key is expected string and value is dictionary with
     "Description": string (Not currently used) and "EPSG": int (4-digit code).
 
-    NOTES:
-    -------
+    Notes
+    -----
     source url: f'{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip'
-    Aything not in dict will be nan (must be int), i.e.:
-        "OTHER": {"Description": 'Other',
-                  "EPSG": nan},
-        "UNKWN": {"Description": 'Unknown',
-                  "EPSG": nan},
+    Anything not in dict will be nan, i.e. must be int so these are missing:
+    "OTHER": {"Description": 'Other', "EPSG": nan},
+    "UNKWN": {"Description": 'Unknown', "EPSG": nan}
 
     Returns
     -------
     dict
         Dictionary where exhaustive:
             {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
-                                                            EPSG:int}}
+            EPSG:int}}
     """
     return {"NAD27": {"Description": 'North American Datum 1927',
                       "EPSG": 4267},
