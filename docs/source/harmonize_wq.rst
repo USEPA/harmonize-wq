@@ -1,9 +1,6 @@
 harmonize\_wq package
 =====================
 
-Submodules
-----------
-
 harmonize\_wq.basis module
 --------------------------
 
@@ -64,14 +61,6 @@ harmonize\_wq.wrangle module
 ----------------------------
 
 .. automodule:: harmonize_wq.wrangle
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: harmonize_wq
    :members:
    :undoc-members:
    :show-inheritance:
