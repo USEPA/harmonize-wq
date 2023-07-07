@@ -35,7 +35,6 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.doctest",
     "sphinx.ext.coverage",
-    "numpydoc",
     "sphinx.ext.napoleon",
 ]
 
