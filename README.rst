@@ -1,132 +1,99 @@
-*****
-harmonize-wq
-*****
-
+# harmonize-wq
 Standardize, clean and wrangle Water Quality Portal data into more analytic-ready formats
 
-US EPA’s `Water Quality Portal (WQP) <https://www.waterqualitydata.us/>`_ aggregates water quality, biological, and physical data provided by many organizations and has become an essential resource with tools to query and retrieval data using `python <https://github.com/USGS-python/dataretrieval>`_ or `R <https://github.com/USGS-R/dataRetrieval>`_. Given the variety of data and variety of data originators, using the data in analysis often requires data cleaning to ensure it meets the required quality standards and data wrangling to get it in a more analytic-ready format.  Recognizing the definition of analysis-ready varies depending on the analysis, the harmonixe_wq package is intended to be a flexible water quality specific framework to help:
-
-* Identify differences in data units (including speciation and basis)
-* Identify differences in sampling or analytic methods
-* Resolve data errors using transparent assumptions
-* Transform data from long to wide format
+US EPA’s [Water Quality Portal (WQP)](https://www.waterqualitydata.us/) aggregates water quality, biological, and physical data provided by many organizations and has become an essential resource with tools to query and retrieval data using [python](https://github.com/USGS-python/dataretrieval) or [R](https://github.com/USGS-R/dataRetrieval). Given the variety of data and variety of data originators, using the data in analysis often requires data cleaning to ensure it meets the required quality standards and data wrangling to get it in a more analytic-ready format.  Recognizing the definition of analysis-ready varies depending on the analysis, the harmonixe_wq package is intended to be a flexible water quality specific framework to help:
+- Identify differences in data units (including speciation and basis)
+- Identify differences in sampling or analytic methods
+- Resolve data errors using transparent assumptions
+- Transform data from long to wide format
 
 Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
 
-For more complete tutorial information, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
+For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
 
-Quick Start
-########
-
+## Quick Start
 harmonize_wq can be installed from git using pip:
+```
+pip install git+https://github.com/USEPA/harmonize-wq.git
+```
 
-.. code-block:: python3
-   
-    pip install git+https://github.com/USEPA/harmonize-wq.git
+## Example Workflow
+### dataretrieval Query for a geojson
 
+```python
+import dataretrieval.wqp as wqp
+from harmonize_wq import wrangle
 
-Example Workflow
-########
-dataretrieval Query for a geojson
-**********************
+# File for area of interest
+aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
 
-.. code-block:: python3
+# Build query
+query = {'characteristicName': ['Temperature, water',
+                                'Depth, Secchi disk depth',
+                                ]}
+query['bBox'] = wrangle.get_bounding_box(aoi_url)
+query['dataProfile'] = 'narrowResult'
 
-    import dataretrieval.wqp as wqp
-    from harmonize_wq import wrangle
+# Run query
+res_narrow, md_narrow = wqp.get_results(**query)
 
-    # File for area of interest
-    aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+# dataframe of downloaded results
+res_narrow
+```
 
-    # Build query
-    query = {'characteristicName': ['Temperature, water',
-                                    'Depth, Secchi disk depth',
-                                    ]}
-    query['bBox'] = wrangle.get_bounding_box(aoi_url)
-    query['dataProfile'] = 'narrowResult'
+### Harmonize and clean all results
 
-    # Run query
-    res_narrow, md_narrow = wqp.get_results(**query)
+```python
+from harmonize_wq import harmonize
+from harmonize_wq import clean
 
-    # dataframe of downloaded results
-    res_narrow
+df_harmonized = harmonize.harmonize_all(res_narrow, errors='raise')
+df_harmonized
 
+# Clean up other columns of data
+df_cleaned = clean.datetime(df_harmonized)  # datetime
+df_cleaned = clean.harmonize_depth(df_cleaned)  # Sample depth
+df_cleaned
+```
 
-Harmonize and clean all results
-**********************
-
-.. code-block:: python3
-
-    from harmonize_wq import harmonize
-    from harmonize_wq import clean
-
-    df_harmonized = harmonize.harmonize_all(res_narrow, errors='raise')
-    df_harmonized
-
-    # Clean up other columns of data
-    df_cleaned = clean.datetime(df_harmonized)  # datetime
-    df_cleaned = clean.harmonize_depth(df_cleaned)  # Sample depth
-    df_cleaned
-
-Transform results from long to wide format
-**********************
+### Transform results from long to wide format
 There are many columns in the dataframe that are characteristic specific, that is they have different values for the same sample depending on the characteristic. To ensure one result for each sample after the transformation of the data these columns must either be split, generating a new column for each characteristic with values, or moved out from the table if not being used.
 
-.. code-block:: python3
+```python
+from harmonize_wq import wrangle
 
-    from harmonize_wq import wrangle
+# Split QA column into multiple characteristic specific QA columns
+df_full = wrangle.split_col(df_cleaned)
 
-    # Split QA column into multiple characteristic specific QA columns
-    df_full = wrangle.split_col(df_cleaned)
+# Divide table into columns of interest (main_df) and characteristic specific metadata (chars_df)
+main_df, chars_df = wrangle.split_table(df_full)
 
-    # Divide table into columns of interest (main_df) and characteristic specific metadata (chars_df)
-    main_df, chars_df = wrangle.split_table(df_full)
+# Combine rows with the same sample organization, activity, location, and datetime
+df_wide = wrangle.collapse_results(main_df)
 
-    # Combine rows with the same sample organization, activity, location, and datetime
-    df_wide = wrangle.collapse_results(main_df)
+```
 
 The number of columns in the resulting table is greatly reduced
 
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|        Output Column       |     Type    |               Source                   |           Changes             |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|MonitoringLocationIdentifier| Defines row |MonitoringLocationIdentifier            |NA                             |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|Activity_datetime           | Defines row |ActivityStartDate                       |Combined and UTC               |
-|                            |             |ActivityStartTime/Time                  |                               |
-|                            |             |ActivityStartTime/TimeZoneCode          |                               |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|ActivityIdentifier          | Defines row |ActivityIdentifier                      |NA                             |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|OrganizationIdentifier      | Defines row |OrganizationIdentifier                  |NA                             |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|OrganizationFormalName      | Metadata    |OrganizationFormalName                  |NA                             |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|ProviderName                | Metadata    |ProviderName                            |NA                             |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|StartDate                   | Metadata    |ActivityStartDate                       |Preserves date where time NAT  |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|Depth                       | Metadata    |ResultDepthHeightMeasure/MeasureValue   |Standardized to meters         |
-|                            |             |ResultDepthHeightMeasure/MeasureUnitCode|                               |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|Secchi                      | Result      |ResultMeasureValue                      |Standardized to meters         |
-|                            |             |ResultMeasure/MeasureUnitCode           |                               |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|QA_Secchi                   | QA          |NA                                      |Harmonization quality issues   |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|Temperature                 | Result      |ResultMeasureValue                      |Standardized to degrees Celcius|
-|                            |             |ResultMeasure/MeasureUnitCode           |                               |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
-|QA_Temperature              | QA          |NA                                      |Harmonization quality issues   |
-+----------------------------+-------------+----------------------------------------+-------------------------------+
+Output Column | Type | Source | Changes
+--- | --- | --- | ---
+MonitoringLocationIdentifier | Defines row | MonitoringLocationIdentifier | NA 
+Activity_datetime | Defines row | ActivityStartDate, ActivityStartTime/Time, ActivityStartTime/TimeZoneCode | Combined and UTC
+ActivityIdentifier | Defines row | ActivityIdentifier | NA
+OrganizationIdentifier | Defines row | OrganizationIdentifier | NA 
+OrganizationFormalName | Metadata| OrganizationFormalName | NA
+ProviderName | Metadata | ProviderName | NA
+StartDate | Metadata | ActivityStartDate | Preserves date where time NAT
+Depth | Metadata | ResultDepthHeightMeasure/MeasureValue, ResultDepthHeightMeasure/MeasureUnitCode | standardized to meters
+Secchi | Result | ResultMeasureValue, ResultMeasure/MeasureUnitCode | standardized to meters
+QA_Secchi | QA | NA | harmonization processing quality issues
+Temperature | Result | ResultMeasureValue, ResultMeasure/MeasureUnitCode | standardized to degrees Celcius
+QA_Temperature | QA | NA | harmonization processing quality issues
 
-Issue Tracker
-########
-
+## Issue Tracker
 harmonize_wq is under development. Please report any bugs and enhancement ideas using the issue track:
 https://github.com/USEPA/harmonize-wq/issues
 
 
-Disclaimer
-########
+## Disclaimer
 The United States Environmental Protection Agency (EPA) GitHub project code is provided on an "as is" basis and the user assumes responsibility for its use.  EPA has relinquished control of the information and no longer has responsibility to protect the integrity , confidentiality, or availability of the information.  Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA.  The EPA seal and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or the United States Government.
