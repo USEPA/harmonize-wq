@@ -14,10 +14,10 @@ import sys
 
 try:
     # importlib.metadata is present in Python 3.8 and later
-    import importlib.metadata as importlib_metadata
+    from importlib.metadata import version
 except ImportError:
     # use the shim package importlib-metadata pre-3.8
-    import importlib_metadata as importlib_metadata
+    from importlib_metadata import version
 
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../.."))
