@@ -196,7 +196,7 @@ def characteristic_cols(category=None):
 
     Parameters
     ----------
-    categoy : string, optional
+    category : string, optional
         Subset results: 'Basis', 'Bio', 'Depth', 'QA', 'activity', 'analysis',
         'depth', 'measure', 'sample'.
         The default is None.
@@ -410,7 +410,7 @@ def stations_rename():
     """
     ESRI places a length restriction on shapefile field names. This returns a
     dictionary with the original water quality portal field name (as key) and
-    shortend column name for writing as shp. We suggest using the longer
+    shortened column name for writing as shp. We suggest using the longer
     original name as the field alias when writing as .shp.
 
     Returns

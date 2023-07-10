@@ -12,7 +12,7 @@ from harmonize_wq import wrangle
 
 def datetime(df_in):
     """
-    Format time using dataretrieval and ActivityStart
+    Format time using dataretrieval and 'ActivityStart'
 
     Parameters
     ----------
@@ -39,19 +39,21 @@ def datetime(df_in):
 
 def harmonize_depth(df_in, units='meter'):
     """
-    Note - doesn't currently pass errors or ureg
+    Notes
+    -----
+    Doesn't currently pass errors or ureg
 
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with the required ResultDepthHeight columns.
+        DataFrame with the required 'ResultDepthHeight' columns.
     units : string, optional
         Desired units. The default is 'meter'.
 
     Returns
     -------
     df_out : pandas.DataFrame
-        DataFrame with new Depth colummn replacing ResultDepthHeight columns.
+        DataFrame with new Depth column replacing 'ResultDepthHeight' columns.
 
     """
     df_out = df_in.copy()
@@ -81,7 +83,7 @@ def check_precision(df_in, col, limit=3):
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with the required ResultDepthHeight columns.
+        DataFrame with the required 'ResultDepthHeight' columns.
     unit_col : string
         Desired column in df_in.
     limit : integer, optional
@@ -90,7 +92,7 @@ def check_precision(df_in, col, limit=3):
     Returns
     -------
     df_out : pandas.DataFrame
-        Dataframe with the quality assurance flag for precision
+        DataFrame with the quality assurance flag for precision
 
     """
     df_out = df_in.copy()

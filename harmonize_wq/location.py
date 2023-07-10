@@ -80,7 +80,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
         Name of column in DataFrame with the Coordinate Reference System datum.
         The default is 'HorizontalCoordinateReferenceSystemDatumName'.
     lat_col : string, optional
-        Name of column in DataFrame with the lattitude coordinate.
+        Name of column in DataFrame with the latitude coordinate.
         The default is 'LatitudeMeasure'.
     lon_col : string, optional
         Name of column in DataFrame with the longitude coordinate.
@@ -169,9 +169,9 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
 
 def get_harmonized_stations(query, aoi=None):
     """
-    Queries the Water Quality Portal (https://waterquality.data.us) for staions
-    with data matching the query, harmonizes those stations location
-    information and clips it to the Area Of Interest (aoi) if specified.
+    Queries the Water Quality Portal (https://waterquality.data.us) for
+    stations with data matching the query, harmonizes those stations location
+    information and clips it to the Area Of Interest (AOI) if specified.
 
     See www.waterqualitydata.us/webservices_documentation for API reference
 
