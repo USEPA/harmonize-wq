@@ -11,13 +11,8 @@
 
 import os
 import sys
-
-try:
-    # importlib.metadata is present in Python 3.8 and later
-    from importlib.metadata import version
-except ImportError:
-    # use the shim package importlib-metadata pre-3.8
-    from importlib_metadata import version
+import harmonize_wq
+#from importlib.metadata import version
 
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../.."))
@@ -29,11 +24,13 @@ sys.path.insert(0, os.path.abspath("../.."))
 project = 'harmonize_wq'
 copyright = '2023, US Environmental Protection Agency'
 author = 'Justin Bousquin (US Environmental Protection Agency)'
-release = version(project)
+
+# ToDO:single source version
+#version = "0.3.0"
+#release = version(project)
+release = harmonize_wq.__version__
 version = '.'.join(release.split('.')[:2])
 
-#import harmonize_wq
-#release = release = harmonize_wq.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
