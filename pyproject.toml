@@ -7,19 +7,31 @@ packages = ["harmonize_wq"]
 
 [project]
 name = "harmonize_wq"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
   { name="Justin Bousquin", email="Bousquin.Justin@epa.gov" },
 ]
 description = "Package to standardize, clean and wrangle Water Quality Portal data into more analytic-ready formats"
 readme = "README.md"
 requires-python = ">=3.7"
+keywords = ["USEPA", "water data", "water quality"]
+license = {file = "LICENSE"}
 classifiers = [
     "Programming Language :: Python :: 3",
     "License ::  CC0",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "geopandas",
+    "pint",
+    "dataretrieval",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+doc = ["sphinx"]
 
 [project.urls]
 "Homepage" = "https://github.com/USEPA/harmonize-wq"
+"Documentation" = "https://usepa.github.io/harmonize-wq/"
 "Bug Tracker" = "https://github.com/USEPA/harmonize-wq/issues"
