@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath("../.."))
 project = 'harmonize_wq'
 copyright = '2023, US Environmental Protection Agency'
 author = 'Justin Bousquin (US Environmental Protection Agency)'
-release = '0.2.0'
+release = '0.3.0'
 
 #import harmonize_wq
 #release = release = harmonize_wq.__version__
