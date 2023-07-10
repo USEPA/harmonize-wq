@@ -41,14 +41,20 @@ res_narrow, md_narrow = wqp.get_results(**query)
 res_narrow
 ```
 
-### Harmonize and clean all results
+### Harmonize results
 
 ```python
 from harmonize_wq import harmonize
-from harmonize_wq import clean
 
+# Harmonize all results
 df_harmonized = harmonize.harmonize_all(res_narrow, errors='raise')
 df_harmonized
+```
+
+### Clean results
+
+```python
+from harmonize_wq import clean
 
 # Clean up other columns of data
 df_cleaned = clean.datetime(df_harmonized)  # datetime

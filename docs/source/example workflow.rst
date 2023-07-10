@@ -34,15 +34,24 @@ Harmonize and clean all results
 .. code-block:: python3
 
     from harmonize_wq import harmonize
-    from harmonize_wq import clean
-
+    
+    # Harmonize all results
     df_harmonized = harmonize.harmonize_all(res_narrow, errors='raise')
     df_harmonized
+
+
+Harmonize and clean all results
+**********************
+
+.. code-block:: python3
+
+    from harmonize_wq import clean
 
     # Clean up other columns of data
     df_cleaned = clean.datetime(df_harmonized)  # datetime
     df_cleaned = clean.harmonize_depth(df_cleaned)  # Sample depth
     df_cleaned
+
 
 Transform results from long to wide format
 **********************
