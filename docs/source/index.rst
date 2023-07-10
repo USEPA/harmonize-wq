@@ -17,6 +17,7 @@ Standardize, clean and wrangle Water Quality Portal data into more analytic-read
 
     overview
     installing
+    example workflow
 
 .. toctree::
     :maxdepth: 1
