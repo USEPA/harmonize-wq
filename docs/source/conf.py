@@ -11,6 +11,7 @@
 
 import os
 import sys
+from importlib.metadata import version
 
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../.."))
@@ -22,7 +23,8 @@ sys.path.insert(0, os.path.abspath("../.."))
 project = 'harmonize_wq'
 copyright = '2023, US Environmental Protection Agency'
 author = 'Justin Bousquin (US Environmental Protection Agency)'
-release = '0.3.0'
+release = version(project)
+version = '.'.join(release.split('.')[:2])
 
 #import harmonize_wq
 #release = release = harmonize_wq.__version__
@@ -71,7 +73,8 @@ napoleon_google_docstring = False
 napoleon_numpy_docstring = True
 
 # -- Options for sphinx-contrib\apidoc -----------------------------------------------------
+# NOT currently using apidoc
 apidoc_separate_modules = True
-apidoc_module_dir = "../pyaqsapi"
+apidoc_module_dir = "../harmonize_wq"
 apidoc_excluded_paths = ["tests"]
 apidoc_module_first = True
