@@ -28,8 +28,8 @@ dataretrieval Query for a geojson
     res_narrow
 
 
-Harmonize and clean all results
-**********************
+Harmonize results
+*****************
 
 .. code-block:: python3
 
@@ -40,8 +40,8 @@ Harmonize and clean all results
     df_harmonized
 
 
-Harmonize and clean all results
-**********************
+Clean results
+*************
 
 .. code-block:: python3
 
