@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../.."))
 
 #from importlib.metadata import version
-import harmonize_wq
+#import harmonize_wq
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -26,10 +26,10 @@ copyright = '2023, US Environmental Protection Agency'
 author = 'Justin Bousquin (US Environmental Protection Agency)'
 
 # ToDO:single source version
-#version = "0.3.0"
+version = "0.3.0"
 #release = version(project)
-release = harmonize_wq.__version__
-version = '.'.join(release.split('.')[:2])
+#release = harmonize_wq.__version__
+#version = '.'.join(release.split('.')[:2])
 
 
 # -- General configuration ---------------------------------------------------
