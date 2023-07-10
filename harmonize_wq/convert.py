@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Feb  1 16:41:35 2022
-
-Module with functions to convert from one unit to another, sometimes using
-pint decorators. Contains several unit conversions functions not in Pint.
-
-@author: jbousqui
+    Functions to convert from one unit to another, sometimes using
+    pint decorators. Contains several unit conversion functions not in Pint.
 """
 import pint
 
@@ -100,7 +96,7 @@ def cm_to_NTU(val):
 
     Parameters
     ----------
-    val : pint.Quanitity
+    val : pint.Quantity
         The turbidity value in centimeters.
 
     Returns
@@ -123,7 +119,7 @@ def NTU_to_cm(val):
 
     Parameters
     ----------
-    val : pint.Quanitity
+    val : pint.Quantity
         The turbidity value in NTU.
 
     Returns
@@ -172,7 +168,7 @@ def density_to_PSU(val,
     Parameters
     ----------
     val : pint.quantity.build_quantity_class
-        The salinty value in density units.
+        The salinity value in density units.
     pressure : pint.quantity.build_quantity_class, optional
         The pressure value. The default is 1*ureg("atm").
     temperature : pint.quantity.build_quantity_class, optional
@@ -209,11 +205,11 @@ def PSU_to_density(val,
 
     Parameters
     ----------
-    val : pint.Quanitity
-        The salinty value in dimensionless PSU.
-    pressure : pint.Quanitity, optional
+    val : pint.Quantity
+        The salinity value in dimensionless PSU.
+    pressure : pint.Quantity, optional
         The pressure value. The default is 1*ureg("atm").
-    temperature : pint.Quanitity, optional
+    temperature : pint.Quantity, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
 
     Returns
@@ -271,9 +267,9 @@ def DO_saturation(val,
     ----------
     val : pint.quantity.build_quantity_class
         The Dissolved Oxygen saturation value in dimensionless percent.
-    pressure : pint.Quanitity, optional
+    pressure : pint.Quantity, optional
         The pressure value. The default is 1*ureg("atm").
-    temperature : pint.Quanitity, optional
+    temperature : pint.Quantity, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
 
     Returns
@@ -307,7 +303,7 @@ def DO_concentration(val,
     ----------
     val : pint.quantity.build_quantity_class
         The DO value (converted to mg/L)
-    pressure : pint.Quanitity, optional
+    pressure : pint.Quantity, optional
         The pressure value. The default is 1*ureg("atm").
     temperature : TYPE, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
@@ -343,7 +339,7 @@ def conductivity_to_PSU(val,
     ----------
     val : pint.quantity.build_quantity_class
         The conductivity value (converted to microsiemens / centimeter)
-    pressure : pint.Quanitity, optional
+    pressure : pint.Quantity, optional
         The pressure value. The default is 0*ureg("atm").
     temperature : TYPE, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
@@ -355,8 +351,8 @@ def conductivity_to_PSU(val,
 
     Additional Notes:
     Conductivity to salinity conversion PSS 1978 method
-    c-numeric conducitivity in uS (microseimens).
-    t-numeric celcius temperature (defauls to 25)
+    c-numeric conductivity in uS (microsiemens).
+    t-numeric Celsius temperature (defaults to 25)
     P-numeric optional pressure (defaults to 0)
 
     References:

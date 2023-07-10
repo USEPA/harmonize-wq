@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Sep  7 14:08:08 2021
-
-Class and functions for harmonizing data retrieved from Water Quality Portal
-
-@author: jbousqui
+    Class and functions for harmonizing data retrieved from EPA's Water Quality
+    Portal (WQP)
 """
 from types import SimpleNamespace
 from warnings import warn
@@ -19,7 +16,7 @@ from harmonize_wq import visualize as viz
 
 class WQCharData():
     """
-    A class to represent Water Quality Portal results for a specifc
+    A class to represent Water Quality Portal results for a specific
     characteristic
 
     Attributes
@@ -30,7 +27,7 @@ class WQCharData():
         Row conditional (bool) mask to limit df rows to only those for the
         specific characteristic
     col : SimpleNamespace
-        Standrad df column names for unit_in, unit_out, and measure
+        Standard df column names for unit_in, unit_out, and measure
     out_col : str
         Column name in df for results, set using char_val
     ureg = pint.UnitRegistry()
@@ -38,27 +35,6 @@ class WQCharData():
     units: str
         Units all results in out_col will be converted into. Default units are
         returned from domains.OUT_UNITS[out_col].
-
-    Methods
-    -------
-    coerce_measure()
-    check_units()
-    infer_units()
-    check_basis()
-    update_ureg()
-    update_units()
-    measure_mask()
-    unit_mask()
-    char_val()
-    convert_units()
-    apply_conversion()
-    dimensions_list()
-    replace_unit_by_str()
-    replace_unit_by_dict()
-    fraction()
-    handle_dimensions()
-    moles_convert()
-
     """
 
     def __init__(self, df_in, char_val):
@@ -123,7 +99,7 @@ class WQCharData():
     def check_units(self, flag_col=None):
         """
         Checks for bad units that are missing (assumes default_unit) or
-        unrecoginzed as valid by unit registry (ureg). Does not check for units
+        unrecognized as valid by unit registry (ureg). Does not check for units
         in the correct dimensions, or a mistaken identity (e.g. 'deg F'
         recognized as 'degree * farad').
 
@@ -270,7 +246,7 @@ class WQCharData():
 
     def convert_units(self, default_unit=None, errors='raise'):
         """
-        Update object dataframe's out-col to convert from old units to
+        Update object DataFrame's out-col to convert from old units to
         default_unit.
 
         Parameters
@@ -719,7 +695,7 @@ def unit_qa_flag(unit_col, trouble, unit, flag_col=None):
     unit : string
         The default unit that replaced the problem unit.
     flag_col : string, optional
-        String to use when refering to the unit_col. If None, unit_col is used.
+        String to use when referring to the unit_col. If None, unit_col is used.
         The default is None.
 
     Returns
@@ -898,19 +874,19 @@ def turbidity(wqp):
         'FTU' - lacks instrumentation specificity
         'SiO2' (ppm or mg/l) - concentration of calibration standard (=JTU)
         'JTU' - candle instead of formazin standard, near 40 NTU these may be
-                equivalent, but highly variable
+        equivalent, but highly variable
     Conversions used:
         cm <-> NTU see convert.cm_to_NTU()
         https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
 
-    Alternative conversions not currectly used by default:
+    Alternative conversions not currently used by default:
         convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
-                                https://doi.org/10.5194/os-7-705-2011
+        https://doi.org/10.5194/os-7-705-2011
         convert.SiO2_to_NTU linear relation from Otilia et al. 2013
         convert.JTU_to_NTU linear relation from Otilia et al. 2013
         Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
-            "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
-            https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
+        "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
+        https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
 
     Parameters
     ----------
@@ -985,7 +961,7 @@ def sediment(wqp):
 
 def harmonize_all(df_in, errors='raise'):
     """
-    Run harmonization on characteristicNames in table with existing functions.
+    Run harmonization on 'CharacteristicNames' in table with existing functions.
     All results are standardized to default units. Intermediate columns are
     not retained.
 
@@ -1022,7 +998,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     df_in : pandas.DataFrame
         DataFrame with the expected activity date time columns.
     char_val : string
-        Expected characteristicName.
+        Expected 'CharacteristicName'.
     units_out : string, optional
         Desired units to convert values into. The default is None.
     errors : string, optional
