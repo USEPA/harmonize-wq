@@ -1,9 +1,9 @@
 from harmonize_wq import harmonize
 
 try:
-  from importlib.metadata import version
+  from importlib.metadata import version, PackageNotFoundError
 except ImportError:
-  from importlib_metadata import version
+  from importlib_metadata import version, PackageNotFoundError
 
 try:
     __version__ = version('harmonize_wq')
