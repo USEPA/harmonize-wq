@@ -12,7 +12,14 @@ Domain experts must decide what data meets their quality standards for data comp
 For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
 
 ## Quick Start
-harmonize_wq can be installed from git using pip:
+
+harmonize_wq can be installed using pip:
+```
+$ python3 -m pip install harmonize-wq
+```
+
+To install the latest development version of harmonize_wq using pip:
+
 ```
 pip install git+https://github.com/USEPA/harmonize-wq.git
 ```
@@ -25,7 +32,7 @@ import dataretrieval.wqp as wqp
 from harmonize_wq import wrangle
 
 # File for area of interest
-aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
 
 # Build query
 query = {'characteristicName': ['Temperature, water',
