@@ -16,7 +16,8 @@ jobs:
       REPO_NAME: ${{ github.event.repository.name }}
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.9']
+        # ['3.8', '3.9', '3.10', '3.11']
         os: [macos-latest, windows-latest]
 
     steps:
@@ -36,9 +37,8 @@ jobs:
       # fiona doesn't have wheels for windows
       - if: matrix.os == 'windows-latest'
         run: |
-          pip install pipwin
-          pipwin install gdal
-          pipwin install fiona
+          pip install https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/GDAL-3.7.1-cp39-cp39-win_amd64.whl
+          pip install https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/Fiona-1.9.4.post1-cp39-cp39-win_amd64.whl
       
       - name: Install package and dependencies
         run: |
