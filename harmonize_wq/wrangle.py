@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr  6 11:02:01 2022
-
-This module contains functions to help re-shape the WQP dataframe
-
-@author: jbousqui
+    Functions to help re-shape the WQP DataFrame
 """
 import pandas
 import geopandas
@@ -16,7 +12,7 @@ import dataretrieval.wqp as wqp
 
 def split_table(df_in):
     """
-    Splits dataframe in two, one with main results columns and one with
+    Splits DataFrame in two, one with main results columns and one with
     Characteristic based metadata.
 
     Note: runs datetime() and harmonize_depth() if expected columns are missing
@@ -31,7 +27,7 @@ def split_table(df_in):
     main_df : pandas.DataFrame
         DataFrame with main results.
     chars_df : pandas.DataFrame
-        DataFrame with Chracteristic based metadata.
+        DataFrame with Characteristic based metadata.
 
     """
     # Run datetime on activity fields if not already done
@@ -215,7 +211,7 @@ def get_activities_by_loc(characteristic_names, locations):
     Returns
     -------
     activities : pandas.DataFrame
-        Dataframe from dataRetrieval.what_activities().
+        DataFrame from dataRetrieval.what_activities().
     """
     # Split loc_list as query by list may cause the query url to be too long
     seg = 200  # Max length of each segment
@@ -231,7 +227,7 @@ def get_activities_by_loc(characteristic_names, locations):
 
 def add_activities_to_df(df_in, mask=None):
     """
-    Add activities to dataframe
+    Add activities to DataFrame
 
     Parameters
     ----------
@@ -300,7 +296,7 @@ def add_detection(df_in, char_val):
 def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     """
     Retrieve detection quantitation results by location, and characteristic
-    name (Optional). ResultIdentifier can not be used to search location id is
+    name (Optional). ResultIdentifier can not be used to search, location id is
     used instead and then results are limited by ResultIdentifiers.
 
     NOTES: There can be multiple Result Detection Quantitation limits / result
@@ -315,7 +311,7 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
         Series of result IDs to limit retrieved data.
     char_val : string, optional.
         Specific characteristic name to retrieve detection limits for.
-        The default None, uses all characteristicNames
+        The default None, uses all CharacteristicNames
 
     Returns
     -------
@@ -414,17 +410,17 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
 
 def as_gdf(shp):
     """
-    Returns a geodataframe for shp if shp is not already a geodataframe.
+    Returns a GeoDataFrame for shp if shp is not already a GeoDataFrame.
 
     Parameters
     ----------
     shp : string
-        Filename for something that needs to be a geodataframe.
+        Filename for something that needs to be a GeoDataFrame.
 
     Returns
     -------
     shp : geopandas.GeoDataFrame
-        GeoDataFrame for shp if it isn't already a geodataframe.
+        GeoDataFrame for shp if it isn't already a GeoDataFrame.
     """
     if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
         shp = geopandas.read_file(shp)
@@ -463,7 +459,11 @@ def get_bounding_box(shp, idx=None):
 
 def clip_stations(stations, aoi):
     """
-    Clip it to area of interest. aoi is first transformed to stations CRS.
+    Clip stations to area of interest (aoi).
+    
+    Notes
+    -----
+    aoi is first transformed to stations CRS.
 
     Parameters
     ----------

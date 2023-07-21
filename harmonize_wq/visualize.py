@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 27 15:57:16 2022
-
-This module contains functions to help visualize data.
-
-@author: jbousqui
+    Functions to help visualize data.
 """
 import pandas
 import geopandas
@@ -66,24 +62,25 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
 
 def map_counts(df_in, gdf, col=None):
     """
-    Return geodatadrame summarized by count of results for each station
+    Return GeoDataFrame summarized by count of results for each station
 
     Parameters
     ----------
-    df_in : pandas.Dataframe
+    df_in : pandas.DataFrame
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
-        Geodataframe with monitoring locations.
+        GeoDataFrame with monitoring locations.
+
+    Examples
+    --------
+    Return a GeoDataFrame summarized by counts and plot it::
+        
+        cnt_gdf = harmonize.visualize.map_counts(df, stations_clipped)
+        cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
 
     Returns
     -------
     geopandas.GeoDataFrame
-
-    Example
-    -------
-    cnt_gdf = harmonize.visualize.map_counts(df, stations_clipped)
-    cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
-
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'
@@ -105,14 +102,14 @@ def map_counts(df_in, gdf, col=None):
 
 def map_measure(df_in, gdf, col):
     """
-    Return geodataframe summarized by average of results for each station
+    Return GeoDataFrame summarized by average of results for each station
 
     Parameters
     ----------
-    df_in : pandas.Dataframe
+    df_in : pandas.DataFrame
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
-        Geodataframe with monitoring locations.
+        GeoDataFrame with monitoring locations.
     col : string
         Column name in df_in to aggregate results for.
 
@@ -143,7 +140,7 @@ def station_summary(df_in, col):
 
     Parameters
     ----------
-    df_in : pandas.Dataframe
+    df_in : pandas.DataFrame
         DataFrame with subset of results.
     col : string
         Column name in df_in to summarize results for.

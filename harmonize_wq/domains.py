@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Aug 13 06:58:16 2021
-
-Source files for domain lists with all potential values (to filter on)
-
-For small or frequently utilized domains I've hard coded dictionaries and
-have a url method to update.
-
-@author: jbousqui
+    Functions to return domain lists with all potential values, mainly for use
+    as filters. Small or frequently utilized domains may be hardcoded. A url
+    based method can be used to get the most up to date domain list.
 """
 import requests
 import pint
@@ -201,7 +196,7 @@ def characteristic_cols(category=None):
 
     Parameters
     ----------
-    categoy : string, optional
+    category : string, optional
         Subset results: 'Basis', 'Bio', 'Depth', 'QA', 'activity', 'analysis',
         'depth', 'measure', 'sample'.
         The default is None.
@@ -360,25 +355,22 @@ def characteristic_cols(category=None):
 
 def xy_datum():
     """
-    Get dictionary of possible values (key) and dictionary values for their
-    "Description" (string, Not currently used) or EPSG code (int).
-    source url:
-        '{}HorizontalCoordinateReferenceSystemDatum_CSV.zip'.format(BASE_URL)
+    Get dictionary where key is expected string and value is dictionary with
+    "Description": string (Not currently used) and "EPSG": int (4-digit code).
 
-    NOTES:
-    -------
-    Aything not in dict will be nan (must be int), i.e.:
-        "OTHER": {"Description": 'Other',
-                  "EPSG": nan},
-        "UNKWN": {"Description": 'Unknown',
-                  "EPSG": nan},
+    Notes
+    -----
+    source url: f'{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip'
+    Anything not in dict will be nan, i.e. must be int so these are missing:
+    "OTHER": {"Description": 'Other', "EPSG": nan},
+    "UNKWN": {"Description": 'Unknown', "EPSG": nan}
 
     Returns
     -------
     dict
         Dictionary where exhaustive:
             {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
-                                                            EPSG:int}}
+            EPSG:int}}
     """
     return {"NAD27": {"Description": 'North American Datum 1927',
                       "EPSG": 4267},
@@ -418,7 +410,7 @@ def stations_rename():
     """
     ESRI places a length restriction on shapefile field names. This returns a
     dictionary with the original water quality portal field name (as key) and
-    shortend column name for writing as shp. We suggest using the longer
+    shortened column name for writing as shp. We suggest using the longer
     original name as the field alias when writing as .shp.
 
     Returns

@@ -1,0 +1,37 @@
+name: docs_test
+
+on:
+  pull_request:
+    branches:
+      [main]
+
+# Allows you to run this workflow manually from the Actions tab
+#workflow_dispatch:
+
+permissions:
+    contents: write
+    pages: write
+    id-token: write
+jobs:
+  build_doc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v2
+      - uses: actions/setup-python@v3
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install sphinx sphinx_rtd_theme
+      - name: Sphinx build
+        run: |
+          #sphinx-build docs/source _build
+          cd docs
+          make html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: './docs/build/html'
