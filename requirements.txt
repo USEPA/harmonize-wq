@@ -3,3 +3,6 @@ geopandas>=0.10.2, <0.13           # Has additional dependencies (pandas, numpy,
 pint>=0.18          # May work on earlier versions but this is what it was tested on
 dataretrieval>1.*
 descartes>=1.1.0           # May be required for mapping in some jupyter notebooks
+
+# wheel for windows
+#https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/GDAL-3.7.1-cp39-cp39-win_amd64.whl
