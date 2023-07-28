@@ -401,21 +401,23 @@ class WQCharData():
         if not isinstance(frac_dict[catch_all], list):
             frac_dict[catch_all] = [frac_dict[catch_all]]
         # Get all domain values
+        #accepted_fracs = list(domains.get_domain_dict('ResultSampleFraction').keys())
         for key in domains.get_domain_dict('ResultSampleFraction').keys():
-            if key not in frac_dict.values():
+            # Check against expected fractions and add others to catch_all
+            if key not in [x for v in frac_dict.values() for x in v]:
                 frac_dict[catch_all] += [key]
         # Flatten for some uses
         samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
 
         # Check for sample fraction column
-        df_checks(self.df, ['ResultSampleFractionText'])
+        df_checks(self.df, [fract_col])
         # Replace bad sample fraction w/ nan
         self.df = replace_in_col(self.df, fract_col, ' ', nan, c_mask)
 
         df_out = self.df
 
         # Make column for any unexpected Sample Fraction values, loudly
-        for s_f in set(df_out[fract_col].dropna()):
+        for s_f in set(df_out[c_mask][fract_col].dropna()):
             if s_f not in samp_fract_set:
                 char = '{}_{}'.format(s_f.replace(' ', '_'), suffix)
                 frac_dict[char] = s_f
@@ -423,7 +425,7 @@ class WQCharData():
                 warn('Warning: ' + prob)
         # Test we didn't skip any SampleFraction
         samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
-        for s_f in set(df_out[fract_col].dropna()):
+        for s_f in set(df_out[c_mask][fract_col].dropna()):
             assert s_f in samp_fract_set, '{} check in {}'.format(s_f,
                                                                       fract_col)
         # Create out columns for each sample fraction
