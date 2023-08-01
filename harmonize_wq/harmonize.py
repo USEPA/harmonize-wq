@@ -1040,7 +1040,9 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     elif out_col in ['Fecal_Coliform', 'E_coli']:
         # NOTE: Ecoli ['cfu/100ml', 'MPN/100ml', '#/100ml']
         # NOTE: feca ['CFU', 'MPN/100ml', 'cfu/100ml', 'MPN/100 ml', '#/100ml']
-        # Replace known unit problems ('#' count; assume CFU/MPN is /100ml)
+        # Replace known special character in unit ('#' count assumed as CFU)
+        wqp.replace_unit_by_str('#', 'CFU')
+        # Replace known unit problems (e.g., assume CFU/MPN is /100ml)
         wqp.replace_unit_by_dict(domains.UNITS_REPLACE[out_col])
         #TODO: figure out why the above must be done before replace_unit_by_str
         # Replace all instances in results column
