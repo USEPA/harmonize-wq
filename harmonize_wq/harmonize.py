@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Sep  7 14:08:08 2021
-
-Class and functions for harmonizing data retrieved from Water Quality Portal
-
-@author: jbousqui
+    Class and functions for harmonizing data retrieved from EPA's Water Quality
+    Portal (WQP)
 """
 from types import SimpleNamespace
 from warnings import warn
@@ -19,7 +16,7 @@ from harmonize_wq import visualize as viz
 
 class WQCharData():
     """
-    A class to represent Water Quality Portal results for a specifc
+    A class to represent Water Quality Portal results for a specific
     characteristic
 
     Attributes
@@ -30,7 +27,7 @@ class WQCharData():
         Row conditional (bool) mask to limit df rows to only those for the
         specific characteristic
     col : SimpleNamespace
-        Standrad df column names for unit_in, unit_out, and measure
+        Standard df column names for unit_in, unit_out, and measure
     out_col : str
         Column name in df for results, set using char_val
     ureg = pint.UnitRegistry()
@@ -38,27 +35,6 @@ class WQCharData():
     units: str
         Units all results in out_col will be converted into. Default units are
         returned from domains.OUT_UNITS[out_col].
-
-    Methods
-    -------
-    coerce_measure()
-    check_units()
-    infer_units()
-    check_basis()
-    update_ureg()
-    update_units()
-    measure_mask()
-    unit_mask()
-    char_val()
-    convert_units()
-    apply_conversion()
-    dimensions_list()
-    replace_unit_by_str()
-    replace_unit_by_dict()
-    fraction()
-    handle_dimensions()
-    moles_convert()
-
     """
 
     def __init__(self, df_in, char_val):
@@ -123,7 +99,7 @@ class WQCharData():
     def check_units(self, flag_col=None):
         """
         Checks for bad units that are missing (assumes default_unit) or
-        unrecoginzed as valid by unit registry (ureg). Does not check for units
+        unrecognized as valid by unit registry (ureg). Does not check for units
         in the correct dimensions, or a mistaken identity (e.g. 'deg F'
         recognized as 'degree * farad').
 
@@ -270,7 +246,7 @@ class WQCharData():
 
     def convert_units(self, default_unit=None, errors='raise'):
         """
-        Update object dataframe's out-col to convert from old units to
+        Update object DataFrame's out-col to convert from old units to
         default_unit.
 
         Parameters
@@ -391,7 +367,7 @@ class WQCharData():
             replace_in_col(self.df, col, item[0], item[1], mask)
 
     def fraction(self, frac_dict=None, suffix=None,
-                   fract_col='ResultSampleFractionText'):
+                 fract_col='ResultSampleFractionText'):
         """
         Create columns for sample fractions, use frac_dict to set their names.
 
@@ -413,46 +389,61 @@ class WQCharData():
             frac_dict updated to include any frac_col not already defined.
         """
         c_mask = self.c_mask
-        if frac_dict is None:
-            frac_dict = {}
         if suffix is None:
             suffix = self.out_col
 
+        catch_all = 'Other_{}'.format(suffix)
+        if frac_dict is None:
+            frac_dict = {catch_all: ''}
+        else:
+            if catch_all not in frac_dict.keys():
+                frac_dict[catch_all] = ['']
+        if not isinstance(frac_dict[catch_all], list):
+            frac_dict[catch_all] = [frac_dict[catch_all]]
+        # Get all domain values
+        #accepted_fracs = list(domains.get_domain_dict('ResultSampleFraction').keys())
+        for key in domains.get_domain_dict('ResultSampleFraction').keys():
+            # Check against expected fractions and add others to catch_all
+            if key not in [x for v in frac_dict.values() for x in v]:
+                frac_dict[catch_all] += [key]
+        # Flatten for some uses
+        samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
+
         # Check for sample fraction column
-        df_checks(self.df, ['ResultSampleFractionText'])
+        df_checks(self.df, [fract_col])
         # Replace bad sample fraction w/ nan
         self.df = replace_in_col(self.df, fract_col, ' ', nan, c_mask)
 
         df_out = self.df
+
         # Make column for any unexpected Sample Fraction values, loudly
-        for s_f in set(df_out[fract_col].dropna()):
-            if s_f not in frac_dict.values():
+        for s_f in set(df_out[c_mask][fract_col].dropna()):
+            if s_f not in samp_fract_set:
                 char = '{}_{}'.format(s_f.replace(' ', '_'), suffix)
                 frac_dict[char] = s_f
                 prob = '"{}" column for {}, may be error'.format(char, s_f)
                 warn('Warning: ' + prob)
         # Test we didn't skip any SampleFraction
-        for s_f in set(df_out[fract_col].dropna()):
-            assert s_f in frac_dict.values(), '{} check in {}'.format(s_f,
+        samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
+        for s_f in set(df_out[c_mask][fract_col].dropna()):
+            assert s_f in samp_fract_set, '{} check in {}'.format(s_f,
                                                                       fract_col)
-
         # Create out columns for each sample fraction
         for frac in frac_dict.items():
             col = frac[0]  # New column name
-            if frac[1] in set(df_out.loc[c_mask, fract_col].dropna()):
-                # New subset mask for sample frac
-                f_mask = (c_mask & (df_out[fract_col]==frac[1]))
-                df_out[col] = nan  # Add column
-                # Copy measure to new col (new col name from char_list)
-                df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
-            elif frac[1] == '':
-                # Values where sample fraction missing
-                if df_out.loc[c_mask, fract_col].isnull().values.any():
-                    # New subset mask
-                    f_mask = (c_mask & (df_out[fract_col].isnull()))
-                    df_out[col] = nan  # Add column
-                    # Copy measure to new col
+            for smp_frac in frac[1]:
+                if smp_frac in set(df_out.loc[c_mask, fract_col].dropna()):
+                    # New subset mask for sample frac
+                    f_mask = (c_mask & (df_out[fract_col]==smp_frac))
+                    # Copy measure to new col (new col name from char_list)
                     df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
+                elif smp_frac == '':
+                    # Values where sample fraction missing go to catch all
+                    if df_out.loc[c_mask, fract_col].isnull().values.any():
+                        # New subset mask
+                        f_mask = (c_mask & (df_out[fract_col].isnull()))
+                        # Copy measure to new col
+                        df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
         self.df = df_out
 
         return frac_dict
@@ -634,7 +625,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
         ureg = pint.UnitRegistry()
     Q_ = ureg.Quantity
 
-    out_series = pandas.Series(dtype='object')
+    lst_series = [pandas.Series(dtype='object')]
     for unit in list(set(unit_series)):
         # Filter quantity_series by unit_series where == unit
         f_quant_series = quantity_series.where(unit_series==unit).dropna()
@@ -653,10 +644,9 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
                 else:
                     # errors=='raise', or anything else just in case
                     raise exception
-        # Re-index
-        result_series = pandas.Series(result_list, index=f_quant_series.index)
-        out_series = out_series.append(result_series)  # Append to full series
-    return out_series
+        # Re-index and add series to list
+        lst_series.append(pandas.Series(result_list, index=f_quant_series.index))
+    return pandas.concat(lst_series)
 
 
 def add_qa_flag(df_in, mask, flag):
@@ -707,7 +697,7 @@ def unit_qa_flag(unit_col, trouble, unit, flag_col=None):
     unit : string
         The default unit that replaced the problem unit.
     flag_col : string, optional
-        String to use when refering to the unit_col. If None, unit_col is used.
+        String to use when referring to the unit_col. If None, unit_col is used.
         The default is None.
 
     Returns
@@ -886,19 +876,19 @@ def turbidity(wqp):
         'FTU' - lacks instrumentation specificity
         'SiO2' (ppm or mg/l) - concentration of calibration standard (=JTU)
         'JTU' - candle instead of formazin standard, near 40 NTU these may be
-                equivalent, but highly variable
+        equivalent, but highly variable
     Conversions used:
         cm <-> NTU see convert.cm_to_NTU()
         https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
 
-    Alternative conversions not currectly used by default:
+    Alternative conversions not currently used by default:
         convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
-                                https://doi.org/10.5194/os-7-705-2011
+        https://doi.org/10.5194/os-7-705-2011
         convert.SiO2_to_NTU linear relation from Otilia et al. 2013
         convert.JTU_to_NTU linear relation from Otilia et al. 2013
         Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
-            "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
-            https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
+        "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
+        https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
 
     Parameters
     ----------
@@ -973,7 +963,7 @@ def sediment(wqp):
 
 def harmonize_all(df_in, errors='raise'):
     """
-    Run harmonization on characteristicNames in table with existing functions.
+    Run harmonization on 'CharacteristicNames' in table with existing functions.
     All results are standardized to default units. Intermediate columns are
     not retained.
 
@@ -1010,7 +1000,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     df_in : pandas.DataFrame
         DataFrame with the expected activity date time columns.
     char_val : string
-        Expected characteristicName.
+        Expected 'CharacteristicName'.
     units_out : string, optional
         Desired units to convert values into. The default is None.
     errors : string, optional
@@ -1050,7 +1040,9 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     elif out_col in ['Fecal_Coliform', 'E_coli']:
         # NOTE: Ecoli ['cfu/100ml', 'MPN/100ml', '#/100ml']
         # NOTE: feca ['CFU', 'MPN/100ml', 'cfu/100ml', 'MPN/100 ml', '#/100ml']
-        # Replace known unit problems ('#' count; assume CFU/MPN is /100ml)
+        # Replace known special character in unit ('#' count assumed as CFU)
+        wqp.replace_unit_by_str('#', 'CFU')
+        # Replace known unit problems (e.g., assume CFU/MPN is /100ml)
         wqp.replace_unit_by_dict(domains.UNITS_REPLACE[out_col])
         #TODO: figure out why the above must be done before replace_unit_by_str
         # Replace all instances in results column
@@ -1093,9 +1085,9 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     # Total is TP (digested) from the whole water sample (vs total dissolved)
     # Dissolved is TDP (total) filtered water digested (vs undigested DIP)
     if out_col == 'Phosphorus':
-        frac_dict = {'TP_Phosphorus': 'Total',
-                     'TDP_Phosphorus': 'Dissolved',
-                     'Other_Phosphorus': '',}
+        frac_dict = {'TP_Phosphorus': ['Total'],
+                     'TDP_Phosphorus': ['Dissolved'],
+                     'Other_Phosphorus': [''],}
         # Make columns for Sample Fractions, loudly if unexpected (not in dict)
         frac_dict = wqp.fraction(frac_dict)  # Run sample fraction on WQP
 

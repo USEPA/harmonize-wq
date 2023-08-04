@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct 22 10:01:10 2021
-
-Module with basis dictionaries and functions
-
-@author: jbousqui
+    Functions to process characteristic basis or return basis dictionary.
 """
 from warnings import warn
 from numpy import nan
@@ -43,10 +39,14 @@ def stp_dict():
     """
     Standard temperature and pressure dictionary to define basis from units.
 
+    Notes
+    -----
+        This needs to be updated to include pressure or needs to be renamed.
+        
     Returns
     -------
     dict
-        DESCRIPTION.
+        Dictionary with {'standard temp' : {'units': [values to replace]}}
 
     """
     return {'@25C': {'mg/mL': ['mg/mL @25C']}}
