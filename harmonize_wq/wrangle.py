@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
 """
-    Functions to help re-shape the WQP DataFrame
+Created on Wed Apr  6 11:02:01 2022
+
+This module contains functions to help re-shape the WQP dataframe
+
+@author: jbousqui
 """
 import pandas
 import geopandas
+from io import StringIO
 from harmonize_wq import domains
 from harmonize_wq import harmonize
 from harmonize_wq.clean import datetime, harmonize_depth
 import dataretrieval.wqp as wqp
+import dataretrieval.utils
 
 
 def split_table(df_in):
     """
-    Splits DataFrame in two, one with main results columns and one with
+    Splits dataframe in two, one with main results columns and one with
     Characteristic based metadata.
 
     Note: runs datetime() and harmonize_depth() if expected columns are missing
@@ -27,7 +33,7 @@ def split_table(df_in):
     main_df : pandas.DataFrame
         DataFrame with main results.
     chars_df : pandas.DataFrame
-        DataFrame with Characteristic based metadata.
+        DataFrame with Chracteristic based metadata.
 
     """
     # Run datetime on activity fields if not already done
@@ -197,6 +203,15 @@ def collapse_results(df_in, cols=None):
 #     return df_passing, df_fails
 
 
+def what_detection_limits(**kwargs):
+    '''This is only here until PR is merged to add it to data retrieval'''
+    kwargs['zip'] = 'no'
+    kwargs['mimeType'] = 'csv'
+    url = wqp.wqp_url('data/ResultDetectionQuantitationLimit')
+    response = dataretrieval.utils.query(url, payload=kwargs, delimiter=';')
+    return pandas.read_csv(StringIO(response.text), delimiter=',')
+
+
 def get_activities_by_loc(characteristic_names, locations):
     """
     Quick attempt to segment batch what_activities - may not stay
@@ -211,7 +226,7 @@ def get_activities_by_loc(characteristic_names, locations):
     Returns
     -------
     activities : pandas.DataFrame
-        DataFrame from dataRetrieval.what_activities().
+        Dataframe from dataRetrieval.what_activities().
     """
     # Split loc_list as query by list may cause the query url to be too long
     seg = 200  # Max length of each segment
@@ -219,7 +234,7 @@ def get_activities_by_loc(characteristic_names, locations):
     for loc_que in [locations[x:x+seg] for x in range(0, len(locations), seg)]:
         query = {'characteristicName': characteristic_names,
                  'siteid': loc_que}
-        activities_list.append(wqp.what_activities(**query))
+        activities_list.append(what_activities(**query))
     # Combine the dataframe results
     activities = pandas.concat(activities_list).drop_duplicates()
     return activities
@@ -227,7 +242,7 @@ def get_activities_by_loc(characteristic_names, locations):
 
 def add_activities_to_df(df_in, mask=None):
     """
-    Add activities to DataFrame
+    Add activities to dataframe
 
     Parameters
     ----------
@@ -259,6 +274,15 @@ def add_activities_to_df(df_in, mask=None):
     # Merge results
     df_merged = merge_tables(df_out, act_df)
     return df_merged
+
+
+def what_activities(**kwargs):
+    '''This is only here until PR is merged to add it to data retrieval'''
+    kwargs['zip'] = 'no'
+    kwargs['mimeType'] = 'csv'
+    url = wqp.wqp_url('data/Activity')
+    response = dataretrieval.utils.query(url, payload=kwargs, delimiter=';')
+    return pandas.read_csv(StringIO(response.text), delimiter=',')
 
 
 def add_detection(df_in, char_val):
@@ -296,7 +320,7 @@ def add_detection(df_in, char_val):
 def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     """
     Retrieve detection quantitation results by location, and characteristic
-    name (Optional). ResultIdentifier can not be used to search, location id is
+    name (Optional). ResultIdentifier can not be used to search location id is
     used instead and then results are limited by ResultIdentifiers.
 
     NOTES: There can be multiple Result Detection Quantitation limits / result
@@ -311,7 +335,7 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
         Series of result IDs to limit retrieved data.
     char_val : string, optional.
         Specific characteristic name to retrieve detection limits for.
-        The default None, uses all CharacteristicNames
+        The default None, uses all characteristicNames
 
     Returns
     -------
@@ -332,7 +356,7 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
         query = {'siteid': id_que}
         if char_val:
             query['characteristicName'] = char_val
-        detection_list.append(wqp.what_detection_limits(**query))
+        detection_list.append(what_detection_limits(**query))
     # Combine the dataframe results in the list
     detection_df = pandas.concat(detection_list).drop_duplicates()
     # Filter on resultID
@@ -410,17 +434,17 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
 
 def as_gdf(shp):
     """
-    Returns a GeoDataFrame for shp if shp is not already a GeoDataFrame.
+    Returns a geodataframe for shp if shp is not already a geodataframe.
 
     Parameters
     ----------
     shp : string
-        Filename for something that needs to be a GeoDataFrame.
+        Filename for something that needs to be a geodataframe.
 
     Returns
     -------
     shp : geopandas.GeoDataFrame
-        GeoDataFrame for shp if it isn't already a GeoDataFrame.
+        GeoDataFrame for shp if it isn't already a geodataframe.
     """
     if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
         shp = geopandas.read_file(shp)
@@ -459,11 +483,7 @@ def get_bounding_box(shp, idx=None):
 
 def clip_stations(stations, aoi):
     """
-    Clip stations to area of interest (aoi).
-    
-    Notes
-    -----
-    aoi is first transformed to stations CRS.
+    Clip it to area of interest. aoi is first transformed to stations CRS.
 
     Parameters
     ----------

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-    Functions to clean/correct location data.
+Created on Mon Jun 27 15:34:30 2022
+
+This module contains functions to clean/correct location data.
+
+@author: jbousqui
 """
 from pyproj import Transformer
 from shapely.geometry import shape
@@ -10,7 +14,6 @@ import dataretrieval.wqp as wqp
 from harmonize_wq import harmonize
 from harmonize_wq import domains
 from harmonize_wq import wrangle
-from harmonize_wq import clean
 
 
 def infer_CRS(df_in,
@@ -80,7 +83,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
         Name of column in DataFrame with the Coordinate Reference System datum.
         The default is 'HorizontalCoordinateReferenceSystemDatumName'.
     lat_col : string, optional
-        Name of column in DataFrame with the latitude coordinate.
+        Name of column in DataFrame with the lattitude coordinate.
         The default is 'LatitudeMeasure'.
     lon_col : string, optional
         Name of column in DataFrame with the longitude coordinate.
@@ -102,10 +105,6 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
     # Check columns are in df
     harmonize.df_checks(df2, [crs_col, lat_col, lon_col])
-
-    # Check location precision
-    df2 = clean.check_precision(df2, lat_col)
-    df2 = clean.check_precision(df2, lon_col)
 
     # Create tuple column
     df2['geom_orig'] = list(zip(df2[lon_col], df2[lat_col]))
@@ -169,9 +168,9 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
 
 def get_harmonized_stations(query, aoi=None):
     """
-    Queries the Water Quality Portal (https://waterquality.data.us) for
-    stations with data matching the query, harmonizes those stations location
-    information and clips it to the Area Of Interest (AOI) if specified.
+    Queries the Water Quality Portal (https://waterquality.data.us) for staions
+    with data matching the query, harmonizes those stations location
+    information and clips it to the Area Of Interest (aoi) if specified.
 
     See www.waterqualitydata.us/webservices_documentation for API reference
 

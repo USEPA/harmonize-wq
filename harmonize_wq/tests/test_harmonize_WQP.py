@@ -190,10 +190,6 @@ def test_harmonize_locations():
     # Converted converted
     # Missing unit infered
     # Check QA_flag
-    # Check for precision flag
-    actual_imprecise = actual.iloc[302]['QA_flag']
-    expected_imprecise = 'LatitudeMeasure: Imprecise: lessthan3decimaldigits'
-    assert actual_imprecise == expected_imprecise
 
 
 #@pytest.mark.skip(reason="no change")
@@ -211,14 +207,14 @@ def test_harmonize_phosphorus(merged_tables):
     # TODO: test conversion to moles and other non-standard units
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
-    assert actual.size == 16896735  # 17256240  # Test size
+    assert actual.size == 17256240  # Test size
     # Test for expected columns
     for col in ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']:
         assert col in actual.columns
     # Number of results in each col
     assert len(actual['TP_Phosphorus'].dropna()) == 11243
     assert len(actual['TDP_Phosphorus'].dropna()) == 601
-    assert len(actual['Other_Phosphorus'].dropna()) == 12968  # 1075 NAN
+    assert len(actual['Other_Phosphorus'].dropna()) == 1075
 
     # Confirm orginal data was not altered
     orig_val_col = 'ResultMeasureValue'  # Values
@@ -1140,6 +1136,14 @@ def test_accept_methods(merged_tables):
 def test_datetime(harmonized_tables):
     # Testit
     actual = clean.datetime(harmonized_tables)
+    # Check for dropped fields
+    drop_fields = ['ActivityStartDate',
+                   'ActivityStartTime/Time',
+                   'ActivityStartTime/TimeZoneCode']
+    for field in drop_fields:
+        assert field not in actual.columns
+    # Type for date field (not formated, just str)
+    #actual['StartDate']
     # Type for time field
     assert isinstance(actual['Activity_datetime'][0],
                       pandas._libs.tslibs.timestamps.Timestamp)
@@ -1179,12 +1183,9 @@ def test_split_table(harmonized_tables):
                 'DetectionQuantitationLimitMeasure/MeasureValue',
                 'DetectionQuantitationLimitMeasure/MeasureUnitCode',
                 'ProviderName', 'QA_flag', 'Nitrogen', 'Speciation',
-                'Conductivity', 'Activity_datetime',
-                'Depth']
+                'Conductivity', 'StartDate', 'Activity_datetime', 'Depth']
     assert list(actual_main.columns) == expected
-    expected = ['ActivityStartDate', 'ActivityStartTime/Time',
-                'ActivityStartTime/TimeZoneCode',
-                'ResultDetectionConditionText',
+    expected = ['ResultDetectionConditionText',
                 'MethodSpecificationName', 'CharacteristicName',
                 'ResultSampleFractionText', 'ResultMeasureValue',
                 'ResultMeasure/MeasureUnitCode', 'MeasureQualifierCode',
