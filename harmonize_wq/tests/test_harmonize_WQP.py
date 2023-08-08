@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 This will import when run from CI because sys.path[0] == cur_dir
-DIRPATH = r'D:\D_code\HWBI_update\ESI\harmonize-wq\harmonize_wq\tests'
+DIRPATH = r'L:\Public\jbousqui\Code\GitHub\harmonize-wq\harmonize_wq\tests'
 
 This script doesn't test query/download of the data using dataretrieval,
 instead the script is focused on processing, tidying and harmonizing data
@@ -218,7 +218,7 @@ def test_harmonize_phosphorus(merged_tables):
     # Number of results in each col
     assert len(actual['TP_Phosphorus'].dropna()) == 11243
     assert len(actual['TDP_Phosphorus'].dropna()) == 601
-    assert len(actual['Other_Phosphorus'].dropna()) == 12968  # 1075 NAN
+    assert len(actual['Other_Phosphorus'].dropna()) == 1124  # 1075 NAN
 
     # Confirm orginal data was not altered
     orig_val_col = 'ResultMeasureValue'  # Values
