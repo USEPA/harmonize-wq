@@ -27,6 +27,7 @@ DIRPATH = os.path.dirname(os.path.realpath(__file__))
 test_dir = os.path.join(DIRPATH, 'data')
 
 AOI = geopandas.read_file(r'https://github.com/USEPA/Coastal_Ecological_Indicators/raw/master/DGGS_Coastal/temperature_data/TampaBay.geojson')
+
 # results for dataretrieval.wqp.what_sites(**query)
 STATIONS = pandas.read_csv(os.path.join(test_dir, 'wqp_sites.txt'))
 # These are split by parameter sets of 2 to keep them small but not mono-param
@@ -111,6 +112,38 @@ def merged_tables():
                 'ActivityEndTime/Time',
                 'ActivityEndTime/TimeZoneCode']
     return wrangle.merge_tables(df1, df2, df2_cols=df2_cols)
+
+
+#@pytest.mark.skip(reason="no change")
+def test_add_activities(merged_tables):
+    # Run using first 100 orginal results
+    df1 = NARROW_RESULTS
+    actual = wrangle.add_activities_to_df(df1[:100])
+    # Compare against activities retrieved before
+    for expected_col in list(merged_tables.columns):
+        assert expected_col in actual.columns, f'{expected_col} missing'
+    # Check the value for one ('Quality Control Field Replicate Msr/Obs')
+    # NOTE: this will fail if result changes but index should be consistent
+    actual_val = actual.iloc[46]['ActivityTypeCode']
+    expected_val = merged_tables.iloc[46]['ActivityTypeCode']
+    assert actual_val == expected_val, 'Not expected ActivityMediaName value'
+
+
+#@pytest.mark.skip(reason="no change")
+def test_add_detection(merged_tables):
+    merged_cols = list(merged_tables.columns)
+    # only retrieve for first 100 phosphorous results
+    phos_df = merged_tables[merged_tables['CharacteristicName']=='Phosphorus']
+    actual = wrangle.add_detection(phos_df[:100], 'Phosphorus')
+    actual_cols = [x for x in list(actual.columns) if x not in merged_cols]
+    expected_cols = ['DetectionQuantitationLimitTypeName',
+                     'DetectionQuantitationLimitMeasure/MeasureValue',
+                    'DetectionQuantitationLimitMeasure/MeasureUnitCode']
+    assert actual_cols == expected_cols, 'Detection columns not added'
+    # Check the value for one
+    # NOTE: this will fail if result changes but index should be consistent
+    actual_val = actual.iloc[97][expected_cols[1]]
+    assert actual_val == 0.02, 'Not expected DetectionQuantitation value'
 
 
 @pytest.fixture(scope='session')

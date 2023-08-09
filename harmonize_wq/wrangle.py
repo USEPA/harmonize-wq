@@ -215,11 +215,13 @@ def get_activities_by_loc(characteristic_names, locations):
     """
     # Split loc_list as query by list may cause the query url to be too long
     seg = 200  # Max length of each segment
-    activities_list = []
+    activities_list, md_list = [], []
     for loc_que in [locations[x:x+seg] for x in range(0, len(locations), seg)]:
         query = {'characteristicName': characteristic_names,
                  'siteid': loc_que}
-        activities_list.append(wqp.what_activities(**query))
+        res = wqp.what_activities(**query)
+        activities_list.append(res[0])  # Query response DataFrame
+        md_list.append(res[1])  # Query response metadata
     # Combine the dataframe results
     activities = pandas.concat(activities_list).drop_duplicates()
     return activities
@@ -327,12 +329,14 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     id_list = list(set(loc_series.dropna()))  # List of unique location IDs
     # Split list - query by full list may cause the query url to be too long
     seg = 200  # Max length of each segment
-    detection_list = []
+    detection_list, md_list = [], []
     for id_que in [id_list[x:x+seg] for x in range(0, len(id_list), seg)]:
         query = {'siteid': id_que}
         if char_val:
             query['characteristicName'] = char_val
-        detection_list.append(wqp.what_detection_limits(**query))
+        res = wqp.what_detection_limits(**query)
+        detection_list.append(res[0])  # Query response DataFrame
+        md_list.append(res[1])  # Query response metadata
     # Combine the dataframe results in the list
     detection_df = pandas.concat(detection_list).drop_duplicates()
     # Filter on resultID
