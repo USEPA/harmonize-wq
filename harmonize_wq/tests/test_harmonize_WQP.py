@@ -26,7 +26,7 @@ DIRPATH = os.path.dirname(os.path.realpath(__file__))
 # Test datasets
 test_dir = os.path.join(DIRPATH, 'data')
 
-AOI = geopandas.read_file(r'https://github.com/USEPA/Coastal_Ecological_Indicators/raw/master/DGGS_Coastal/temperature_data/TampaBay.geojson')
+AOI_URL = r'https://github.com/USEPA/Coastal_Ecological_Indicators/raw/master/DGGS_Coastal/temperature_data/TampaBay.geojson'
 
 # results for dataretrieval.wqp.what_sites(**query)
 STATIONS = pandas.read_csv(os.path.join(test_dir, 'wqp_sites.txt'))
@@ -71,7 +71,7 @@ def test_get_bounding_box():
                 '27.47487752677648',
                 '-82.37480995151799',
                 '28.12535740372124']
-    actual = wrangle.get_bounding_box(AOI).split(',')
+    actual = wrangle.get_bounding_box(AOI_URL).split(',')
     assert actual == expected
 
 
