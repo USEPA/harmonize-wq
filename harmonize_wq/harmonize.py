@@ -80,7 +80,7 @@ class WQCharData():
         meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col],
                                    errors='coerce')
         # Create a list of the bad measures in the series
-        bad_measures = [df_out.loc[i, meas_col] for i in meas_s[meas_s.isna()].index]
+        bad_measures = [df_out.iloc[i][meas_col] for i in meas_s[meas_s.isna()].index]
         for bad_meas in pandas.unique(bad_measures):
             # Flag each unique bad measure one measure (not row) at a time
             if pandas.isna(bad_meas):
