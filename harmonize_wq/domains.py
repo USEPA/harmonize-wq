@@ -10,6 +10,7 @@ import pandas
 
 
 BASE_URL = 'https://cdx.epa.gov/wqx/download/DomainValues/'
+TADA_DATA_URL = r'https://raw.githubusercontent.com/USEPA/TADA/'
 
 UNITS_REPLACE = {'Secchi': {},
                  'DO': {'%': 'percent'},
@@ -98,6 +99,105 @@ def get_domain_dict(table, cols=None):
         print("{} web service response {}".format(url, status_code))
     df = pandas.read_csv(url, usecols=cols)
     return dict(df.values)
+
+
+def harmonize_TADA_dict():
+    """
+    Build structured dictionary from TADA HarmonizationTemplate.csv of target
+    column names and sample fractions.
+
+    Returns
+    -------
+    full_dict : dictionary
+        {'TADA.CharacteristicName':
+             {Target.TADA.CharacteristicName:
+                  {Target.TADA.ResultSampleFractionText:
+                       [Target.TADA.ResultSampleFractionText]}}}
+
+    """
+    # Note: too nested for refactor into single function w/ char_tbl_TADA
+    
+    # Read from github
+    csv = f'{TADA_DATA_URL}develop/inst/extdata/HarmonizationTemplate.csv'
+    df = pandas.read_csv(csv)  # Read csv url to DataFrame
+    full_dict = {}  # Setup results dict
+    # Loop over one unique characteristicName at a time
+    for char in list(set(df['TADA.CharacteristicName'].to_list())):
+        sub_df = df[df['TADA.CharacteristicName']==char]  # Mask by char
+        full_dict[char] = char_tbl_TADA(sub_df, char)  # Build dictionary
+        
+    # Domains to check agaisnt
+    domain_list = list(get_domain_dict('ResultSampleFraction').keys())
+    
+    # Update in/out with expected sample Fraction case
+    for k_char, v_char in full_dict.items():
+        for k_target, v_target in v_char.items():
+            new_target = {}
+            for k_sf, v_sf in v_target.items():
+                # re-case new keys
+                new_k_sf = re_case(k_sf, domain_list)
+                # re-case old values
+                new_v_sf = [re_case(x, domain_list) for x in v_sf]
+                new_target[new_k_sf] = new_v_sf
+            # Replace old smaple fraction dict with new using keys
+            full_dict[k_char][k_target] = new_target
+
+    return full_dict 
+
+
+def re_case(word, domain_list):
+    domain_list_upper = [x.upper() for x in domain_list]
+    try:
+        idx = domain_list_upper.index(word)
+    except:
+        return word
+    return domain_list[idx]
+
+
+def char_tbl_TADA(df, char):
+    """
+    Build structured dictionary for TADA.CharacteristicName from TADA df
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Table from TADA for specific characteristic.
+    char : str
+        CharacteristicName.
+
+    Returns
+    -------
+    new_char_dict : dictionary
+        {Target.TADA.CharacteristicName:
+             {Target.TADA.ResultSampleFractionText:
+                  [Target.TADA.ResultSampleFractionText]} 
+
+    """
+    cols = ['Target.TADA.CharacteristicName',
+            'TADA.ResultSampleFractionText',
+            'Target.TADA.ResultSampleFractionText']
+    sub_df = df[cols].drop_duplicates()  # TODO: superfluous?
+    
+    # Update Output/target columns
+    sub_df[cols[0]] = sub_df[cols[0]].fillna(char)  # new_char
+    sub_df[cols[2]] = sub_df[cols[2]].fillna(sub_df[cols[1]])  # new_fract
+    
+    sub_df.drop_duplicates(inplace=True)
+    
+    # loop over new chars, getting {new_fract: [old fracts]}
+    new_char_dict = {}
+    for new_char in list(set(sub_df[cols[0]])):
+        new_char_df = sub_df[sub_df[cols[0]]==new_char]  # Mask by new_char
+        new_fract_dict = {}
+        for new_fract in list(set(new_char_df[cols[2]])):
+            # TODO: {nan: []}? Doesn't break but needs handling later
+            # Mask by new_fract
+            new_fract_df = new_char_df[new_char_df[cols[2]]==new_fract]
+            # Add a list of possible old_fract for new_fract key
+            new_fract_dict[new_fract] = list(set(new_fract_df[cols[1]]))
+        new_char_dict[new_char] = new_fract_dict
+
+    return new_char_dict
 
 
 def registry_adds_list(out_col):
