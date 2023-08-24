@@ -7,11 +7,11 @@ packages = ["harmonize_wq"]
 
 [metadata]
 name = "harmonize_wq"
-version = "0.3.0"
+version = "0.3.1"
 
 [project]
 name = "harmonize_wq"
-version = "0.3.0"
+version = "0.3.1"
 authors = [
   { name="Justin Bousquin", email="Bousquin.Justin@epa.gov" },
 ]
