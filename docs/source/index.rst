@@ -31,6 +31,7 @@ Standardize, clean and wrangle Water Quality Portal data into more analytic-read
     :caption: Development
 
     contributing
+    Code of Conduct
 
 Indices and tables
 ------------------
