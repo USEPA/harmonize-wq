@@ -70,6 +70,8 @@ def map_counts(df_in, gdf, col=None):
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
         GeoDataFrame with monitoring locations.
+    col : String
+        Column in df_in to aggregate results to in addition to location.
 
     Returns
     -------
@@ -77,10 +79,38 @@ def map_counts(df_in, gdf, col=None):
     
     Examples
     --------
-    Return a GeoDataFrame summarized by counts and plot it::
+    Return a GeoDataFrame summarized by counts::
         
-        cnt_gdf = harmonize.visualize.map_counts(df, stations_clipped)
-        cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
+    Build example DataFrame of results
+    
+    >>> df_in = pandas.DataFrame({'Measure_Value': [5, 0, 1],
+                                  'MonitoringLocationIdentifier': ['ID1',
+                                                                   'ID2',
+                                                                   'ID1']
+                                  })
+    >>> df_in
+       Measure_Value MonitoringLocationIdentifier
+    0              5                          ID1
+    1              0                          ID2
+    2              1                          ID1
+    
+    Build example GeoDataFrame of monitoring locations
+    
+    >>> from shapely.geometry import Point
+    >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
+             'geometry': [Point(1, 2), Point(2, 1)]}
+    >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
+    >>> gdf
+      MonitoringLocationIdentifier                 geometry
+    0                          ID1  POINT (1.00000 2.00000)
+    1                          ID2  POINT (2.00000 1.00000)
+    
+    Combine these to get an aggregation of results per station        
+    cnt_gdf = harmonize.visualize.map_counts(df_in, gdf)
+
+    Plotting these aggegate results is then much easier
+
+    cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'
