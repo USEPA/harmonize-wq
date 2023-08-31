@@ -105,12 +105,13 @@ def map_counts(df_in, gdf, col=None):
     0                          ID1  POINT (1.00000 2.00000)
     1                          ID2  POINT (2.00000 1.00000)
     
-    Combine these to get an aggregation of results per station        
-    cnt_gdf = harmonize.visualize.map_counts(df_in, gdf)
+    Combine these to get an aggregation of results per station   
+     
+    >>> cnt_gdf = harmonize.visualize.map_counts(df_in, gdf)
 
-    Plotting these aggegate results is then much easier
+    These aggegate results can then be plotted
 
-    cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
+    >>> cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'
