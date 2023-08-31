@@ -84,10 +84,10 @@ def map_counts(df_in, gdf, col=None):
     Build example DataFrame of results
     
     >>> df_in = pandas.DataFrame({'Measure_Value': [5, 0, 1],
-                                  'MonitoringLocationIdentifier': ['ID1',
-                                                                   'ID2',
-                                                                   'ID1']
-                                  })
+    ...                           'MonitoringLocationIdentifier': ['ID1',
+    ...                                                            'ID2',
+    ...                                                            'ID1']
+    ...                           })
     >>> df_in
        Measure_Value MonitoringLocationIdentifier
     0              5                          ID1
@@ -98,7 +98,7 @@ def map_counts(df_in, gdf, col=None):
     
     >>> from shapely.geometry import Point
     >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
-             'geometry': [Point(1, 2), Point(2, 1)]}
+    ...      'geometry': [Point(1, 2), Point(2, 1)]}
     >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
     >>> gdf
       MonitoringLocationIdentifier                 geometry
