@@ -80,34 +80,40 @@ def map_counts(df_in, gdf, col=None):
     Examples
     --------
     Return a GeoDataFrame summarized by counts::
-        
+    
     Build example DataFrame of results
     
-    >>> df_in = pandas.DataFrame({'Measure_Value': [5, 0, 1],
+    >>> df_in = pandas.DataFrame({'ResultMeasureValue': [5.1, 1.2, 8.7],
     ...                           'MonitoringLocationIdentifier': ['ID1',
     ...                                                            'ID2',
     ...                                                            'ID1']
     ...                           })
     >>> df_in
-       Measure_Value MonitoringLocationIdentifier
-    0              5                          ID1
-    1              0                          ID2
-    2              1                          ID1
+       ResultMeasureValue MonitoringLocationIdentifier
+    0                 5.1                          ID1
+    1                 1.2                          ID2
+    2                 8.7                          ID1
     
     Build example GeoDataFrame of monitoring locations
     
     >>> from shapely.geometry import Point
+    >>> from numpy import nan
     >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
+    ...      'QA_flag': [nan, nan],
     ...      'geometry': [Point(1, 2), Point(2, 1)]}
     >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
     >>> gdf
-      MonitoringLocationIdentifier                 geometry
-    0                          ID1  POINT (1.00000 2.00000)
-    1                          ID2  POINT (2.00000 1.00000)
+      MonitoringLocationIdentifier  QA_flag                 geometry
+    0                          ID1      NaN  POINT (1.00000 2.00000)
+    1                          ID2      NaN  POINT (2.00000 1.00000)
     
     Combine these to get an aggregation of results per station   
      
-    >>> cnt_gdf = harmonize.visualize.map_counts(df_in, gdf)
+    >>> cnt_gdf = harmonize_wq.visualize.map_counts(df_in, gdf)
+    >>> cnt_gdf
+        MonitoringLocationIdentifier  cnt                 geometry  QA_flag
+    0                            ID1    2  POINT (1.00000 2.00000)      NaN
+    1                            ID2    1  POINT (2.00000 1.00000)      NaN
 
     These aggegate results can then be plotted
 
@@ -147,8 +153,56 @@ def map_measure(df_in, gdf, col):
     Returns
     -------
     geopandas.GeoDataFrame
+    
+    Examples
+    --------
+    Return a GeoDataFrame summarized by counts::
+    
+    Build array of pint quantities for Temperature
+    
+    >>> from pint import Quantity
+    >>> u = 'degree_Celsius'
+    >>> temperatures = [Quantity(5.1, u), Quantity(1.2, u), Quantity(8.7, u)]
+    
+    Build example DataFrame of results
+    
+    >>> df_in = pandas.DataFrame({'Temperature': temperatures,
+    ...                           'MonitoringLocationIdentifier': ['ID1',
+    ...                                                            'ID2',
+    ...                                                            'ID1']
+    ...                           })
+    >>> df_in
+              Temperature MonitoringLocationIdentifier
+    0  5.1 degree_Celsius                          ID1
+    1  1.2 degree_Celsius                          ID2
+    2  8.7 degree_Celsius                          ID1
+    
+    Build example GeoDataFrame of monitoring locations
+    
+    >>> from shapely.geometry import Point
+    >>> from numpy import nan
+    >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
+    ...      'QA_flag': [nan, nan],
+    ...      'geometry': [Point(1, 2), Point(2, 1)]}
+    >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
+    >>> gdf
+      MonitoringLocationIdentifier  QA_flag                 geometry
+    0                          ID1      NaN  POINT (1.00000 2.00000)
+    1                          ID2      NaN  POINT (2.00000 1.00000)
+    
+    Combine these to get an aggregation of results per station   
+     
+    >>> avg_temp = harmonize_wq.visualize.map_measure(df_in, gdf, 'Temperature')
+    >>> avg_temp
+      MonitoringLocationIdentifier  cnt  mean                 geometry  QA_flag
+    0                          ID1    2   6.9  POINT (1.00000 2.00000)      NaN
+    1                          ID2    1   1.2  POINT (2.00000 1.00000)      NaN
 
+    These aggegate results can then be plotted
+
+    >>> avg_temp.plot(column='Temperature', cmap='Blues', legend=True)
     """
+
     merge_cols = ['MonitoringLocationIdentifier']
 
     if merge_cols[0] not in df_in.columns:
