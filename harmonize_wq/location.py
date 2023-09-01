@@ -42,6 +42,16 @@ def infer_CRS(df_in,
     df_out : pandas.DataFrame
         Updated copy of df_in
 
+    Examples
+    --------
+    
+    Build dataframe to use in example
+    >>> df_in = pandas.DataFrame()
+    
+    
+    >>> infer_CRS(df_in, out_EPSG=4326)
+    
+    Note: 
     """
     df_out = df_in.copy()
     if bad_crs_val:
@@ -63,8 +73,9 @@ def infer_CRS(df_in,
 def harmonize_locations(df_in, out_EPSG=4326,
                         intermediate_columns=False, **kwargs):
     """
-    Takes a DataFrame with lat/lon in multiple Coordinate Reference Systems,
-    transforms them to outCRS and converts to GeoDataFrame
+    Takes a :class:`~pandas.DataFrame` with lat/lon in multiple Coordinate
+    Reference Systems, transforms them to outCRS and converts to
+    :class:'geopandas.GeoDataFrame'
 
     Parameters
     ----------
@@ -91,6 +102,40 @@ def harmonize_locations(df_in, out_EPSG=4326,
     gdf : geopandas.GeoDataFrame
         GeoDataFrame of df_in with coordinates in out_EPSG datum.
 
+    Examples
+    --------
+    Build dataframe to use in example
+    
+    >>> df_in = pandas.DataFrame({'LatitudeMeasure': [27.5950355,
+    ...                                               27.52183,
+    ...                                               28.0661111],
+    ...                          'LongitudeMeasure': [-82.0300865,
+    ...                                               -82.64476,
+    ...                                               -82.3775],
+    ...                          'HorizontalCoordinateReferenceSystemDatumName': ['NAD83',
+    ...                                                                           'WGS84',
+    ...                                                                           'NAD27'],
+    ...                          })
+    >>> df_in
+       LatitudeMeasure  ...  HorizontalCoordinateReferenceSystemDatumName
+    0        27.595036  ...                                         NAD83
+    1        27.521830  ...                                         WGS84
+    2        28.066111  ...                                         NAD27
+    
+    [3 rows x 3 columns]
+
+    >>> harmonize_wq.location.harmonize_locations(df_in)
+       LatitudeMeasure  LongitudeMeasure  ... QA_flag                    geometry
+    0        27.595036        -82.030086  ...     NaN  POINT (-82.03009 27.59504)
+    1        27.521830        -82.644760  ...     NaN  POINT (-82.64476 27.52183)
+    2        28.066111        -82.377500  ...     NaN  POINT (-82.37750 28.06611)
+    
+    [3 rows x 5 columns]
+    
+    Note: the geometry where the CRS was not the default 4326 (WGS1984) have
+    been trasnformed so now they are, a QA_flag column was also added to record
+    any location based problems like limited decimal precision or an unknown 
+    input CRS.
     """
     df2 = df_in.copy()
 
@@ -191,7 +236,13 @@ def get_harmonized_stations(query, aoi=None):
         Raw station results from WQP.
     site_md : TYPE
         WQP query metadata.
-
+        
+    Examples
+    --------
+    
+    Build query
+    
+    >>> 
     """
     # TODO: **kwargs instead of query dict?
 
