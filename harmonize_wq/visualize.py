@@ -27,6 +27,11 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     -------
     None.
 
+    See any of the 'Detailed' notebooks found in 
+    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is leveraged by the
+    harmonize.harmonize_generic() report argument.
+
     """
     # Series with just usable results.
     results = results_in[out_col].dropna()
