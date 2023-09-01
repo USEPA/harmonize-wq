@@ -226,7 +226,8 @@ def map_measure(df_in, gdf, col):
 
 def station_summary(df_in, col):
     """
-    Return summary table with rows for each station, count and column average
+    Return summary table as :class:`~pandas.DataFrame` with rows for each 
+    station, count and column average.
 
     Parameters
     ----------

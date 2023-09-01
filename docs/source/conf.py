@@ -41,6 +41,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
+    "sphinx.ext.intersphinx",
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
@@ -81,3 +82,13 @@ apidoc_separate_modules = True
 apidoc_module_dir = "../harmonize_wq"
 apidoc_excluded_paths = ["tests"]
 apidoc_module_first = True
+
+#  --Options for sphinx extensions -----------------------------------------------
+
+# connect docs in other projects
+intersphinx_mapping = {
+    "pandas": (
+       "https://pandas.pydata.org/pandas-docs/stable/",
+       "https://pandas.pydata.org/pandas-docs/stable/objects.inv",
+       )
+    }
