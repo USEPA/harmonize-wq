@@ -3,7 +3,7 @@ name: test
 on:
   push:
     branches:
-      [main, dev]
+      [main, tests_builds]
   pull_request:
     branches:
       [main]
@@ -39,7 +39,7 @@ jobs:
           pip install pytest
       
       # fiona doesn't have wheels for windows
-      - if: matrix.os == 'windows-latest'
+      - if: ${{ (matrix.os == 'windows-latest') && (matrix.python-version == 3.9) }}
         run: |
           pip install https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/GDAL-3.7.1-cp39-cp39-win_amd64.whl
           pip install https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/Fiona-1.9.4.post1-cp39-cp39-win_amd64.whl
