@@ -45,13 +45,29 @@ def infer_CRS(df_in,
     Examples
     --------
     
-    Build dataframe to use in example
-    >>> df_in = pandas.DataFrame()
+    Build dataframe to use in example, where crs_col name is 'Datum' rather
+    than default 'HorizontalCoordinateReferenceSystemDatumName'
     
-    
-    >>> infer_CRS(df_in, out_EPSG=4326)
-    
-    Note: 
+    >>> from numpy import nan
+    >>> df_in = pandas.DataFrame({'Datum': ['NAD83', 'WGS84', '', None, nan]})
+    >>> df_in
+       Datum
+    0  NAD83
+    1  WGS84
+    2       
+    3   None
+    4    NaN
+
+    >>> location.infer_CRS(df_in, out_EPSG=4326, crs_col='Datum')
+       Datum                                  QA_flag    EPSG
+    0  NAD83                                      NaN     NaN
+    1  WGS84                                      NaN     NaN
+    2                                             NaN     NaN
+    3   None  Datum: MISSING datum, EPSG:4326 assumed  4326.0
+    4    NaN  Datum: MISSING datum, EPSG:4326 assumed  4326.0
+
+    Note: missing (nan) and bad CRS values (bad_crs_val=None) are given an EPSG
+    and QA flag, but others (e.g., '') are not.
     """
     df_out = df_in.copy()
     if bad_crs_val:
@@ -240,7 +256,9 @@ def get_harmonized_stations(query, aoi=None):
     Examples
     --------
     
-    Build query
+    See any of the 'Simple' notebooks found in 
+    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is used to query and harmonize stations.
     
     >>> 
     """
