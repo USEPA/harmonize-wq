@@ -29,6 +29,14 @@ def split_table(df_in):
     chars_df : pandas.DataFrame
         DataFrame with Characteristic based metadata.
 
+    Examples
+    --------
+    
+    See any of the 'Simple' notebooks found in 
+    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is used to divide the table into columns of
+    interest (main_df) and characteristic specific metadata (chars_df).
+    
     """
     # Run datetime on activity fields if not already done
     if 'Activity_datetime' not in list(df_in.columns):
@@ -64,6 +72,14 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     df : pandas.DataFrame
         Updated DataFrame.
 
+    Examples
+    --------
+    
+    See any of the 'Simple' notebooks found in 
+    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is used to split the QA column into multiple
+    characteristic specific QA columns.
+    
     """
     # TODO: is this function doing too much?
     df_out = df_in.copy()
@@ -121,6 +137,31 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
 
 def collapse_results(df_in, cols=None):
+    """
+    Combine rows or results with the same sample organization, activity,
+    location, and datetime.
+
+    Parameters
+    ----------
+    df_in : pandas.DataFrame
+        DataFrame that will be updated.
+    cols : TYPE, optional
+        DESCRIPTION. The default is None.
+
+    Returns
+    -------
+    df_indexed : pandas.DataFrame
+        Updated DataFrame.
+
+    Examples
+    --------
+    
+    See any of the 'Simple' notebooks found in 
+    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is used to combine rows with the same sample
+    organization, activity, location, and datetime.
+    
+    """
     df = df_in.copy()
 
     # Drop obvious duplicates (doesn't tend to eliminate many)
@@ -212,6 +253,11 @@ def get_activities_by_loc(characteristic_names, locations):
     -------
     activities : pandas.DataFrame
         DataFrame from dataRetrieval.what_activities().
+        
+    Examples
+    --------
+    
+    See wrangle.add_activities_to_df()
     """
     # Split loc_list as query by list may cause the query url to be too long
     seg = 200  # Max length of each segment
@@ -243,6 +289,68 @@ def add_activities_to_df(df_in, mask=None):
     df_merged : pandas.DataFrame
         Table with added info from activities table by location id.
 
+    Examples
+    --------
+    Build example tables from tests
+    
+    >>> import pandas
+    >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
+    >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
+    >>> df1.shape
+    (359505, 35)
+    
+    >>> df_activities = wrangle.add_activities_to_df(df1)
+    >>> df_activities.shape
+    (359505, 100)
+    
+    Look at the columns added
+    
+    >>> df_activities.columns[-65:]
+    Index(['ActivityTypeCode', 'ActivityMediaName', 'ActivityMediaSubdivisionName',
+           'ActivityEndDate', 'ActivityEndTime/Time',
+           'ActivityEndTime/TimeZoneCode', 'ActivityRelativeDepthName',
+           'ActivityDepthHeightMeasure/MeasureValue',
+           'ActivityDepthHeightMeasure/MeasureUnitCode',
+           'ActivityDepthAltitudeReferencePointText',
+           'ActivityTopDepthHeightMeasure/MeasureValue',
+           'ActivityTopDepthHeightMeasure/MeasureUnitCode',
+           'ActivityBottomDepthHeightMeasure/MeasureValue',
+           'ActivityBottomDepthHeightMeasure/MeasureUnitCode', 'ProjectIdentifier',
+           'ActivityConductingOrganizationText', 'ActivityCommentText',
+           'SampleAquifer', 'HydrologicCondition', 'HydrologicEvent',
+           'ActivityLocation/LatitudeMeasure', 'ActivityLocation/LongitudeMeasure',
+           'ActivityLocation/SourceMapScaleNumeric',
+           'ActivityLocation/HorizontalAccuracyMeasure/MeasureValue',
+           'ActivityLocation/HorizontalAccuracyMeasure/MeasureUnitCode',
+           'ActivityLocation/HorizontalCollectionMethodName',
+           'ActivityLocation/HorizontalCoordinateReferenceSystemDatumName',
+           'AssemblageSampledName', 'CollectionDuration/MeasureValue',
+           'CollectionDuration/MeasureUnitCode', 'SamplingComponentName',
+           'SamplingComponentPlaceInSeriesNumeric',
+           'ReachLengthMeasure/MeasureValue', 'ReachLengthMeasure/MeasureUnitCode',
+           'ReachWidthMeasure/MeasureValue', 'ReachWidthMeasure/MeasureUnitCode',
+           'PassCount', 'NetTypeName', 'NetSurfaceAreaMeasure/MeasureValue',
+           'NetSurfaceAreaMeasure/MeasureUnitCode',
+           'NetMeshSizeMeasure/MeasureValue', 'NetMeshSizeMeasure/MeasureUnitCode',
+           'BoatSpeedMeasure/MeasureValue', 'BoatSpeedMeasure/MeasureUnitCode',
+           'CurrentSpeedMeasure/MeasureValue',
+           'CurrentSpeedMeasure/MeasureUnitCode', 'ToxicityTestType',
+           'SampleCollectionMethod/MethodIdentifier',
+           'SampleCollectionMethod/MethodIdentifierContext',
+           'SampleCollectionMethod/MethodName',
+           'SampleCollectionMethod/MethodQualifierTypeName',
+           'SampleCollectionMethod/MethodDescriptionText',
+           'SampleCollectionEquipmentName',
+           'SampleCollectionMethod/SampleCollectionEquipmentCommentText',
+           'SamplePreparationMethod/MethodIdentifier',
+           'SamplePreparationMethod/MethodIdentifierContext',
+           'SamplePreparationMethod/MethodName',
+           'SamplePreparationMethod/MethodQualifierTypeName',
+           'SamplePreparationMethod/MethodDescriptionText',
+           'SampleContainerTypeName', 'SampleContainerColorName',
+           'ChemicalPreservativeUsedName', 'ThermalPreservativeUsedName',
+           'SampleTransportStorageDescription', 'ActivityMetricUrl'],
+          dtype='object')
     """
     df_out = df_in.copy()
     # Check df for loc_field
@@ -279,6 +387,30 @@ def add_detection(df_in, char_val):
     df_merged : pandas.DataFrame
         Table with added info from detection quantitation table columns.
 
+    Examples
+    --------
+    Build example tables from tests
+    
+    >>> import pandas
+    >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
+    >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
+    >>> df1.shape
+    (359505, 35)
+    
+    >>> df_detects = wrangle.add_detection(df1, 'Phosphorus')
+    >>> df_detects.shape
+    (359712, 38)
+    
+    Note: the aditional rows are due to one result being able to be assigned 
+    multiple detection results.
+    
+    Look at the columns added
+    
+    >>> df_detects.columns[-3:]
+    Index(['DetectionQuantitationLimitTypeName',
+           'DetectionQuantitationLimitMeasure/MeasureValue',
+           'DetectionQuantitationLimitMeasure/MeasureUnitCode'],
+          dtype='object')
     """
     df_out = df_in.copy()
     # Check df for loc_field
@@ -367,6 +499,23 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
     merged_results : pandas.DataFrame
         Updated copy of df_in.
 
+    Examples
+    --------
+    Build example tables from tests
+    
+    >>> import pandas
+    >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
+    >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
+    >>> df1.shape
+    (359505, 35 columns)
+    
+    >>> df2 = pandas.read_csv(tests_url + '/data/wqp_activities.txt')
+    >>> df2.shape
+    (353911, 40)
+    
+    >>> merged = wrangle.merge_tables(df1, df2)
+    >>> merged.shape
+    (359505, 67)
     """
     # TODO: change merge_cols default to all?
     col2_list = list(df2.columns)
@@ -425,6 +574,14 @@ def as_gdf(shp):
     -------
     shp : geopandas.GeoDataFrame
         GeoDataFrame for shp if it isn't already a GeoDataFrame.
+    
+    Examples
+    --------
+     Use area of interest from tests geojson:
+
+    >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+    >>> type(wrangle.as_gdf(aoi_url))
+    geopandas.geodataframe.GeoDataFrame
     """
     if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
         shp = geopandas.read_file(shp)
@@ -446,6 +603,14 @@ def get_bounding_box(shp, idx=None):
     Returns
     -------
         Coordinates for bounding box as string and seperated by ', '.
+    
+    Examples
+    --------
+     Use area of interest from tests geojson:
+
+    >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+    >>> wrangle.get_bounding_box(aoi_url)
+    '-87.72443263367131,30.27180869902194,-86.58972642899643,30.654976858733534'
     """
     shp = as_gdf(shp)
 
@@ -480,6 +645,33 @@ def clip_stations(stations, aoi):
     -------
     pandas.DataFrame
         stations_gdf points clipped to the aoi_gdf.
+    
+    Examples
+    --------
+    Locations and results are queried by extent rather than the exact geometry, clipping
+    by the exact geometry helps reduce the size of the results
+    
+    Build example GeoDataFrame of locations for stations
+    
+    >>> from shapely.geometry import Point
+    >>> from numpy import nan
+    >>> d = {'MonitoringLocationIdentifier': ['In', 'Out'],
+    ...      'geometry': [Point (-87.1250, 30.50000),
+                          Point (-87.5000, 30.50000),]}
+    >>> stations_gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
+    >>> stations_gdf
+      MonitoringLocationIdentifier                    geometry
+    0                           In  POINT (-87.12500 30.50000)
+    1                          Out  POINT (-87.50000 30.50000)
+    
+    Use area of interest from tests geojson:
+
+    >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+       
+    >>> stations_in_aoi = harmonize_wq.wrangle.clip_stations(stations_gdf, aoi_url)
+    >>> stations_in_aoi
+      MonitoringLocationIdentifier                    geometry
+    0                           In  POINT (-87.12500 30.50000)
     """
     stations_gdf = as_gdf(stations)  # Ensure it is geodataframe
     aoi_gdf = as_gdf(aoi)  # Ensure it is geodataframe
@@ -491,7 +683,7 @@ def clip_stations(stations, aoi):
 def to_simple_shape(gdf, out_shp):
     """
     Simplifies GeoDataFrame for better export to shapefile. Adopts and adapts
-    'Simple' from NWQMC/pywqp.
+    'Simple' from NWQMC/pywqp. See domains.stations_rename() for renaming of columns.
 
     Parameters
     ----------
@@ -500,6 +692,10 @@ def to_simple_shape(gdf, out_shp):
 
     shp_out: string
         Shapefile directory and file name to be written.
+
+    Examples
+    --------
+    >>> wrangle.to_simple_shape(gdf, 'dataframe.shp')
     """
     cols = gdf.columns  # List of current column names
     names_dict = domains.stations_rename()  # Dict of column names to update
@@ -509,7 +705,7 @@ def to_simple_shape(gdf, out_shp):
     # Identify possible results columns before renaming columns
     possible_results = [col for col in cols if col not in names_dict.keys()]
     gdf = gdf.rename(columns=renaming_dict)  # Rename columns
-    # TODO: old_field should be assigned to alias
+    # TODO: old_field should be assigned to alias if output driver allows
     # field_map1...
 
     # Results columns need to be str not pint (.astype(str))
