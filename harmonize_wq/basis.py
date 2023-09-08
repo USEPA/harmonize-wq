@@ -22,6 +22,15 @@ def unit_basis_dict(out_col):
          Dictionary with logic for determining basis from units string and
          standard pint units to replace those with.
          The structure is {Basis: {standard units: [unit strings with basis]}}.
+ 
+    Examples
+    --------
+    Get dictionary for Phosphorus
+    
+    >>> basis.unit_basis_dict('Phosphorus')
+    {'as P': {'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']},
+     'as PO4': {'mg/l': ['mg/l as PO4', 'mg/l PO4'],
+      'mg/kg': ['mg/kg as PO4', 'mg/kg PO4']}}
     """
     dictionary = {'Phosphorus': {'as P': {'mg/l': ['mg/l as P', 'mg/l P'],
                                           'mg/kg': ['mg/kg as P', 'mg/kg P']},
@@ -48,6 +57,12 @@ def stp_dict():
     dict
         Dictionary with {'standard temp' : {'units': [values to replace]}}
 
+    Examples
+    --------
+    Get dictionary for taking temperature basis our of units
+    
+    >>> basis.stp_dict()
+    {'@25C': {'mg/mL': ['mg/mL @25C']}}
     """
     return {'@25C': {'mg/mL': ['mg/mL @25C']}}
 
@@ -74,6 +89,17 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
     df : pandas.DataFrame
         Updated copy of df_in
 
+    Examples
+    --------
+    Build dataFrame for example based on ResultTemperatureBasisText:
+    
+    >>> df
+    
+    >>> basis_dict = basis.stp_dict()
+    >>> unit_col = ''
+    >>> basis_col = 'ResultTemperatureBasisText'
+    >>> basis.basis_from_unit(df, basis_dict, unit_col, basis_col)
+    
     """
     df = df_in.copy()
     for base in basis_dict.keys():
@@ -153,6 +179,8 @@ def update_result_basis(df_in, basis_col, unit_col):
     df_out : pandas.DataFrame
         Updated copy of df_in.
 
+    Examples
+    --------
     """
     # TODO: make these columns units aware?
     # df = df_in.copy()
@@ -224,5 +252,7 @@ def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
     string
         Flag to use in QA_flag column.
 
+    Examples
+    --------
     """
     return '{}: {} {}'.format(spec_col, basis, trouble)
