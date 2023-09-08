@@ -148,8 +148,8 @@ def harmonize_locations(df_in, out_EPSG=4326,
     
     [3 rows x 5 columns]
     
-    Note: the geometry where the CRS was not the default 4326 (WGS1984) have
-    been trasnformed so now they are, a QA_flag column was also added to record
+    Note: both geometries where the CRS was not the default 4326 (WGS1984) have
+    been trasnformed in the geometry column, a QA_flag column was also added to record
     any location based problems like limited decimal precision or an unknown 
     input CRS.
     """
@@ -260,7 +260,6 @@ def get_harmonized_stations(query, aoi=None):
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to query and harmonize stations.
     
-    >>> 
     """
     # TODO: **kwargs instead of query dict?
 
