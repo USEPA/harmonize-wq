@@ -24,6 +24,28 @@ def datetime(df_in):
     df_out : pandas.DataFrame
         Dataframe with the converted date and datetime columns.
 
+    Examples
+    --------
+    
+    Build dataFrame for example:
+    
+    >>> import pandas
+    >>> from numpy import nan
+    >>> df = pandas.DataFrame({'ActivityStartDate': ['2004-09-01',
+                                                     '2004-07-01',],
+    ...                        'ActivityStartTime/Time': ['10:01:00', nan,],
+    ...                        'ActivityStartTime/TimeZoneCode':  ['EST', nan],
+    ...                        })
+    >>> df
+      ActivityStartDate ActivityStartTime/Time ActivityStartTime/TimeZoneCode
+    0        2004-09-01               10:01:00                            EST
+    1        2004-07-01                    NaN                            NaN
+    >>> clean.datetime(df)
+      ActivityStartDate  ...         Activity_datetime
+    0        2004-09-01  ... 2004-09-01 15:01:00+00:00
+    1        2004-07-01  ...                       NaT
+    
+    [2 rows x 4 columns]
     """
     # Expected columns
     date, time, tz = ('ActivityStartDate',
@@ -54,7 +76,31 @@ def harmonize_depth(df_in, units='meter'):
     -------
     df_out : pandas.DataFrame
         DataFrame with new Depth column replacing 'ResultDepthHeight' columns.
-
+    
+    Examples
+    --------
+    
+    Build dataFrame for example:
+        
+    >>> import pandas
+    >>> from numpy import nan
+    >>> df = pandas.DataFrame({'ResultDepthHeightMeasure/MeasureValue': ['3.0',
+    ...                                                                  nan,
+    ...                                                                  10],
+    ...                        'ResultDepthHeightMeasure/MeasureUnitCode': ['m',
+    ...                                                                     nan,
+    ...                                                                     'ft'],
+    ...                        })
+    >>> df
+      ResultDepthHeightMeasure/MeasureValue ResultDepthHeightMeasure/MeasureUnitCode
+    0                                   3.0                                        m
+    1                                   NaN                                      NaN
+    2                                    10                                       ft
+    >>> clean.harmonize_depth(df)
+      ResultDepthHeightMeasure/MeasureValue  ...                     Depth
+    0                                   3.0  ...                 3.0 meter
+    1                                   NaN  ...                       NaN
+    2                                    10  ...  3.0479999999999996 meter
     """
     df_out = df_in.copy()
     # Default columns
