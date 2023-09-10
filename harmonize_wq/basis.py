@@ -70,7 +70,8 @@ def stp_dict():
 def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
     """
     Creates a standardized Basis column in DataFrame from units column and
-    standardizes units in units column based on basis_dict
+    standardizes units in units column based on basis_dict. Units column is updated in place, it
+    should not be original 'ResultMeasure/MeasureUnitCode' to maintain data integrity.
 
     Parameters
     ----------
@@ -91,21 +92,42 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
 
     Examples
     --------
-    Build dataFrame for example based on ResultTemperatureBasisText:
+    Build dataFrame for example:
     
+    >>> import pandas
+    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
+    ...                        'ResultMeasure/MeasureUnitCode': ['mg/l as P', 'mg/kg as P'],
+    ...                        'ProviderName': ['NWIS', 'NWIS',],
+    ...                        'Units':  ['mg/l as P', 'mg/kg as P'],
+    ...                        })
     >>> df
+      CharacteristicName ResultMeasure/MeasureUnitCode ProviderName       Units
+    0         Phosphorus                     mg/l as P         NWIS   mg/l as P
+    1         Phosphorus                    mg/kg as P         NWIS  mg/kg as P
+
+    >>> basis_dict = basis.unit_basis_dict('Phosphorus')
+    >>> unit_col = 'Units'
+    >>> basis.basis_from_unit(df, basis_dict, unit_col)
+      CharacteristicName ResultMeasure/MeasureUnitCode ProviderName  Units
+    0         Phosphorus                     mg/l as P         NWIS   mg/l
+    1         Phosphorus                    mg/kg as P         NWIS  mg/kg
     
-    >>> basis_dict = basis.stp_dict()
-    >>> unit_col = ''
-    >>> basis_col = 'ResultTemperatureBasisText'
-    >>> basis.basis_from_unit(df, basis_dict, unit_col, basis_col)
+    If an existing basis_col value is different a warning is issued when it is 
+    updated and a QA_flag is assigned
     
+    >>> df['Speciation'] = [nan, 'as PO4']
+    >>> df_speciation_change = basis.basis_from_unit(df, basis_dict, unit_col)
+    UserWarning: Mismatched Speciation: updated from as PO4 to as P (units)
+    >>> df_speciation_change[['Speciation', 'QA_flag']]
+      Speciation                                          QA_flag
+    0        NaN                                              NaN
+    1       as P  Speciation: updated from as PO4 to as P (units)
     """
     df = df_in.copy()
     for base in basis_dict.keys():
         for (new_unit, old_units) in basis_dict[base].items():
             for old_unit in old_units:
-                # TODO: Test if old_unit in unit_col first?
+                # TODO: Time test if old_unit in unit_col first?
                 mask = df[unit_col] == old_unit  # Update mask
                 if basis_col in df.columns:
                     # Add flags anywhere the values are updated
@@ -142,7 +164,27 @@ def basis_from_methodSpec(df_in):
     df : pandas.DataFrame
         Updated copy of df_in.
 
+    Examples
+    --------
+    Build dataFrame for example:
+    
+    >>> import pandas
+    >>> from numpy import nan
+    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
+    ...                        'MethodSpecificationName': ['as P', nan],
+    ...                        'ProviderName': ['NWIS', 'NWIS',],
+    ...                        })
+    >>> df
+      CharacteristicName MethodSpecificationName ProviderName
+    0         Phosphorus                    as P         NWIS
+    1         Phosphorus                     NaN         NWIS
+    
+    >>> basis.basis_from_methodSpec(df)
+      CharacteristicName  MethodSpecificationName ProviderName Speciation
+    0         Phosphorus                      NaN         NWIS       as P
+    1         Phosphorus                      NaN         NWIS        NaN
     """
+
     # Basis from MethodSpecificationName
     old_col = 'MethodSpecificationName'
     df = df_in.copy()
@@ -181,6 +223,33 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     Examples
     --------
+    
+    Build dataFrame for example:
+    Note: 'Units' is used to preserve 'ResultMeasure/MeasureUnitCode'
+    
+    >>> import pandas
+    >>> from numpy import nan
+    >>> df = pandas.DataFrame({'CharacteristicName': ['Salinity', 'Salinity',],
+    ...                        'ResultTemperatureBasisText': ['25 deg C', nan,],
+    ...                        'Units':  ['mg/mL @25C', 'mg/mL @25C'],
+    ...                        })
+    >>> df
+      CharacteristicName ResultTemperatureBasisText       Units
+    0           Salinity                   25 deg C  mg/mL @25C
+    1           Salinity                        NaN  mg/mL @25C
+    
+    >>> df_temp_basis = basis.update_result_basis(df,
+    ...                                           'ResultTemperatureBasisText',
+    ...                                           'Units')
+    UserWarning: Mismatched ResultTemperatureBasisText: updated from 25 deg C to @25C (units)
+    >>> df_temp_basis[['Units']]
+       Units
+    0  mg/mL
+    1  mg/mL
+    >>> df_temp_basis[['ResultTemperatureBasisText', 'QA_flag']]
+      ResultTemperatureBasisText                                            QA_flag
+    0                       @25C  ResultTemperatureBasisText: updated from 25 de...
+    1                       @25C                                                NaN
     """
     # TODO: make these columns units aware?
     # df = df_in.copy()
@@ -235,6 +304,8 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
 
 def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
     """
+    NOTE: Deprecate - not currently in use anywhere
+    
     Generates a QA_flag string for the MethodsSpeciation column if different
     from the basis specified in units.
 
@@ -254,5 +325,12 @@ def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
 
     Examples
     --------
+    
+    Formats QA_Flag
+    
+    >>> basis.basis_qa_flag('(units)',
+    ...                     'updated from 25 deg C to @25C',
+    ...                     'ResultTemperatureBasisText')
+    'ResultTemperatureBasisText: updated from 25 deg C to @25C (units)'
     """
     return '{}: {} {}'.format(spec_col, basis, trouble)
