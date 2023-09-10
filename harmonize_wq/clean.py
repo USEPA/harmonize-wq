@@ -117,7 +117,6 @@ def harmonize_depth(df_in, units='meter'):
     df_out.loc[na_mask, "Depth"] = harmonize.convert_unit_series(**params)
 
     # TODO: where result depth is missing use activity depth?
-    # TODO: drop old cols like datetime does (.pop them)
 
     return df_out
 
