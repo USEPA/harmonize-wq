@@ -143,7 +143,7 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
                             warn('Mismatched {}'.format(flag))
                             df = harmonize.add_qa_flag(df, qa_mask, flag)
                 # Add/update basis from unit
-                set_basis(df, mask, base, basis_col)
+                df = set_basis(df, mask, base, basis_col)
                 df[unit_col] = [new_unit if x == old_unit else x
                                 for x in df[unit_col]]
     return df
