@@ -86,6 +86,21 @@ def get_domain_dict(table, cols=None):
     dictionary
         Dictionary where {cols[0]: cols[1]}
 
+    Examples
+    --------
+    Return dict for domain from wqx table (e.g., 'ResultSampleFraction'), just the default keys (Name)
+    are shown as values (Description) can be long:
+    
+    >>> domains.get_domain_dict('ResultSampleFraction').keys()
+    dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
+               'Dissolved', 'Extractable', 'Field', 'Filterable', 'Filtered field and/or lab',
+               'Filtered, field', 'Filtered, lab', 'Fixed', 'Free Available', 'Inorganic',
+               'Leachable', 'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile',
+               'None', 'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable', 'Sieved',
+               'Strong Acid Diss', 'Supernate', 'Suspended', 'Total', 'Total Recoverable',
+               'Total Residual', 'Total Soluble', 'Unfiltered', 'Unfiltered, field', 'Vapor',
+               'Volatile', 'Weak Acid Diss', 'non-linear function'])
+    
     """
     if cols is None:
         cols = ['Name', 'Description']
@@ -101,6 +116,30 @@ def get_domain_dict(table, cols=None):
 
 
 def registry_adds_list(out_col):
+    """
+    Get units to add to a Pint unit registry by out_column (ties back to CharacteristicName)
+
+    Parameters
+    ----------
+    out_col : string
+        The result column a unit registry is being built for
+
+    Returns
+    -------
+    list
+        List of strings with unit additions in expected format
+
+    Examples
+    --------
+    Generate a new Pint unit registry object for e.g., Sediment
+    
+    >>> domains.registry_adds_list('Sediment')
+    ['fraction = [] = frac',
+     'percent = 1e-2 frac',
+     'parts_per_thousand = 1e-3 = ppth',
+     'parts_per_million = 1e-6 fraction = ppm']
+    """
+    
     # TODO: 'PSU' = 'PSS' ~ ppth/1.004715
 
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
@@ -155,6 +194,13 @@ def bacteria_reg(ureg=None):
     -------
     unit_registry : pint.UnitRegistry
         Unit registry with dimensionless bacteria units defined.
+    
+    Examples
+    --------
+    Generate a new Pint unit registry object for e.g., bacteria
+    
+    >>> domains.bacteria_reg()
+    <pint.registry.UnitRegistry at 0x237430e8370>
     """
     if ureg is None:
         ureg = pint.UnitRegistry()
@@ -164,12 +210,21 @@ def bacteria_reg(ureg=None):
 
 def out_col_lookup():
     """
+    Results are writen to a new column based on the CharacteristicName, this returns a dict for that
+    {CharacteristicName: out_column_name}
 
     Returns
     -------
     dict
         {WQP CharacteristicName:Column Name}.
 
+    Examples
+    --------
+    The function returns the full dict {CharacteristicName: out_column_name}, it can be subset by
+    a CharactisticName to get the name of the column for results
+        
+    >>> domains.out_col_lookup()['Escherichia coli']
+    'E_coli'
     """
     # TODO: something special for phosphorus? Currently return suffix.
     # 'Phosphorus' -> ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']
@@ -192,7 +247,7 @@ def out_col_lookup():
 
 def characteristic_cols(category=None):
     """
-    Return characteristic specific columns, can subset those by category.
+    Return characteristic specific columns list, can subset those by category.
 
     Parameters
     ----------
@@ -206,6 +261,22 @@ def characteristic_cols(category=None):
     col_list : list
         List of columns.
 
+    Examples
+    --------
+    Running the function without a category returns the full list of column names, including a
+    category returns only the columns in that category
+        
+    >>> domains.characteristic_cols('QA')
+    ['ResultDetectionConditionText',
+     'ResultStatusIdentifier',
+     'PrecisionValue',
+     'DataQuality/BiasValue',
+     'ConfidenceIntervalValue',
+     'UpperConfidenceLimitValue',
+     'LowerConfidenceLimitValue',
+     'ResultCommentText',
+     'ResultSamplingPointName',
+     'ResultDetectionQuantitationLimitUrl']
     """
     cols = {'ActivityStartDate': 'activity',
             'ActivityStartTime/Time': 'activity',
@@ -369,8 +440,20 @@ def xy_datum():
     -------
     dict
         Dictionary where exhaustive:
-            {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
+            {HorizontalCoordinateReferenceSystemDatumName: {Descriptio○n:str,
             EPSG:int}}
+
+    Examples
+    --------
+    
+    Running the function returns the full {abbreviation: {Description:values,
+    EPSG:values}}, here we show how the abbreviation can be used as a key to
+    get the EPSG code:
+        
+    >>> domains.xy_datum()['NAD83']
+    {'Description': 'North American Datum 1983', 'EPSG': 4269}
+    >>> domains.xy_datum()['NAD83']['EPSG']
+    4269
     """
     return {"NAD27": {"Description": 'North American Datum 1927',
                       "EPSG": 4267},
@@ -417,7 +500,16 @@ def stations_rename():
     -------
     field_mapping : dictionary
         dictionary where key = WQP field name and value = short name for shp.
-
+        
+    Examples
+    --------
+    
+    Although running the function returns the full dictionary of Key:Value
+    pairs, here we show how the curent name can be used as a key to get the
+    new name:
+        
+    >>> domains.stations_rename()['OrganizationIdentifier']
+    'org_ID'
     """
     return {'OrganizationIdentifier': 'org_ID',
             'OrganizationFormalName': 'org_name',
@@ -465,6 +557,7 @@ def accepted_methods():
     Accepted methods for each characteristic.
 
     Note: Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
+    This is not fully implemented
 
     Returns
     -------
