@@ -46,6 +46,20 @@ def mass_to_moles(ureg, char_val, Q_):
     -------
     pint.Quantity
         Value in moles of substance.
+    
+    Examples
+    --------
+
+    Build standard Pint unit registry
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    
+    Build quantity
+    
+    Q_ = pint.Quantity('1 g')
+
+    >>> convert.mass_to_moles(ureg, 'Phosphorus', Q_)
 
     """
     # TODO: Not used yet
@@ -75,6 +89,20 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     pint.Quantity
         Value in mass (g).
 
+    Examples
+    --------
+
+    Build standard Pint unit registry
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    
+    Build quantity
+    
+    Q_ = pint.Quantity('0.265 umol')
+
+    >>> convert.moles_to_mass(ureg, Q_, basis='as P')
+
     """
     if basis:
         # Clean-up basis
@@ -102,7 +130,29 @@ def cm_to_NTU(val):
     Returns
     -------
         The turbidity value in NTU.
+    
+    Examples
+    --------
+    
+    Build standard Pint unit registry
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    
+    Build cm units aware Quantity (already in standard unit registry)
 
+    >>> turbidity = ureg.Quantity('cm')
+    >>> str(turbidity)
+    '1 centimeter'
+    >>> type(turbidity)
+    pint.util.Quantity
+    
+    Convert to cm
+    
+    >>> str(convert.cm_to_NTU(str(turbidity)))
+    '3941.8 NTU'
+    >>> type(convert.cm_to_NTU(str(turbidity)))
+    pint.util.Quantity
     """
     # TODO: Currently exports None since NTU is not defined in u_reg
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
@@ -115,7 +165,7 @@ def cm_to_NTU(val):
 @u_reg.wraps(u_reg.centimeter, u_reg.NTU)
 def NTU_to_cm(val):
     """
-    Convert Turbidity measured in NTU to centimeters
+    Convert Turbidity measured in NTU (Nephelometric Turbidity Units) to centimeters
 
     Parameters
     ----------
@@ -126,6 +176,31 @@ def NTU_to_cm(val):
     -------
         The turbidity value in centimeters.
 
+    Examples
+    --------
+    
+    NTU is not a standard Pint unit and must be added to a unit registry first (normally done by
+    WQCharData.update_ureg() method):
+        
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> for definition in domains.registry_adds_list('Turbidity'):
+    ...     ureg.define(definition) 
+    
+    Build NTU units aware Quantity
+
+    >>> turbidity = ureg.Quantity('NTU')
+    >>> str(turbidity)
+    '1 Nephelometric_Turbidity_Units'
+    >>> type(turbidity)
+    pint.util.Quantity
+    
+    Convert to cm
+    
+    >>> str(convert.NTU_to_cm('1 NTU'))
+    '241.27 centimeter'
+    >>> type(convert.NTU_to_cm('1 NTU'))
+    pint.util.Quantity
     """
     # TODO: add wrapper
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
@@ -137,7 +212,47 @@ def NTU_to_cm(val):
 
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def JTU_to_NTU(val):
-    """Linear relationship, 1 -> 19, 0.053 -> 1, 0.4 -> 7.5 """
+    """
+    Convert turbidity units JTU (Jackson Turbidity Units) to NTU.
+    
+    Note: this is based on a Linear relationship: 1 -> 19, 0.053 -> 1, 0.4 -> 7.5
+
+    Parameters
+    ----------
+    val : pint.quantity.build_quantity_class
+        The turbidity value in JTU units (dimensionless).
+
+    Returns
+    -------
+    NTU : pint.quantity.build_quantity_class
+        The turbidity value in dimensionless NTU.
+        
+    Examples
+    --------
+    
+    JTU is not a standard Pint unit and must be added to a unit registry first (normally done by
+    WQCharData.update_ureg() method):
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> for definition in domains.registry_adds_list('Turbidity'):
+    ...     ureg.define(definition) 
+    
+    Build NTU units aware Quantity
+
+    >>> turbidity = ureg.Quantity('JTU')
+    >>> str(turbidity)
+    '1 Jackson_Turbidity_Units'
+    >>> type(turbidity)
+    pint.util.Quantity
+    
+    Convert to NTU
+    
+    >>> str(convert.JTU_to_NTU(str(turbidity)))
+    '18.9773 NTU'
+    >>> type(convert.JTU_to_NTU(str(turbidity)))
+    pint.util.Quantity
+    """
     # Alternative relation (Macneina 1990): NTU = JTU **0.943
     # from Maceina, M. J., & Soballe, D. M. (1990).
     #      Wind-related limnological variation in Lake Okeechobee, Florida.
@@ -147,11 +262,72 @@ def JTU_to_NTU(val):
 
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def SiO2_to_NTU(val):
-    """Linear relationship, 2.5 -> 19, 0.13 -> 1, 1 -> 7.5"""
+    """
+    Convert turbidity units SiO2 (silicon dioxide) to NTU.
+    
+    Note: this is based on a Linear relationship: 2.5 -> 19, 0.13 -> 1, 1 -> 7.5
+
+    Parameters
+    ----------
+    val : pint.quantity.build_quantity_class
+        The turbidity value in SiO2 units (dimensionless).
+
+    Returns
+    -------
+    NTU : pint.quantity.build_quantity_class
+        The turbidity value in dimensionless NTU.
+    
+    Examples
+    --------
+    
+    SiO2 is not a standard Pint unit and must be added to a unit registry first (normally done by
+    WQCharData.update_ureg() method):
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> for definition in domains.registry_adds_list('Turbidity'):
+    ...     ureg.define(definition) 
+    
+    Build NTU units aware Quantity
+
+    >>> turbidity = ureg.Quantity('SiO2')
+    >>> str(turbidity)
+    '1 SiO2'
+    >>> type(turbidity)
+    pint.util.Quantity
+    
+    Convert to NTU
+    
+    >>> str(convert.SiO2_to_NTU(str(turbidity)))
+    '7.5701 NTU'
+    >>> type(convert.SiO2_to_NTU(str(turbidity)))
+    pint.util.Quantity
+    """
     return 7.6028 * val - 0.0327
 
 
 def FNU_to_NTU(val):
+    """
+    Convert turbidity units FNU to NTU
+
+    Parameters
+    ----------
+    val : float
+        The turbidity magnitude (FNU units is dimensionless).
+
+    Returns
+    -------
+    NTU : float
+        The turbidity magnitude (NTU is dimensionless).
+    
+    Examples
+    --------
+    
+    Convert to NTU
+    >>> convert.FNU_to_NTU(8)
+    10.136    
+
+    """
     return val * 1.267
 
 
@@ -178,7 +354,25 @@ def density_to_PSU(val,
     -------
     PSU : pint.quantity.build_quantity_class
         The salinity value in dimensionless PSU.
-
+    
+    Examples
+    --------
+    PSU (Practical Salinity Units) is not a standard Pint unit and must be added to a unit registry
+    first (normally done by WQCharData.update_ureg() method):
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> for definition in domains.registry_adds_list('Salinity'):
+    ...     ureg.define(definition) 
+    
+    Build units aware input, as string
+    
+    >>> input_density = '1000 milligram / milliliter'
+    
+    Convert to Practical Salinity Units
+    
+    >>> convert.density_to_PSU(input_density)
+    ￼4.715428571428788 gram / kilogram
     """
     # Standard Reference Value
     ref = 35.16504/35.0
@@ -216,7 +410,32 @@ def PSU_to_density(val,
     -------
     density : pint.quantity.build_quantity_class
         The salinity value in density units (mg/ml).
-
+    
+    Examples
+    --------
+    PSU (Practical Salinity Units) is not a standard Pint unit and must be added to a unit registry
+    first (normally done by WQCharData.update_ureg() method):
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> for definition in domains.registry_adds_list('Salinity'):
+    ...     ureg.define(definition) 
+    
+    Build units aware input, as string because it is an altered unit registry 
+    
+    >>> unit = ureg.Quantity('PSU')
+    1 Practical_Salinity_units
+    
+    >>> type(unit)
+    pint.util.Quantity
+    
+    >>> input_psu = str(8*unit)
+    '8 Practical_Salinity_Units'
+    
+    Convert to density
+    
+    >>> convert.PSU_to_density(input_psu)
+    997.0540284772519 milligram / milliliter
     """
     p, t = pressure, temperature
 
