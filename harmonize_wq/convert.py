@@ -495,7 +495,9 @@ def DO_saturation(val,
     -------
     pint.Quantity
         Value in mg/l.
-
+    
+    Examples
+    --------
     """
     p, t = pressure, temperature
     if p == 1 & (t == 25):
@@ -531,7 +533,9 @@ def DO_concentration(val,
     -------
     float
         Dissolved Oxygen as saturation (dimensionless).
-
+    
+    Examples
+    --------
     """
     # TODO: switch to kelvin?
     # https://www.waterontheweb.org/under/waterquality/oxygen.html#:~:
@@ -584,6 +588,26 @@ def conductivity_to_PSU(val,
                 exploring water quality monitoring data. R package v0.4.4.
                 See the wq::ec2pss function.
     Function: https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R
+    
+        
+    Examples
+    --------
+    PSU (Practical Salinity Units) is not a standard Pint unit and must be added to a unit registry
+    first:
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> for definition in domains.registry_adds_list('Salinity'):
+    ...     ureg.define(definition) 
+    
+    Build units aware input, as string
+    
+    >>> input_conductivity = '111.0 uS/cm'
+    
+    Convert to Practical Salinity Units
+    
+    >>> convert.conductivity_to_PSU(input_conductivity)
+    0.057 dimensionless
     """
     # Units wrapper returns magnitude only (faster)
     p, t = pressure, temperature
