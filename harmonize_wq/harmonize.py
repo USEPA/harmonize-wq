@@ -101,7 +101,7 @@ class WQCharData():
         c_mask = self.c_mask
         meas_col = self.col.measure
 
-        # Coerce bad measues in series to NaN
+        # Coerce bad measures in series to NaN
         meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col],
                                    errors='coerce')
         # Create a list of the bad measures in the series
@@ -168,8 +168,8 @@ class WQCharData():
         >>> import pandas
         >>> from numpy import nan
         >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-                                                          'Temperature, water',
-                                                          'Phosphorus',],
+        ...                                               'Temperature, water',
+        ...                                               'Phosphorus',],
         ...                        'ResultMeasure/MeasureUnitCode': [nan, nan, 'Unknown',],
         ...                        'ResultMeasureValue': ['1.0', '67.0', '10',],
         ...                        })
