@@ -142,6 +142,45 @@ class WQCharData():
         flag_col : string, optional
             Column to reference in QA_flags.
             The default None uses unit_col instead.
+            
+        Examples
+        --------
+        Build DataFrame to use as input:
+        
+        >>> import pandas
+        >>> from numpy import nan
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
+                                                          'Temperature, water',
+                                                          'Phosphorus',],
+        ...                        'ResultMeasure/MeasureUnitCode': [nan, nan, 'Unknown',],
+        ...                        'ResultMeasureValue': ['1.0', '67.0', '10',],
+        ...                        })
+        >>> df
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0          Phosphorus                           NaN                1.0
+        1  Temperature, water                           NaN               67.0
+        2          Phosphorus                       Unknown                 10
+        
+        Build WQ Characteristic Data object from DataFrame:
+        
+        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> wq.df.Units
+        0        NaN
+        1        NaN
+        2    Unknown
+        
+        Run check_units method to replace bad or missing units for phosphorus:
+    
+        >>> wq.check_units()
+        UserWarning: WARNING: 'Unknown' UNDEFINED UNIT for Phosphorus
+        
+        >>> wq.df[['CharacteristicName', 'Units']]
+           CharacteristicName Units                                            QA_flag
+        0          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: MISSING UNITS, ...
+        1  Temperature, water   NaN                                                NaN
+        2          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: 'Unknown' UNDEF...
+        
+        Note: it didn't infer units for 'Temperature, water' because wq is Phosphorus specific
         """
         # Replace unit by dict using domain
         self.replace_unit_by_dict(domains.UNITS_REPLACE[self.out_col])
