@@ -19,6 +19,13 @@ class WQCharData():
     A class to represent Water Quality Portal results for a specific
     characteristic
 
+    Parameters
+    ----------
+    df_in : pandas.DataFrame
+        DataFrame that will be updated.
+    char_val : string
+        Expected characteristicName.
+
     Attributes
     ----------
     df : pandas.DataFrame
@@ -35,19 +42,13 @@ class WQCharData():
     units: str
         Units all results in out_col will be converted into. Default units are
         returned from domains.OUT_UNITS[out_col].
+    
+    Examples
+    --------
+    
     """
 
     def __init__(self, df_in, char_val):
-        """
-        Create class based off rows of dataframe for characteristic.
-
-        Parameters
-        ----------
-        df_in : pandas.DataFrame
-            DataFrame that will be updated.
-        char_val : string
-            Expected characteristicName.
-        """
         df_out = df_in.copy()
         # self.check_df(df)
         df_checks(df_out)
@@ -530,6 +531,26 @@ def df_checks(df_in, columns=None):
     columns : list, optional
         List of strings for column names. Default None, uses:
         'ResultMeasure/MeasureUnitCode','ResultMeasureValue','CharacteristicName'
+        
+    Examples
+    --------
+    
+    Check dataframe for column:
+    
+    >>> import pandas
+    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus'],})
+    >>> df
+      CharacteristicName
+    0         Phosphorus
+    
+    Check for existing column:
+
+    >>> harmonize.df_checks(df, columns=['CharacteristicName'])
+    
+    If column is not in df it throws an assertionError:
+        
+    >>> harmonize.df_checks(df, columns=['ResultMeasureValue'])
+    AssertionError: ResultMeasureValue not in DataFrame
     """
     if columns is None:
         # Assign defaults
@@ -983,6 +1004,9 @@ def harmonize_all(df_in, errors='raise'):
     -------
     df : pandas.DataFrame
         Updated copy of df_in
+    
+    See also
+    --------
     """
     df_out = df_in.copy()
     char_vals = list(set(df_out['CharacteristicName']))
@@ -1019,6 +1043,9 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     -------
     df : pandas.DataFrame
         Updated copy of df_in
+    
+    See also
+    --------
     """
     # Check/retrieve standard attributes and df columns as object
     wqp = WQCharData(df_in, char_val)
