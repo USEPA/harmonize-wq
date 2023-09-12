@@ -236,6 +236,56 @@ class WQCharData():
         basis_col : str, optional
             Basis column name. Default is 'MethodSpecificationName' which is
             replaced by 'Speciation', others are updated in place.
+        
+        Examples
+        --------
+        Build DataFrame to use as input:
+        
+        >>> import pandas
+        >>> from numpy import nan
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
+        ...                                               'Temperature, water',
+        ...                                               'Phosphorus',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l',],
+        ...                        'ResultMeasureValue': ['1.0', '67.0', '10',],
+        ...                        'MethodSpecificationName': [nan, nan, 'as PO4',],        
+        ...                        })
+        >>> df
+           CharacteristicName  ... MethodSpecificationName
+        0          Phosphorus  ...                     NaN
+        1  Temperature, water  ...                     NaN
+        2          Phosphorus  ...                  as PO4
+        
+        [3 rows x 4 columns]
+        
+        Build WQ Characteristic Data object from DataFrame:
+        
+        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> wq.df.columns
+        Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
+               'MethodSpecificationName', 'ResultMeasureValue', 'Units', 'Phosphorus'],
+              dtype='object')
+        
+        Run check_basis method to speciation for phosphorus:
+        
+        >>> wq.check_basis()
+        >>> wq.df[['MethodSpecificationName', 'Speciation']]
+          MethodSpecificationName  Speciation
+        0                     NaN           P
+        1                     NaN         NaN
+        2                     NaN         PO4
+        
+        Note where basis was part of ResultMeasure/MeasureUnitCode it has been removed in Units:
+
+        >>> wq.df.iloc[0]
+        CharacteristicName               Phosphorus
+        ResultMeasure/MeasureUnitCode     mg/l as P
+        ResultMeasureValue                      1.0
+        MethodSpecificationName                 NaN
+        Units                                  mg/l
+        Phosphorus                              1.0
+        Speciation                                P
+        Name: 0, dtype: object
         """
         c_mask = self.c_mask
 
