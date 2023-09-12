@@ -45,7 +45,31 @@ class WQCharData():
     
     Examples
     --------
+    Build dataframe to use as input:
     
+    >>> import pandas
+    >>> from numpy import nan
+    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
+                                                      'Temperature, water',],
+    ...                        'ResultMeasure/MeasureUnitCode': [nan, nan],
+    ...                        'ResultMeasureValue': ['1.0', '10.0',],
+    ...                        })
+    >>> df
+       CharacteristicName  ResultMeasure/MeasureUnitCode ResultMeasureValue
+    0          Phosphorus                            NaN                1.0
+    1  Temperature, water                            NaN               10.0
+    
+    >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+    >>> wq.df
+       CharacteristicName  ResultMeasure/MeasureUnitCode  ... Units  Phosphorus
+    0          Phosphorus                            NaN  ...   NaN         1.0
+    1  Temperature, water                            NaN  ...   NaN         NaN
+    
+    [2 rows x 5 columns]
+    >>> wq.df.columns
+    Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
+           'ResultMeasureValue', 'Units', 'Phosphorus'],
+          dtype='object')
     """
 
     def __init__(self, df_in, char_val):
