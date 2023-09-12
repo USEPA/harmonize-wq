@@ -130,6 +130,24 @@ class WQCharData():
             return self.measure_mask() & (self.df[column] == unit)
         return self.measure_mask() & (self.df[self.col.unit_out] == unit)
 
+    def _infer_units(self, flag_col=None):
+        """
+        Replace missing units with desired unit and add QA_flag about it in df.
+
+        Parameters
+        ----------
+        flag_col : string, optional
+            Column to reference in QA_flags. The default None uses self.col.unit_out instead.
+        """
+        # QA flag for missing units
+        flag = unit_qa_flag(self.col.unit_out, 'MISSING', self.units, flag_col)
+        # Update mask for missing units
+        units_mask = self.c_mask & self.df[self.col.unit_out].isna()
+        self.df = add_qa_flag(self.df, units_mask, flag)  # Assign flag
+        # Update with infered unit
+        self.df.loc[units_mask, self.col.unit_out] = self.units
+        # Note: .fillna(self.units) is slightly faster but hits datatype issues
+
     def check_units(self, flag_col=None):
         """
         Checks for bad units that are missing (assumes default_unit) or
@@ -188,13 +206,12 @@ class WQCharData():
         # Deal with optional args
         if flag_col is None:
             flag_col = self.col.unit_in
-        unit_col = self.col.unit_out
-        self.infer_units(unit_col, flag_col)
+        self._infer_units(flag_col=flag_col)
 
         df_out = self.df
 
         # Check each unique unit is valid in ureg
-        for unit in list(set(df_out.loc[self.c_mask, unit_col])):
+        for unit in list(set(df_out.loc[self.c_mask, self.col.unit_out])):
             try:
                 self.ureg(unit)
             except pint.UndefinedUnitError:
@@ -202,34 +219,13 @@ class WQCharData():
                 # If bad, flag and replace
                 problem = "'{}' UNDEFINED UNIT for {}".format(unit, self.out_col)
                 warn("WARNING: " + problem)
-                flag = unit_qa_flag(unit_col, problem, self.units, flag_col)
+                flag = unit_qa_flag(self.col.unit_out, problem, self.units, flag_col)
                 # New mask for bad units
                 u_mask = self._unit_mask(unit)
                 # Assign flag to bad units
                 df_out = add_qa_flag(df_out, u_mask, flag)
-                df_out.loc[u_mask, unit_col] = self.units  # Replace w/ default
+                df_out.loc[u_mask, self.col.unit_out] = self.units  # Replace w/ default
         self.df = df_out
-
-    def infer_units(self, unit_col, flag_col=None):
-        """
-        Replace missing units with desired unit and add QA_flag about it in df.
-
-        Parameters
-        ----------
-        unit_col : string
-            Unit column in df_in.
-        flag_col : string, optional
-            Column to reference in QA_flags.
-            The default None uses unit_col instead.
-        """
-        # QA flag for missing units
-        flag = unit_qa_flag(unit_col, 'MISSING', self.units, flag_col)
-        # Update mask for missing units
-        units_mask = self.c_mask & self.df[unit_col].isna()
-        self.df = add_qa_flag(self.df, units_mask, flag)  # Assign flag
-        # Update with infered unit
-        self.df.loc[units_mask, unit_col] = self.units
-        # Note: .fillna(self.units) is slightly faster but hits datatype issues
 
     def check_basis(self, basis_col='MethodSpecificationName'):
         """
