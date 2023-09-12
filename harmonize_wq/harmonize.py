@@ -69,7 +69,7 @@ class WQCharData():
         self.ureg = pint.UnitRegistry()  # Add standard unit registry
         self.units = domains.OUT_UNITS[self.out_col]
 
-    def coerce_measure(self):
+    def __coerce_measure(self):
         """ Identifies bad measure values, and flags them. Copies measure
             values to out_col, with bad measures as NaN.
         """
@@ -96,6 +96,19 @@ class WQCharData():
         df_out[self.out_col] = meas_s  # Return coerced results
 
         self.df = df_out
+    
+    def __unit_mask(self, unit, col=None):
+        """Get mask that is characteristic specific (c_mask) and has the
+        specified units.
+        """
+        if col:
+            return self.measure_mask() & (self.df[col] == unit)
+        return self.measure_mask() & (self.df[self.col.unit_out] == unit)
+
+    def __char_val(self):
+        """"Returns built-in char_val based on out_col attribute"""
+        c_dict = domains.out_col_lookup()
+        return list(c_dict.keys())[list(c_dict.values()).index(self.out_col)]
 
     def check_units(self, flag_col=None):
         """
@@ -230,20 +243,6 @@ class WQCharData():
         if col:
             return self.c_mask & self.df[col].notna()
         return self.c_mask & self.df[self.out_col].notna()
-
-    def unit_mask(self, unit, col=None):
-        """
-        Get mask that is characteristic specific (c_mask) and has the
-        specified units.
-        """
-        if col:
-            return self.measure_mask() & (self.df[col] == unit)
-        return self.measure_mask() & (self.df[self.col.unit_out] == unit)
-
-    def char_val(self):
-        """"Returns built-in char_val based on out_col attribute"""
-        c_dict = domains.out_col_lookup()
-        return list(c_dict.keys())[list(c_dict.values()).index(self.out_col)]
 
     def convert_units(self, default_unit=None, errors='raise'):
         """
