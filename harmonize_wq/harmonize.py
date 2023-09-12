@@ -105,11 +105,6 @@ class WQCharData():
             return self.measure_mask() & (self.df[col] == unit)
         return self.measure_mask() & (self.df[self.col.unit_out] == unit)
 
-    def __char_val(self):
-        """"Returns built-in char_val based on out_col attribute"""
-        c_dict = domains.out_col_lookup()
-        return list(c_dict.keys())[list(c_dict.values()).index(self.out_col)]
-
     def check_units(self, flag_col=None):
         """
         Checks for bad units that are missing (assumes default_unit) or
@@ -203,7 +198,10 @@ class WQCharData():
             col = self.col.basis
             if col not in self.df.columns:
                 self.df[col] = nan  # If col wasn't created above it is here
-            char_val = self.char_val()
+            # Get built-in char_val based on out_col attribute
+            char_keys, char_vals = zip(*domains.out_col_lookup().items())
+            char_val = list(char_keys)[list(char_vals).index(self.out_col)]
+
             self.df.loc[c_mask, col] = self.df.loc[c_mask, col].fillna(char_val)
 
             # Drop instances of 'as '
