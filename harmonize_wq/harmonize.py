@@ -336,11 +336,23 @@ class WQCharData():
 
     def update_units(self, units_out):
         """
-        Update object units attribute to convert everything into.
+        Update object units attribute to convert everything into. Does not do
+        the conversion.
+        
         Parameters
         ----------
         units_out : str
             Units to convert results into.
+
+        Examples
+        --------
+        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> wq.units
+        'mg/l'
+        
+        >>> wq.update_units('mg/kg')
+        >>> wq.units
+        'mg/kg'
         """
         self.units = units_out
 
@@ -353,6 +365,15 @@ class WQCharData():
         ----------
         column : str, optional
             DataFrame column name to use. Default None uses self.out_col
+
+        Examples
+        --------
+        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> wq.measure_mask()
+        0     True
+        1    False
+        2     True
+        dtype: bool
         """
         if column:
             return self.c_mask & self.df[column].notna()
@@ -372,6 +393,33 @@ class WQCharData():
             If ‘raise’, invalid dimension conversions will raise an exception.
             If ‘skip’, invalid dimension conversions will not be converted.
             If ‘ignore’, invalid dimension conversions will be NaN.
+
+        Examples
+        --------
+        Build dataframe to use as input:
+        
+        >>> import pandas
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
+        ...                                               'Temperature, water',
+        ...                                               ],
+        ...                        'ResultMeasure/MeasureUnitCode': ['mg/ml',
+        ...                                                          'deg C'],
+        ...                        'ResultMeasureValue': ['1.0', '10.0',],
+        ...                        })
+        >>> df
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0          Phosphorus                         mg/ml                1.0
+        1  Temperature, water                         deg C               10.0
+        
+        Build WQ Characteristic Data object from DataFrame:
+            
+        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        
+        >>> wq.convert_units()
+        >>> wq.df
+           CharacteristicName  ...                            Phosphorus
+        0          Phosphorus  ...  1000.0000000000001 milligram / liter
+        1  Temperature, water  ...                                   NaN
         """
         if default_unit:
             self.units = default_unit
@@ -400,6 +448,29 @@ class WQCharData():
         u_mask : pandas.Series, optional
             Mask to use to identify what is being converted.
             The default is None, creating a unit mask based on unit.
+
+        Examples
+        --------
+        Build dataframe to use as input:
+        
+        >>> import pandas
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Dissolved oxygen (DO)',
+        ...                                               'Dissolved oxygen (DO)',
+        ...                                               ],
+        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
+        ...                                                          '%'],
+        ...                        'ResultMeasureValue': ['1.0', '10.0',],
+        ...                        })
+        >>> df
+              CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0  Dissolved oxygen (DO)                          mg/l                1.0
+        1  Dissolved oxygen (DO)                             %               10.0
+        
+        Build WQ Characteristic Data object from DataFrame:
+            
+        >>> wq = harmonize.WQCharData(df, 'Dissolved oxygen (DO)')        
+        >>> wq.apply_conversion(convert.DO_saturation, '%')
+        >>> wq.df[['Units', 'DO']]
         """
         # TODO: QA flag inexact conversions?
         df_out = self.df
