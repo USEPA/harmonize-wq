@@ -188,16 +188,17 @@ def basis_from_methodSpec(df_in):
     # Basis from MethodSpecificationName
     old_col = 'MethodSpecificationName'
     df = df_in.copy()
-    # TODO: this seems overly-complex to do a pop from one column to another
+    # TODO: this seems overly-complex to do a pop from one column to another, consider _coerce_basis()
     # List unique basis
     basis_list = list(set(df[old_col].dropna()))
     for base in basis_list:
         mask = df[old_col] == base
         df = set_basis(df, mask, base)
         # Remove basis from MethodSpecificationName
-        df[old_col] = [nan if x == base else x for x in df[old_col]]
+        #TODO: why update old field?
+        #df[old_col] = [nan if x == base else x for x in df[old_col]]
     # Test we didn't miss any methodSpec
-    assert set(df[old_col].dropna()) == set(), (set(df[old_col].dropna()))
+    #assert set(df[old_col].dropna()) == set(), (set(df[old_col].dropna()))
 
     return df
 
