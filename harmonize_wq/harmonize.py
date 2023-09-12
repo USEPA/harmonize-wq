@@ -110,17 +110,17 @@ class WQCharData():
             # Flag each unique bad measure one measure (not row) at a time
             if pandas.isna(bad_meas):
                 flag = '{}: missing (NaN) result'.format(meas_col)
-                cond = (c_mask & (df_out[meas_col].isna()))
+                cond = c_mask & (df_out[meas_col].isna())
             else:
                 flag = '{}: "{}" result cannot be used'.format(meas_col,
                                                                bad_meas)
-                cond = (c_mask & (df_out[meas_col] == bad_meas))
+                cond = c_mask & (df_out[meas_col] == bad_meas)
             # Flag bad measures
             df_out = add_qa_flag(df_out, cond, flag)
         df_out[self.out_col] = meas_s  # Return coerced results
 
         self.df = df_out
-    
+
     def _unit_mask(self, unit, column=None):
         """Get mask that is characteristic specific (c_mask) and has required
         units.
@@ -458,14 +458,14 @@ class WQCharData():
             for smp_frac in frac[1]:
                 if smp_frac in set(df_out.loc[c_mask, fract_col].dropna()):
                     # New subset mask for sample frac
-                    f_mask = (c_mask & (df_out[fract_col]==smp_frac))
+                    f_mask = c_mask & (df_out[fract_col]==smp_frac)
                     # Copy measure to new col (new col name from char_list)
                     df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
                 elif smp_frac == '':
                     # Values where sample fraction missing go to catch all
                     if df_out.loc[c_mask, fract_col].isnull().values.any():
                         # New subset mask
-                        f_mask = (c_mask & (df_out[fract_col].isnull()))
+                        f_mask = c_mask & (df_out[fract_col].isnull())
                         # Copy measure to new col
                         df_out.loc[f_mask, col] = df_out.loc[f_mask, suffix]
         self.df = df_out
@@ -609,7 +609,7 @@ def replace_in_col(df_in, col, old_val, new_val, mask):
     """
     # Note: Timing is just as fast as long as df isn't copied
     #       Timing for replace vs set unkown
-    mask_old = (mask & (df_in[col]==old_val))
+    mask_old = mask & (df_in[col]==old_val)
     #str.replace did not work for short str to long str (over-replaces)
     #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
     df_in.loc[mask_old, col] = new_val  # This should be more explicit
