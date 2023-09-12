@@ -294,6 +294,12 @@ class WQCharData():
 
         # Basis from MethodSpecificationName
         if basis_col == 'MethodSpecificationName':
+            
+            # Add basis out column (i.e., 'Speciation') if it doesn't exist
+            if self.col.basis not in self.df.columns:
+                self.df[self.col.basis] = nan
+            
+            # Mask to characteristic
             self.df[c_mask] = basis.basis_from_methodSpec(self.df[c_mask])
 
             # Basis from unit
@@ -306,8 +312,7 @@ class WQCharData():
                 pass
             # Finish by filling any NAs with char_val based default
             col = self.col.basis
-            if col not in self.df.columns:
-                self.df[col] = nan  # If col wasn't created above it is here
+
             # Get built-in char_val based on out_col attribute
             char_keys, char_vals = zip(*domains.out_col_lookup().items())
             char_val = list(char_keys)[list(char_vals).index(self.out_col)]
