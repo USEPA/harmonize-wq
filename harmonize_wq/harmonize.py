@@ -89,11 +89,11 @@ class WQCharData():
         self.df = df_out
         # Deal with values: set out_col = in
         self.out_col = domains.out_col_lookup()[char_val]
-        self.coerce_measure()
+        self._coerce_measure()
         self.ureg = pint.UnitRegistry()  # Add standard unit registry
         self.units = domains.OUT_UNITS[self.out_col]
 
-    def __coerce_measure(self):
+    def _coerce_measure(self):
         """ Identifies bad measure values, and flags them. Copies measure
             values to out_col, with bad measures as NaN.
         """
@@ -121,12 +121,13 @@ class WQCharData():
 
         self.df = df_out
     
-    def __unit_mask(self, unit, col=None):
-        """Get mask that is characteristic specific (c_mask) and has the
-        specified units.
+    def _unit_mask(self, unit, column=None):
+        """Get mask that is characteristic specific (c_mask) and has required
+        units.
         """
-        if col:
-            return self.measure_mask() & (self.df[col] == unit)
+        if column:
+            # TODO: column for in vs out col, not being used, remove?
+            return self.measure_mask() & (self.df[column] == unit)
         return self.measure_mask() & (self.df[self.col.unit_out] == unit)
 
     def check_units(self, flag_col=None):
@@ -164,7 +165,7 @@ class WQCharData():
                 warn("WARNING: " + problem)
                 flag = unit_qa_flag(unit_col, problem, self.units, flag_col)
                 # New mask for bad units
-                u_mask = self.unit_mask(unit)
+                u_mask = self._unit_mask(unit)
                 # Assign flag to bad units
                 df_out = add_qa_flag(df_out, u_mask, flag)
                 df_out.loc[u_mask, unit_col] = self.units  # Replace w/ default
@@ -185,10 +186,10 @@ class WQCharData():
         # QA flag for missing units
         flag = unit_qa_flag(unit_col, 'MISSING', self.units, flag_col)
         # Update mask for missing units
-        unit_mask = self.c_mask & self.df[unit_col].isna()
-        self.df = add_qa_flag(self.df, unit_mask, flag)  # Assign flag
+        units_mask = self.c_mask & self.df[unit_col].isna()
+        self.df = add_qa_flag(self.df, units_mask, flag)  # Assign flag
         # Update with infered unit
-        self.df.loc[unit_mask, unit_col] = self.units
+        self.df.loc[units_mask, unit_col] = self.units
         # Note: .fillna(self.units) is slightly faster but hits datatype issues
 
     def check_basis(self, basis_col='MethodSpecificationName'):
@@ -253,17 +254,18 @@ class WQCharData():
         """
         self.units = units_out
 
-    def measure_mask(self, col=None):
+    def measure_mask(self, column=None):
         """
         Get mask that is characteristic specific (c_mask) and only has valid
         col measures (Non-NA).
+        
         Parameters
         ----------
-        col : str, optional
+        column : str, optional
             DataFrame column name to use. Default None uses self.out_col
         """
-        if col:
-            return self.c_mask & self.df[col].notna()
+        if column:
+            return self.c_mask & self.df[column].notna()
         return self.c_mask & self.df[self.out_col].notna()
 
     def convert_units(self, default_unit=None, errors='raise'):
@@ -312,7 +314,7 @@ class WQCharData():
         # TODO: QA flag inexact conversions?
         df_out = self.df
         if u_mask is None:
-            u_mask = self.unit_mask(unit)
+            u_mask = self._unit_mask(unit)
         unit = self.ureg.Quantity(unit)  # Pint quantity object from unit
         old_vals = df_out.loc[u_mask, self.out_col]
         try:
@@ -533,7 +535,7 @@ class WQCharData():
         out_col = self.out_col
 
         for quant in mol_list:
-            mol_mask = self.unit_mask(quant)
+            mol_mask = self._unit_mask(quant)
             df_out.loc[mol_mask, out_col] = ureg.Quantity(quant) * df_out[out_col]
             df_out.loc[mol_mask, unit_col] = str(ureg.Quantity(quant).units)
 
