@@ -147,6 +147,43 @@ class WQCharData():
         # Update with infered unit
         self.df.loc[units_mask, self.col.unit_out] = self.units
         # Note: .fillna(self.units) is slightly faster but hits datatype issues
+        
+        def _replace_in_col(self, col, old_val, new_val, mask=None):
+            """
+            Simple string replacement for a column at rows filtered by mask
+        
+            Parameters
+            ----------
+            df_in : pandas.DataFrame
+                DataFrame that will be updated.
+            col : string
+                Column of DataFrame to update old_val to _new_val.
+            old_val : string
+                Old value to replace.
+            new_val : string
+                New value to use.
+            mask : pandas.Series
+                Row conditional mask to only update a sub-set of rows.
+                The default None uses 'CharacteristicName' mask instead.
+        
+            Returns
+            -------
+            df_in : pandas.DataFrame
+                Updated DataFrame.
+        
+            """
+            if mask is None:
+                mask = self.c_mask
+            df_in = self.df
+            # Note: Timing is just as fast as long as df isn't copied
+            #       Timing for replace vs set unkown
+            mask_old = mask & (df_in[col]==old_val)
+            #str.replace did not work for short str to long str (over-replaces)
+            #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
+            df_in.loc[mask_old, col] = new_val  # This should be more explicit
+        
+            return df_in
+
 
     def check_units(self, flag_col=None):
         """
@@ -546,10 +583,8 @@ class WQCharData():
             The default None, uses the c_mask attribute.
         """
         col = self.col.unit_out
-        if mask is None:
-            mask = self.c_mask
         for item in val_dict.items():
-            replace_in_col(self.df, col, item[0], item[1], mask)
+            self._replace_in_col(self.df, col, item[0], item[1], mask)
 
     def fraction(self, frac_dict=None, suffix=None,
                  fract_col='ResultSampleFractionText'):
@@ -597,7 +632,7 @@ class WQCharData():
         # Check for sample fraction column
         df_checks(self.df, [fract_col])
         # Replace bad sample fraction w/ nan
-        self.df = replace_in_col(self.df, fract_col, ' ', nan, c_mask)
+        self.df = self._replace_in_col(self.df, fract_col, ' ', nan, c_mask)
 
         df_out = self.df
 
@@ -743,39 +778,6 @@ def df_checks(df_in, columns=None):
                    'CharacteristicName')
     for col in columns:
         assert col in df_in.columns, '{} not in DataFrame'.format(col)
-
-
-def replace_in_col(df_in, col, old_val, new_val, mask):
-    """
-    Simple string replacement for a column at rows filtered by mask
-
-    Parameters
-    ----------
-    df_in : pandas.DataFrame
-        DataFrame that will be updated.
-    col : string
-        Column of DataFrame to update old_val to _new_val.
-    old_val : string
-        Old value to replace.
-    new_val : string
-        New value to use.
-    mask : pandas.Series
-        Row conditional mask to only update a sub-set of rows.
-
-    Returns
-    -------
-    df_in : pandas.DataFrame
-        Updated DataFrame.
-
-    """
-    # Note: Timing is just as fast as long as df isn't copied
-    #       Timing for replace vs set unkown
-    mask_old = mask & (df_in[col]==old_val)
-    #str.replace did not work for short str to long str (over-replaces)
-    #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
-    df_in.loc[mask_old, col] = new_val  # This should be more explicit
-
-    return df_in
 
 
 #timeit: 159.17
