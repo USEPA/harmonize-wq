@@ -6,7 +6,7 @@ from warnings import warn
 import pandas
 import pint
 from numpy import nan
-from harmonize_wq import WQCharData
+from harmonize_wq.wq_data import WQCharData
 from harmonize_wq import domains
 from harmonize_wq import convert
 from harmonize_wq import visualize as viz
