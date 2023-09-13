@@ -808,7 +808,7 @@ class WQCharData():
 
         return frac_dict
 
-    def handle_dimensions(self):
+    def dimension_fixes(self):
         """
         Input/output for dimension handling.
 
@@ -842,7 +842,7 @@ class WQCharData():
             
         >>> wq = harmonize.WQCharData(df, 'Phosphorus')
         
-        >>> wq.handle_dimensions()
+        >>> wq.dimension_fixes()
         ({'mg/kg': 'mg/kg * H2O'}, [])
         """
         dimension_dict = {}  # Empty dict to update to
@@ -1273,7 +1273,7 @@ def sediment(wqp):
 
     # Check/fix dimensionality issues (Type I)
     # Convert mg/l <-> dimensionless Premiss: 1 liter water ~ 1 kg mass)
-    wqp.replace_unit_by_dict(wqp.handle_dimensions()[0], wqp.measure_mask())
+    wqp.replace_unit_by_dict(wqp.dimension_fixes()[0], wqp.measure_mask())
 
     # un-fixable dimensions: mass/area (kg/ha), mass (g),
     #                        mass/time (ton/day), mass/length/time (ton/day/ft)
@@ -1381,7 +1381,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
         # Replace know problem units, fix and flag missing units (wet/dry?)
         wqp.check_units()
         # Convert dimensionality issues, e.g., mg/l <-> dimensionless (H2O)
-        dimension_dict, mol_list = wqp.handle_dimensions()
+        dimension_dict, mol_list = wqp.dimension_fixes()
         # Replace units by dictionary
         wqp.replace_unit_by_dict(dimension_dict, wqp.measure_mask())
         wqp.moles_convert(mol_list)  # Fix up units/measures where moles
