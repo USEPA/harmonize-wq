@@ -577,7 +577,7 @@ class WQCharData():
 
     def replace_unit_by_str(self, old, new):
         """
-        Simple way to replace all instances of old str with new str in units.
+        Simple way to replace ALL instances of old str with new str in units.
 
         Parameters
         ----------
@@ -591,16 +591,30 @@ class WQCharData():
         Build DataFrame to use as input:
         
         >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-        ...                                               'Phosphorus',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
-        ...                                                          'mg/kg',],
-        ...                        'ResultMeasureValue': ['1.0', '10',],      
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Temperature, water',
+        ...                                               'Temperature, water',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['deg C',
+        ...                                                          'deg F',],
+        ...                        'ResultMeasureValue': ['31', '87',],      
         ...                        })
         >>> df
-          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
-        0         Phosphorus                          mg/l                1.0
-        1         Phosphorus                         mg/kg                 10
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0  Temperature, water                         deg C                 31
+        1  Temperature, water                         deg F                 87
+        
+        Build WQ Characteristic Data object from DataFrame:
+            
+        >>> wq = harmonize.WQCharData(df, 'Temperature, water')
+        >>> wq.df
+           CharacteristicName ResultMeasure/MeasureUnitCode  ...  Units Temperature
+        0  Temperature, water                         deg C  ...  deg C          31
+        1  Temperature, water                         deg F  ...  deg F          87
+         
+        >>> wq.replace_unit_by_str(' ', '')
+        >>> wq.df
+           CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Temperature
+        0  Temperature, water                         deg C  ...  degC          31
+        1  Temperature, water                         deg F  ...  degF          87
         """
         df_out = self.df
         c_mask = self.c_mask
