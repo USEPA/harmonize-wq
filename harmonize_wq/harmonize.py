@@ -1022,6 +1022,20 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
     pandas.Series
         Converted values from quantity_series in units with original index.
 
+    Examples
+    --------
+    Build series to use as input:
+    
+    >>> from pandas import Series
+    >>> quantity_series = Series([1, 10])
+    >>> unit_series = Series(['mg/l', 'mg/ml',])
+
+    Convert series to series of pint objects in 'mg/l'
+    
+    >>> harmonize.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
+    0                   1.0 milligram / liter
+    1    10000.000000000002 milligram / liter
+    dtype: object
     """
     if quantity_series.dtype=='O':
         quantity_series = pandas.to_numeric(quantity_series)
@@ -1073,7 +1087,30 @@ def add_qa_flag(df_in, mask, flag):
     -------
     df_out : pandas.DataFrame
         Updated copy of df_in.
-
+        
+    Examples
+    --------
+    Build DataFrame to use as input:
+    
+    >>> from pandas import DataFrame
+    >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Phosphorus', 'Carbon',],
+    ...                 'ResultMeasureValue': ['1.0', '0.265', '2.1'],})
+    >>> df
+      CharacteristicName ResultMeasureValue
+    0             Carbon                1.0
+    1         Phosphorus              0.265
+    2             Carbon                2.1
+    
+    Assign simple flag string and mask to assign flag only to Carbon
+    
+    >>> flag = 'words'
+    >>> mask = df['CharacteristicName']=='Carbon'
+    
+    >>> harmonize.add_qa_flag(df, mask, flag)
+      CharacteristicName ResultMeasureValue QA_flag
+    0             Carbon                1.0   words
+    1         Phosphorus              0.265     NaN
+    2             Carbon                2.1   words
     """
     df_out = df_in.copy()
     if 'QA_flag' not in list(df_out.columns):
@@ -1112,6 +1149,10 @@ def unit_qa_flag(unit_col, trouble, unit, flag_col=None):
     string
         Flag to use in QA_flag column.
 
+    Examples
+    --------
+    >>> harmonize.unit_qa_flag('ResultMeasure/MeasureUnitCode', 'missing', 'mg/l')
+    'ResultMeasure/MeasureUnitCode: missing UNITS, mg/l assumed'
     """
     if flag_col:
         return '{}: {} UNITS, {} assumed'.format(flag_col, trouble, unit)
