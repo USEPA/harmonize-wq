@@ -1171,6 +1171,22 @@ def units_dimension(series_in, units, ureg=None):
     dim_list : list
         List of units with mis-matched dimensions.
 
+    Examples
+    --------
+    Build series to use as input:
+    
+    >>> from pandas import Series
+    >>> unit_series = Series(['mg/l', 'mg/ml', 'g/kg'])
+    >>> unit_series
+    0     mg/l
+    1    mg/ml
+    2     g/kg
+    dtype: object
+
+    Get list of unique units not in desired units dimension 'mg/l'
+    
+    >>> harmonize.units_dimension(unit_series, units='mg/l')
+    ['g/kg']
     """
     if ureg is None:
         ureg = pint.UnitRegistry()
