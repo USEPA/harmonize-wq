@@ -644,30 +644,32 @@ class WQCharData():
         Build DataFrame to use as input:
         
         >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Temperature, water',
-        ...                                               'Temperature, water',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['deg C',
-        ...                                                          'deg F',],
-        ...                        'ResultMeasureValue': ['31', '87',],      
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Fecal Coliform',
+        ...                                               'Fecal Coliform',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['#/100ml',
+        ...                                                          'MPN',],
+        ...                        'ResultMeasureValue': ['1.0', '10',],      
         ...                        })
         >>> df
-           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
-        0  Temperature, water                         deg C                 31
-        1  Temperature, water                         deg F                 87
+          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0     Fecal Coliform                       #/100ml                1.0
+        1     Fecal Coliform                           MPN                 10
         
         Build WQ Characteristic Data object from DataFrame:
             
-        >>> wq = harmonize.WQCharData(df, 'Temperature, water')
+        >>> wq = harmonize.WQCharData(df, 'Fecal Coliform')
         >>> wq.df
-           CharacteristicName ResultMeasure/MeasureUnitCode  ...  Units Temperature
-        0  Temperature, water                         deg C  ...  deg C          31
-        1  Temperature, water                         deg F  ...  deg F          87
+          CharacteristicName ResultMeasure/MeasureUnitCode  ...    Units Fecal_Coliform
+        0     Fecal Coliform                       #/100ml  ...  #/100ml            1.0
+        1     Fecal Coliform                           MPN  ...      MPN           10.0
+        
+        [2 rows x 5 columns]
          
-        >>> wq.replace_unit_str(' ', '')
+        >>> wq.replace_unit_by_dict(domains.UNITS_REPLACE['Fecal_Coliform'])
         >>> wq.df
-           CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Temperature
-        0  Temperature, water                         deg C  ...  degC          31
-        1  Temperature, water                         deg F  ...  degF          87
+          CharacteristicName ResultMeasure/MeasureUnitCode  ...        Units Fecal_Coliform
+        0     Fecal Coliform                       #/100ml  ...  CFU/(100ml)            1.0
+        1     Fecal Coliform                           MPN  ...  MPN/(100ml)           10.0
         """
         col = self.col.unit_out
         for item in val_dict.items():
