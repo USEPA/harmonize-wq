@@ -575,7 +575,7 @@ class WQCharData():
                                self.units,
                                self.ureg)
 
-    def replace_unit_by_str(self, old, new):
+    def replace_unit_str(self, old, new, mask=None):
         """
         Simple way to replace ALL instances of old str with new str in units.
 
@@ -585,6 +585,59 @@ class WQCharData():
             sub-string to find and replace
         new : str
             sub-string to replace old sub-string
+        mask : pandas.Series, optional
+            Conditional mask to limit rows.
+            The default None, uses the c_mask attribute.
+            
+        Examples
+        --------
+        Build DataFrame to use as input:
+        
+        >>> import pandas
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Temperature, water',
+        ...                                               'Temperature, water',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['deg C',
+        ...                                                          'deg F',],
+        ...                        'ResultMeasureValue': ['31', '87',],      
+        ...                        })
+        >>> df
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0  Temperature, water                         deg C                 31
+        1  Temperature, water                         deg F                 87
+        
+        Build WQ Characteristic Data object from DataFrame:
+            
+        >>> wq = harmonize.WQCharData(df, 'Temperature, water')
+        >>> wq.df
+           CharacteristicName ResultMeasure/MeasureUnitCode  ...  Units Temperature
+        0  Temperature, water                         deg C  ...  deg C          31
+        1  Temperature, water                         deg F  ...  deg F          87
+         
+        >>> wq.replace_unit_str(' ', '')
+        >>> wq.df
+           CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Temperature
+        0  Temperature, water                         deg C  ...  degC          31
+        1  Temperature, water                         deg F  ...  degF          87
+        """
+        df_out = self.df
+        if mask is None:
+            mask = self.c_mask
+        unit_col = self.col.unit_out
+        df_out.loc[mask, unit_col] = df_out.loc[mask, unit_col].str.replace(old, new)
+        self.df = df_out
+
+    def replace_unit_by_dict(self, val_dict, mask=None):
+        """
+        A simple way to do multiple replace_in_col() replacements of val_dict
+        key with val_dict value.
+
+        Parameters
+        ----------
+        val_dict : dictionary
+            Occurrences of key in the unit column are replaced with the value.
+        mask : pandas.Series, optional
+            Conditional mask to limit rows.
+            The default None, uses the c_mask attribute.
 
         Examples
         --------
@@ -610,30 +663,11 @@ class WQCharData():
         0  Temperature, water                         deg C  ...  deg C          31
         1  Temperature, water                         deg F  ...  deg F          87
          
-        >>> wq.replace_unit_by_str(' ', '')
+        >>> wq.replace_unit_str(' ', '')
         >>> wq.df
            CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Temperature
         0  Temperature, water                         deg C  ...  degC          31
         1  Temperature, water                         deg F  ...  degF          87
-        """
-        df_out = self.df
-        c_mask = self.c_mask
-        unit_col = self.col.unit_out
-        df_out.loc[c_mask, unit_col] = df_out.loc[c_mask, unit_col].str.replace(old, new)
-        self.df = df_out
-
-    def replace_unit_by_dict(self, val_dict, mask=None):
-        """
-        A simple way to do multiple replace_in_col() replacements of val_dict
-        key with val_dict value.
-
-        Parameters
-        ----------
-        val_dict : dictionary
-            Occurrences of key in the unit column are replaced with the value.
-        mask : pandas.Series, optional
-            Conditional mask to limit rows.
-            The default None, uses the c_mask attribute.
         """
         col = self.col.unit_out
         for item in val_dict.items():
@@ -1309,13 +1343,13 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
         # NOTE: Ecoli ['cfu/100ml', 'MPN/100ml', '#/100ml']
         # NOTE: feca ['CFU', 'MPN/100ml', 'cfu/100ml', 'MPN/100 ml', '#/100ml']
         # Replace known special character in unit ('#' count assumed as CFU)
-        wqp.replace_unit_by_str('#', 'CFU')
+        wqp.replace_unit_str('#', 'CFU')
         # Replace known unit problems (e.g., assume CFU/MPN is /100ml)
         wqp.replace_unit_by_dict(domains.UNITS_REPLACE[out_col])
-        #TODO: figure out why the above must be done before replace_unit_by_str
+        #TODO: figure out why the above must be done before replace_unit_str
         # Replace all instances in results column
-        wqp.replace_unit_by_str('/100ml', '/(100ml)')
-        wqp.replace_unit_by_str('/100 ml', '/(100ml)')
+        wqp.replace_unit_str('/100ml', '/(100ml)')
+        wqp.replace_unit_str('/100 ml', '/(100ml)')
         wqp.check_units()  # Fix and flag missing units
     elif out_col in ['Carbon', 'Phosphorus', 'Nitrogen']:
         # Set Basis from unit and MethodSpec column
@@ -1330,7 +1364,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     elif out_col == 'Temperature':
         # Remove spaces from units for pint ('deg C' == degree coulomb)
         wqp.update_units(wqp.units.replace(' ', ''))  # No spaces in units_out
-        wqp.replace_unit_by_str(' ', '')  # Replace in results column
+        wqp.replace_unit_str(' ', '')  # Replace in results column
         wqp.check_units()  # Fix and flag missing units
     else:
         harmonize_map = {'DO': dissolved_oxygen,
