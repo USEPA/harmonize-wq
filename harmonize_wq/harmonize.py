@@ -141,13 +141,39 @@ class WQCharData():
             The default None uses WQCharData.col.unit_out instead.
         """
         # QA flag for missing units
-        flag = unit_qa_flag(self.col.unit_out, 'MISSING', self.units, flag_col)
+        flag = self._unit_qa_flag('MISSING', flag_col)
         # Update mask for missing units
         units_mask = self.c_mask & self.df[self.col.unit_out].isna()
         self.df = add_qa_flag(self.df, units_mask, flag)  # Assign flag
         # Update with infered unit
         self.df.loc[units_mask, self.col.unit_out] = self.units
         # Note: .fillna(self.units) is slightly faster but hits datatype issues
+
+
+    def _unit_qa_flag(self, trouble, flag_col=None):
+        """
+        Generates a QA_flag flag string for the units column. If unit_col is a copy
+        flag_col can specify the original column name for the flag.
+    
+        Parameters
+        ----------
+        trouble : string
+            Unit problem encountered (e.g., missing).
+        flag_col : string, optional
+            String to use when referring to the unit_col.
+            The default None uses WQCharData.col.unit_out instead.
+    
+        Returns
+        -------
+        string
+            Flag to use in QA_flag column.
+        """
+        unit = self.units  # The default unit that replaced the problem unit
+        if flag_col:
+            return '{}: {} UNITS, {} assumed'.format(flag_col, trouble, unit)
+        # Else: Used when flag_col is None, typically the column being checked
+        unit_col = self.col.unit_out
+        return '{}: {} UNITS, {} assumed'.format(unit_col, trouble, unit)
         
     def _replace_in_col(self, col, old_val, new_val, mask=None):
         """
@@ -303,7 +329,7 @@ class WQCharData():
                 # If bad, flag and replace
                 problem = "'{}' UNDEFINED UNIT for {}".format(unit, self.out_col)
                 warn("WARNING: " + problem)
-                flag = unit_qa_flag(self.col.unit_out, problem, self.units, flag_col)
+                flag = self._unit_qa_flag(problem, flag_col)
                 # New mask for bad units
                 u_mask = self._unit_mask(unit)
                 # Assign flag to bad units
@@ -1125,38 +1151,6 @@ def add_qa_flag(df_in, mask, flag):
     df_out.loc[mask & (df_out['QA_flag'].isna()), 'QA_flag'] = flag
 
     return df_out
-
-
-def unit_qa_flag(unit_col, trouble, unit, flag_col=None):
-    """
-    Generates a QA_flag flag string for the units column. If unit_col is a copy
-    flag_col can specify the original column name for the flag.
-
-    Parameters
-    ----------
-    unit_col : string
-        Column currently being checked. Used in string when flag_col is None
-    trouble : string
-        Unit problem encountered (e.g., missing).
-    unit : string
-        The default unit that replaced the problem unit.
-    flag_col : string, optional
-        String to use when referring to the unit_col.
-        The default None uses WQCharData.col.unit_out instead.
-
-    Returns
-    -------
-    string
-        Flag to use in QA_flag column.
-
-    Examples
-    --------
-    >>> harmonize.unit_qa_flag('ResultMeasure/MeasureUnitCode', 'missing', 'mg/l')
-    'ResultMeasure/MeasureUnitCode: missing UNITS, mg/l assumed'
-    """
-    if flag_col:
-        return '{}: {} UNITS, {} assumed'.format(flag_col, trouble, unit)
-    return '{}: {} UNITS, {} assumed'.format(unit_col, trouble, unit)
 
 
 def units_dimension(series_in, units, ureg=None):
