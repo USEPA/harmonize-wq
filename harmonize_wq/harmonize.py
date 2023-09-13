@@ -47,13 +47,12 @@ class WQCharData():
     --------
     Build dataframe to use as input:
     
-    >>> import pandas
+    >>> from pandas import DataFrame
     >>> from numpy import nan
-    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-                                                      'Temperature, water',],
-    ...                        'ResultMeasure/MeasureUnitCode': [nan, nan],
-    ...                        'ResultMeasureValue': ['1.0', '10.0',],
-    ...                        })
+    >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water',],
+    ...                 'ResultMeasure/MeasureUnitCode': [nan, nan],
+    ...                 'ResultMeasureValue': ['1.0', '10.0',],
+    ...                 })
     >>> df
        CharacteristicName  ResultMeasure/MeasureUnitCode ResultMeasureValue
     0          Phosphorus                            NaN                1.0
@@ -122,8 +121,7 @@ class WQCharData():
         self.df = df_out
 
     def _unit_mask(self, unit, column=None):
-        """Get mask that is characteristic specific (c_mask) and has required
-        units.
+        """Get mask that is characteristic specific (c_mask) and has required units.
         """
         if column:
             # TODO: column for in vs out col, not being used, remove?
@@ -275,14 +273,12 @@ class WQCharData():
         --------
         Build DataFrame to use as input:
         
-        >>> import pandas
+        >>> from pandas import DataFrame
         >>> from numpy import nan
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-        ...                                               'Temperature, water',
-        ...                                               'Phosphorus',],
-        ...                        'ResultMeasure/MeasureUnitCode': [nan, nan, 'Unknown',],
-        ...                        'ResultMeasureValue': ['1.0', '67.0', '10',],
-        ...                        })
+        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus',],
+        ...                 'ResultMeasure/MeasureUnitCode': [nan, nan, 'Unknown',],
+        ...                 'ResultMeasureValue': ['1.0', '67.0', '10',],
+        ...                 })
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0          Phosphorus                           NaN                1.0
@@ -351,15 +347,13 @@ class WQCharData():
         --------
         Build DataFrame to use as input:
         
-        >>> import pandas
+        >>> from pandas import DataFrame
         >>> from numpy import nan
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-        ...                                               'Temperature, water',
-        ...                                               'Phosphorus',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l',],
-        ...                        'ResultMeasureValue': ['1.0', '67.0', '10',],
-        ...                        'MethodSpecificationName': [nan, nan, 'as PO4',],        
-        ...                        })
+        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l',],
+        ...                 'ResultMeasureValue': ['1.0', '67.0', '10',],
+        ...                 'MethodSpecificationName': [nan, nan, 'as PO4',],        
+        ...                 })
         >>> df
            CharacteristicName  ... MethodSpecificationName
         0          Phosphorus  ...                     NaN
@@ -508,14 +502,11 @@ class WQCharData():
         --------
         Build dataframe to use as input:
         
-        >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-        ...                                               'Temperature, water',
-        ...                                               ],
-        ...                        'ResultMeasure/MeasureUnitCode': ['mg/ml',
-        ...                                                          'deg C'],
-        ...                        'ResultMeasureValue': ['1.0', '10.0',],
-        ...                        })
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/ml', 'deg C'],
+        ...                 'ResultMeasureValue': ['1.0', '10.0',],
+        ...                 })
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0          Phosphorus                         mg/ml                1.0
@@ -563,14 +554,11 @@ class WQCharData():
         --------
         Build dataframe to use as input:
         
-        >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Dissolved oxygen (DO)',
-        ...                                               'Dissolved oxygen (DO)',
-        ...                                               ],
-        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
-        ...                                                          '%'],
-        ...                        'ResultMeasureValue': ['1.0', '10.0',],
-        ...                        })
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Dissolved oxygen (DO)', 'Dissolved oxygen (DO)',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', '%'],
+        ...                 'ResultMeasureValue': ['1.0', '10.0',],
+        ...                 })
         >>> df
               CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0  Dissolved oxygen (DO)                          mg/l                1.0
@@ -622,13 +610,11 @@ class WQCharData():
         --------
         Build DataFrame to use as input:
         
-        >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-        ...                                               'Phosphorus',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
-        ...                                                          'mg/kg',],
-        ...                        'ResultMeasureValue': ['1.0', '10',],      
-        ...                        })
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'mg/kg',],
+        ...                 'ResultMeasureValue': ['1.0', '10',],      
+        ...                 })
         >>> df
           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0         Phosphorus                          mg/l                1.0
@@ -665,13 +651,11 @@ class WQCharData():
         --------
         Build DataFrame to use as input:
         
-        >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Temperature, water',
-        ...                                               'Temperature, water',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['deg C',
-        ...                                                          'deg F',],
-        ...                        'ResultMeasureValue': ['31', '87',],      
-        ...                        })
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Temperature, water', 'Temperature, water',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['deg C', 'deg F',],
+        ...                 'ResultMeasureValue': ['31', '87',],      
+        ...                 })
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0  Temperature, water                         deg C                 31
@@ -715,13 +699,11 @@ class WQCharData():
         --------
         Build DataFrame to use as input:
         
-        >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Fecal Coliform',
-        ...                                               'Fecal Coliform',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['#/100ml',
-        ...                                                          'MPN',],
-        ...                        'ResultMeasureValue': ['1.0', '10',],      
-        ...                        })
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Fecal Coliform', 'Fecal Coliform',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['#/100ml', 'MPN',],
+        ...                 'ResultMeasureValue': ['1.0', '10',],      
+        ...                 })
         >>> df
           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0     Fecal Coliform                       #/100ml                1.0
@@ -852,13 +834,11 @@ class WQCharData():
         --------
         Build DataFrame to use as input:
         
-        >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
-        ...                                               'Phosphorus',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
-        ...                                                          'mg/kg',],
-        ...                        'ResultMeasureValue': ['1.0', '10',],      
-        ...                        })
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'mg/kg',],
+        ...                 'ResultMeasureValue': ['1.0', '10',],      
+        ...                 })
         >>> df
           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0         Phosphorus                          mg/l                1.0
@@ -914,13 +894,11 @@ class WQCharData():
         --------
         Build DataFrame to use as input:
         
-        >>> import pandas
-        >>> df = pandas.DataFrame({'CharacteristicName': ['Carbon',
-        ...                                               'Carbon',],
-        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
-        ...                                                          'umol',],
-        ...                        'ResultMeasureValue': ['1.0', '0.265',],      
-        ...                        })
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Carbon',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'umol',],
+        ...                 'ResultMeasureValue': ['1.0', '0.265',],      
+        ...                 })
         >>> df
           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0             Carbon                          mg/l                1.0
@@ -980,8 +958,8 @@ def df_checks(df_in, columns=None):
     
     Check dataframe for column:
     
-    >>> import pandas
-    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus'],})
+    >>> from pandas import DataFrame
+    >>> df = DataFrame({'CharacteristicName': ['Phosphorus'],})
     >>> df
       CharacteristicName
     0         Phosphorus

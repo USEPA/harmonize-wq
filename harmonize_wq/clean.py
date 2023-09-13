@@ -29,13 +29,12 @@ def datetime(df_in):
     
     Build dataFrame for example:
     
-    >>> import pandas
+    >>> from pandas import DataFrame
     >>> from numpy import nan
-    >>> df = pandas.DataFrame({'ActivityStartDate': ['2004-09-01',
-                                                     '2004-07-01',],
-    ...                        'ActivityStartTime/Time': ['10:01:00', nan,],
-    ...                        'ActivityStartTime/TimeZoneCode':  ['EST', nan],
-    ...                        })
+    >>> df = DataFrame({'ActivityStartDate': ['2004-09-01', '2004-07-01',],
+    ...                 'ActivityStartTime/Time': ['10:01:00', nan,],
+    ...                 'ActivityStartTime/TimeZoneCode':  ['EST', nan],
+    ...                 })
     >>> df
       ActivityStartDate ActivityStartTime/Time ActivityStartTime/TimeZoneCode
     0        2004-09-01               10:01:00                            EST
@@ -82,15 +81,11 @@ def harmonize_depth(df_in, units='meter'):
     
     Build dataFrame for example:
         
-    >>> import pandas
+    >>> from pandas import DataFrame
     >>> from numpy import nan
-    >>> df = pandas.DataFrame({'ResultDepthHeightMeasure/MeasureValue': ['3.0',
-    ...                                                                  nan,
-    ...                                                                  10],
-    ...                        'ResultDepthHeightMeasure/MeasureUnitCode': ['m',
-    ...                                                                     nan,
-    ...                                                                     'ft'],
-    ...                        })
+    >>> df = DataFrame({'ResultDepthHeightMeasure/MeasureValue': ['3.0', nan, 10],
+    ...                 'ResultDepthHeightMeasure/MeasureUnitCode': ['m', nan, 'ft'],
+    ...                 })
     >>> df
       ResultDepthHeightMeasure/MeasureValue ResultDepthHeightMeasure/MeasureUnitCode
     0                                   3.0                                        m

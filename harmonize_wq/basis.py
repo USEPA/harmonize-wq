@@ -94,12 +94,12 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
     --------
     Build dataFrame for example:
     
-    >>> import pandas
-    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
-    ...                        'ResultMeasure/MeasureUnitCode': ['mg/l as P', 'mg/kg as P'],
-    ...                        'ProviderName': ['NWIS', 'NWIS',],
-    ...                        'Units':  ['mg/l as P', 'mg/kg as P'],
-    ...                        })
+    >>> from pandas import DataFrame
+    >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
+    ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', 'mg/kg as P'],
+    ...                 'ProviderName': ['NWIS', 'NWIS',],
+    ...                 'Units':  ['mg/l as P', 'mg/kg as P'],
+    ...                 })
     >>> df
       CharacteristicName ResultMeasure/MeasureUnitCode ProviderName       Units
     0         Phosphorus                     mg/l as P         NWIS   mg/l as P
@@ -168,12 +168,12 @@ def basis_from_methodSpec(df_in):
     --------
     Build dataFrame for example:
     
-    >>> import pandas
+    >>> from pandas import DataFrame
     >>> from numpy import nan
-    >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
-    ...                        'MethodSpecificationName': ['as P', nan],
-    ...                        'ProviderName': ['NWIS', 'NWIS',],
-    ...                        })
+    >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
+    ...                 'MethodSpecificationName': ['as P', nan],
+    ...                 'ProviderName': ['NWIS', 'NWIS',],
+    ...                 })
     >>> df
       CharacteristicName MethodSpecificationName ProviderName
     0         Phosphorus                    as P         NWIS
@@ -228,12 +228,12 @@ def update_result_basis(df_in, basis_col, unit_col):
     Build dataFrame for example:
     Note: 'Units' is used to preserve 'ResultMeasure/MeasureUnitCode'
     
-    >>> import pandas
+    >>> from pandas import DataFrame
     >>> from numpy import nan
-    >>> df = pandas.DataFrame({'CharacteristicName': ['Salinity', 'Salinity',],
-    ...                        'ResultTemperatureBasisText': ['25 deg C', nan,],
-    ...                        'Units':  ['mg/mL @25C', 'mg/mL @25C'],
-    ...                        })
+    >>> df = DataFrame({'CharacteristicName': ['Salinity', 'Salinity',],
+    ...                 'ResultTemperatureBasisText': ['25 deg C', nan,],
+    ...                 'Units':  ['mg/mL @25C', 'mg/mL @25C'],
+    ...                 })
     >>> df
       CharacteristicName ResultTemperatureBasisText       Units
     0           Salinity                   25 deg C  mg/mL @25C
