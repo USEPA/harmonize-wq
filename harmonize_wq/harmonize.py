@@ -623,7 +623,7 @@ class WQCharData():
         """
         col = self.col.unit_out
         for item in val_dict.items():
-            self._replace_in_col(self.df, col, item[0], item[1], mask)
+            self._replace_in_col(col, item[0], item[1], mask)
 
     def fraction(self, frac_dict=None, suffix=None,
                  fract_col='ResultSampleFractionText'):
@@ -671,7 +671,7 @@ class WQCharData():
         # Check for sample fraction column
         df_checks(self.df, [fract_col])
         # Replace bad sample fraction w/ nan
-        self.df = self._replace_in_col(self.df, fract_col, ' ', nan, c_mask)
+        self.df = self._replace_in_col(fract_col, ' ', nan, c_mask)
 
         df_out = self.df
 
