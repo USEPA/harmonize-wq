@@ -137,7 +137,8 @@ class WQCharData():
         Parameters
         ----------
         flag_col : string, optional
-            Column to reference in QA_flags. The default None uses self.col.unit_out instead.
+            Column to reference in QA_flags.
+            The default None uses WQCharData.col.unit_out instead.
         """
         # QA flag for missing units
         flag = unit_qa_flag(self.col.unit_out, 'MISSING', self.units, flag_col)
@@ -148,41 +149,41 @@ class WQCharData():
         self.df.loc[units_mask, self.col.unit_out] = self.units
         # Note: .fillna(self.units) is slightly faster but hits datatype issues
         
-        def _replace_in_col(self, col, old_val, new_val, mask=None):
-            """
-            Simple string replacement for a column at rows filtered by mask
-        
-            Parameters
-            ----------
-            df_in : pandas.DataFrame
-                DataFrame that will be updated.
-            col : string
-                Column of DataFrame to update old_val to _new_val.
-            old_val : string
-                Old value to replace.
-            new_val : string
-                New value to use.
-            mask : pandas.Series
-                Row conditional mask to only update a sub-set of rows.
-                The default None uses 'CharacteristicName' mask instead.
-        
-            Returns
-            -------
-            df_in : pandas.DataFrame
-                Updated DataFrame.
-        
-            """
-            if mask is None:
-                mask = self.c_mask
-            df_in = self.df
-            # Note: Timing is just as fast as long as df isn't copied
-            #       Timing for replace vs set unkown
-            mask_old = mask & (df_in[col]==old_val)
-            #str.replace did not work for short str to long str (over-replaces)
-            #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
-            df_in.loc[mask_old, col] = new_val  # This should be more explicit
-        
-            return df_in
+    def _replace_in_col(self, col, old_val, new_val, mask=None):
+        """
+        Simple string replacement for a column at rows filtered by mask
+    
+        Parameters
+        ----------
+        df_in : pandas.DataFrame
+            DataFrame that will be updated.
+        col : string
+            Column of DataFrame to update old_val to _new_val.
+        old_val : string
+            Old value to replace.
+        new_val : string
+            New value to use.
+        mask : pandas.Series
+            Row conditional mask to only update a sub-set of rows.
+            The default None uses 'CharacteristicName' mask instead.
+    
+        Returns
+        -------
+        df_in : pandas.DataFrame
+            Updated DataFrame.
+    
+        """
+        if mask is None:
+            mask = self.c_mask
+        df_in = self.df
+        # Note: Timing is just as fast as long as df isn't copied
+        #       Timing for replace vs set unkown
+        mask_old = mask & (df_in[col]==old_val)
+        #str.replace did not work for short str to long str (over-replaces)
+        #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
+        df_in.loc[mask_old, col] = new_val  # This should be more explicit
+    
+        return df_in
 
 
     def check_units(self, flag_col=None):
@@ -196,7 +197,7 @@ class WQCharData():
         ----------
         flag_col : string, optional
             Column to reference in QA_flags.
-            The default None uses unit_col instead.
+            The default None uses WQCharData.col.unit_out instead.
             
         Examples
         --------
@@ -944,8 +945,8 @@ def unit_qa_flag(unit_col, trouble, unit, flag_col=None):
     unit : string
         The default unit that replaced the problem unit.
     flag_col : string, optional
-        String to use when referring to the unit_col. If None, unit_col is used.
-        The default is None.
+        String to use when referring to the unit_col.
+        The default None uses WQCharData.col.unit_out instead.
 
     Returns
     -------
