@@ -883,6 +883,44 @@ class WQCharData():
         ----------
         mol_list : list
             List of Mole (substance) units.
+
+        Examples
+        --------
+        Build DataFrame to use as input:
+        
+        >>> import pandas
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Carbon',
+        ...                                               'Carbon',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
+        ...                                                          'umol',],
+        ...                        'ResultMeasureValue': ['1.0', '0.265',],      
+        ...                        })
+        >>> df
+          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0             Carbon                          mg/l                1.0
+        1             Carbon                          umol              0.265
+        
+        Build WQ Characteristic Data object from DataFrame:
+            
+        >>> wq = harmonize.WQCharData(df, 'Organic carbon')
+        >>> wq.df
+          CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Carbon
+        0             Carbon                          mg/l  ...  mg/l    1.0
+        1             Carbon                          umol  ...  umol  0.265
+    
+        [2 rows x 5 columns]
+        
+        Assemble moles list:
+
+        >>> dimension_dict, mol_list = wq.dimension_fixes()
+        >>> mol_list
+        ['umol']
+        
+        >>> wq.moles_convert(mol_list)
+        >>> wq.df
+          CharacteristicName ResultMeasure/MeasureUnitCode  ... Units     Carbon
+        0             Carbon                          mg/l  ...  mg/l        1.0
+        1             Carbon                          umol  ...  mg/l  0.0477424
         """
         # Variables from WQP
         df_out = self.df
