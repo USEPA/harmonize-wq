@@ -185,6 +185,52 @@ class WQCharData():
     
         return df_in
 
+    def _dimension_handling(self, unit, quant=None, ureg=None):
+        """
+        Handles and routes common dimension conversions/contexts
+    
+        Parameters
+        ----------
+        unit : str
+            Current unit.
+        quant : pint.quantity, optional
+            Required for conversions to/from moles
+        ureg : pint.UnitRegistry, optional
+            Unit Registry Object with any custom units defined. The default is None
+    
+        Returns
+        -------
+        dict
+            Dictionary with old_unit:new_unit.
+        list
+            List of Mole (substance) units.
+    
+        """
+        units = self.units
+        if ureg is None:
+            ureg = pint.UnitRegistry()
+    
+        # Conversion to moles performed a level up from here (class method)
+        if ureg(units).check({'[length]': -3, '[mass]': 1}):
+            # Convert to density, e.g., '%' -> 'mg/l'
+            if ureg(unit).check({'[substance]': 1}):
+                if quant:
+                    # Moles -> mg/l; dim = ' / l'
+                    return {unit: quant + ' / l'}, [quant + ' / l']
+                raise ValueError("Pint Quantity required for moles conversions")
+            # Else assume it is dimensionless (e.g. unit = 'g/kg')
+            return {unit: unit + ' * H2O'}, []
+        if ureg(units).dimensionless:
+            # Convert to dimensionless, e.g., 'mg/l' -> '%'
+            if ureg(unit).check({'[substance]': 1}):
+                if quant:
+                    # Moles -> g/kg; dim = ' / l / H2O'
+                    return {unit: quant + ' / l / H2O'}, [quant + ' / l / H2O']
+                raise ValueError("Pint Quantity required for moles conversions")
+            # Else assume it is density (e.g. unit = 'mg/l')
+            return {unit: unit + ' / H2O'}, []
+        warn('WARNING: Unexpected dimensionality')
+        return {}, []
 
     def check_units(self, flag_col=None):
         """
@@ -818,16 +864,16 @@ class WQCharData():
                 for speciation in basis_lst:
                     mol_params['basis'] = speciation
                     quant = str(convert.moles_to_mass(**mol_params))
-                    dim_tup = dimension_handling(unit,
-                                                 self.units,
-                                                 quant,
-                                                 self.ureg)
+                    dim_tup = self._dimension_handling(unit,
+                                                       self.units,
+                                                       quant,
+                                                       self.ureg)
                     dimension_dict.update(dim_tup[0])
                     mol_list+= dim_tup[1]
             else:
-                dim_tup = dimension_handling(unit,
-                                             self.units,
-                                             ureg = self.ureg)
+                dim_tup = self._dimension_handling(unit,
+                                                   self.units,
+                                                   ureg = self.ureg)
                 dimension_dict.update(dim_tup[0])
         return dimension_dict, mol_list
 
@@ -1065,55 +1111,6 @@ def units_dimension(series_in, units, ureg=None):
         if not q_.check(dimension):
             dim_list.append(unit)
     return dim_list
-
-
-def dimension_handling(unit, units, quant=None, ureg=None):
-    """
-    Handles and routes common dimension conversions/contexts
-
-    Parameters
-    ----------
-    unit : str
-        Current unit.
-    units : str
-        Desired units.
-    quant : pint.quantity, optional
-        Required for conversions to/from moles
-    ureg : pint.UnitRegistry, optional
-        Unit Registry Object with any custom units defined. The default is None
-
-    Returns
-    -------
-    dict
-        Dictionary with old_unit:new_unit.
-    list
-        List of Mole (substance) units.
-
-    """
-    if ureg is None:
-        ureg = pint.UnitRegistry()
-
-    # Conversion to moles performed a level up from here (class method)
-    if ureg(units).check({'[length]': -3, '[mass]': 1}):
-        # Convert to density, e.g., '%' -> 'mg/l'
-        if ureg(unit).check({'[substance]': 1}):
-            if quant:
-                # Moles -> mg/l; dim = ' / l'
-                return {unit: quant + ' / l'}, [quant + ' / l']
-            raise ValueError("Pint Quantity required for moles conversions")
-        # Else assume it is dimensionless (e.g. unit = 'g/kg')
-        return {unit: unit + ' * H2O'}, []
-    if ureg(units).dimensionless:
-        # Convert to dimensionless, e.g., 'mg/l' -> '%'
-        if ureg(unit).check({'[substance]': 1}):
-            if quant:
-                # Moles -> g/kg; dim = ' / l / H2O'
-                return {unit: quant + ' / l / H2O'}, [quant + ' / l / H2O']
-            raise ValueError("Pint Quantity required for moles conversions")
-        # Else assume it is density (e.g. unit = 'mg/l')
-        return {unit: unit + ' / H2O'}, []
-    warn('WARNING: Unexpected dimensionality')
-    return {}, []
 
 
 def dissolved_oxygen(wqp):
