@@ -545,6 +545,28 @@ class WQCharData():
         list
             List of units with mis-matched dimensions.
 
+        Examples
+        --------
+        Build DataFrame to use as input:
+        
+        >>> import pandas
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
+        ...                                               'Phosphorus',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
+        ...                                                          'mg/kg',],
+        ...                        'ResultMeasureValue': ['1.0', '10',],      
+        ...                        })
+        >>> df
+          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0         Phosphorus                          mg/l                1.0
+        1         Phosphorus                         mg/kg                 10
+        
+        Build WQ Characteristic Data object from DataFrame:
+            
+        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        
+        >>> wq.dimensions_list()
+        'mg/kg'
         """
         if m_mask is None:
             m_mask = self.measure_mask()
@@ -562,6 +584,22 @@ class WQCharData():
             sub-string to find and replace
         new : str
             sub-string to replace old sub-string
+
+        Examples
+        --------
+        Build DataFrame to use as input:
+        
+        >>> import pandas
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
+        ...                                               'Phosphorus',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
+        ...                                                          'mg/kg',],
+        ...                        'ResultMeasureValue': ['1.0', '10',],      
+        ...                        })
+        >>> df
+          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0         Phosphorus                          mg/l                1.0
+        1         Phosphorus                         mg/kg                 10
         """
         df_out = self.df
         c_mask = self.c_mask
