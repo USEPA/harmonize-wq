@@ -865,14 +865,12 @@ class WQCharData():
                     mol_params['basis'] = speciation
                     quant = str(convert.moles_to_mass(**mol_params))
                     dim_tup = self._dimension_handling(unit,
-                                                       self.units,
                                                        quant,
                                                        self.ureg)
                     dimension_dict.update(dim_tup[0])
                     mol_list+= dim_tup[1]
             else:
                 dim_tup = self._dimension_handling(unit,
-                                                   self.units,
                                                    ureg = self.ureg)
                 dimension_dict.update(dim_tup[0])
         return dimension_dict, mol_list
