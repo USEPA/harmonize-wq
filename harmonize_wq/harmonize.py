@@ -696,6 +696,11 @@ class WQCharData():
         -------
         frac_dict : dictionary
             frac_dict updated to include any frac_col not already defined.
+            
+        Examples
+        --------
+        
+        Not fully implemented with TADA table yet
         """
         c_mask = self.c_mask
         if suffix is None:
@@ -771,6 +776,28 @@ class WQCharData():
         mol_list : list
             List of Mole (substance) units.
 
+        Examples
+        --------
+        Build DataFrame to use as input:
+        
+        >>> import pandas
+        >>> df = pandas.DataFrame({'CharacteristicName': ['Phosphorus',
+        ...                                               'Phosphorus',],
+        ...                        'ResultMeasure/MeasureUnitCode': ['mg/l',
+        ...                                                          'mg/kg',],
+        ...                        'ResultMeasureValue': ['1.0', '10',],      
+        ...                        })
+        >>> df
+          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0         Phosphorus                          mg/l                1.0
+        1         Phosphorus                         mg/kg                 10
+
+        Build WQ Characteristic Data object from DataFrame:
+            
+        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        
+        >>> wq.handle_dimensions()
+        ({'mg/kg': 'mg/kg * H2O'}, [])
         """
         dimension_dict = {}  # Empty dict to update to
         mol_list = []  # Empty list to append to
