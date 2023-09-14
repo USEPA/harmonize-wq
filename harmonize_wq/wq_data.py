@@ -27,16 +27,16 @@ class WQCharData():
     Attributes
     ----------
     df : pandas.DataFrame
-        DataFrame with results for the specific characteristic
+        DataFrame with results for the specific characteristic.
     c_mask : pandas.Series
         Row conditional (bool) mask to limit df rows to only those for the
-        specific characteristic
+        specific characteristic.
     col : SimpleNamespace
-        Standard df column names for unit_in, unit_out, and measure
+        Standard df column names for unit_in, unit_out, and measure.
     out_col : str
-        Column name in df for results, set using char_val
+        Column name in df for results, set using char_val.
     ureg = pint.UnitRegistry()
-        Pint unit registry, starts set to standard unit registry
+        Pint unit registry, starts set to standard unit registry.
     units: str
         Units all results in out_col will be converted into. Default units are
         returned from domains.OUT_UNITS[out_col].
