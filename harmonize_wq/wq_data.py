@@ -767,6 +767,7 @@ class WQCharData():
                 frac_dict[catch_all] = ['']
         if not isinstance(frac_dict[catch_all], list):
             frac_dict[catch_all] = [frac_dict[catch_all]]
+
         # Get all domain values
         #accepted_fracs = list(domains.get_domain_dict('ResultSampleFraction').keys())
         for key in domains.get_domain_dict('ResultSampleFraction').keys():
@@ -781,8 +782,30 @@ class WQCharData():
         # Replace bad sample fraction w/ nan
         self.df = self._replace_in_col(fract_col, ' ', nan, c_mask)
 
-        df_out = self.df
+        df_out = self.df  # Set var for easier referencing
 
+        # Clean up sample fraction column based on charName
+        # Get char
+        c_dict = domains.out_col_lookup()
+        char = list(c_dict.keys())[list(c_dict.values()).index(self.out_col)]
+        # Get dictionary for updates from TADA
+        harmonize_dict = domains.harmonize_TADA_dict()
+        # TADA keys are all caps
+        harmonize_fract = harmonize_dict[char.upper()]
+        # Loop through dictionary making updates to sample fraction
+        for fract_set in harmonize_fract.values():
+            for row in fract_set.items():            
+                fract_mask = df_out[c_mask][fract_col].isin(row[1])  # Mask by values
+                df_out[c_mask][fract_mask][fract_col] = row[0]  # Update to key
+        # Compare df_out againt self.df to add QA flag if changed
+        cond_change = ~(df_out[fract_col] == wqp.df[fract_col])
+        cond_na = df_out[fract_col].notna()
+        df_out[conda_change & cond_na]
+        #LEFT OFF ABOVE IS STILL EMPTY
+
+        df_out
+        self.df = df_out
+        
         # Make column for any unexpected Sample Fraction values, loudly
         for s_f in set(df_out[c_mask][fract_col].dropna()):
             if s_f not in samp_fract_set:
@@ -790,6 +813,7 @@ class WQCharData():
                 frac_dict[char] = s_f
                 prob = '"{}" column for {}, may be error'.format(char, s_f)
                 warn('Warning: ' + prob)
+                # TODO: add QA_flag
         # Test we didn't skip any SampleFraction
         samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
         for s_f in set(df_out[c_mask][fract_col].dropna()):
