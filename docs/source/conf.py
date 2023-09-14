@@ -42,6 +42,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
+    "sphinxcontrib.spelling",
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
@@ -78,10 +79,22 @@ napoleon_numpy_docstring = True
 
 # -- Options for sphinx-contrib\apidoc -----------------------------------------------------
 # NOT currently using apidoc
-apidoc_separate_modules = True
-apidoc_module_dir = "../harmonize_wq"
-apidoc_excluded_paths = ["tests"]
-apidoc_module_first = True
+#apidoc_separate_modules = True
+#apidoc_module_dir = "../harmonize_wq"
+#apidoc_excluded_paths = ["tests"]
+#apidoc_module_first = True
+
+# -- Options for sphinxcontrib-spelling ---------------------------------------
+spelling_lang = "en_US"
+tokenizer_lang = "en_US"
+spelling_word_list_filename = "ignored_wordlist.txt"
+spelling_show_suggestions = True
+spelling_show_whole_line = True
+spelling_warning = True
+spelling_verbose = True
+spelling_ignore_pypi_package_names = False
+spelling_ignore_python_builtins = True
+spelling_ignore_contributor_names = True
 
 #  --Options for sphinx extensions -----------------------------------------------
 

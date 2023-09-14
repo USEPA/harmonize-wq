@@ -28,6 +28,7 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install sphinx sphinx_rtd_theme
+          pip install sphinxcontrib-spelling
       - name: Sphinx build
         run: |
           #sphinx-build docs/source _build
