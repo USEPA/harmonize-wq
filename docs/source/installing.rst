@@ -7,7 +7,7 @@ harmonize_wq can be installed using pip:
 
 .. code-block:: python3
    
-    $ python3 -m pip install harmonize-wq
+    pip install harmonize-wq
 
 
 
