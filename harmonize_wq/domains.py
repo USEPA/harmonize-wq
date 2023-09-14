@@ -120,6 +120,7 @@ def harmonize_TADA_dict():
     """
     Build structured dictionary from TADA HarmonizationTemplate.csv of target
     column names and sample fractions.
+
     Returns
     -------
     full_dict : dict
@@ -127,6 +128,7 @@ def harmonize_TADA_dict():
              {Target.TADA.CharacteristicName:
                   {Target.TADA.ResultSampleFractionText:
                        [Target.TADA.ResultSampleFractionText]}}}
+
     """
     # Note: too nested for refactor into single function w/ char_tbl_TADA
 

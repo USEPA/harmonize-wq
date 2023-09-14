@@ -84,7 +84,8 @@ def map_counts(df_in, gdf, col=None):
     Returns
     -------
     geopandas.GeoDataFrame
-    
+        GeoDataFrame with count of results for each station
+
     Examples
     --------
     Return a GeoDataFrame summarized by counts::
@@ -161,7 +162,8 @@ def map_measure(df_in, gdf, col):
     Returns
     -------
     geopandas.GeoDataFrame
-    
+        GeoDataFrame with average value of results for each station
+        
     Examples
     --------
     Return a GeoDataFrame summarized by counts::

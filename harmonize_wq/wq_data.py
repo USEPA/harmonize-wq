@@ -59,12 +59,12 @@ class WQCharData():
        CharacteristicName  ResultMeasure/MeasureUnitCode  ... Units  Phosphorus
     0          Phosphorus                            NaN  ...   NaN         1.0
     1  Temperature, water                            NaN  ...   NaN         NaN
-    
     [2 rows x 5 columns]
     >>> wq.df.columns
     Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
            'ResultMeasureValue', 'Units', 'Phosphorus'],
           dtype='object')
+
     """
 
     def __init__(self, df_in, char_val):
