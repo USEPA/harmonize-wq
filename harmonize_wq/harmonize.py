@@ -440,8 +440,47 @@ def harmonize_all(df_in, errors='raise'):
     df : pandas.DataFrame
         Updated copy of df_in
     
+    Examples
+    --------
+    
+    Build example table from tests to use in place of Water Quality Portal query response
+    
+    >>> import pandas
+    >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
+    >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
+    >>> df1.shape
+    (359505, 35)
+    
+    >>> df_result = harmonize.harmonize_all(df1)
+    >>> df_result
+           OrganizationIdentifier  ...           Temperature
+    0                21FLHILL_WQX  ...  29.93 degree_Celsius
+    1                21FLHILL_WQX  ...  17.82 degree_Celsius
+    2                  21FLGW_WQX  ...  22.42 degree_Celsius
+    3                21FLMANA_WQX  ...   30.0 degree_Celsius
+    4                21FLHILL_WQX  ...  30.37 degree_Celsius
+                          ...  ...                   ...
+    359500           21FLHILL_WQX  ...  28.75 degree_Celsius
+    359501           21FLHILL_WQX  ...  23.01 degree_Celsius
+    359502            21FLTBW_WQX  ...  29.97 degree_Celsius
+    359503           21FLPDEM_WQX  ...  32.01 degree_Celsius
+    359504           21FLSMRC_WQX  ...                   NaN
+    
+    [359505 rows x 42 columns]
+    
+    >>> df_result.columns[-7:]
+    Index(['QA_flag', 'Phosphorus', 'Speciation', 'TP_Phosphorus',
+           'TDP_Phosphorus', 'Other_Phosphorus', 'Temperature'],
+          dtype='object')
+    
     See also
     --------
+    
+    See any of the 'Simple' notebooks found in 
+    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is used to standardize, clean and wrangle a Water Quality Portal 
+    query response.
+    
     """
     df_out = df_in.copy()
     char_vals = list(set(df_out['CharacteristicName']))
@@ -478,9 +517,45 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     -------
     df : pandas.DataFrame
         Updated copy of df_in
+
+    Examples
+    --------
+    
+    Build example table from tests to use in place of Water Quality Portal query response
+    
+    >>> import pandas
+    >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
+    >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
+    >>> df1.shape
+    (359505, 35)
+    
+    >>> df_result = harmonize.harmonize_generic(df1, 'Temperature, water')
+    >>> df_result
+           OrganizationIdentifier  ...           Temperature
+    0                21FLHILL_WQX  ...  29.93 degree_Celsius
+    1                21FLHILL_WQX  ...  17.82 degree_Celsius
+    2                  21FLGW_WQX  ...  22.42 degree_Celsius
+    3                21FLMANA_WQX  ...   30.0 degree_Celsius
+    4                21FLHILL_WQX  ...  30.37 degree_Celsius
+                          ...  ...                   ...
+    359500           21FLHILL_WQX  ...  28.75 degree_Celsius
+    359501           21FLHILL_WQX  ...  23.01 degree_Celsius
+    359502            21FLTBW_WQX  ...  29.97 degree_Celsius
+    359503           21FLPDEM_WQX  ...  32.01 degree_Celsius
+    359504           21FLSMRC_WQX  ...                   NaN
+    
+    [359505 rows x 37 columns]
+    
+    >>> df_result.columns[-2:]
+    Index(['QA_flag', 'Temperature'], dtype='object')
     
     See also
     --------
+    
+    See any of the 'Detailed' notebooks found in 
+    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is used to standardize, clean and wrangle a Water Quality Portal 
+    query response, one CharacteristicName at a time.
     """
     # Check/retrieve standard attributes and df columns as object
     wqp = WQCharData(df_in, char_val)
