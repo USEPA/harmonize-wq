@@ -44,6 +44,19 @@ def unit_basis_dict(out_col):
     return dictionary[out_col]
 
 
+def basis_conversion():
+    """ See Also convert.moles_to_mass()
+    Table 1 in Best Practices for Submitting Nutrient Data to the Water Quality
+    eXchange (WQX):
+    www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf
+    """
+    return {'NH3': 0.822,
+            'NH4': 0.776,
+            'NO2': 0.304,
+            'NO3': 0.225,
+            'PO4': 0.326}
+
+
 def stp_dict():
     """
     Standard temperature and pressure dictionary to define basis from units.
