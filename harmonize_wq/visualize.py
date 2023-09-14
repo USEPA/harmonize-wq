@@ -88,14 +88,12 @@ def map_counts(df_in, gdf, col=None):
 
     Examples
     --------
-    Return a GeoDataFrame summarized by counts::
+
+    Build example DataFrame of results:
     
-    Build example DataFrame of results
-    
-    >>> df_in = pandas.DataFrame({'ResultMeasureValue': [5.1, 1.2, 8.7],
-    ...                           'MonitoringLocationIdentifier': ['ID1',
-    ...                                                            'ID2',
-    ...                                                            'ID1']
+    >>> from pandas import DataFrame
+    >>> df_in = DataFrame({'ResultMeasureValue': [5.1, 1.2, 8.7],
+    ...                    'MonitoringLocationIdentifier': ['ID1', 'ID2', 'ID1']
     ...                           })
     >>> df_in
        ResultMeasureValue MonitoringLocationIdentifier
@@ -103,8 +101,9 @@ def map_counts(df_in, gdf, col=None):
     1                 1.2                          ID2
     2                 8.7                          ID1
     
-    Build example GeoDataFrame of monitoring locations
+    Build example GeoDataFrame of monitoring locations:
     
+    >>> import geopandas
     >>> from shapely.geometry import Point
     >>> from numpy import nan
     >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
@@ -116,7 +115,7 @@ def map_counts(df_in, gdf, col=None):
     0                          ID1      NaN  POINT (1.00000 2.00000)
     1                          ID2      NaN  POINT (2.00000 1.00000)
     
-    Combine these to get an aggregation of results per station   
+    Combine these to get an aggregation of results per station:
      
     >>> cnt_gdf = harmonize_wq.visualize.map_counts(df_in, gdf)
     >>> cnt_gdf
@@ -124,7 +123,7 @@ def map_counts(df_in, gdf, col=None):
     0                            ID1    2  POINT (1.00000 2.00000)      NaN
     1                            ID2    1  POINT (2.00000 1.00000)      NaN
 
-    These aggegate results can then be plotted
+    These aggegate results can then be plotted:
 
     >>> cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
     """
@@ -166,28 +165,26 @@ def map_measure(df_in, gdf, col):
         
     Examples
     --------
-    Return a GeoDataFrame summarized by counts::
-    
-    Build array of pint quantities for Temperature
+        
+    Build array of pint quantities for Temperature:
     
     >>> from pint import Quantity
     >>> u = 'degree_Celsius'
     >>> temperatures = [Quantity(5.1, u), Quantity(1.2, u), Quantity(8.7, u)]
     
-    Build example DataFrame of results
+    Build example DataFrame of results:
     
-    >>> df_in = pandas.DataFrame({'Temperature': temperatures,
-    ...                           'MonitoringLocationIdentifier': ['ID1',
-    ...                                                            'ID2',
-    ...                                                            'ID1']
-    ...                           })
+    >>> from pandas import DataFrame
+    >>> df_in = DataFrame({'Temperature': temperatures,
+    ...                    'MonitoringLocationIdentifier': ['ID1', 'ID2', 'ID1']
+    ...                    })
     >>> df_in
               Temperature MonitoringLocationIdentifier
     0  5.1 degree_Celsius                          ID1
     1  1.2 degree_Celsius                          ID2
     2  8.7 degree_Celsius                          ID1
     
-    Build example GeoDataFrame of monitoring locations
+    Build example GeoDataFrame of monitoring locations:
     
     >>> from shapely.geometry import Point
     >>> from numpy import nan
@@ -200,7 +197,7 @@ def map_measure(df_in, gdf, col):
     0                          ID1      NaN  POINT (1.00000 2.00000)
     1                          ID2      NaN  POINT (2.00000 1.00000)
     
-    Combine these to get an aggregation of results per station   
+    Combine these to get an aggregation of results per station   :
      
     >>> avg_temp = harmonize_wq.visualize.map_measure(df_in, gdf, 'Temperature')
     >>> avg_temp
@@ -208,7 +205,7 @@ def map_measure(df_in, gdf, col):
     0                          ID1    2   6.9  POINT (1.00000 2.00000)      NaN
     1                          ID2    1   1.2  POINT (2.00000 1.00000)      NaN
 
-    These aggegate results can then be plotted
+    These aggegate results can then be plotted:
 
     >>> avg_temp.plot(column='Temperature', cmap='Blues', legend=True)
     """
