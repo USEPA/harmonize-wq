@@ -13,9 +13,7 @@ from harmonize_wq import convert
 from harmonize_wq import harmonize 
 
 class WQCharData():
-    """
-    A class to represent Water Quality Portal results for a specific
-    characteristic
+    """Class for specifc characteristic in Water Quality Portal results
 
     Parameters
     ----------
