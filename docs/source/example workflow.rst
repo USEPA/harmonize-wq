@@ -4,7 +4,7 @@ Example Workflow
 ================
 
 dataretrieval Query for a geojson
-**********************
+*********************************
 
 .. code-block:: python3
 
