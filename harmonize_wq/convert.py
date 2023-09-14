@@ -217,12 +217,12 @@ def JTU_to_NTU(val):
 
     Parameters
     ----------
-    val : pint.quantity.build_quantity_class
+    val : pint.quantity
         The turbidity value in JTU units (dimensionless).
 
     Returns
     -------
-    NTU : pint.quantity.build_quantity_class
+    NTU : pint.quantity
         The turbidity value in dimensionless NTU.
         
     Examples
