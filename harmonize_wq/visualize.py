@@ -16,9 +16,9 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     ----------
     results_in : pandas.Dataframe
         DataFrame with subset of results.
-    out_col : string
+    out_col : str
         Name of column in results_in with final result.
-    unit_col_in : string
+    unit_col_in : str
         Name of column with original units.
     threshold : dict, optional
         Dictionary with min and max keys. The default is None.
@@ -78,7 +78,7 @@ def map_counts(df_in, gdf, col=None):
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
         GeoDataFrame with monitoring locations.
-    col : String
+    col : str
         Column in df_in to aggregate results to in addition to location.
 
     Returns
@@ -155,7 +155,7 @@ def map_measure(df_in, gdf, col):
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
         GeoDataFrame with monitoring locations.
-    col : string
+    col : str
         Column name in df_in to aggregate results for.
 
     Returns
@@ -236,7 +236,7 @@ def station_summary(df_in, col):
     ----------
     df_in : pandas.DataFrame
         DataFrame with subset of results.
-    col : string
+    col : str
         Column name in df_in to summarize results for.
 
     Returns

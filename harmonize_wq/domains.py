@@ -76,7 +76,7 @@ def get_domain_dict(table, cols=None):
 
     Parameters
     ----------
-    table : string
+    table : str
         csv table name (without extension).
     cols : list, optional
         Columns to use as {key, value}.
@@ -122,7 +122,7 @@ def harmonize_TADA_dict():
     column names and sample fractions.
     Returns
     -------
-    full_dict : dictionary
+    full_dict : dict
         {'TADA.CharacteristicName':
              {Target.TADA.CharacteristicName:
                   {Target.TADA.ResultSampleFractionText:
@@ -178,7 +178,7 @@ def char_tbl_TADA(df, char):
         CharacteristicName.
     Returns
     -------
-    new_char_dict : dictionary
+    new_char_dict : dict
         {Target.TADA.CharacteristicName:
              {Target.TADA.ResultSampleFractionText:
                   [Target.TADA.ResultSampleFractionText]} 
@@ -216,7 +216,7 @@ def registry_adds_list(out_col):
 
     Parameters
     ----------
-    out_col : string
+    out_col : str
         The result column a unit registry is being built for
 
     Returns
@@ -346,7 +346,7 @@ def characteristic_cols(category=None):
 
     Parameters
     ----------
-    category : string, optional
+    category : str, optional
         Subset results: 'Basis', 'Bio', 'Depth', 'QA', 'activity', 'analysis',
         'depth', 'measure', 'sample'.
         The default is None.
@@ -593,7 +593,7 @@ def stations_rename():
 
     Returns
     -------
-    field_mapping : dictionary
+    field_mapping : dict
         dictionary where key = WQP field name and value = short name for shp.
         
     Examples

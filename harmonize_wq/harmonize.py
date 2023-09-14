@@ -82,11 +82,11 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
     unit_series : pandas.Series
         List of units for each quantity in quantity_series. Values should be
         string, must not include NaN.
-    units : string
+    units : str
         Desired units.
     ureg : pint.UnitRegistry, optional
         Unit Registry Object with any custom units defined. The default is None
-    errors : string, optional
+    errors : str, optional
         Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
         If ‘raise’, invalid dimension conversions will raise an exception.
         If ‘skip’, invalid dimension conversions will not be converted.
@@ -155,7 +155,7 @@ def add_qa_flag(df_in, mask, flag):
         DataFrame that will be updated.
     mask : pandas.Series
         Row conditional mask to limit rows.
-    flag : string
+    flag : str
         Text to populate the new flag with.
 
     Returns
@@ -210,7 +210,7 @@ def units_dimension(series_in, units, ureg=None):
     ----------
     series_in : pandas.Series
         Series of units.
-    units : string
+    units : str
         Desired units.
     ureg : pint.UnitRegistry, optional
         Unit Registry Object with any custom units defined. The default is None
@@ -429,7 +429,7 @@ def harmonize_all(df_in, errors='raise'):
     ----------
     df_in : pandas.DataFrame
         DataFrame with the expected columns.
-    errors : string, optional
+    errors : str, optional
         Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
         If ‘raise’, invalid dimension conversions will raise an exception.
         If ‘skip’, invalid dimension conversions will not be converted.
@@ -499,11 +499,11 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     ----------
     df_in : pandas.DataFrame
         DataFrame with the expected activity date time columns.
-    char_val : string
+    char_val : str
         Expected 'CharacteristicName'.
-    units_out : string, optional
+    units_out : str, optional
         Desired units to convert values into. The default is None.
-    errors : string, optional
+    errors : str, optional
         Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
         If ‘raise’, then invalid dimension conversions will raise an exception.
         If ‘skip’, then invalid dimension conversions will not be converted.

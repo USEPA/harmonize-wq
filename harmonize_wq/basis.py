@@ -13,7 +13,7 @@ def unit_basis_dict(out_col):
 
     Parameters
     ----------
-    out_col : string
+    out_col : str
         Column name where results are written (char_val derived)
 
     Returns
@@ -224,10 +224,10 @@ def update_result_basis(df_in, basis_col, unit_col):
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    basis_col : string
+    basis_col : str
         Column in df_in with result basis to update. Expected values are
         'ResultTemperatureBasisText'
-    unit_col : string
+    unit_col : str
         Column in df_in with units that may contain basis.
 
     Returns
@@ -295,9 +295,9 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
         DataFrame that will be updated.
     mask : pandas.Series
         Row conditional mask to limit rows (e.g. to specific unit/speciation).
-    basis : string
+    basis : str
         The string to use for basis.
-    basis_col : string, optional
+    basis_col : str, optional
         The new or existing column for basis string.
         The default is 'Speciation'.
 

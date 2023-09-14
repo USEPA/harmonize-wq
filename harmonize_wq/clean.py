@@ -68,7 +68,7 @@ def harmonize_depth(df_in, units='meter'):
     ----------
     df_in : pandas.DataFrame
         DataFrame with the required 'ResultDepthHeight' columns.
-    units : string, optional
+    units : str, optional
         Desired units. The default is 'meter'.
 
     Returns
@@ -124,9 +124,9 @@ def check_precision(df_in, col, limit=3):
     ----------
     df_in : pandas.DataFrame
         DataFrame with the required 'ResultDepthHeight' columns.
-    unit_col : string
+    unit_col : str
         Desired column in df_in.
-    limit : integer, optional
+    limit : int, optional
         Number of decimal places under which to detect. The default is 3.
 
     Returns
@@ -151,9 +151,9 @@ def methods_check(df_in, char_val, methods=None):
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    char_val : string
+    char_val : str
         Characteristic name.
-    methods : dictionary, optional
+    methods : dict, optional
         Dictionary where key is characteristic column name and value is list of
         dictionaries each with Source and Method keys. This allows updated
         methods dictionaries to be used. The default None, uses the built-in
@@ -232,9 +232,9 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    wet_dry : string, optional
+    wet_dry : str, optional
         Which values (Water/Sediment) to keep. The default is 'wet' (Water)
-    char_val : string, optional
+    char_val : str, optional
         Apply to specific characteristic name. The default is None (for all).
 
     Returns

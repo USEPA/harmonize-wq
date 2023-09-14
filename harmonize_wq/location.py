@@ -26,14 +26,14 @@ def infer_CRS(df_in,
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    out_EPSG : string
+    out_EPSG : str
         Desired CRS to use.
-    out_col : string, optional
+    out_col : str, optional
         Column in df to write out_EPSG to. The default is 'EPSG'.
-    bad_crs_val : string, optional
+    bad_crs_val : str, optional
         Bad Coordinate Reference System (CRS) datum name value to replace.
         The default is None for missing datum.
-    crs_col : string, optional
+    crs_col : str, optional
         Datum column in df_in. The default is
         'HorizontalCoordinateReferenceSystemDatumName'.
 
@@ -97,19 +97,19 @@ def harmonize_locations(df_in, out_EPSG=4326,
     ----------
     df_in : pandas.DataFrame
         DataFrame with the required columns to be converted to GeoDataFrame.
-    out_EPSG : Integer, optional
+    out_EPSG : int, optional
         EPSG factory code for desired output Coordinate Reference System datum.
         The default is 4326, for the WGS84 Datum used by WQP queries.
     intermediate_columns : Boolean, optional
         Return intermediate columns. Default 'False' does not return these.
     Keyword Arguments:
-    crs_col : string, optional
+    crs_col : str, optional
         Name of column in DataFrame with the Coordinate Reference System datum.
         The default is 'HorizontalCoordinateReferenceSystemDatumName'.
-    lat_col : string, optional
+    lat_col : str, optional
         Name of column in DataFrame with the latitude coordinate.
         The default is 'LatitudeMeasure'.
-    lon_col : string, optional
+    lon_col : str, optional
         Name of column in DataFrame with the longitude coordinate.
         The default is 'LongitudeMeasure'.
 
@@ -208,7 +208,7 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
         DataFrame that will be updated.
     datum : TYPE
         DESCRIPTION.
-    out_EPSG : Integer
+    out_EPSG : int
         EPSG factory code for desired output Coordinate Reference System datum.
 
     Returns

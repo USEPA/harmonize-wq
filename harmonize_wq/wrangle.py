@@ -62,9 +62,9 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    result_col : string, optional
+    result_col : str, optional
         Column name with results to split. The default is 'QA_flag'.
-    col_prefix : string, optional
+    col_prefix : str, optional
         Prefix to be added to new result column names. The default is 'QA'.
 
     Returns
@@ -379,7 +379,7 @@ def add_detection(df_in, char_val):
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    char_val : string
+    char_val : str
         Specific characteristic name to apply to
 
     Returns
@@ -443,7 +443,7 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
         Series of location IDs to retrieve detection limits for.
     result_id_series : pandas.Series
         Series of result IDs to limit retrieved data.
-    char_val : string, optional.
+    char_val : str, optional.
         Specific characteristic name to retrieve detection limits for.
         The default None, uses all CharacteristicNames
 
@@ -487,10 +487,10 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
         DataFrame that will be updated.
     df2 : pandas.DataFrame
         DataFrame with new columns (df2_cols) that will be added to df_in.
-    df2_cols : string, optional
+    df2_cols : str, optional
         Columns in df2 to add to df1. The default is 'all', for all columns
         not already in df1.
-    merge_cols : string, optional
+    merge_cols : str, optional
         Columns in both DataFrames to use in join.
         The default is 'activity', for a subset of columns in the activity df2.
 
@@ -567,7 +567,7 @@ def as_gdf(shp):
 
     Parameters
     ----------
-    shp : string
+    shp : str
         Filename for something that needs to be a GeoDataFrame.
 
     Returns
@@ -596,7 +596,7 @@ def get_bounding_box(shp, idx=None):
     ----------
     shp : spatial file
         Any geometry that is readable by geopandas.
-    idx : integer, optional
+    idx : int, optional
         Index for geometry to get bounding box for.
         The default is None to return the total extent bounding box.
 

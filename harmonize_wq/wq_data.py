@@ -21,7 +21,7 @@ class WQCharData():
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    char_val : string
+    char_val : str
         Expected characteristicName.
 
     Attributes
@@ -132,7 +132,7 @@ class WQCharData():
 
         Parameters
         ----------
-        flag_col : string, optional
+        flag_col : str, optional
             Column to reference in QA_flags.
             The default None uses WQCharData.col.unit_out instead.
         """
@@ -153,9 +153,9 @@ class WQCharData():
     
         Parameters
         ----------
-        trouble : string
+        trouble : str
             Unit problem encountered (e.g., missing).
-        flag_col : string, optional
+        flag_col : str, optional
             String to use when referring to the unit_col.
             The default None uses WQCharData.col.unit_out instead.
     
@@ -179,11 +179,11 @@ class WQCharData():
         ----------
         df_in : pandas.DataFrame
             DataFrame that will be updated.
-        col : string
+        col : str
             Column of DataFrame to update old_val to _new_val.
-        old_val : string
+        old_val : str
             Old value to replace.
-        new_val : string
+        new_val : str
             New value to use.
         mask : pandas.Series
             Row conditional mask to only update a sub-set of rows.
@@ -263,7 +263,7 @@ class WQCharData():
 
         Parameters
         ----------
-        flag_col : string, optional
+        flag_col : str, optional
             Column to reference in QA_flags.
             The default None uses WQCharData.col.unit_out instead.
             
@@ -490,7 +490,7 @@ class WQCharData():
         ----------
         default_unit : str, optional
             Units to convert values to. Default None uses units attribute.
-        errors : string, optional
+        errors : str, optional
             Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
             If ‘raise’, invalid dimension conversions will raise an exception.
             If ‘skip’, invalid dimension conversions will not be converted.
@@ -542,7 +542,7 @@ class WQCharData():
         ----------
         convert_fun : function
             Conversion function to apply.
-        unit : string
+        unit : str
             Current unit.
         u_mask : pandas.Series, optional
             Mask to use to identify what is being converted.
@@ -688,7 +688,7 @@ class WQCharData():
 
         Parameters
         ----------
-        val_dict : dictionary
+        val_dict : dict
             Occurrences of key in the unit column are replaced with the value.
         mask : pandas.Series, optional
             Conditional mask to limit rows.
@@ -735,19 +735,19 @@ class WQCharData():
 
         Parameters
         ----------
-        frac_dict : dictionary, optional
+        frac_dict : dict, optional
             Dictionary where {fraction_name : new_col}.
             The default None starts with an empty dictionary.
-        suffix : string, optional
+        suffix : str, optional
             String to add to the end of any new column name.
             The default None, uses out_col attribute.
-        fract_col : string, optional
+        fract_col : str, optional
             Column name where sample fraction is defined.
             The default is 'ResultSampleFractionText'.
 
         Returns
         -------
-        frac_dict : dictionary
+        frac_dict : dict
             frac_dict updated to include any frac_col not already defined.
             
         Examples
@@ -847,7 +847,7 @@ class WQCharData():
 
         Returns
         -------
-        dimension_dict : dictionary
+        dimension_dict : dict
             Dictionary with old_unit:new_unit.
         mol_list : list
             List of Mole (substance) units.
