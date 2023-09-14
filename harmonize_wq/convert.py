@@ -91,15 +91,14 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     Examples
     --------
 
-    Build standard Pint unit registry
+    Build standard Pint unit registry:
     
     >>> import pint
     >>> ureg = pint.UnitRegistry()
     
-    Build quantity
+    Build quantity:
     
-    Q_ = pint.Quantity('0.265 umol')
-
+    >>> Q_ = pint.Quantity('0.265 umol')
     >>> convert.moles_to_mass(ureg, Q_, basis='as P')
 
     """
