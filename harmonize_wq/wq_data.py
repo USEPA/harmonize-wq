@@ -798,12 +798,11 @@ class WQCharData():
                 fract_mask = df_out[c_mask][fract_col].isin(row[1])  # Mask by values
                 df_out[c_mask][fract_mask][fract_col] = row[0]  # Update to key
         # Compare df_out againt self.df to add QA flag if changed
-        cond_change = ~(df_out[fract_col] == wqp.df[fract_col])
+        cond_change = ~(df_out[fract_col] == self.df[fract_col])
         cond_na = df_out[fract_col].notna()
-        df_out[conda_change & cond_na]
-        #LEFT OFF ABOVE IS STILL EMPTY
+        df_out[cond_change & cond_na]
+        # TODO: LEFT OFF ABOVE IS STILL EMPTY
 
-        df_out
         self.df = df_out
         
         # Make column for any unexpected Sample Fraction values, loudly
