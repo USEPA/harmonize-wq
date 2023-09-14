@@ -3,7 +3,7 @@ name: test
 on:
   push:
     branches:
-      [main, dev, add-doc-examples]
+      [main, dev, new_release_0-3-8]
   pull_request:
     branches:
       [main]
