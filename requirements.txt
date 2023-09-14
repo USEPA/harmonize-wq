@@ -3,3 +3,4 @@ geopandas>=0.10.2, <0.13           # Has additional dependencies (pandas, numpy,
 pint>=0.18          # May work on earlier versions but this is what it was tested on
 dataretrieval>=1.*, <1.0.5  # 1.0.5 will break datetime handling, <1.0 doesn't have required functions
 descartes>=1.1.0           # May be required for mapping in some jupyter notebooks
+mapclassify>=2.4.0  # May be required for mapping in some jupyter notebooks
