@@ -37,10 +37,10 @@ def mass_to_moles(ureg, char_val, Q_):
     ----------
     ureg : pint.UnitRegistry
         Unit Registry Object with any custom units defined.
-    char_val : TYPE
-        DESCRIPTION.
-    Q_ : TYPE
-        DESCRIPTION.
+    char_val : str
+        Characteristic name to use to find corresponding molecular weight.
+    Q_ : pint.Quantity
+        Mass to convert to moles.
 
     Returns
     -------
