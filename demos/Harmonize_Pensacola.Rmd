@@ -41,22 +41,25 @@ Steps:
   - conda install geopandas pip dataretrieval pint
   - may need to update conda
     - conda update -n base -c conda-forge conda
-  - pip install git+https://github.com/USEPA/harmonize-wq.git
+  - pip install harmonize-wq
+  - pip install git+https://github.com/USEPA/harmonize-wq.git (dev version)
   
 ALTERNATIVELY, you may be able to set up your environment and import the required Python packages using the block of R code below:
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 install.packages("reticulate")
 
-#envname may need to be the full path, e.g.: "C:/Users/cmulli01/AppData/Local/miniforge3/envs/wq_harmonize"
+#envname may need to be the full path, e.g.: "~/AppData/Local/miniforge3/envs/wq_harmonize"
 conda_create("wq-reticulate")
 conda_install("wq-reticulate", "geopandas")
 conda_install("wq-reticulate", "pint")
 conda_install("wq-reticulate", "dataretrieval")
 
 # Only works with py install (pip), which defaults to virtualenvs,
-#Again, envname may need to be the full path, e.g.: "C:/Users/cmulli01/AppData/Local/miniforge3/envs/wq_harmonize"
-py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "C:/Users/cmulli01/AppData/Local/miniforge3/envs/wq_harmonize")
+#Again, envname may need to be the full path, e.g.: "~/AppData/Local/miniforge3/envs/wq_harmonize"
+py_install("harmonize-wq", pip = TRUE, envname = "C:/Users/cmulli01/AppData/Local/miniforge3/envs/wq_harmonize")
+# Dev version
+#py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "C:/Users/cmulli01/AppData/Local/miniforge3/envs/wq_harmonize")
 
 ```
 
@@ -65,7 +68,7 @@ py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname 
 library(reticulate)
 
 # If Conda is installed somewhere else other than where reticulate automatically looked, you can specify it
-options(reticulate.conda_binary ='C:/Users/cmulli01/AppData/Local/miniforge3/Scripts/conda.exe')
+options(reticulate.conda_binary ='~/AppData/Local/miniforge3/Scripts/conda.exe')
 use_condaenv("wq_harmonize")
 
 # use these to test that your environment is set up correctly
