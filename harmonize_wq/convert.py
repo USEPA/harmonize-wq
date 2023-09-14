@@ -57,8 +57,7 @@ def mass_to_moles(ureg, char_val, Q_):
     
     Build quantity
     
-    Q_ = pint.Quantity('1 g')
-
+    >>> Q_ = pint.Quantity('1 g')
     >>> convert.mass_to_moles(ureg, 'Phosphorus', Q_)
 
     """
