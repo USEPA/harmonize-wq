@@ -56,7 +56,7 @@ exclude_patterns = ['_build', '_templates']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_rtd_theme"
-html_static_path = ['_static']
+html_static_path = []
 
 # Readthedocs theme (may be useful for actions)
 # on_rtd is whether on readthedocs.org, this line of code grabbed from docs.readthedocs.org...
