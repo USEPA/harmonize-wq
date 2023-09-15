@@ -131,9 +131,9 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
     >>> basis_dict = basis.unit_basis_dict('Phosphorus')
     >>> unit_col = 'Units'
     >>> basis.basis_from_unit(df, basis_dict, unit_col)
-      CharacteristicName ResultMeasure/MeasureUnitCode ProviderName  Units Speciation
-    0         Phosphorus                     mg/l as P         NWIS   mg/l       as P
-    1         Phosphorus                    mg/kg as P         NWIS  mg/kg       as P
+      CharacteristicName ResultMeasure/MeasureUnitCode  Units Speciation
+    0         Phosphorus                     mg/l as P   mg/l       as P
+    1         Phosphorus                    mg/kg as P  mg/kg       as P
     
     If an existing basis_col value is different a warning is issued when it is 
     updated and a QA_flag is assigned
@@ -205,9 +205,9 @@ def basis_from_methodSpec(df_in):
 
     >>> from harmonize_wq import basis    
     >>> basis.basis_from_methodSpec(df)
-      CharacteristicName  MethodSpecificationName ProviderName Speciation
-    0         Phosphorus                     as P         NWIS       as P
-    1         Phosphorus                      NaN         NWIS        NaN
+      CharacteristicName MethodSpecificationName ProviderName Speciation
+    0         Phosphorus                    as P         NWIS       as P
+    1         Phosphorus                     NaN         NWIS        NaN
     """
 
     # Basis from MethodSpecificationName

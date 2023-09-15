@@ -37,6 +37,7 @@ def df_checks(df_in, columns=None):
     
     Check for existing column:
 
+    >>> from harmonize_wq import harmonize
     >>> harmonize.df_checks(df, columns=['CharacteristicName'])
     
     If column is not in df it throws an assertionError:
@@ -107,6 +108,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
 
     Convert series to series of pint objects in 'mg/l'
     
+    >>> from harmonize_wq import harmonize
     >>> harmonize.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
     0                   1.0 milligram / liter
     1    10000.000000000002 milligram / liter
@@ -181,6 +183,7 @@ def add_qa_flag(df_in, mask, flag):
     >>> flag = 'words'
     >>> mask = df['CharacteristicName']=='Carbon'
     
+    >>> from harmonize_wq import harmonize
     >>> harmonize.add_qa_flag(df, mask, flag)
       CharacteristicName ResultMeasureValue QA_flag
     0             Carbon                1.0   words
@@ -234,6 +237,7 @@ def units_dimension(series_in, units, ureg=None):
 
     Get list of unique units not in desired units dimension 'mg/l'
     
+    >>> from harmonize_wq import harmonize
     >>> harmonize.units_dimension(unit_series, units='mg/l')
     ['g/kg']
     """
@@ -451,6 +455,7 @@ def harmonize_all(df_in, errors='raise'):
     >>> df1.shape
     (359505, 35)
     
+    >>> from harmonize_wq import harmonize
     >>> df_result = harmonize.harmonize_all(df1)
     >>> df_result
            OrganizationIdentifier  ...           Temperature
@@ -529,6 +534,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     >>> df1.shape
     (359505, 35)
     
+    >>> from harmonize_wq import harmonize
     >>> df_result = harmonize.harmonize_generic(df1, 'Temperature, water')
     >>> df_result
            OrganizationIdentifier  ...           Temperature

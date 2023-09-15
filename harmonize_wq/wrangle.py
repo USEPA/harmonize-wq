@@ -299,6 +299,7 @@ def add_activities_to_df(df_in, mask=None):
     >>> df1.shape
     (359505, 35)
     
+    >>> from harmonize_wq import wrangle
     >>> df_activities = wrangle.add_activities_to_df(df1)
     >>> df_activities.shape
     (359505, 100)
@@ -397,6 +398,7 @@ def add_detection(df_in, char_val):
     >>> df1.shape
     (359505, 35)
     
+    >>> from harmonize_wq import wrangle
     >>> df_detects = wrangle.add_detection(df1, 'Phosphorus')
     >>> df_detects.shape
     (359712, 38)
@@ -507,12 +509,13 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
     >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
     >>> df1.shape
-    (359505, 35 columns)
+    (359505, 35)
     
     >>> df2 = pandas.read_csv(tests_url + '/data/wqp_activities.txt')
     >>> df2.shape
     (353911, 40)
     
+    >>> from harmonize_wq import wrangle
     >>> merged = wrangle.merge_tables(df1, df2)
     >>> merged.shape
     (359505, 67)
@@ -577,8 +580,9 @@ def as_gdf(shp):
     
     Examples
     --------
-     Use area of interest from tests geojson:
+    Use area of interest from tests geojson:
 
+    >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
     >>> type(wrangle.as_gdf(aoi_url))
     geopandas.geodataframe.GeoDataFrame
@@ -606,8 +610,9 @@ def get_bounding_box(shp, idx=None):
     
     Examples
     --------
-     Use area of interest from tests geojson:
+    Use area of interest from tests geojson:
 
+    >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
     >>> wrangle.get_bounding_box(aoi_url)
     '-87.72443263367131,30.27180869902194,-86.58972642899643,30.654976858733534'
@@ -653,11 +658,12 @@ def clip_stations(stations, aoi):
     
     Build example GeoDataFrame of locations for stations
     
+    >>> import geopandas
     >>> from shapely.geometry import Point
     >>> from numpy import nan
     >>> d = {'MonitoringLocationIdentifier': ['In', 'Out'],
     ...      'geometry': [Point (-87.1250, 30.50000),
-                          Point (-87.5000, 30.50000),]}
+    ...                   Point (-87.5000, 30.50000),]}
     >>> stations_gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
     >>> stations_gdf
       MonitoringLocationIdentifier                    geometry
@@ -695,6 +701,7 @@ def to_simple_shape(gdf, out_shp):
 
     Examples
     --------
+    >>> from harmonize_wq import wrangle
     >>> wrangle.to_simple_shape(gdf, 'dataframe.shp')
     """
     cols = gdf.columns  # List of current column names

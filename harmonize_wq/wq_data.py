@@ -54,7 +54,8 @@ class WQCharData():
     0          Phosphorus                            NaN                1.0
     1  Temperature, water                            NaN               10.0
     
-    >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+    >>> from harmonize_wq import wq_data
+    >>> wq = wq_data.WQCharData(df, 'Phosphorus')
     >>> wq.df
        CharacteristicName  ResultMeasure/MeasureUnitCode  ... Units  Phosphorus
     0          Phosphorus                            NaN  ...   NaN         1.0
@@ -283,7 +284,8 @@ class WQCharData():
         
         Build WQ Characteristic Data object from DataFrame:
         
-        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         >>> wq.df.Units
         0        NaN
         1        NaN
@@ -355,12 +357,12 @@ class WQCharData():
         0          Phosphorus  ...                     NaN
         1  Temperature, water  ...                     NaN
         2          Phosphorus  ...                  as PO4
-        
         [3 rows x 4 columns]
         
         Build WQ Characteristic Data object from DataFrame:
         
-        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         >>> wq.df.columns
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
                'MethodSpecificationName', 'ResultMeasureValue', 'Units', 'Phosphorus'],
@@ -446,7 +448,10 @@ class WQCharData():
 
         Examples
         --------
-        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        Build class:
+            
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         >>> wq.units
         'mg/l'
         
@@ -468,7 +473,8 @@ class WQCharData():
 
         Examples
         --------
-        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         >>> wq.measure_mask()
         0     True
         1    False
@@ -509,8 +515,9 @@ class WQCharData():
         1  Temperature, water                         deg C               10.0
         
         Build WQ Characteristic Data object from DataFrame:
-            
-        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         
         >>> wq.convert_units()
         >>> wq.df
@@ -562,7 +569,8 @@ class WQCharData():
         
         Build WQ Characteristic Data object from DataFrame:
             
-        >>> wq = harmonize.WQCharData(df, 'Dissolved oxygen (DO)')        
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Dissolved oxygen (DO)')        
         >>> wq.apply_conversion(convert.DO_saturation, '%')
         >>> wq.df[['Units', 'DO']]
         """
@@ -618,7 +626,8 @@ class WQCharData():
         
         Build WQ Characteristic Data object from DataFrame:
             
-        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         
         >>> wq.dimensions_list()
         'mg/kg'
@@ -659,8 +668,9 @@ class WQCharData():
         1  Temperature, water                         deg F                 87
         
         Build WQ Characteristic Data object from DataFrame:
-            
-        >>> wq = harmonize.WQCharData(df, 'Temperature, water')
+        
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Temperature, water')
         >>> wq.df
            CharacteristicName ResultMeasure/MeasureUnitCode  ...  Units Temperature
         0  Temperature, water                         deg C  ...  deg C          31
@@ -707,8 +717,9 @@ class WQCharData():
         1     Fecal Coliform                           MPN                 10
         
         Build WQ Characteristic Data object from DataFrame:
-            
-        >>> wq = harmonize.WQCharData(df, 'Fecal Coliform')
+        
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Fecal Coliform')
         >>> wq.df
           CharacteristicName ResultMeasure/MeasureUnitCode  ...    Units Fecal_Coliform
         0     Fecal Coliform                       #/100ml  ...  #/100ml            1.0
@@ -866,7 +877,8 @@ class WQCharData():
 
         Build WQ Characteristic Data object from DataFrame:
             
-        >>> wq = harmonize.WQCharData(df, 'Phosphorus')
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         
         >>> wq.dimension_fixes()
         ({'mg/kg': 'mg/kg * H2O'}, [])
@@ -926,7 +938,8 @@ class WQCharData():
         
         Build WQ Characteristic Data object from DataFrame:
             
-        >>> wq = harmonize.WQCharData(df, 'Organic carbon')
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Organic carbon')
         >>> wq.df
           CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Carbon
         0             Carbon                          mg/l  ...  mg/l    1.0

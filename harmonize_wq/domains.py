@@ -230,6 +230,7 @@ def registry_adds_list(out_col):
     --------
     Generate a new Pint unit registry object for e.g., Sediment
     
+    >>> from harmonize_wq import domains
     >>> domains.registry_adds_list('Sediment')
     ['fraction = [] = frac',
      'percent = 1e-2 frac',

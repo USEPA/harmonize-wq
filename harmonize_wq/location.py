@@ -58,6 +58,7 @@ def infer_CRS(df_in,
     3   None
     4    NaN
 
+    >>> from harmonize_wq import location
     >>> location.infer_CRS(df_in, out_EPSG=4326, crs_col='Datum')
        Datum                                  QA_flag    EPSG
     0  NAD83                                      NaN     NaN

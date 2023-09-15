@@ -91,7 +91,11 @@ def harmonize_depth(df_in, units='meter'):
     0                                   3.0                                        m
     1                                   NaN                                      NaN
     2                                    10                                       ft
-    >>> harmonize_wq.clean.harmonize_depth(df)
+    
+    Get clean depth column:
+    
+    >>> from harmonize_wq import clean
+    >>> clean.harmonize_depth(df)
       ResultDepthHeightMeasure/MeasureValue  ...                     Depth
     0                                   3.0  ...                 3.0 meter
     1                                   NaN  ...                       NaN

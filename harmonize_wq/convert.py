@@ -143,7 +143,7 @@ def cm_to_NTU(val):
     >>> str(turbidity)
     '1 centimeter'
     >>> type(turbidity)
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     
     Convert to cm:
     
@@ -151,7 +151,7 @@ def cm_to_NTU(val):
     >>> str(convert.cm_to_NTU(str(turbidity)))
     '3941.8 NTU'
     >>> type(convert.cm_to_NTU(str(turbidity)))
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     """
     # TODO: Currently exports None since NTU is not defined in u_reg
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
@@ -193,7 +193,7 @@ def NTU_to_cm(val):
     >>> str(turbidity)
     '1 Nephelometric_Turbidity_Units'
     >>> type(turbidity)
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     
     Convert to cm:
     
@@ -201,7 +201,7 @@ def NTU_to_cm(val):
     >>> str(convert.NTU_to_cm('1 NTU'))
     '241.27 centimeter'
     >>> type(convert.NTU_to_cm('1 NTU'))
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     """
     # TODO: add wrapper
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
@@ -246,7 +246,7 @@ def JTU_to_NTU(val):
     >>> str(turbidity)
     '1 Jackson_Turbidity_Units'
     >>> type(turbidity)
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     
     Convert to NTU:
     
@@ -254,7 +254,7 @@ def JTU_to_NTU(val):
     >>> str(convert.JTU_to_NTU(str(turbidity)))
     '18.9773 NTU'
     >>> type(convert.JTU_to_NTU(str(turbidity)))
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     """
     # Alternative relation (Macneina 1990): NTU = JTU **0.943
     # from Maceina, M. J., & Soballe, D. M. (1990).
@@ -298,7 +298,7 @@ def SiO2_to_NTU(val):
     >>> str(turbidity)
     '1 SiO2'
     >>> type(turbidity)
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     
     Convert to NTU:
     
@@ -306,7 +306,7 @@ def SiO2_to_NTU(val):
     >>> str(convert.SiO2_to_NTU(str(turbidity)))
     '7.5701 NTU'
     >>> type(convert.SiO2_to_NTU(str(turbidity)))
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     """
     return 7.6028 * val - 0.0327
 
@@ -434,12 +434,14 @@ def PSU_to_density(val,
     Build units aware input, as string because it is an altered unit registry:
     
     >>> unit = ureg.Quantity('PSU')
+    >>> unit
     1 Practical_Salinity_units
     
     >>> type(unit)
-    pint.util.Quantity
+    <class 'pint.Quantity'>
     
     >>> input_psu = str(8*unit)
+    >>> input_psu
     '8 Practical_Salinity_Units'
     
     Convert to density:
