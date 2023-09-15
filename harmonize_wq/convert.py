@@ -381,7 +381,7 @@ def density_to_PSU(val,
     
     >>> from harmonize_wq import convert
     >>> convert.density_to_PSU(input_density)
-    ￼4.715428571428788 gram / kilogram
+    <Quantity(4.71542857, 'gram / kilogram')>
     """
     # Standard Reference Value
     ref = 35.16504/35.0
@@ -435,7 +435,7 @@ def PSU_to_density(val,
     
     >>> unit = ureg.Quantity('PSU')
     >>> unit
-    1 Practical_Salinity_units
+    <Quantity(1, 'Practical_Salinity_Units')>
     
     >>> type(unit)
     <class 'pint.Quantity'>
@@ -622,7 +622,7 @@ def conductivity_to_PSU(val,
 
     >>> from harmonize_wq import convert
     >>> convert.conductivity_to_PSU(input_conductivity)
-    0.057 dimensionless
+    <Quantity(0.057, 'dimensionless')>
     """
     # Units wrapper returns magnitude only (faster)
     p, t = pressure, temperature

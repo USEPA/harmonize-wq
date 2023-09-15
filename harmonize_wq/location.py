@@ -138,15 +138,16 @@ def harmonize_locations(df_in, out_EPSG=4326,
     0        27.595036  ...                                         NAD83
     1        27.521830  ...                                         WGS84
     2        28.066111  ...                                         NAD27
-    
+    <BLANKLINE>
     [3 rows x 3 columns]
 
-    >>> harmonize_wq.location.harmonize_locations(df_in)
+    >>> from harmonize_wq import location
+    >>> location.harmonize_locations(df_in)
        LatitudeMeasure  LongitudeMeasure  ... QA_flag                    geometry
     0        27.595036        -82.030086  ...     NaN  POINT (-82.03009 27.59504)
     1        27.521830        -82.644760  ...     NaN  POINT (-82.64476 27.52183)
     2        28.066111        -82.377500  ...     NaN  POINT (-82.37750 28.06611)
-    
+    <BLANKLINE>
     [3 rows x 5 columns]
     
     Note: both geometries where the CRS was not the default 4326 (WGS1984) have

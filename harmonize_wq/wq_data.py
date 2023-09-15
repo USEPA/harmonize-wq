@@ -57,11 +57,9 @@ class WQCharData():
     >>> from harmonize_wq import wq_data
     >>> wq = wq_data.WQCharData(df, 'Phosphorus')
     >>> wq.df
-       CharacteristicName  ResultMeasure/MeasureUnitCode  ... Units  Phosphorus
-    0          Phosphorus                            NaN  ...   NaN         1.0
-    1  Temperature, water                            NaN  ...   NaN         NaN
-    <BLANKLINE>
-    [2 rows x 5 columns]
+       CharacteristicName  ResultMeasure/MeasureUnitCode ResultMeasureValue  Units  Phosphorus
+    0          Phosphorus                            NaN                1.0    NaN         1.0
+    1  Temperature, water                            NaN               10.0    NaN         NaN
     >>> wq.df.columns
     Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
            'ResultMeasureValue', 'Units', 'Phosphorus'],
@@ -297,7 +295,7 @@ class WQCharData():
         >>> wq.check_units()
         UserWarning: WARNING: 'Unknown' UNDEFINED UNIT for Phosphorus
         
-        >>> wq.df[['CharacteristicName', 'Units']]
+        >>> wq.df[['CharacteristicName', 'Units', 'QA_flag']]
            CharacteristicName Units                                            QA_flag
         0          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: MISSING UNITS, ...
         1  Temperature, water   NaN                                                NaN
@@ -575,6 +573,9 @@ class WQCharData():
         >>> wq = wq_data.WQCharData(df, 'Dissolved oxygen (DO)')        
         >>> wq.apply_conversion(convert.DO_saturation, '%')
         >>> wq.df[['Units', 'DO']]
+                       Units        DO
+        0               mg/l  1.000000
+        1  milligram / liter  0.826233
         """
         # TODO: QA flag inexact conversions?
         df_out = self.df
@@ -632,7 +633,7 @@ class WQCharData():
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         
         >>> wq.dimensions_list()
-        'mg/kg'
+        ['mg/kg']
         """
         if m_mask is None:
             m_mask = self.measure_mask()
@@ -679,10 +680,10 @@ class WQCharData():
         1  Temperature, water                         deg F  ...  deg F          87
          
         >>> wq.replace_unit_str(' ', '')
-        >>> wq.df
-           CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Temperature
-        0  Temperature, water                         deg C  ...  degC          31
-        1  Temperature, water                         deg F  ...  degF          87
+        >>> wq.df[['ResultMeasure/MeasureUnitCode', 'Units', 'Temperature']]
+           ResultMeasure/MeasureUnitCode Units Temperature
+        0                          deg C  degC          31
+        1                          deg F  degF          87
         """
         df_out = self.df
         if mask is None:

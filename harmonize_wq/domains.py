@@ -298,7 +298,7 @@ def bacteria_reg(ureg=None):
     Generate a new Pint unit registry object for e.g., bacteria
     
     >>> domains.bacteria_reg()
-    <pint.registry.UnitRegistry at 0x237430e8370>
+    <pint.registry.UnitRegistry object at 0x000002BED1999880>
     """
     if ureg is None:
         ureg = pint.UnitRegistry()

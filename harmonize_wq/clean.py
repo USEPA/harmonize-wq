@@ -39,7 +39,8 @@ def datetime(df_in):
       ActivityStartDate ActivityStartTime/Time ActivityStartTime/TimeZoneCode
     0        2004-09-01               10:01:00                            EST
     1        2004-07-01                    NaN                            NaN
-    >>> harmonize_wq.clean.datetime(df)
+    >>> from harmonize_wq import clean
+    >>> clean.datetime(df)
       ActivityStartDate  ...         Activity_datetime
     0        2004-09-01  ... 2004-09-01 15:01:00+00:00
     1        2004-07-01  ...                       NaT
@@ -95,11 +96,12 @@ def harmonize_depth(df_in, units='meter'):
     Get clean depth column:
     
     >>> from harmonize_wq import clean
-    >>> clean.harmonize_depth(df)
-      ResultDepthHeightMeasure/MeasureValue  ...                     Depth
-    0                                   3.0  ...                 3.0 meter
-    1                                   NaN  ...                       NaN
-    2                                    10  ...  3.0479999999999996 meter
+    >>> clean.harmonize_depth(df)[['ResultDepthHeightMeasure/MeasureValue',
+    ...                            'Depth']]
+      ResultDepthHeightMeasure/MeasureValue                     Depth
+    0                                   3.0                 3.0 meter
+    1                                   NaN                       NaN
+    2                                    10  3.0479999999999996 meter
     """
     df_out = df_in.copy()
     # Default columns

@@ -120,13 +120,14 @@ def map_counts(df_in, gdf, col=None):
     >>> import harmonize_wq
     >>> cnt_gdf = harmonize_wq.visualize.map_counts(df_in, gdf)
     >>> cnt_gdf
-        MonitoringLocationIdentifier  cnt                 geometry  QA_flag
-    0                            ID1    2  POINT (1.00000 2.00000)      NaN
-    1                            ID2    1  POINT (2.00000 1.00000)      NaN
+      MonitoringLocationIdentifier  cnt                 geometry  QA_flag
+    0                          ID1    2  POINT (1.00000 2.00000)      NaN
+    1                          ID2    1  POINT (2.00000 1.00000)      NaN
 
     These aggegate results can then be plotted:
 
     >>> cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
+    <Axes: >
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'
@@ -199,7 +200,7 @@ def map_measure(df_in, gdf, col):
     0                          ID1      NaN  POINT (1.00000 2.00000)
     1                          ID2      NaN  POINT (2.00000 1.00000)
     
-    Combine these to get an aggregation of results per station   :
+    Combine these to get an aggregation of results per station:
      
     >>> from harmonize_wq import visualize
     >>> avg_temp = visualize.map_measure(df_in, gdf, 'Temperature')
@@ -210,7 +211,8 @@ def map_measure(df_in, gdf, col):
 
     These aggegate results can then be plotted:
 
-    >>> avg_temp.plot(column='Temperature', cmap='Blues', legend=True)
+    >>> avg_temp.plot(column='mean', cmap='Blues', legend=True)
+    <Axes: >
     """
 
     merge_cols = ['MonitoringLocationIdentifier']

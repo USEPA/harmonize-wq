@@ -585,7 +585,7 @@ def as_gdf(shp):
     >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
     >>> type(wrangle.as_gdf(aoi_url))
-    geopandas.geodataframe.GeoDataFrame
+    <class 'geopandas.geodataframe.GeoDataFrame'>
     """
     if not isinstance(shp, geopandas.geodataframe.GeoDataFrame):
         shp = geopandas.read_file(shp)
