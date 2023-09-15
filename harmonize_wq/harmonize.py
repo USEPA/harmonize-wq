@@ -470,7 +470,7 @@ def harmonize_all(df_in, errors='raise'):
     359502            21FLTBW_WQX  ...  29.97 degree_Celsius
     359503           21FLPDEM_WQX  ...  32.01 degree_Celsius
     359504           21FLSMRC_WQX  ...                   NaN
-    
+    <BLANKLINE>
     [359505 rows x 42 columns]
     
     >>> df_result.columns[-7:]
@@ -549,7 +549,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     359502            21FLTBW_WQX  ...  29.97 degree_Celsius
     359503           21FLPDEM_WQX  ...  32.01 degree_Celsius
     359504           21FLSMRC_WQX  ...                   NaN
-    
+    <BLANKLINE>
     [359505 rows x 37 columns]
     
     >>> df_result.columns[-2:]

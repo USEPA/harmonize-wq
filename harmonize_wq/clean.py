@@ -43,7 +43,7 @@ def datetime(df_in):
       ActivityStartDate  ...         Activity_datetime
     0        2004-09-01  ... 2004-09-01 15:01:00+00:00
     1        2004-07-01  ...                       NaT
-    
+    <BLANKLINE>
     [2 rows x 4 columns]
     """
     # Expected columns

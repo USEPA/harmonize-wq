@@ -60,6 +60,7 @@ class WQCharData():
        CharacteristicName  ResultMeasure/MeasureUnitCode  ... Units  Phosphorus
     0          Phosphorus                            NaN  ...   NaN         1.0
     1  Temperature, water                            NaN  ...   NaN         NaN
+    <BLANKLINE>
     [2 rows x 5 columns]
     >>> wq.df.columns
     Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
@@ -357,6 +358,7 @@ class WQCharData():
         0          Phosphorus  ...                     NaN
         1  Temperature, water  ...                     NaN
         2          Phosphorus  ...                  as PO4
+        <BLANKLINE>
         [3 rows x 4 columns]
         
         Build WQ Characteristic Data object from DataFrame:
@@ -724,7 +726,7 @@ class WQCharData():
           CharacteristicName ResultMeasure/MeasureUnitCode  ...    Units Fecal_Coliform
         0     Fecal Coliform                       #/100ml  ...  #/100ml            1.0
         1     Fecal Coliform                           MPN  ...      MPN           10.0
-        
+        <BLANKLINE>
         [2 rows x 5 columns]
          
         >>> wq.replace_unit_by_dict(domains.UNITS_REPLACE['Fecal_Coliform'])
@@ -944,7 +946,7 @@ class WQCharData():
           CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Carbon
         0             Carbon                          mg/l  ...  mg/l    1.0
         1             Carbon                          umol  ...  umol  0.265
-    
+        <BLANKLINE>
         [2 rows x 5 columns]
         
         Assemble moles list:
