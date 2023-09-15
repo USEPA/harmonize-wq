@@ -116,7 +116,8 @@ def map_counts(df_in, gdf, col=None):
     1                          ID2      NaN  POINT (2.00000 1.00000)
     
     Combine these to get an aggregation of results per station:
-     
+    
+    >>> import harmonize_wq
     >>> cnt_gdf = harmonize_wq.visualize.map_counts(df_in, gdf)
     >>> cnt_gdf
         MonitoringLocationIdentifier  cnt                 geometry  QA_flag
@@ -186,6 +187,7 @@ def map_measure(df_in, gdf, col):
     
     Build example GeoDataFrame of monitoring locations:
     
+    >>> import geopandas
     >>> from shapely.geometry import Point
     >>> from numpy import nan
     >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
@@ -199,7 +201,8 @@ def map_measure(df_in, gdf, col):
     
     Combine these to get an aggregation of results per station   :
      
-    >>> avg_temp = harmonize_wq.visualize.map_measure(df_in, gdf, 'Temperature')
+    >>> from harmonize_wq import visualize
+    >>> avg_temp = visualize.map_measure(df_in, gdf, 'Temperature')
     >>> avg_temp
       MonitoringLocationIdentifier  cnt  mean                 geometry  QA_flag
     0                          ID1    2   6.9  POINT (1.00000 2.00000)      NaN

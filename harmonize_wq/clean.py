@@ -39,7 +39,7 @@ def datetime(df_in):
       ActivityStartDate ActivityStartTime/Time ActivityStartTime/TimeZoneCode
     0        2004-09-01               10:01:00                            EST
     1        2004-07-01                    NaN                            NaN
-    >>> clean.datetime(df)
+    >>> harmonize_wq.clean.datetime(df)
       ActivityStartDate  ...         Activity_datetime
     0        2004-09-01  ... 2004-09-01 15:01:00+00:00
     1        2004-07-01  ...                       NaT
@@ -91,7 +91,7 @@ def harmonize_depth(df_in, units='meter'):
     0                                   3.0                                        m
     1                                   NaN                                      NaN
     2                                    10                                       ft
-    >>> clean.harmonize_depth(df)
+    >>> harmonize_wq.clean.harmonize_depth(df)
       ResultDepthHeightMeasure/MeasureValue  ...                     Depth
     0                                   3.0  ...                 3.0 meter
     1                                   NaN  ...                       NaN

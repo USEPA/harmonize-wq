@@ -25,12 +25,11 @@ def unit_basis_dict(out_col):
  
     Examples
     --------
-    Get dictionary for Phosphorus
+    Get dictionary for Phosphorus and subset for 'as P':
     
-    >>> basis.unit_basis_dict('Phosphorus')
-    {'as P': {'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']},
-     'as PO4': {'mg/l': ['mg/l as PO4', 'mg/l PO4'],
-      'mg/kg': ['mg/kg as PO4', 'mg/kg PO4']}}
+    >>> from harmonize_wq import basis
+    >>> basis.unit_basis_dict('Phosphorus')['as P']
+    {'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']}
     """
     dictionary = {'Phosphorus': {'as P': {'mg/l': ['mg/l as P', 'mg/l P'],
                                           'mg/kg': ['mg/kg as P', 'mg/kg P']},
@@ -45,9 +44,19 @@ def unit_basis_dict(out_col):
 
 
 def basis_conversion():
-    """ See Also convert.moles_to_mass()
-    Table 1 in Best Practices for Submitting Nutrient Data to the Water Quality
-    eXchange (WQX):
+    """ Dictionary for converting basis/speciation (e.g., as PO4 -> as P)
+    
+    Returns
+    -------
+     dict
+         Dictionary with structure {basis: conversion factor}
+         
+    See Also
+    --------
+    convert.moles_to_mass()
+    
+    Originally from Table 1 in Best Practices for Submitting Nutrient Data to
+    the Water Quality eXchange (WQX):
     www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf
     """
     return {'NH3': 0.822,
@@ -72,8 +81,9 @@ def stp_dict():
 
     Examples
     --------
-    Get dictionary for taking temperature basis our of units
+    Get dictionary for taking temperature basis our of units:
     
+    >>> from harmonize_wq import basis
     >>> basis.stp_dict()
     {'@25C': {'mg/mL': ['mg/mL @25C']}}
     """
@@ -110,30 +120,31 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
     ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', 'mg/kg as P'],
-    ...                 'ProviderName': ['NWIS', 'NWIS',],
     ...                 'Units':  ['mg/l as P', 'mg/kg as P'],
     ...                 })
     >>> df
-      CharacteristicName ResultMeasure/MeasureUnitCode ProviderName       Units
-    0         Phosphorus                     mg/l as P         NWIS   mg/l as P
-    1         Phosphorus                    mg/kg as P         NWIS  mg/kg as P
+      CharacteristicName ResultMeasure/MeasureUnitCode       Units
+    0         Phosphorus                     mg/l as P   mg/l as P
+    1         Phosphorus                    mg/kg as P  mg/kg as P
 
+    >>> from harmonize_wq import basis
     >>> basis_dict = basis.unit_basis_dict('Phosphorus')
     >>> unit_col = 'Units'
     >>> basis.basis_from_unit(df, basis_dict, unit_col)
-      CharacteristicName ResultMeasure/MeasureUnitCode ProviderName  Units
-    0         Phosphorus                     mg/l as P         NWIS   mg/l
-    1         Phosphorus                    mg/kg as P         NWIS  mg/kg
+      CharacteristicName ResultMeasure/MeasureUnitCode ProviderName  Units Speciation
+    0         Phosphorus                     mg/l as P         NWIS   mg/l       as P
+    1         Phosphorus                    mg/kg as P         NWIS  mg/kg       as P
     
     If an existing basis_col value is different a warning is issued when it is 
     updated and a QA_flag is assigned
     
+    >>> from numpy import nan
     >>> df['Speciation'] = [nan, 'as PO4']
     >>> df_speciation_change = basis.basis_from_unit(df, basis_dict, unit_col)
     UserWarning: Mismatched Speciation: updated from as PO4 to as P (units)
     >>> df_speciation_change[['Speciation', 'QA_flag']]
       Speciation                                          QA_flag
-    0        NaN                                              NaN
+    0       as P                                              NaN
     1       as P  Speciation: updated from as PO4 to as P (units)
     """
     df = df_in.copy()
@@ -164,7 +175,7 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
 
 def basis_from_methodSpec(df_in):
     """
-    Moves speciation from 'MethodSpecificationName' column to new 'Speciation'
+    Copy speciation from 'MethodSpecificationName' column to new 'Speciation'
     Column
 
     Parameters
@@ -191,17 +202,19 @@ def basis_from_methodSpec(df_in):
       CharacteristicName MethodSpecificationName ProviderName
     0         Phosphorus                    as P         NWIS
     1         Phosphorus                     NaN         NWIS
-    
+
+    >>> from harmonize_wq import basis    
     >>> basis.basis_from_methodSpec(df)
       CharacteristicName  MethodSpecificationName ProviderName Speciation
-    0         Phosphorus                      NaN         NWIS       as P
+    0         Phosphorus                     as P         NWIS       as P
     1         Phosphorus                      NaN         NWIS        NaN
     """
 
     # Basis from MethodSpecificationName
     old_col = 'MethodSpecificationName'
     df = df_in.copy()
-    # TODO: this seems overly-complex to do a pop from one column to another, consider _coerce_basis()
+    # TODO: this seems overly-complex to do a pop from one column to another,
+    # consider _coerce_basis()
     # List unique basis
     basis_list = list(set(df[old_col].dropna()))
     for base in basis_list:
@@ -251,7 +264,8 @@ def update_result_basis(df_in, basis_col, unit_col):
       CharacteristicName ResultTemperatureBasisText       Units
     0           Salinity                   25 deg C  mg/mL @25C
     1           Salinity                        NaN  mg/mL @25C
-    
+
+    >>> from harmonize_wq import basis    
     >>> df_temp_basis = basis.update_result_basis(df,
     ...                                           'ResultTemperatureBasisText',
     ...                                           'Units')
@@ -342,6 +356,7 @@ def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
     
     Formats QA_Flag
     
+    >>> from harmonize_wq import basis
     >>> basis.basis_qa_flag('(units)',
     ...                     'updated from 25 deg C to @25C',
     ...                     'ResultTemperatureBasisText')
