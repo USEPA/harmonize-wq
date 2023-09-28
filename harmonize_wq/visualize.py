@@ -118,7 +118,7 @@ def map_counts(df_in, gdf, col=None):
     0                          ID1    2  POINT (1.00000 2.00000)      NaN
     1                          ID2    1  POINT (2.00000 1.00000)      NaN
 
-    These aggegate results can then be plotted:
+    These aggregate results can then be plotted:
 
     >>> cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
     <Axes: >

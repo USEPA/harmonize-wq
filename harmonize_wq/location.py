@@ -149,9 +149,9 @@ def harmonize_locations(df_in, out_EPSG=4326,
     [3 rows x 5 columns]
     
     Note: both geometries where the CRS was not the default 4326 (WGS1984) have
-    been trasnformed in the geometry column, a QA_flag column was also added to record
-    any location based problems like limited decimal precision or an unknown 
-    input CRS.
+    been transformed in the geometry column, a QA_flag column was also added to
+    record any location based problems like limited decimal precision or an
+    unknown input CRS.
     """
     df2 = df_in.copy()
 

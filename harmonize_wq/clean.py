@@ -22,7 +22,7 @@ def datetime(df_in):
 
     Examples
     --------
-    Build dataFrame for example:
+    Build DataFrame for example:
     
     >>> from pandas import DataFrame
     >>> from numpy import nan
@@ -55,7 +55,7 @@ def datetime(df_in):
 
 
 def harmonize_depth(df_in, units='meter'):
-    """Doesn't currently pass errors or ureg.
+    """Doesn't currently pass errors or unit registry (ureg).
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ def harmonize_depth(df_in, units='meter'):
     
     Examples
     --------
-    Build dataFrame for example:
+    Build DataFrame for example:
         
     >>> from pandas import DataFrame
     >>> from numpy import nan

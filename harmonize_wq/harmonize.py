@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Functions to harmonize data retrieved from EPA's Water Quality Portal (WQP).
-"""
+"""Functions to harmonize data retrieved from EPA's Water Quality Portal."""
 from warnings import warn
 import pandas
 import pint
@@ -217,7 +216,7 @@ def units_dimension(series_in, units, ureg=None):
     Returns
     -------
     dim_list : list
-        List of units with mis-matched dimensions.
+        List of units with mismatched dimensions.
 
     Examples
     --------
@@ -239,7 +238,7 @@ def units_dimension(series_in, units, ureg=None):
     """
     if ureg is None:
         ureg = pint.UnitRegistry()
-    dim_list = []  # List for units with mis-matched dimensions
+    dim_list = []  # List for units with mismatched dimensions
     dimension = ureg(units).dimensionality  # units dimension
     # Loop over list of unique units
     for unit in list(set(series_in)):

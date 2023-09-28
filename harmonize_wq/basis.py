@@ -113,7 +113,7 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
 
     Examples
     --------
-    Build dataFrame for example:
+    Build DataFrame for example:
     
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
@@ -186,7 +186,7 @@ def basis_from_methodSpec(df_in):
 
     Examples
     --------
-    Build dataFrame for example:
+    Build DataFrame for example:
     
     >>> from pandas import DataFrame
     >>> from numpy import nan
@@ -245,7 +245,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     Examples
     --------
-    Build dataFrame for example:
+    Build DataFrame for example:
     Note: 'Units' is used to preserve 'ResultMeasure/MeasureUnitCode'
     
     >>> from pandas import DataFrame

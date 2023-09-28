@@ -2,7 +2,7 @@
 """Functions to return domain lists with all potential values.
 
 These are mainly for use as filters. Small or frequently utilized domains may
-be hardcoded. A url based method can be used to get the most up to date domain
+be hard-coded. A URL based method can be used to get the most up to date domain
 list.
 """
 import requests
@@ -89,7 +89,7 @@ def get_domain_dict(table, cols=None):
 
     Examples
     --------
-    Return dict for domain from wqx table (e.g., 'ResultSampleFraction'), just
+    Return dict for domain from WQX table (e.g., 'ResultSampleFraction'), just
     the default keys (Name) are shown as values (Description) can be long:
     
     >>> domains.get_domain_dict('ResultSampleFraction').keys()
@@ -545,7 +545,7 @@ def xy_datum():
 
     Notes
     -----
-    source url: f'{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip'
+    source URL: f'{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip'
     Anything not in dict will be nan, i.e. must be int so these are missing:
     "OTHER": {"Description": 'Other', "EPSG": nan},
     "UNKWN": {"Description": 'Unknown', "EPSG": nan}
@@ -554,7 +554,7 @@ def xy_datum():
     -------
     dict
         Dictionary where exhaustive:
-            {HorizontalCoordinateReferenceSystemDatumName: {Descriptio○n:str,
+            {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
             EPSG:int}}
 
     Examples
@@ -603,12 +603,12 @@ def xy_datum():
 
 def stations_rename():
 #     Default field mapping writes full name to alias but a short name to field
-    """Get shortened column names for shapefile fields.
+    """Get shortened column names for shapefile (.shp) fields.
     
-    ESRI places a length restriction on shapefile field names. This returns a
-    dictionary with the original water quality portal field name (as key) and
-    shortened column name for writing as shp. We suggest using the longer
-    original name as the field alias when writing as .shp.
+    ESRI places a length restriction on shapefile (.shp) field names. This
+    returns a dictionary with the original water quality portal field name (as
+    key) and shortened column name for writing as shp. We suggest using the
+    longer original name as the field alias when writing as .shp.
 
     Returns
     -------
@@ -618,7 +618,7 @@ def stations_rename():
     Examples
     --------
     Although running the function returns the full dictionary of Key:Value
-    pairs, here we show how the curent name can be used as a key to get the
+    pairs, here we show how the current name can be used as a key to get the
     new name:
         
     >>> domains.stations_rename()['OrganizationIdentifier']

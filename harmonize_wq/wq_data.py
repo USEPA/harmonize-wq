@@ -11,14 +11,14 @@ from harmonize_wq import convert
 from harmonize_wq import harmonize 
 
 class WQCharData():
-    """Class for specifc characteristic in Water Quality Portal results.
+    """Class for specific characteristic in Water Quality Portal results.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
     char_val : str
-        Expected characteristicName.
+        Expected CharacteristicName.
 
     Attributes
     ----------
@@ -611,7 +611,7 @@ class WQCharData():
         Returns
         -------
         list
-            List of units with mis-matched dimensions.
+            List of units with mismatched dimensions.
 
         Examples
         --------

@@ -397,7 +397,7 @@ def add_detection(df_in, char_val):
     >>> df_detects.shape
     (359712, 38)
     
-    Note: the aditional rows are due to one result being able to be assigned 
+    Note: the additional rows are due to one result being able to be assigned 
     multiple detection results.
     
     Look at the columns added
@@ -573,7 +573,7 @@ def as_gdf(shp):
     
     Examples
     --------
-    Use area of interest from tests geojson:
+    Use area of interest from tests GeoJSON:
 
     >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
@@ -598,11 +598,11 @@ def get_bounding_box(shp, idx=None):
 
     Returns
     -------
-        Coordinates for bounding box as string and seperated by ', '.
+        Coordinates for bounding box as string and separated by ', '.
     
     Examples
     --------
-    Use area of interest from tests geojson:
+    Use area of interest from tests GeoJSON:
 
     >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
@@ -662,7 +662,7 @@ def clip_stations(stations, aoi):
     0                           In  POINT (-87.12500 30.50000)
     1                          Out  POINT (-87.50000 30.50000)
     
-    Use area of interest from tests geojson:
+    Use area of interest from tests GeoJSON:
 
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
        
