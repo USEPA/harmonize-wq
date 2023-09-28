@@ -3,7 +3,7 @@
 Example Workflow
 ================
 
-dataretrieval Query for a geojson
+dataretrieval Query for a GeoJSON
 *********************************
 
 .. code-block:: python3
@@ -24,7 +24,7 @@ dataretrieval Query for a geojson
     # Run query
     res_narrow, md_narrow = wqp.get_results(**query)
 
-    # dataframe of downloaded results
+    # DataFrame of downloaded results
     res_narrow
 
 
@@ -55,7 +55,7 @@ Clean results
 
 Transform results from long to wide format
 ******************************************
-There are many columns in the dataframe that are characteristic specific, that is they have different values for the same sample depending on the characteristic. To ensure one result for each sample after the transformation of the data these columns must either be split, generating a new column for each characteristic with values, or moved out from the table if not being used.
+There are many columns in the pandas.DataFrame that are characteristic specific, that is they have different values for the same sample depending on the characteristic. To ensure one result for each sample after the transformation of the data these columns must either be split, generating a new column for each characteristic with values, or moved out from the table if not being used.
 
 .. code-block:: python3
 
@@ -99,7 +99,7 @@ The number of columns in the resulting table is greatly reduced
 +----------------------------+-------------+----------------------------------------+-------------------------------+
 |QA_Secchi                   | QA          |NA                                      |Harmonization quality issues   |
 +----------------------------+-------------+----------------------------------------+-------------------------------+
-|Temperature                 | Result      |ResultMeasureValue                      |Standardized to degrees Celcius|
+|Temperature                 | Result      |ResultMeasureValue                      |Standardized to degrees Celsius|
 |                            |             |ResultMeasure/MeasureUnitCode           |                               |
 +----------------------------+-------------+----------------------------------------+-------------------------------+
 |QA_Temperature              | QA          |NA                                      |Harmonization quality issues   |
