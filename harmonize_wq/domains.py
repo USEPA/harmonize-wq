@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions to return domain lists with all potential values, mainly for use
-    as filters. Small or frequently utilized domains may be hardcoded. A url
-    based method can be used to get the most up to date domain list.
+"""Functions to return domain lists with all potential values.
+
+These are mainly for use as filters. Small or frequently utilized domains may
+be hardcoded. A url based method can be used to get the most up to date domain
+list.
 """
 import requests
 import pint
@@ -71,8 +72,7 @@ domain_tables = {'ActivityMedia': 'ActivityMedia_CSV',
 # get_domain_list(field):
 
 def get_domain_dict(table, cols=None):
-    """
-    Retrieves domain values as dictionary for specified table
+    """Retrieve domain values for specified table.
 
     Parameters
     ----------
@@ -89,8 +89,8 @@ def get_domain_dict(table, cols=None):
 
     Examples
     --------
-    Return dict for domain from wqx table (e.g., 'ResultSampleFraction'), just the default keys (Name)
-    are shown as values (Description) can be long:
+    Return dict for domain from wqx table (e.g., 'ResultSampleFraction'), just
+    the default keys (Name) are shown as values (Description) can be long:
     
     >>> domains.get_domain_dict('ResultSampleFraction').keys()
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
@@ -117,9 +117,9 @@ def get_domain_dict(table, cols=None):
 
 
 def harmonize_TADA_dict():
-    """
-    Build structured dictionary from TADA HarmonizationTemplate.csv of target
-    column names and sample fractions.
+    """Get structured dictionary from TADA HarmonizationTemplate csv.
+    
+    Based on target column names and sample fractions.
 
     Returns
     -------
@@ -161,6 +161,20 @@ def harmonize_TADA_dict():
 
 
 def re_case(word, domain_list):
+    """Change instance of word in domain_list to UPPERCASE.
+
+    Parameters
+    ----------
+    word : str
+        Word to alter in domain_list
+    domain_list : list
+        List including word
+    Returns
+    -------
+    str
+        Word from domain_list in UPPERCASE
+
+    """
     domain_list_upper = [x.upper() for x in domain_list]
     try:
         idx = domain_list_upper.index(word)
@@ -170,14 +184,15 @@ def re_case(word, domain_list):
 
 
 def char_tbl_TADA(df, char):
-    """
-    Build structured dictionary for TADA.CharacteristicName from TADA df
+    """Get structured dictionary for TADA.CharacteristicName from TADA df.
+    
     Parameters
     ----------
     df : pandas.DataFrame
         Table from TADA for specific characteristic.
     char : str
         CharacteristicName.
+        
     Returns
     -------
     new_char_dict : dict
@@ -213,8 +228,9 @@ def char_tbl_TADA(df, char):
 
 
 def registry_adds_list(out_col):
-    """
-    Get units to add to a Pint unit registry by out_column (ties back to CharacteristicName)
+    """Get units to add to Pint unit registry by out_column.
+    
+    Out_column typically refers back to CharacteristicName.
 
     Parameters
     ----------
@@ -237,7 +253,6 @@ def registry_adds_list(out_col):
      'parts_per_thousand = 1e-3 = ppth',
      'parts_per_million = 1e-6 fraction = ppm']
     """
-    
     # TODO: 'PSU' = 'PSS' ~ ppth/1.004715
 
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
@@ -279,8 +294,7 @@ def registry_adds_list(out_col):
 
 
 def bacteria_reg(ureg=None):
-    """
-    Generate standard pint unit registry with bacteria units defined.
+    """Generate standard pint unit registry with bacteria units defined.
 
     Parameters
     ----------
@@ -307,9 +321,10 @@ def bacteria_reg(ureg=None):
 
 
 def out_col_lookup():
-    """
-    Results are writen to a new column based on the CharacteristicName, this returns a dict for that
-    {CharacteristicName: out_column_name}
+    """Get {CharacteristicName: out_column_name}.
+    
+    This is often subset and used to write results to a new column based on
+    CharacteristicName.
 
     Returns
     -------
@@ -318,8 +333,9 @@ def out_col_lookup():
 
     Examples
     --------
-    The function returns the full dict {CharacteristicName: out_column_name}, it can be subset by
-    a CharactisticName to get the name of the column for results
+    The function returns the full dict {CharacteristicName: out_column_name},
+    it can be subset by a CharactisticName to get the name of the column for
+    results.
         
     >>> domains.out_col_lookup()['Escherichia coli']
     'E_coli'
@@ -344,8 +360,7 @@ def out_col_lookup():
 
 
 def characteristic_cols(category=None):
-    """
-    Return characteristic specific columns list, can subset those by category.
+    """Get characteristic specific columns list, can subset those by category.
 
     Parameters
     ----------
@@ -523,9 +538,10 @@ def characteristic_cols(category=None):
 
 
 def xy_datum():
-    """
-    Get dictionary where key is expected string and value is dictionary with
-    "Description": string (Not currently used) and "EPSG": int (4-digit code).
+    """Get dictionary with expected horrizontal datums.
+
+    The structure has {key as expected string: value as {"Description": string
+    (Not currently used) and "EPSG": int (4-digit code)}.
 
     Notes
     -----
@@ -543,7 +559,6 @@ def xy_datum():
 
     Examples
     --------
-    
     Running the function returns the full {abbreviation: {Description:values,
     EPSG:values}}, here we show how the abbreviation can be used as a key to
     get the EPSG code:
@@ -588,7 +603,8 @@ def xy_datum():
 
 def stations_rename():
 #     Default field mapping writes full name to alias but a short name to field
-    """
+    """Get shortened column names for shapefile fields.
+    
     ESRI places a length restriction on shapefile field names. This returns a
     dictionary with the original water quality portal field name (as key) and
     shortened column name for writing as shp. We suggest using the longer
@@ -601,7 +617,6 @@ def stations_rename():
         
     Examples
     --------
-    
     Although running the function returns the full dictionary of Key:Value
     pairs, here we show how the curent name can be used as a key to get the
     new name:
@@ -651,8 +666,7 @@ def stations_rename():
 
 
 def accepted_methods():
-    """
-    Accepted methods for each characteristic.
+    """Get accepted methods for each characteristic.
 
     Note: Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
     This is not fully implemented

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Class for harmonizing data retrieved from EPA's Water Quality Portal (WQP)
-"""
+"""Class for harmonizing data retrieved from EPA's Water Quality Portal."""
 from types import SimpleNamespace
 from warnings import warn
 import pandas
@@ -13,7 +11,7 @@ from harmonize_wq import convert
 from harmonize_wq import harmonize 
 
 class WQCharData():
-    """Class for specifc characteristic in Water Quality Portal results
+    """Class for specifc characteristic in Water Quality Portal results.
 
     Parameters
     ----------
@@ -89,8 +87,9 @@ class WQCharData():
         self.units = domains.OUT_UNITS[self.out_col]
 
     def _coerce_measure(self):
-        """ Identifies bad measure values, and flags them. Copies measure
-            values to out_col, with bad measures as NaN.
+        """Identify bad measure values, and flag them.
+
+        Copies measure values to out_col, with bad measures as NaN.
         """
         df_out = self.df
         c_mask = self.c_mask
@@ -117,8 +116,7 @@ class WQCharData():
         self.df = df_out
 
     def _unit_mask(self, unit, column=None):
-        """Get mask that is characteristic specific (c_mask) and has required units.
-        """
+        """Get mask specific to characteristic (c_mask) and required units."""
         if column:
             # TODO: column for in vs out col, not being used, remove?
             return self.measure_mask() & (self.df[column] == unit)
@@ -145,9 +143,10 @@ class WQCharData():
 
 
     def _unit_qa_flag(self, trouble, flag_col=None):
-        """
-        Generates a QA_flag flag string for the units column. If unit_col is a copy
-        flag_col can specify the original column name for the flag.
+        """Generate a QA_flag flag string for the units column.
+        
+        If unit_col is a copy flag_col can specify the original column name for
+        the flag.
     
         Parameters
         ----------
@@ -170,8 +169,7 @@ class WQCharData():
         return '{}: {} UNITS, {} assumed'.format(unit_col, trouble, unit)
         
     def _replace_in_col(self, col, old_val, new_val, mask=None):
-        """
-        Simple string replacement for a column at rows filtered by mask
+        """Replace string throughout column, filter rows to skip by mask.
     
         Parameters
         ----------
@@ -206,8 +204,7 @@ class WQCharData():
         return df_in
 
     def _dimension_handling(self, unit, quant=None, ureg=None):
-        """
-        Handles and routes common dimension conversions/contexts
+        """Handle and routes common dimension conversions/contexts.
     
         Parameters
         ----------
@@ -216,7 +213,8 @@ class WQCharData():
         quant : pint.quantity, optional
             Required for conversions to/from moles
         ureg : pint.UnitRegistry, optional
-            Unit Registry Object with any custom units defined. The default is None
+            Unit Registry Object with any custom units defined.
+            The default is None
     
         Returns
         -------
@@ -253,7 +251,8 @@ class WQCharData():
         return {}, []
 
     def check_units(self, flag_col=None):
-        """
+        """Check units.
+        
         Checks for bad units that are missing (assumes default_unit) or
         unrecognized as valid by unit registry (ureg). Does not check for units
         in the correct dimensions, or a mistaken identity (e.g. 'deg F'
@@ -331,8 +330,7 @@ class WQCharData():
         self.df = df_out
 
     def check_basis(self, basis_col='MethodSpecificationName'):
-        """
-        Determine speciation (basis) for measure.
+        """Determine speciation (basis) for measure.
 
         Parameters
         ----------
@@ -432,14 +430,14 @@ class WQCharData():
                                                         self.col.unit_out)
 
     def update_ureg(self):
-        """Update class unit registry to define units based on out_col"""
+        """Update class unit registry to define units based on out_col."""
         for definition in domains.registry_adds_list(self.out_col):
             self.ureg.define(definition)
 
     def update_units(self, units_out):
-        """
-        Update object units attribute to convert everything into. Does not do
-        the conversion.
+        """Update object units attribute to convert everything into.
+        
+        Note: It does not perform the conversion.
         
         Parameters
         ----------
@@ -462,9 +460,10 @@ class WQCharData():
         self.units = units_out
 
     def measure_mask(self, column=None):
-        """
-        Get mask that is characteristic specific (c_mask) and only has valid
-        col measures (Non-NA).
+        """Get mask for characteristic and valid measure.
+        
+        Mask is characteristic specific (c_mask) and only has valid col
+        measures (Non-NA).
         
         Parameters
         ----------
@@ -486,7 +485,8 @@ class WQCharData():
         return self.c_mask & self.df[self.out_col].notna()
 
     def convert_units(self, default_unit=None, errors='raise'):
-        """
+        """Update  out-col to convert units.
+        
         Update object DataFrame's out-col to convert from old units to
         default_unit.
 
@@ -539,9 +539,10 @@ class WQCharData():
         self.df = df_out
 
     def apply_conversion(self, convert_fun, unit, u_mask=None):
-        """
-        Apply special dimension changing conversions using functions in convert
-        module and applying them across all cases of current unit.
+        """Apply special dimension changing conversions.
+        
+        This uses functions in convert module and applys them across all cases
+        of current unit.
 
         Parameters
         ----------
@@ -599,8 +600,7 @@ class WQCharData():
         self.df = df_out
 
     def dimensions_list(self, m_mask=None):
-        """
-        Use character object to retrieve list of unique dimensions.
+        """Use character object to retrieve list of unique dimensions.
 
         Parameters
         ----------
@@ -643,8 +643,7 @@ class WQCharData():
                                          self.ureg)
 
     def replace_unit_str(self, old, new, mask=None):
-        """
-        Simple way to replace ALL instances of old str with new str in units.
+        """Replace ALL instances of old str with new str in units.
 
         Parameters
         ----------
@@ -693,9 +692,9 @@ class WQCharData():
         self.df = df_out
 
     def replace_unit_by_dict(self, val_dict, mask=None):
-        """
-        A simple way to do multiple replace_in_col() replacements of val_dict
-        key with val_dict value.
+        """Do multiple replace_in_col() replacements using val_dict.
+        
+        Replaces valdict key with val_dict value.
 
         Parameters
         ----------
@@ -742,8 +741,7 @@ class WQCharData():
 
     def fraction(self, frac_dict=None, suffix=None,
                  fract_col='ResultSampleFractionText'):
-        """
-        Create columns for sample fractions, use frac_dict to set their names.
+        """Create columns for sample fractions, use frac_dict to set names.
 
         Parameters
         ----------
@@ -764,7 +762,6 @@ class WQCharData():
             
         Examples
         --------
-        
         Not fully implemented with TADA table yet
         """
         c_mask = self.c_mask
@@ -917,8 +914,7 @@ class WQCharData():
         return dimension_dict, mol_list
 
     def moles_convert(self, mol_list):
-        """
-        Update out_col with moles converted and reduce unit_col to units
+        """Update out_col with moles converted and reduce unit_col to units.
 
         Parameters
         ----------

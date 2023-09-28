@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions to process characteristic basis or return basis dictionary.
-"""
+"""Functions to process characteristic basis or return basis dictionary."""
 from warnings import warn
 from numpy import nan
 from harmonize_wq import harmonize
 
 
 def unit_basis_dict(out_col):
-    """
-    Characteristic specific basis dictionary to define basis from units.
+    """Characteristic specific basis dictionary to define basis from units.
 
     Parameters
     ----------
@@ -44,8 +41,9 @@ def unit_basis_dict(out_col):
 
 
 def basis_conversion():
-    """ Dictionary for converting basis/speciation (e.g., as PO4 -> as P)
+    """Get dictionary of conversion factors to convert basis/speciation.
     
+    For example, this is used to convert 'as PO4' to 'as P'
     Returns
     -------
      dict
@@ -67,8 +65,7 @@ def basis_conversion():
 
 
 def stp_dict():
-    """
-    Standard temperature and pressure dictionary to define basis from units.
+    """Get standard temperature and pressure to define basis from units.
 
     Notes
     -----
@@ -91,10 +88,11 @@ def stp_dict():
 
 
 def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
-    """
-    Creates a standardized Basis column in DataFrame from units column and
-    standardizes units in units column based on basis_dict. Units column is updated in place, it
-    should not be original 'ResultMeasure/MeasureUnitCode' to maintain data integrity.
+    """Create standardized Basis column in DataFrame.
+    
+    Standardizes units in units column based on basis_dict. Units column is
+    updated in place, it should not be original 'ResultMeasure/MeasureUnitCode'
+    to maintain data integrity.
 
     Parameters
     ----------
@@ -174,10 +172,8 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
 
 
 def basis_from_methodSpec(df_in):
-    """
-    Copy speciation from 'MethodSpecificationName' column to new 'Speciation'
-    Column
-
+    """Copy speciation from MethodSpecificationName to new 'Speciation' column.
+    
     Parameters
     ----------
     df_in : pandas.DataFrame
@@ -230,8 +226,7 @@ def basis_from_methodSpec(df_in):
 
 
 def update_result_basis(df_in, basis_col, unit_col):
-    """
-    Basis from result col that is not moved to a new col
+    """Basis from result col that is not moved to a new col.
 
     Parameters
     ----------
@@ -250,7 +245,6 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     Examples
     --------
-    
     Build dataFrame for example:
     Note: 'Units' is used to preserve 'ResultMeasure/MeasureUnitCode'
     
@@ -300,8 +294,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
 
 def set_basis(df_in, mask, basis, basis_col='Speciation'):
-    """
-    Update DataFrame.basis_col to basis where DataFrame.col is expected_val.
+    """Update DataFrame.basis_col to basis where DataFrame.col is expected_val.
 
     Parameters
     ----------
@@ -331,11 +324,9 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
 
 
 def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
-    """
+    """Get QA_flag for different basis in MethodsSpeciation and units.
+
     NOTE: Deprecate - not currently in use anywhere
-    
-    Generates a QA_flag string for the MethodsSpeciation column if different
-    from the basis specified in units.
 
     Parameters
     ----------
@@ -353,7 +344,6 @@ def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
 
     Examples
     --------
-    
     Formats QA_Flag
     
     >>> from harmonize_wq import basis

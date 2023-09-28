@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions to clean/correct location data.
-"""
+"""Functions to clean/correct location data."""
 from pyproj import Transformer
 from shapely.geometry import shape
 import geopandas
@@ -18,9 +16,9 @@ def infer_CRS(df_in,
               out_col='EPSG',
               bad_crs_val=None,
               crs_col='HorizontalCoordinateReferenceSystemDatumName'):
-    """
-    Replace missing or unrecognized Coordinate Reference System (CRS) with
-    desired CRS and add QA_flag about it.
+    """Replace missing or unrecognized Coordinate Reference System (CRS).
+    
+    Replaces with desired CRS and adds QA_flag about it.
 
     Parameters
     ----------
@@ -44,7 +42,6 @@ def infer_CRS(df_in,
 
     Examples
     --------
-    
     Build dataframe to use in example, where crs_col name is 'Datum' rather
     than default 'HorizontalCoordinateReferenceSystemDatumName'
     
@@ -89,7 +86,8 @@ def infer_CRS(df_in,
 
 def harmonize_locations(df_in, out_EPSG=4326,
                         intermediate_columns=False, **kwargs):
-    """
+    """Create harmonized GeoDataframe from DataFrame.
+    
     Takes a :class:`~pandas.DataFrame` with lat/lon in multiple Coordinate
     Reference Systems, transforms them to outCRS and converts to
     :class:'geopandas.GeoDataFrame'
@@ -201,8 +199,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
 
 def transform_vector_of_points(df_in, datum, out_EPSG):
-    """
-    Transform points by vector (sub-set by datum)
+    """Transform points by vector (sub-set by datum).
 
     Parameters
     ----------
@@ -231,7 +228,8 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
 
 
 def get_harmonized_stations(query, aoi=None):
-    """
+    """Query, harmonize and clip stations.
+    
     Queries the Water Quality Portal (https://waterquality.data.us) for
     stations with data matching the query, harmonizes those stations location
     information and clips it to the Area Of Interest (AOI) if specified.
@@ -257,7 +255,6 @@ def get_harmonized_stations(query, aoi=None):
         
     Examples
     --------
-    
     See any of the 'Simple' notebooks found in 
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to query and harmonize stations.

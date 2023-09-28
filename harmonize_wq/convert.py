@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-    Functions to convert from one unit to another, sometimes using
-    pint decorators. Contains several unit conversion functions not in Pint.
+Functions to convert from one unit to another, sometimes using pint decorators.
+
+Contains several unit conversion functions not in Pint.
 """
 import pint
 
@@ -30,8 +31,7 @@ u_reg.define('SiO2 = []')
 
 
 def mass_to_moles(ureg, char_val, Q_):
-    """
-    Converts a mass to moles substance.
+    """Convert a mass to moles substance.
 
     Parameters
     ----------
@@ -49,7 +49,6 @@ def mass_to_moles(ureg, char_val, Q_):
     
     Examples
     --------
-
     Build standard Pint unit registry
     
     >>> import pint
@@ -67,8 +66,7 @@ def mass_to_moles(ureg, char_val, Q_):
 
 
 def moles_to_mass(ureg, Q_, basis=None, char_val=None):
-    """
-    Converts moles substance to mass.
+    """Convert moles substance to mass.
 
     Parameters
     ----------
@@ -90,7 +88,6 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
 
     Examples
     --------
-
     Build standard Pint unit registry:
     
     >>> import pint
@@ -117,8 +114,7 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
 
 @u_reg.wraps(u_reg.NTU, u_reg.centimeter)
 def cm_to_NTU(val):
-    """
-    Convert Turbidity measured in centimeters to NTU
+    """Convert Turbidity measured in centimeters to NTU.
 
     Parameters
     ----------
@@ -131,7 +127,6 @@ def cm_to_NTU(val):
     
     Examples
     --------
-    
     Build standard Pint unit registry:
     
     >>> import pint
@@ -163,8 +158,7 @@ def cm_to_NTU(val):
 
 @u_reg.wraps(u_reg.centimeter, u_reg.NTU)
 def NTU_to_cm(val):
-    """
-    Convert Turbidity measured in NTU (Nephelometric Turbidity Units) to centimeters
+    """Convert Turbidity in NTU (Nephelometric Turbidity Units) to centimeters.
 
     Parameters
     ----------
@@ -177,9 +171,8 @@ def NTU_to_cm(val):
 
     Examples
     --------
-    
-    NTU is not a standard Pint unit and must be added to a unit registry first (normally done by
-    WQCharData.update_ureg() method):
+    NTU is not a standard Pint unit and must be added to a unit registry first
+    (normally done by WQCharData.update_ureg() method):
         
     >>> import pint
     >>> ureg = pint.UnitRegistry()
@@ -213,10 +206,9 @@ def NTU_to_cm(val):
 
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def JTU_to_NTU(val):
-    """
-    Convert turbidity units JTU (Jackson Turbidity Units) to NTU.
+    """Convert turbidity units JTU (Jackson Turbidity Units) to NTU.
     
-    Note: this is based on a Linear relationship: 1 -> 19, 0.053 -> 1, 0.4 -> 7.5
+    Note: this is based on linear relationship: 1 -> 19, 0.053 -> 1, 0.4 -> 7.5
 
     Parameters
     ----------
@@ -230,9 +222,8 @@ def JTU_to_NTU(val):
         
     Examples
     --------
-    
-    JTU is not a standard Pint unit and must be added to a unit registry first (normally done by
-    WQCharData.update_ureg() method):
+    JTU is not a standard Pint unit and must be added to a unit registry first
+    (normally done by WQCharData.update_ureg() method):
     
     >>> import pint
     >>> ureg = pint.UnitRegistry()
@@ -265,8 +256,7 @@ def JTU_to_NTU(val):
 
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def SiO2_to_NTU(val):
-    """
-    Convert turbidity units SiO2 (silicon dioxide) to NTU.
+    """Convert turbidity units SiO2 (silicon dioxide) to NTU.
     
     Note: this is based on a Linear relationship: 2.5 -> 19, 0.13 -> 1, 1 -> 7.5
 
@@ -282,9 +272,8 @@ def SiO2_to_NTU(val):
     
     Examples
     --------
-    
-    SiO2 is not a standard Pint unit and must be added to a unit registry first (normally done by
-    WQCharData.update_ureg() method):
+    SiO2 is not a standard Pint unit and must be added to a unit registry first
+    (normally done by WQCharData.update_ureg() method):
     
     >>> import pint
     >>> ureg = pint.UnitRegistry()
@@ -312,8 +301,7 @@ def SiO2_to_NTU(val):
 
 
 def FNU_to_NTU(val):
-    """
-    Convert turbidity units FNU to NTU
+    """Convert turbidity units FNU to NTU.
 
     Parameters
     ----------
@@ -327,7 +315,6 @@ def FNU_to_NTU(val):
     
     Examples
     --------
-    
     Convert to NTU:
 
     >>> from harmonize_wq import convert
@@ -344,9 +331,7 @@ def FNU_to_NTU(val):
 def density_to_PSU(val,
                    pressure=1*u_reg("atm"),
                    temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert absolute salinity as density (mass/volume) to Practical Salinity
-    Units
+    """Convert salinity as density (mass/volume) to Practical Salinity Units.
 
     Parameters
     ----------
@@ -402,9 +387,7 @@ def density_to_PSU(val,
 def PSU_to_density(val,
                    pressure=1*u_reg("atm"),
                    temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert salinity as Practical Salinity Units to density (mass/volume)
-
+    """Convert salinity as Practical Salinity Units to density (mass/volume).
 
     Parameters
     ----------
@@ -491,8 +474,8 @@ def PSU_to_density(val,
 def DO_saturation(val,
                   pressure=1*u_reg("atm"),
                   temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert Dissolved Oxygen as percent saturation (%) to mg/l concentration.
+    """Convert Dissolved Oxygen from saturation (%) concentration (mg/l).
+    
     Defaults assume STP where pressure is 1 atmosphere and temperature 25C.
 
     Parameters
@@ -530,8 +513,7 @@ def DO_saturation(val,
 def DO_concentration(val,
                      pressure=1*u_reg("atm"),
                      temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert Dissolved Oxygen from concentration (e.g., mg/ml) to saturation (%)
+    """Convert Dissolved Oxygen from concentration (mg/ml) to saturation (%).
 
     Parameters
     ----------
@@ -568,8 +550,7 @@ def DO_concentration(val,
 def conductivity_to_PSU(val,
                         pressure=0*u_reg("atm"),
                         temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Estimate salinity (PSU) from conductivity
+    """Estimate salinity (PSU) from conductivity.
 
     Parameters
     ----------
@@ -591,7 +572,8 @@ def conductivity_to_PSU(val,
     t-numeric Celsius temperature (defaults to 25)
     P-numeric optional pressure (defaults to 0)
 
-    References:
+    References
+    ----------
     IOC, SCOR and IAPSO, 2010: The international thermodynamic
         equation of seawater – 2010: Calculation and use of thermodynamic
         properties. Intergovernmental Oceanographic Commission, Manuals

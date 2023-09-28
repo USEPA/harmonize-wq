@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions to help re-shape the WQP DataFrame
-"""
+"""Functions to help re-shape the WQP DataFrame."""
 import pandas
 import geopandas
 from harmonize_wq import domains
@@ -11,7 +9,8 @@ import dataretrieval.wqp as wqp
 
 
 def split_table(df_in):
-    """
+    """Split DataFrame columns axis into main and characteristic based.
+    
     Splits DataFrame in two, one with main results columns and one with
     Characteristic based metadata.
 
@@ -31,7 +30,6 @@ def split_table(df_in):
 
     Examples
     --------
-    
     See any of the 'Simple' notebooks found in 
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to divide the table into columns of
@@ -55,8 +53,7 @@ def split_table(df_in):
 
 
 def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
-    """
-    Splits column so that each value is in a characteristic specific column
+    """Split column so that each value is in a characteristic specific column.
 
     Parameters
     ----------
@@ -74,7 +71,6 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
     Examples
     --------
-    
     See any of the 'Simple' notebooks found in 
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to split the QA column into multiple
@@ -137,16 +133,16 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
 
 def collapse_results(df_in, cols=None):
-    """
-    Combine rows or results with the same sample organization, activity,
-    location, and datetime.
+    """Group rows/results that seems like the same sample.
+    
+    Default columns are organization, activity, location, and datetime.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    cols : TYPE, optional
-        DESCRIPTION. The default is None.
+    cols : list, optional
+        Columns to consider. The default is None.
 
     Returns
     -------
@@ -155,7 +151,6 @@ def collapse_results(df_in, cols=None):
 
     Examples
     --------
-    
     See any of the 'Simple' notebooks found in 
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to combine rows with the same sample
@@ -239,8 +234,9 @@ def collapse_results(df_in, cols=None):
 
 
 def get_activities_by_loc(characteristic_names, locations):
-    """
-    Quick attempt to segment batch what_activities - may not stay
+    """Segment batch what_activities.
+    
+    Warning this is not fully implemented and may not stay.
 
     Parameters
     ----------
@@ -256,7 +252,6 @@ def get_activities_by_loc(characteristic_names, locations):
         
     Examples
     --------
-    
     See wrangle.add_activities_to_df()
     """
     # Split loc_list as query by list may cause the query url to be too long
@@ -274,8 +269,7 @@ def get_activities_by_loc(characteristic_names, locations):
 
 
 def add_activities_to_df(df_in, mask=None):
-    """
-    Add activities to DataFrame
+    """Add activities to DataFrame.
 
     Parameters
     ----------
@@ -430,8 +424,9 @@ def add_detection(df_in, char_val):
 
 
 def get_detection_by_loc(loc_series, result_id_series, char_val=None):
-    """
-    Retrieve detection quantitation results by location, and characteristic
+    """Get detection quantitation by location and characteristic (optional).
+    
+    Retrieves detection quantitation results by location, and characteristic
     name (Optional). ResultIdentifier can not be used to search, location id is
     used instead and then results are limited by ResultIdentifiers.
 
@@ -453,7 +448,6 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     -------
     df_out  : pandas.DataFrame
         Detection Quantitation limits table corresponding to input arguments.
-
     """
     # TODO: implement fully
     # DetectionQuantitationLimitTypeName
@@ -479,9 +473,9 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
 
 
 def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
-    """
-    Merges two tables (df1 & df2), adding df2_cols to df1 where merge_cols
-    match.
+    """Merge df1 and df2.
+    
+    Merge tables(df1 and df2), adding df2_cols to df1 where merge_cols match.
 
     Parameters
     ----------
@@ -565,8 +559,7 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
 
 
 def as_gdf(shp):
-    """
-    Returns a GeoDataFrame for shp if shp is not already a GeoDataFrame.
+    """Get a GeoDataFrame for shp if shp is not already a GeoDataFrame.
 
     Parameters
     ----------
@@ -593,8 +586,7 @@ def as_gdf(shp):
 
 
 def get_bounding_box(shp, idx=None):
-    """
-    Return bounding box for shp.
+    """Get bounding box for shp.
 
     Parameters
     ----------
@@ -687,9 +679,10 @@ def clip_stations(stations, aoi):
 
 
 def to_simple_shape(gdf, out_shp):
-    """
-    Simplifies GeoDataFrame for better export to shapefile. Adopts and adapts
-    'Simple' from NWQMC/pywqp. See domains.stations_rename() for renaming of columns.
+    """Simplify GeoDataFrame for better export to shapefile.
+    
+    Adopts and adapts 'Simple' from NWQMC/pywqp. See domains.stations_rename()
+    for renaming of columns.
 
     Parameters
     ----------

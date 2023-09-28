@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions that can be applied to the entire dataset or subsets of the
-    dataset to clean/correct additional columns.
-"""
+"""Functions to clean/correct additional columns in subset/entire dataset."""
 from warnings import warn
 import dataretrieval.utils
 from harmonize_wq import harmonize
@@ -11,8 +8,7 @@ from harmonize_wq import wrangle
 
 
 def datetime(df_in):
-    """
-    Format time using dataretrieval and 'ActivityStart'
+    """Format time using dataretrieval and 'ActivityStart'.
 
     Parameters
     ----------
@@ -26,7 +22,6 @@ def datetime(df_in):
 
     Examples
     --------
-    
     Build dataFrame for example:
     
     >>> from pandas import DataFrame
@@ -60,10 +55,7 @@ def datetime(df_in):
 
 
 def harmonize_depth(df_in, units='meter'):
-    """
-    Notes
-    -----
-    Doesn't currently pass errors or ureg
+    """Doesn't currently pass errors or ureg.
 
     Parameters
     ----------
@@ -79,7 +71,6 @@ def harmonize_depth(df_in, units='meter'):
     
     Examples
     --------
-    
     Build dataFrame for example:
         
     >>> from pandas import DataFrame
@@ -123,8 +114,7 @@ def harmonize_depth(df_in, units='meter'):
 
 
 def check_precision(df_in, col, limit=3):
-    """
-    Note - be cautious of float type and real vs representable precision
+    """Note - be cautious of float type and real vs representable precision.
 
     Parameters
     ----------
@@ -150,8 +140,7 @@ def check_precision(df_in, col, limit=3):
 
 
 def methods_check(df_in, char_val, methods=None):
-    """
-    Check methods against list of accepted methods.
+    """Check methods against list of accepted methods.
 
     Parameters
     ----------
@@ -190,9 +179,7 @@ def methods_check(df_in, char_val, methods=None):
 
 
 def wet_dry_checks(df_in, mask=None):
-    """
-    Fix known errors in MediaName based on WeightBasis and SampleFraction
-    columns.
+    """Fix known errors in MediaName using WeightBasis/SampleFraction columns.
 
     Parameters
     ----------
@@ -231,8 +218,7 @@ def wet_dry_checks(df_in, mask=None):
 
 
 def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
-    """
-    Restrict to only water or only sediment samples
+    """Restrict to only water or only sediment samples.
 
     Parameters
     ----------

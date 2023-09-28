@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions for harmonizing data retrieved from EPA's Water Quality Portal (WQP)
+"""Functions to harmonize data retrieved from EPA's Water Quality Portal (WQP).
 """
 from warnings import warn
 import pandas
@@ -13,8 +12,7 @@ from harmonize_wq import visualize as viz
 
 
 def df_checks(df_in, columns=None):
-    """
-    Checks pandas.DataFrame for columns
+    """Check pandas.DataFrame for columns.
 
     Parameters
     ----------
@@ -26,7 +24,6 @@ def df_checks(df_in, columns=None):
         
     Examples
     --------
-    
     Check dataframe for column:
     
     >>> from pandas import DataFrame
@@ -72,7 +69,8 @@ def df_checks(df_in, columns=None):
 #     return pandas.Series(out_list, index=quantity_series.index)
 #timeit: 27.08
 def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='raise'):
-    """
+    """Convert quantities to consistent units.
+
     Convert list of quantities (quantity_list), each with a specified old unit,
     to a quantity in units using pint constructor method.
 
@@ -148,8 +146,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
 
 
 def add_qa_flag(df_in, mask, flag):
-    """
-    Adds flag to "QA_field" column in df_in
+    """Add flag to "QA_field" column in df_in.
 
     Parameters
     ----------
@@ -206,8 +203,7 @@ def add_qa_flag(df_in, mask, flag):
 
 
 def units_dimension(series_in, units, ureg=None):
-    """
-    List of unique units not in desired units dimension
+    """List unique units not in desired units dimension.
 
     Parameters
     ----------
@@ -254,9 +250,9 @@ def units_dimension(series_in, units, ureg=None):
 
 
 def dissolved_oxygen(wqp):
-    """
-    Standardizes 'Dissolved oxygen (DO)' characteristic using and returning
-    the WQP Characteristic Info Object.
+    """Standardize 'Dissolved oxygen (DO)' characteristic.
+    
+    Uses and returns WQP Characteristic Info Object.
 
     Parameters
     ----------
@@ -284,11 +280,11 @@ def dissolved_oxygen(wqp):
 
 
 def salinity(wqp):
-    """
-    Standardizes 'Salinity' characteristic using and returning the WQP
-    Characteristic Info Object.
-    Note: PSU=PSS=ppth
-    Note: 'ppt' is picopint in pint so it is changed to 'ppth'
+    """Standardize 'Salinity' characteristic.
+    
+    Uses and returns WQP Characteristic Info Object.
+    
+    Note: PSU=PSS=ppth and 'ppt' is picopint in pint so it is changed to 'ppth'
 
     Parameters
     ----------
@@ -321,12 +317,12 @@ def salinity(wqp):
 
 
 def turbidity(wqp):
-    """
-    Standardizes 'Turbidity' characteristic using and returning
-    the WQP Characteristic Info Object.
+    """Standardize 'Turbidity' characteristic.
+    
+    Uses and returns WQP Characteristic Info Object.
 
     See USGS Report Chapter A6. Section 6.7. Turbidity
-        https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf
+        r"https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf"
     See ASTM D\315-17 for equivalent unit definitions:
         'NTU'  - 400-680nm (EPA 180.1), range 0.0-40
         'NTRU' - 400-680nm (2130B), range 0-10,000
@@ -341,16 +337,16 @@ def turbidity(wqp):
         equivalent, but highly variable
     Conversions used:
         cm <-> NTU see convert.cm_to_NTU()
-        https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
+        r"https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/"
 
     Alternative conversions not currently used by default:
         convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
-        https://doi.org/10.5194/os-7-705-2011
+        r"https://doi.org/10.5194/os-7-705-2011"
         convert.SiO2_to_NTU linear relation from Otilia et al. 2013
         convert.JTU_to_NTU linear relation from Otilia et al. 2013
         Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
         "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
-        https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf
+        r"https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf"
 
     Parameters
     ----------
@@ -394,9 +390,9 @@ def turbidity(wqp):
 
 
 def sediment(wqp):
-    """
-    Standardizes 'Sediment' characteristic using and returning
-    the WQP Characteristic Info Object.
+    """Standardize 'Sediment' characteristic.
+    
+    Uses and returns WQP Characteristic Info Object.
 
     Parameters
     ----------
@@ -424,8 +420,8 @@ def sediment(wqp):
 
 
 def harmonize_all(df_in, errors='raise'):
-    """
-    Run harmonization on 'CharacteristicNames' in table with existing functions.
+    """Harmonization all 'CharacteristicNames' with existing functions.
+    
     All results are standardized to default units. Intermediate columns are
     not retained.
 
@@ -446,7 +442,6 @@ def harmonize_all(df_in, errors='raise'):
     
     Examples
     --------
-    
     Build example table from tests to use in place of Water Quality Portal query response
     
     >>> import pandas
@@ -478,9 +473,8 @@ def harmonize_all(df_in, errors='raise'):
            'TDP_Phosphorus', 'Other_Phosphorus', 'Temperature'],
           dtype='object')
     
-    See also
+    See Also
     --------
-    
     See any of the 'Simple' notebooks found in 
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to standardize, clean and wrangle a Water Quality Portal 
@@ -497,8 +491,7 @@ def harmonize_all(df_in, errors='raise'):
 
 def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
                       intermediate_columns=False, report=False):
-    """
-    Harmonize a given char_val using the appropriate function
+    """Harmonize a given char_val using the appropriate function.
 
     Parameters
     ----------
@@ -525,7 +518,6 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
 
     Examples
     --------
-    
     Build example table from tests to use in place of Water Quality Portal query response
     
     >>> import pandas
@@ -555,9 +547,8 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     >>> df_result.columns[-2:]
     Index(['QA_flag', 'Temperature'], dtype='object')
     
-    See also
+    See Also
     --------
-    
     See any of the 'Detailed' notebooks found in 
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to standardize, clean and wrangle a Water Quality Portal 

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions to help visualize data.
-"""
+"""Functions to help visualize data."""
 import pandas
 import geopandas
 from math import sqrt
@@ -9,8 +7,7 @@ from harmonize_wq import wrangle
 
 
 def print_report(results_in, out_col, unit_col_in, threshold=None):
-    """
-    Prints a standardized report of changes made
+    """Print a standardized report of changes made.
 
     Parameters
     ----------
@@ -27,9 +24,8 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     -------
     None.
         
-    See also
+    See Also
     --------
-    
     See any of the 'Detailed' notebooks found in 
     :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is leveraged by the
@@ -69,8 +65,7 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
 
 
 def map_counts(df_in, gdf, col=None):
-    """
-    Return GeoDataFrame summarized by count of results for each station
+    """Get GeoDataFrame summarized by count of results for each station.
 
     Parameters
     ----------
@@ -88,7 +83,6 @@ def map_counts(df_in, gdf, col=None):
 
     Examples
     --------
-
     Build example DataFrame of results:
     
     >>> from pandas import DataFrame
@@ -148,8 +142,7 @@ def map_counts(df_in, gdf, col=None):
 
 
 def map_measure(df_in, gdf, col):
-    """
-    Return GeoDataFrame summarized by average of results for each station
+    """Get GeoDataFrame summarized by average of results for each station.
 
     Parameters
     ----------
@@ -167,7 +160,6 @@ def map_measure(df_in, gdf, col):
         
     Examples
     --------
-        
     Build array of pint quantities for Temperature:
     
     >>> from pint import Quantity
@@ -214,7 +206,6 @@ def map_measure(df_in, gdf, col):
     >>> avg_temp.plot(column='mean', cmap='Blues', legend=True)
     <Axes: >
     """
-
     merge_cols = ['MonitoringLocationIdentifier']
 
     if merge_cols[0] not in df_in.columns:
@@ -232,8 +223,9 @@ def map_measure(df_in, gdf, col):
 
 
 def station_summary(df_in, col):
-    """
-    Return summary table as :class:`~pandas.DataFrame` with rows for each 
+    """Get summary table for stations.
+    
+    Summary table as :class:`~pandas.DataFrame` with rows for each 
     station, count and column average.
 
     Parameters
