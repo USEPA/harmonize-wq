@@ -119,7 +119,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
     Examples
     --------
-    Build dataframe to use in example
+    Build pandas dataframe to use in example
     
     >>> df_in = pandas.DataFrame({'LatitudeMeasure': [27.5950355,
     ...                                               27.52183,

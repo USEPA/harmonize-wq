@@ -39,7 +39,7 @@ class WQCharData():
     
     Examples
     --------
-    Build dataframe to use as input:
+    Build pandas DataFrame to use as input:
     
     >>> from pandas import DataFrame
     >>> from numpy import nan
@@ -280,7 +280,7 @@ class WQCharData():
         1  Temperature, water                           NaN               67.0
         2          Phosphorus                       Unknown                 10
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
         
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
@@ -357,7 +357,7 @@ class WQCharData():
         <BLANKLINE>
         [3 rows x 4 columns]
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
         
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
@@ -435,7 +435,7 @@ class WQCharData():
             self.ureg.define(definition)
 
     def update_units(self, units_out):
-        """Update object units attribute to convert everything into.
+        """Update class units attribute to convert everything into.
         
         Note: It does not perform the conversion.
         
@@ -485,10 +485,10 @@ class WQCharData():
         return self.c_mask & self.df[self.out_col].notna()
 
     def convert_units(self, default_unit=None, errors='raise'):
-        """Update  out-col to convert units.
+        """Update out-col to convert units.
         
-        Update object DataFrame's out-col to convert from old units to
-        default_unit.
+        Update class out-col used to convert :class'pandas.DataFrame. from old
+        units to default_unit.
 
         Parameters
         ----------
@@ -502,7 +502,7 @@ class WQCharData():
 
         Examples
         --------
-        Build dataframe to use as input:
+        Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water',],
@@ -514,7 +514,7 @@ class WQCharData():
         0          Phosphorus                         mg/ml                1.0
         1  Temperature, water                         deg C               10.0
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from  pandas DataFrame:
         
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
@@ -556,7 +556,7 @@ class WQCharData():
 
         Examples
         --------
-        Build dataframe to use as input:
+        Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Dissolved oxygen (DO)', 'Dissolved oxygen (DO)',],
@@ -568,7 +568,7 @@ class WQCharData():
         0  Dissolved oxygen (DO)                          mg/l                1.0
         1  Dissolved oxygen (DO)                             %               10.0
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
             
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Dissolved oxygen (DO)')        
@@ -600,7 +600,7 @@ class WQCharData():
         self.df = df_out
 
     def dimensions_list(self, m_mask=None):
-        """Use character object to retrieve list of unique dimensions.
+        """Get list of unique dimensions.
 
         Parameters
         ----------
@@ -615,7 +615,7 @@ class WQCharData():
 
         Examples
         --------
-        Build DataFrame to use as input:
+        Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
@@ -627,7 +627,7 @@ class WQCharData():
         0         Phosphorus                          mg/l                1.0
         1         Phosphorus                         mg/kg                 10
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
             
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
@@ -657,7 +657,7 @@ class WQCharData():
             
         Examples
         --------
-        Build DataFrame to use as input:
+        Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Temperature, water', 'Temperature, water',],
@@ -669,7 +669,7 @@ class WQCharData():
         0  Temperature, water                         deg C                 31
         1  Temperature, water                         deg F                 87
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
         
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Temperature, water')
@@ -706,7 +706,7 @@ class WQCharData():
 
         Examples
         --------
-        Build DataFrame to use as input:
+        Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Fecal Coliform', 'Fecal Coliform',],
@@ -718,7 +718,7 @@ class WQCharData():
         0     Fecal Coliform                       #/100ml                1.0
         1     Fecal Coliform                           MPN                 10
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
         
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Fecal Coliform')
@@ -863,7 +863,7 @@ class WQCharData():
 
         Examples
         --------
-        Build DataFrame to use as input:
+        Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
@@ -875,7 +875,7 @@ class WQCharData():
         0         Phosphorus                          mg/l                1.0
         1         Phosphorus                         mg/kg                 10
 
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
             
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
@@ -923,7 +923,7 @@ class WQCharData():
 
         Examples
         --------
-        Build DataFrame to use as input:
+        Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Carbon',],
@@ -935,7 +935,7 @@ class WQCharData():
         0             Carbon                          mg/l                1.0
         1             Carbon                          umol              0.265
         
-        Build WQ Characteristic Data object from DataFrame:
+        Build WQ Characteristic Data class from pandas DataFrame:
             
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Organic carbon')

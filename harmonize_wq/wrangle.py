@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Functions to help re-shape the WQP DataFrame."""
+"""Functions to help re-shape the WQP pandas DataFrame."""
 import pandas
 import geopandas
 from harmonize_wq import domains
@@ -11,8 +11,8 @@ import dataretrieval.wqp as wqp
 def split_table(df_in):
     """Split DataFrame columns axis into main and characteristic based.
     
-    Splits DataFrame in two, one with main results columns and one with
-    Characteristic based metadata.
+    Splits :class:'pandas.DataFrame' in two, one with main results columns and
+    one with Characteristic based metadata.
 
     Note: runs datetime() and harmonize_depth() if expected columns are missing
 
@@ -236,7 +236,8 @@ def collapse_results(df_in, cols=None):
 def get_activities_by_loc(characteristic_names, locations):
     """Segment batch what_activities.
     
-    Warning this is not fully implemented and may not stay.
+    Warning this is not fully implemented and may not stay. Retrieves in batch 
+    using :func'dataRetrieval.what_activities'.
 
     Parameters
     ----------
@@ -248,7 +249,7 @@ def get_activities_by_loc(characteristic_names, locations):
     Returns
     -------
     activities : pandas.DataFrame
-        DataFrame from dataRetrieval.what_activities().
+        Combined activities for locations.
         
     Examples
     --------
@@ -430,9 +431,9 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     name (Optional). ResultIdentifier can not be used to search, location id is
     used instead and then results are limited by ResultIdentifiers.
 
-    NOTES: There can be multiple Result Detection Quantitation limits / result
-           A result may have a resultid without any corresponding data in the
-           Detection Quantitation limits table (nan in full result table).
+    NOTES: There can be multiple Result Detection Quantitation limits / result.
+           A result may have a ResultIdentifier without any corresponding data
+           in the Detection Quantitation limits table (NaN in return).
 
     Parameters
     ----------
@@ -586,7 +587,7 @@ def as_gdf(shp):
 
 
 def get_bounding_box(shp, idx=None):
-    """Get bounding box for shp.
+    """Get bounding box for spatial file (shp).
 
     Parameters
     ----------

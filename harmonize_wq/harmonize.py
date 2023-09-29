@@ -11,11 +11,11 @@ from harmonize_wq import visualize as viz
 
 
 def df_checks(df_in, columns=None):
-    """Check pandas.DataFrame for columns.
+    """Check :class:'pandas.DataFrame' for columns.
 
     Parameters
     ----------
-    df : pandas.DataFrame
+    df_in : pandas.DataFrame
         DataFrame that will be checked.
     columns : list, optional
         List of strings for column names. Default None, uses:
@@ -23,7 +23,7 @@ def df_checks(df_in, columns=None):
         
     Examples
     --------
-    Check dataframe for column:
+    Build pandas DataFrame for example:
     
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus'],})
@@ -36,7 +36,7 @@ def df_checks(df_in, columns=None):
     >>> from harmonize_wq import harmonize
     >>> harmonize.df_checks(df, columns=['CharacteristicName'])
     
-    If column is not in df it throws an assertionError:
+    If column is not in DataFrame it throws an AssertionError:
         
     >>> harmonize.df_checks(df, columns=['ResultMeasureValue'])
     AssertionError: ResultMeasureValue not in DataFrame
@@ -163,7 +163,7 @@ def add_qa_flag(df_in, mask, flag):
         
     Examples
     --------
-    Build DataFrame to use as input:
+    Build pandas DataFrame to use as input:
     
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Phosphorus', 'Carbon',],

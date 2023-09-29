@@ -44,18 +44,19 @@ def basis_conversion():
     """Get dictionary of conversion factors to convert basis/speciation.
     
     For example, this is used to convert 'as PO4' to 'as P'
+    
     Returns
     -------
-     dict
-         Dictionary with structure {basis: conversion factor}
+    dict
+        Dictionary with structure {basis: conversion factor}
          
     See Also
     --------
     convert.moles_to_mass()
     
-    Originally from Table 1 in Best Practices for Submitting Nutrient Data to
-    the Water Quality eXchange (WQX):
-    www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf
+    Originally from Table 1 in 'Best Practices for Submitting Nutrient Data to
+    the Water Quality eXchange (WQX)
+    <www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>'
     """
     return {'NH3': 0.822,
             'NH4': 0.776,
@@ -88,7 +89,7 @@ def stp_dict():
 
 
 def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
-    """Create standardized Basis column in DataFrame.
+    """Create standardized Basis column in :class:'pandas.DataFrame'.
     
     Standardizes units in units column based on basis_dict. Units column is
     updated in place, it should not be original 'ResultMeasure/MeasureUnitCode'
@@ -113,7 +114,7 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
 
     Examples
     --------
-    Build DataFrame for example:
+    Build pandas DataFrame for example:
     
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
@@ -186,7 +187,7 @@ def basis_from_methodSpec(df_in):
 
     Examples
     --------
-    Build DataFrame for example:
+    Build pandas DataFrame for example:
     
     >>> from pandas import DataFrame
     >>> from numpy import nan
@@ -205,7 +206,6 @@ def basis_from_methodSpec(df_in):
     0         Phosphorus                    as P         NWIS       as P
     1         Phosphorus                     NaN         NWIS        NaN
     """
-
     # Basis from MethodSpecificationName
     old_col = 'MethodSpecificationName'
     df = df_in.copy()
@@ -245,7 +245,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     Examples
     --------
-    Build DataFrame for example:
+    Build pandas DataFrame for example:
     Note: 'Units' is used to preserve 'ResultMeasure/MeasureUnitCode'
     
     >>> from pandas import DataFrame
@@ -294,7 +294,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
 
 def set_basis(df_in, mask, basis, basis_col='Speciation'):
-    """Update DataFrame.basis_col to basis where DataFrame.col is expected_val.
+    """Update basis_col to basis where col is expected_val.
 
     Parameters
     ----------

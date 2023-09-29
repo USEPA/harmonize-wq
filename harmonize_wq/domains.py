@@ -538,7 +538,7 @@ def characteristic_cols(category=None):
 
 
 def xy_datum():
-    """Get dictionary with expected horrizontal datums.
+    """Get dictionary with expected horizontal datums.
 
     The structure has {key as expected string: value as {"Description": string
     (Not currently used) and "EPSG": int (4-digit code)}.
@@ -607,13 +607,13 @@ def stations_rename():
     
     ESRI places a length restriction on shapefile (.shp) field names. This
     returns a dictionary with the original water quality portal field name (as
-    key) and shortened column name for writing as shp. We suggest using the
+    key) and shortened column name for writing as .shp. We suggest using the
     longer original name as the field alias when writing as .shp.
 
     Returns
     -------
     field_mapping : dict
-        dictionary where key = WQP field name and value = short name for shp.
+        dictionary where key = WQP field name and value = short name for .shp.
         
     Examples
     --------

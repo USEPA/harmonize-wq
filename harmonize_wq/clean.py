@@ -18,11 +18,11 @@ def datetime(df_in):
     Returns
     -------
     df_out : pandas.DataFrame
-        Dataframe with the converted date and datetime columns.
+        DataFrame with the converted date and datetime columns.
 
     Examples
     --------
-    Build DataFrame for example:
+    Build pandas DataFrame for example:
     
     >>> from pandas import DataFrame
     >>> from numpy import nan
@@ -71,7 +71,7 @@ def harmonize_depth(df_in, units='meter'):
     
     Examples
     --------
-    Build DataFrame for example:
+    Build pandas DataFrame for example:
         
     >>> from pandas import DataFrame
     >>> from numpy import nan

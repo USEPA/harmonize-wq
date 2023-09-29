@@ -26,5 +26,8 @@ ResultSampleFractionText
 CharacteristicName
 HorizontalCoordinateReferenceSystemDatum
 shapefile
+.shp
 CSV
-assertionError
+datums
+quantitation
+AssertionError

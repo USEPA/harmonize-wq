@@ -584,7 +584,6 @@ def conductivity_to_PSU(val,
                 See the wq::ec2pss function.
     Function: https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R
     
-        
     Examples
     --------
     PSU (Practical Salinity Units) is not a standard Pint unit and must be

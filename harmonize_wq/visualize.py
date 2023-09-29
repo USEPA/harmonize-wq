@@ -143,6 +143,9 @@ def map_counts(df_in, gdf, col=None):
 
 def map_measure(df_in, gdf, col):
     """Get GeoDataFrame summarized by average of results for each station.
+    
+    :class:'geopandas.GeoDataFrame' will have new column 'mean' with the
+    average of col values for that location.
 
     Parameters
     ----------
@@ -166,7 +169,7 @@ def map_measure(df_in, gdf, col):
     >>> u = 'degree_Celsius'
     >>> temperatures = [Quantity(5.1, u), Quantity(1.2, u), Quantity(8.7, u)]
     
-    Build example DataFrame of results:
+    Build example pandas DataFrame of results:
     
     >>> from pandas import DataFrame
     >>> df_in = DataFrame({'Temperature': temperatures,
@@ -178,7 +181,7 @@ def map_measure(df_in, gdf, col):
     1  1.2 degree_Celsius                          ID2
     2  8.7 degree_Celsius                          ID1
     
-    Build example GeoDataFrame of monitoring locations:
+    Build example geopandas GeoDataFrame of monitoring locations:
     
     >>> import geopandas
     >>> from shapely.geometry import Point
