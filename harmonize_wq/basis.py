@@ -89,7 +89,7 @@ def stp_dict():
 
 
 def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
-    """Create standardized Basis column in :class:'pandas.DataFrame'.
+    """Create standardized Basis column in :class:`pandas.DataFrame`.
     
     Standardizes units in units column based on basis_dict. Units column is
     updated in place, it should not be original 'ResultMeasure/MeasureUnitCode'
@@ -99,7 +99,7 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    basis_dict : dictionary
+    basis_dict : dict
         Dictionary with structure {basis:{new_unit:[old_units]}}.
     unit_col : str
         string for the column name in df to be used.
@@ -339,7 +339,7 @@ def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
 
     Returns
     -------
-    string
+    str
         Flag to use in QA_flag column.
 
     Examples

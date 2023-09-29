@@ -11,7 +11,7 @@ import dataretrieval.wqp as wqp
 def split_table(df_in):
     """Split DataFrame columns axis into main and characteristic based.
     
-    Splits :class:'pandas.DataFrame' in two, one with main results columns and
+    Splits :class:`pandas.DataFrame` in two, one with main results columns and
     one with Characteristic based metadata.
 
     Note: runs datetime() and harmonize_depth() if expected columns are missing
@@ -237,7 +237,7 @@ def get_activities_by_loc(characteristic_names, locations):
     """Segment batch what_activities.
     
     Warning this is not fully implemented and may not stay. Retrieves in batch 
-    using :func'dataRetrieval.what_activities'.
+    using :func:`dataretrieval.what_activities`.
 
     Parameters
     ----------
@@ -690,7 +690,7 @@ def to_simple_shape(gdf, out_shp):
     gdf : geopandas.GeoDataFrame
         The GeoDataFrame to be exported to shapefile.
 
-    shp_out: string
+    shp_out: str
         Shapefile directory and file name to be written.
 
     Examples

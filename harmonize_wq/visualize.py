@@ -144,7 +144,7 @@ def map_counts(df_in, gdf, col=None):
 def map_measure(df_in, gdf, col):
     """Get GeoDataFrame summarized by average of results for each station.
     
-    :class:'geopandas.GeoDataFrame' will have new column 'mean' with the
+    :class:`geopandas.GeoDataFrame` will have new column 'mean' with the
     average of col values for that location.
 
     Parameters
@@ -204,7 +204,7 @@ def map_measure(df_in, gdf, col):
     0                          ID1    2   6.9  POINT (1.00000 2.00000)      NaN
     1                          ID2    1   1.2  POINT (2.00000 1.00000)      NaN
 
-    These aggegate results can then be plotted:
+    These aggregate results can then be plotted:
 
     >>> avg_temp.plot(column='mean', cmap='Blues', legend=True)
     <Axes: >

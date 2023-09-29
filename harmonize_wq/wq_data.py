@@ -446,7 +446,7 @@ class WQCharData():
 
         Examples
         --------
-        Build class:
+        Build WQ Characteristic Data class:
             
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
@@ -487,7 +487,7 @@ class WQCharData():
     def convert_units(self, default_unit=None, errors='raise'):
         """Update out-col to convert units.
         
-        Update class out-col used to convert :class'pandas.DataFrame. from old
+        Update class out-col used to convert :class:`pandas.DataFrame`. from old
         units to default_unit.
 
         Parameters
@@ -541,7 +541,7 @@ class WQCharData():
     def apply_conversion(self, convert_fun, unit, u_mask=None):
         """Apply special dimension changing conversions.
         
-        This uses functions in convert module and applys them across all cases
+        This uses functions in convert module and apply them across all cases
         of current unit.
 
         Parameters
@@ -694,7 +694,7 @@ class WQCharData():
     def replace_unit_by_dict(self, val_dict, mask=None):
         """Do multiple replace_in_col() replacements using val_dict.
         
-        Replaces valdict key with val_dict value.
+        Replaces instances of val_dict key with val_dict value.
 
         Parameters
         ----------

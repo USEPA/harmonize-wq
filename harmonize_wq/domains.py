@@ -538,7 +538,7 @@ def characteristic_cols(category=None):
 
 
 def xy_datum():
-    """Get dictionary with expected horizontal datums.
+    """Get dictionary of expected horizontal datums.
 
     The structure has {key as expected string: value as {"Description": string
     (Not currently used) and "EPSG": int (4-digit code)}.

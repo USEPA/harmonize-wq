@@ -42,8 +42,8 @@ def infer_CRS(df_in,
 
     Examples
     --------
-    Build dataframe to use in example, where crs_col name is 'Datum' rather
-    than default 'HorizontalCoordinateReferenceSystemDatumName'
+    Build pandas DataFrame to use in example, where crs_col name is 'Datum'
+    rather than default 'HorizontalCoordinateReferenceSystemDatumName'
     
     >>> from numpy import nan
     >>> df_in = pandas.DataFrame({'Datum': ['NAD83', 'WGS84', '', None, nan]})
@@ -86,11 +86,11 @@ def infer_CRS(df_in,
 
 def harmonize_locations(df_in, out_EPSG=4326,
                         intermediate_columns=False, **kwargs):
-    """Create harmonized GeoDataframe from DataFrame.
+    """Create harmonized geopandas GeoDataframe from pandas DataFrame.
     
     Takes a :class:`~pandas.DataFrame` with lat/lon in multiple Coordinate
     Reference Systems, transforms them to outCRS and converts to
-    :class:'geopandas.GeoDataFrame'
+    :class:`geopandas.GeoDataFrame`
 
     Parameters
     ----------
@@ -119,7 +119,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
     Examples
     --------
-    Build pandas dataframe to use in example
+    Build pandas DataFrame to use in example
     
     >>> df_in = pandas.DataFrame({'LatitudeMeasure': [27.5950355,
     ...                                               27.52183,

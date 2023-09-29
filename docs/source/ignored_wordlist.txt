@@ -24,9 +24,10 @@ TADA
 WQX
 ResultSampleFractionText
 CharacteristicName
-HorizontalCoordinateReferenceSystemDatum
+HorizontalCoordinateReferenceSystemDatumName
 shapefile
-.shp
+shp
+aoi
 CSV
 datums
 quantitation

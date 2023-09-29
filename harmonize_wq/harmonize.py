@@ -11,7 +11,7 @@ from harmonize_wq import visualize as viz
 
 
 def df_checks(df_in, columns=None):
-    """Check :class:'pandas.DataFrame' for columns.
+    """Check :class:`pandas.DataFrame` for columns.
 
     Parameters
     ----------
