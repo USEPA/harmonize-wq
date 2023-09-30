@@ -198,8 +198,8 @@ def methods_check(df_in, char_val, methods=None):
 def wet_dry_checks(df_in, mask=None):
     """Fix suspected errors in 'ActivityMediaName' column.
     
-    Uses the 'ResultWeightBasisText' and 'ResultSampleFractionText' columns to swicth if the media is
-    wet/dry where appropriate.
+    Uses the 'ResultWeightBasisText' and 'ResultSampleFractionText' columns to
+    switch if the media is wet/dry where appropriate.
 
     Parameters
     ----------

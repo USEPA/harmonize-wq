@@ -75,7 +75,7 @@ def map_counts(df_in, gdf, col=None):
         GeoDataFrame with monitoring locations.
     col : str, optional
         Column in df_in to aggregate results to in addition to location.
-        The default is None, where results are only aggregated on locaion.
+        The default is None, where results are only aggregated on location.
 
     Returns
     -------

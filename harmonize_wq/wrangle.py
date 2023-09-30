@@ -78,7 +78,7 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    `demo s<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
+    `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to split the QA column into multiple
     characteristic specific QA columns.
     

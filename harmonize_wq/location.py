@@ -18,7 +18,7 @@ def infer_CRS(df_in,
               crs_col='HorizontalCoordinateReferenceSystemDatumName'):
     """Replace missing or unrecognized Coordinate Reference System (CRS).
     
-    Replaces with desired CRS and notes it was mising in 'QA_flag' column.
+    Replaces with desired CRS and notes it was missing in 'QA_flag' column.
 
     Parameters
     ----------

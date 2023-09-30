@@ -35,7 +35,7 @@ class WQCharData():
         pint unit registry, initially standard unit registry.
     units : str
         Units all results in out_col column will be converted into.
-        Default units are returned from :func:`domains.OUT_UNITS`[out_col].
+        Default units are returned from :func:`domains.OUT_UNITS` [out_col].
     
     Examples
     --------
@@ -261,7 +261,7 @@ class WQCharData():
         Parameters
         ----------
         flag_col : str, optional
-            Column to reference in srting for 'QA_flags'.
+            Column to reference in string for 'QA_flags'.
             The default None uses WQCharData.col.unit_out attribute.
         
         Returns

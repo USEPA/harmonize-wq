@@ -542,7 +542,7 @@ def xy_datum():
     -----
     source WQP: HorizontalCoordinateReferenceSystemDatum_CSV.zip
     
-    Anything not in dict will be nan, and non-integer EPSG will be missing:
+    Anything not in dict will be NaN, and non-integer EPSG will be missing:
     "OTHER": {"Description": 'Other', "EPSG": nan},
     "UNKWN": {"Description": 'Unknown', "EPSG": nan}
 

@@ -42,7 +42,6 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
-    'sphinx.ext.autosectionlabel',
     "sphinxcontrib.spelling",
 ]
 
