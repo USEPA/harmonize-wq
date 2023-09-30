@@ -31,7 +31,7 @@ class WQCharData():
         Standard WQCharData.df column names for unit_in, unit_out, and measure.
     out_col : str
         Column name in df for results, set using char_val.
-    ureg : pint.UnitRegistry()
+    ureg : pint.UnitRegistry
         pint unit registry, initially standard unit registry.
     units : str
         Units all results in out_col column will be converted into.

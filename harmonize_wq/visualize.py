@@ -27,7 +27,7 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     See Also
     --------
     See any of the 'Detailed' notebooks found in 
-    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
+    `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is leveraged by the
     :func:`harmonize.harmonize_generic` report argument.
 

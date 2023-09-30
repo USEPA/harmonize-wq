@@ -595,15 +595,17 @@ def conductivity_to_PSU(val,
 
     References
     ----------
-    IOC, SCOR and IAPSO, 2010: The international thermodynamic
-        equation of seawater – 2010: Calculation and use of thermodynamic
-        properties. Intergovernmental Oceanographic Commission, Manuals
-        and Guides No. 56, UNESCO (English), 196 pp
+    IOC, SCOR and IAPSO, 2010: The international thermodynamic equation of
+    seawater – 2010: Calculation and use of thermodynamic properties.
+    Intergovernmental Oceanographic Commission, Manuals and Guides No. 56,
+    UNESCO (English), 196 pp.
 
-    code: Alan D. Jassby and James E. Cloern (2015). wq: Some tools for
-                exploring water quality monitoring data. R package v0.4.4.
-                See the wq::ec2pss function.
-    Function: https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R
+    Alan D. Jassby and James E. Cloern (2015). wq: Some
+    tools for  exploring water quality monitoring data. R package v0.4.4.
+    See the ec2pss function.
+    
+    Adapted from R `cond2sal_shiny
+    <https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R>`_
     
     Examples
     --------

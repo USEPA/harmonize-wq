@@ -34,7 +34,7 @@ def split_table(df_in):
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
+    `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to divide the table into columns of
     interest (main_df) and characteristic specific metadata (chars_df).
     
@@ -78,7 +78,7 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
+    `demo s<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to split the QA column into multiple
     characteristic specific QA columns.
     
@@ -158,7 +158,7 @@ def collapse_results(df_in, cols=None):
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
+    `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to combine rows with the same sample
     organization, activity, location, and datetime.
     
@@ -699,7 +699,7 @@ def clip_stations(stations, aoi):
 def to_simple_shape(gdf, out_shp):
     """Simplify GeoDataFrame for better export to shapefile.
     
-    Adopts and adapts 'Simple' from `NWQMC/pywqp<github.com/NWQMC/pywqp>`_
+    Adopts and adapts 'Simple' from `NWQMC/pywqp <github.com/NWQMC/pywqp>`_
     See :func:`domains.stations_rename` for renaming of columns.
 
     Parameters

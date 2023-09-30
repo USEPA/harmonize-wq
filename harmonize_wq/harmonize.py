@@ -328,33 +328,34 @@ def turbidity(wqp):
     Uses :class:`wq_data.WQCharData` to check units, check unit
     dimensionality and perform appropriate unit conversions
 
+    Notes
+    -----
     See `USGS Report Chapter A6. Section 6.7. Turbidity
-    <https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf>`
+    <https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf>`_
     See ASTM D\315-17 for equivalent unit definitions:
-        'NTU'  - 400-680nm (EPA 180.1), range 0.0-40.
-        'NTRU' - 400-680nm (2130B), range 0-10,000.
-        'NTMU' - 400-680nm.
-        'FNU'  - 780-900nm (ISO 7027), range 0-1000.
-        'FNRU' - 780-900nm (ISO 7027), range 0-10,000.
-        'FAU'  - 780-900nm, range 20-1000.
+    'NTU'  - 400-680nm (EPA 180.1), range 0.0-40.
+    'NTRU' - 400-680nm (2130B), range 0-10,000.
+    'NTMU' - 400-680nm.
+    'FNU'  - 780-900nm (ISO 7027), range 0-1000.
+    'FNRU' - 780-900nm (ISO 7027), range 0-10,000.
+    'FAU'  - 780-900nm, range 20-1000.
     Older methods:
-        'FTU' - lacks instrumentation specificity
-        'SiO2' (ppm or mg/l) - concentration of calibration standard (=JTU)
-        'JTU' - candle instead of formazin standard, near 40 NTU these may be
-        equivalent, but highly variable.
-    Conversions used:
-        cm <-> NTU see :func:`convert.cm_to_NTU` from
-        `USU <https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/>`
+    'FTU' - lacks instrumentation specificity
+    'SiO2' (ppm or mg/l) - concentration of calibration standard (=JTU)
+    'JTU' - candle instead of formazin standard, near 40 NTU these may be
+    equivalent, but highly variable.
+    Conversions used: cm <-> NTU see :func:`convert.cm_to_NTU` from
+    `USU <https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/>`_.
 
     Alternative conversions available but not currently used by default:
-        :func:`convert.FNU_to_NTU` from Gohin (2011) Ocean Sci., 7, 705–732
-        `<https://doi.org/10.5194/os-7-705-2011>`.
-        :func:`convert.SiO2_to_NTU` linear relation from Otilia et al. 2013.
-        :func:`convert.JTU_to_NTU` linear relation from Otilia et al. 2013.
+    :func:`convert.FNU_to_NTU` from Gohin (2011) Ocean Sci., 7, 705–732
+    `<https://doi.org/10.5194/os-7-705-2011>`_.
+    :func:`convert.SiO2_to_NTU` linear relation from Otilia et al. 2013.
+    :func:`convert.JTU_to_NTU` linear relation from Otilia et al. 2013.
         
-        Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
-        MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES.
-        `<https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf>`.
+    Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
+    MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES.
+    `<https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf>`_.
 
     Parameters
     ----------
