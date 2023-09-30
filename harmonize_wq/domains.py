@@ -72,7 +72,7 @@ domain_tables = {'ActivityMedia': 'ActivityMedia_CSV',
 # get_domain_list(field):
 
 def get_domain_dict(table, cols=None):
-    """Retrieve domain values for specified table.
+    """Get domain values for specified table.
 
     Parameters
     ----------
@@ -84,13 +84,13 @@ def get_domain_dict(table, cols=None):
 
     Returns
     -------
-    dictionary
+    dict
         Dictionary where {cols[0]: cols[1]}
 
     Examples
     --------
-    Return dict for domain from WQX table (e.g., 'ResultSampleFraction'), just
-    the default keys (Name) are shown as values (Description) can be long:
+    Return dictionary for domain from WQP table (e.g., 'ResultSampleFraction'),
+    The default keys ('Name') are shown as values ('Description') are long:
     
     >>> domains.get_domain_dict('ResultSampleFraction').keys()
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
@@ -124,11 +124,7 @@ def harmonize_TADA_dict():
     Returns
     -------
     full_dict : dict
-        {'TADA.CharacteristicName':
-             {Target.TADA.CharacteristicName:
-                  {Target.TADA.ResultSampleFractionText:
-                       [Target.TADA.ResultSampleFractionText]}}}
-
+        {'TADA.CharacteristicName': {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText [Target.TADA.ResultSampleFractionText]}}}
     """
     # Note: too nested for refactor into single function w/ char_tbl_TADA
 
@@ -166,14 +162,14 @@ def re_case(word, domain_list):
     Parameters
     ----------
     word : str
-        Word to alter in domain_list
+        Word to alter in domain_list.
     domain_list : list
-        List including word
+        List including word.
+
     Returns
     -------
     str
-        Word from domain_list in UPPERCASE
-
+        Word from domain_list in UPPERCASE.
     """
     domain_list_upper = [x.upper() for x in domain_list]
     try:
@@ -196,9 +192,7 @@ def char_tbl_TADA(df, char):
     Returns
     -------
     new_char_dict : dict
-        {Target.TADA.CharacteristicName:
-             {Target.TADA.ResultSampleFractionText:
-                  [Target.TADA.ResultSampleFractionText]} 
+        {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText: [Target.TADA.ResultSampleFractionText]} 
     """
     cols = ['Target.TADA.CharacteristicName',
             'TADA.ResultSampleFractionText',
@@ -228,23 +222,24 @@ def char_tbl_TADA(df, char):
 
 
 def registry_adds_list(out_col):
-    """Get units to add to Pint unit registry by out_column.
+    """Get units to add to :mod:`pint` unit registry by out_col column.
     
-    Out_column typically refers back to CharacteristicName.
+    Typically out_col refers back to column used for a value from the
+    'CharacteristicName' column.
 
     Parameters
     ----------
     out_col : str
-        The result column a unit registry is being built for
+        The result column a unit registry is being built for.
 
     Returns
     -------
     list
-        List of strings with unit additions in expected format
+        List of strings with unit additions in expected format.
 
     Examples
     --------
-    Generate a new Pint unit registry object for e.g., Sediment
+    Generate a new pint unit registry object for e.g., Sediment:
     
     >>> from harmonize_wq import domains
     >>> domains.registry_adds_list('Sediment')
@@ -294,13 +289,13 @@ def registry_adds_list(out_col):
 
 
 def bacteria_reg(ureg=None):
-    """Generate standard pint unit registry with bacteria units defined.
+    """Generate :class:`pint.UnitRegistry` with bacteria units defined.
 
     Parameters
     ----------
     ureg : pint.UnitRegistry, optional
         Unit Registry Object with any custom units defined. Default None
-        starts with new unit registry
+        starts with new unit registry.
 
     Returns
     -------
@@ -309,7 +304,7 @@ def bacteria_reg(ureg=None):
     
     Examples
     --------
-    Generate a new Pint unit registry object for e.g., bacteria
+    Generate a new pint UnitRegistry for e.g., bacteria:
     
     >>> domains.bacteria_reg()
     <pint.registry.UnitRegistry object at 0x000002BED1999880>
@@ -323,8 +318,8 @@ def bacteria_reg(ureg=None):
 def out_col_lookup():
     """Get {CharacteristicName: out_column_name}.
     
-    This is often subset and used to write results to a new column based on
-    CharacteristicName.
+    This is often subset and used to write results to a new column from the
+    'CharacteristicName' column.
 
     Returns
     -------
@@ -333,9 +328,9 @@ def out_col_lookup():
 
     Examples
     --------
-    The function returns the full dict {CharacteristicName: out_column_name},
-    it can be subset by a CharactisticName to get the name of the column for
-    results.
+    The function returns the full dictionary {CharacteristicName: out_column_name}.
+    It can be subset by a 'CharactisticName' column value to get the name of
+    the column for results:
         
     >>> domains.out_col_lookup()['Escherichia coli']
     'E_coli'
@@ -376,8 +371,8 @@ def characteristic_cols(category=None):
 
     Examples
     --------
-    Running the function without a category returns the full list of column names, including a
-    category returns only the columns in that category
+    Running the function without a category returns the full list of column
+    names, including a category returns only the columns in that category:
         
     >>> domains.characteristic_cols('QA')
     ['ResultDetectionConditionText',
@@ -541,12 +536,13 @@ def xy_datum():
     """Get dictionary of expected horizontal datums.
 
     The structure has {key as expected string: value as {"Description": string
-    (Not currently used) and "EPSG": int (4-digit code)}.
+    and "EPSG": integer (4-digit code)}.
 
     Notes
     -----
-    source URL: f'{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip'
-    Anything not in dict will be nan, i.e. must be int so these are missing:
+    source WQP: HorizontalCoordinateReferenceSystemDatum_CSV.zip
+    
+    Anything not in dict will be nan, and non-integer EPSG will be missing:
     "OTHER": {"Description": 'Other', "EPSG": nan},
     "UNKWN": {"Description": 'Unknown', "EPSG": nan}
 
@@ -559,8 +555,8 @@ def xy_datum():
 
     Examples
     --------
-    Running the function returns the full {abbreviation: {Description:values,
-    EPSG:values}}, here we show how the abbreviation can be used as a key to
+    Running the function returns the full dictionary with {abbreviation:
+    {'Description':values, 'EPSG':values}}. The abbreviation key can be used to
     get the EPSG code:
         
     >>> domains.xy_datum()['NAD83']
@@ -613,7 +609,7 @@ def stations_rename():
     Returns
     -------
     field_mapping : dict
-        dictionary where key = WQP field name and value = short name for .shp.
+        Dictionary where key = WQP field name and value = short name for .shp.
         
     Examples
     --------
@@ -668,8 +664,10 @@ def stations_rename():
 def accepted_methods():
     """Get accepted methods for each characteristic.
 
-    Note: Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
-    This is not fully implemented
+    Notes
+    -----
+    Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
+    column. This is not fully implemented.
 
     Returns
     -------

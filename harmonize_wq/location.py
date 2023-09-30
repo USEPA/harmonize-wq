@@ -18,7 +18,7 @@ def infer_CRS(df_in,
               crs_col='HorizontalCoordinateReferenceSystemDatumName'):
     """Replace missing or unrecognized Coordinate Reference System (CRS).
     
-    Replaces with desired CRS and adds QA_flag about it.
+    Replaces with desired CRS and notes it was mising in 'QA_flag' column.
 
     Parameters
     ----------
@@ -38,12 +38,12 @@ def infer_CRS(df_in,
     Returns
     -------
     df_out : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
 
     Examples
     --------
     Build pandas DataFrame to use in example, where crs_col name is 'Datum'
-    rather than default 'HorizontalCoordinateReferenceSystemDatumName'
+    rather than default 'HorizontalCoordinateReferenceSystemDatumName':
     
     >>> from numpy import nan
     >>> df_in = pandas.DataFrame({'Datum': ['NAD83', 'WGS84', '', None, nan]})
@@ -64,8 +64,8 @@ def infer_CRS(df_in,
     3   None  Datum: MISSING datum, EPSG:4326 assumed  4326.0
     4    NaN  Datum: MISSING datum, EPSG:4326 assumed  4326.0
 
-    Note: missing (nan) and bad CRS values (bad_crs_val=None) are given an EPSG
-    and QA flag, but others (e.g., '') are not.
+    NOTE: missing (NaN) and bad CRS values (bad_crs_val=None) are given an EPSG
+    and noted in QA_flag' columns.
     """
     df_out = df_in.copy()
     if bad_crs_val:
@@ -89,19 +89,23 @@ def harmonize_locations(df_in, out_EPSG=4326,
     """Create harmonized geopandas GeoDataframe from pandas DataFrame.
     
     Takes a :class:`~pandas.DataFrame` with lat/lon in multiple Coordinate
-    Reference Systems, transforms them to outCRS and converts to
-    :class:`geopandas.GeoDataFrame`
+    Reference Systems (CRS), transforms them to out_EPSG CRS, and converts to
+    :class:`geopandas.GeoDataFrame`. A 'QA_flag' column is added to the result
+    and populated for any row that has location based problems like limited
+    decimal precision or an unknown input CRS.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with the required columns to be converted to GeoDataFrame.
+        DataFrame with the required columns (see kwargs for expected defaults)
+        to be converted to GeoDataFrame.
     out_EPSG : int, optional
         EPSG factory code for desired output Coordinate Reference System datum.
         The default is 4326, for the WGS84 Datum used by WQP queries.
     intermediate_columns : Boolean, optional
         Return intermediate columns. Default 'False' does not return these.
-    Keyword Arguments:
+    **kwargs: optional
+       Accepts crs_col, lat_col, and lon_col parameters if non-default:
     crs_col : str, optional
         Name of column in DataFrame with the Coordinate Reference System datum.
         The default is 'HorizontalCoordinateReferenceSystemDatumName'.
@@ -119,7 +123,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
     Examples
     --------
-    Build pandas DataFrame to use in example
+    Build pandas DataFrame to use in example:
     
     >>> df_in = pandas.DataFrame({'LatitudeMeasure': [27.5950355,
     ...                                               27.52183,
@@ -146,12 +150,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
     1        27.521830        -82.644760  ...     NaN  POINT (-82.64476 27.52183)
     2        28.066111        -82.377500  ...     NaN  POINT (-82.37750 28.06611)
     <BLANKLINE>
-    [3 rows x 5 columns]
-    
-    Note: both geometries where the CRS was not the default 4326 (WGS1984) have
-    been transformed in the geometry column, a QA_flag column was also added to
-    record any location based problems like limited decimal precision or an
-    unknown input CRS.
+    [3 rows x 5 columns] 
     """
     df2 = df_in.copy()
 
@@ -199,21 +198,21 @@ def harmonize_locations(df_in, out_EPSG=4326,
 
 
 def transform_vector_of_points(df_in, datum, out_EPSG):
-    """Transform points by vector (sub-set by datum).
+    """Transform points by vector (sub-sets points by EPSG==datum).
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    datum : TYPE
-        DESCRIPTION.
+    datum : int
+        Current datum (EPSG code) to transform.
     out_EPSG : int
         EPSG factory code for desired output Coordinate Reference System datum.
 
     Returns
     -------
     df : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
     """
     # Create transform object for input datum (EPSG colum) and out_EPSG
     transformer = Transformer.from_crs(datum, out_EPSG)
@@ -230,33 +229,34 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
 def get_harmonized_stations(query, aoi=None):
     """Query, harmonize and clip stations.
     
-    Queries the Water Quality Portal (https://waterquality.data.us) for
-    stations with data matching the query, harmonizes those stations location
-    information and clips it to the Area Of Interest (AOI) if specified.
+    Queries the `Water Quality Portal <https://waterquality.data.us>`_ for
+    stations with data matching the query, harmonizes those stations' location
+    information, and clips it to the area of interest (aoi) if specified.
 
-    See www.waterqualitydata.us/webservices_documentation for API reference
+    See `<www.waterqualitydata.us/webservices_documentation>`_ for API
+    reference.
 
     Parameters
     ----------
     query : dict
-        Water Quality Portal query as dictionary
+        Water Quality Portal query as dictionary.
     aoi : geopandas.GeoDataFrame, optional
         Area of interest to clip stations to.
         The default None returns all stations in the query extent.
 
     Returns
     -------
-    stations_gdf : geopandas.GeoDataFrame
+    stations_gdf : ``geopandas.GeoDataFrame``
         Harmonized stations.
-    stations : pandas.DataFrame
+    stations : ``pandas.DataFrame``
         Raw station results from WQP.
-    site_md : TYPE
-        WQP query metadata.
+    site_md : ``dataretrieval.utils.Metadata``
+        Custom ``dataretrieval`` metadata object pertaining to the WQP query.
         
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>'_ for
     examples of how this function is used to query and harmonize stations.
     
     """

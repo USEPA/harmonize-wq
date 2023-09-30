@@ -8,18 +8,21 @@ from harmonize_wq import harmonize
 def unit_basis_dict(out_col):
     """Characteristic specific basis dictionary to define basis from units.
 
+    The out_col is often derived from :attr:`WQCharData.char_val`. The desired
+    basis can be used as a key to subset result.
+
     Parameters
     ----------
     out_col : str
-        Column name where results are written (char_val derived)
+        Column name where results are written.
 
     Returns
     -------
      dict
          Dictionary with logic for determining basis from units string and
-         standard pint units to replace those with.
+         standard :mod:`pint` units to replace those with.
          The structure is {Basis: {standard units: [unit strings with basis]}}.
- 
+
     Examples
     --------
     Get dictionary for Phosphorus and subset for 'as P':
@@ -43,7 +46,7 @@ def unit_basis_dict(out_col):
 def basis_conversion():
     """Get dictionary of conversion factors to convert basis/speciation.
     
-    For example, this is used to convert 'as PO4' to 'as P'
+    For example, this is used to convert 'as PO4' to 'as P'.
     
     Returns
     -------
@@ -52,11 +55,10 @@ def basis_conversion():
          
     See Also
     --------
-    convert.moles_to_mass()
+    :func:`convert.moles_to_mass`
     
-    Originally from Table 1 in 'Best Practices for Submitting Nutrient Data to
-    the Water Quality eXchange (WQX)
-    <www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>'
+    `Best Practices for Submitting Nutrient Data to the Water Quality eXchange
+    <www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>`_
     """
     return {'NH3': 0.822,
             'NH4': 0.776,
@@ -75,7 +77,7 @@ def stp_dict():
     Returns
     -------
     dict
-        Dictionary with {'standard temp' : {'units': [values to replace]}}
+        Dictionary with {'standard temp' : {'units': [values to replace]}}.
 
     Examples
     --------
@@ -88,12 +90,14 @@ def stp_dict():
     return {'@25C': {'mg/mL': ['mg/mL @25C']}}
 
 
-def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
-    """Create standardized Basis column in :class:`pandas.DataFrame`.
+def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation'):
+    """Move basis from units to basis column in :class:`pandas.DataFrame`.
     
-    Standardizes units in units column based on basis_dict. Units column is
-    updated in place, it should not be original 'ResultMeasure/MeasureUnitCode'
-    to maintain data integrity.
+    Move basis information from units in unit_col column to basis in basis_col
+    column based on basis_dict. If basis_col does not exist in df_in it will be
+    created. The unit_col column is updated in place. To maintain data
+    integrity unit_col should not be the original
+    'ResultMeasure/MeasureUnitCode' column.
 
     Parameters
     ----------
@@ -101,16 +105,17 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
         DataFrame that will be updated.
     basis_dict : dict
         Dictionary with structure {basis:{new_unit:[old_units]}}.
-    unit_col : str
-        string for the column name in df to be used.
+    unit_col : str, optional
+        String for the units column name in df_in to use.
+        The default is 'Units'.
     basis_col : str, optional
-        string for the basis column name in df to be used.
+        String for the basis column name in df_in to use.
         The default is 'Speciation'.
 
     Returns
     -------
     df : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
 
     Examples
     --------
@@ -134,8 +139,8 @@ def basis_from_unit(df_in, basis_dict, unit_col, basis_col='Speciation'):
     0         Phosphorus                     mg/l as P   mg/l       as P
     1         Phosphorus                    mg/kg as P  mg/kg       as P
     
-    If an existing basis_col value is different a warning is issued when it is 
-    updated and a QA_flag is assigned
+    If an existing basis_col value is different, a warning is issued when it is 
+    updated and a QA_flag is assigned:
     
     >>> from numpy import nan
     >>> df['Speciation'] = [nan, 'as PO4']
@@ -226,7 +231,15 @@ def basis_from_methodSpec(df_in):
 
 
 def update_result_basis(df_in, basis_col, unit_col):
-    """Basis from result col that is not moved to a new col.
+    """Move basis from unit_col column to basis_col column.
+    
+    This is usually used in place of basis_from_unit when the basis_col is not
+    'ResultMeasure/MeasureUnitCode' (i.e., not speciation).
+    
+    Notes
+    -----
+    Rather than creating many new empty columns this function currently overwrites the original 
+    basis_col values. The original values are noted in the QA_flag.
 
     Parameters
     ----------
@@ -234,7 +247,7 @@ def update_result_basis(df_in, basis_col, unit_col):
         DataFrame that will be updated.
     basis_col : str
         Column in df_in with result basis to update. Expected values are
-        'ResultTemperatureBasisText'
+        'ResultTemperatureBasisText'.
     unit_col : str
         Column in df_in with units that may contain basis.
 
@@ -246,7 +259,6 @@ def update_result_basis(df_in, basis_col, unit_col):
     Examples
     --------
     Build pandas DataFrame for example:
-    Note: 'Units' is used to preserve 'ResultMeasure/MeasureUnitCode'
     
     >>> from pandas import DataFrame
     >>> from numpy import nan
@@ -258,7 +270,7 @@ def update_result_basis(df_in, basis_col, unit_col):
       CharacteristicName ResultTemperatureBasisText       Units
     0           Salinity                   25 deg C  mg/mL @25C
     1           Salinity                        NaN  mg/mL @25C
-
+        
     >>> from harmonize_wq import basis    
     >>> df_temp_basis = basis.update_result_basis(df,
     ...                                           'ResultTemperatureBasisText',
@@ -294,7 +306,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
 
 def set_basis(df_in, mask, basis, basis_col='Speciation'):
-    """Update basis_col to basis where col is expected_val.
+    """Update or create basis_col with basis as value.
 
     Parameters
     ----------
@@ -311,8 +323,34 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
     Returns
     -------
     df_out : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
 
+    Examples
+    --------
+    Build pandas DataFrame for example:
+    
+    >>> from pandas import DataFrame
+    >>> df = DataFrame({'CharacteristicName': ['Phosphorus',
+    ...                                        'Phosphorus',
+    ...                                        'Salinity'],
+    ...                 'MethodSpecificationName': ['as P', 'as PO4', ''],
+    ...                 })
+    >>> df
+      CharacteristicName MethodSpecificationName
+    0         Phosphorus                    as P
+    1         Phosphorus                  as PO4
+    2           Salinity                        
+    
+    Build mask for example:
+
+    >>> mask = df['CharacteristicName']=='Phosphorus'
+    
+    >>> from harmonize_wq import basis
+    >>> basis.set_basis(df, mask, basis='as P')
+      CharacteristicName MethodSpecificationName Speciation
+    0         Phosphorus                    as P       as P
+    1         Phosphorus                  as PO4       as P
+    2           Salinity                                NaN
     """
     df_out = df_in.copy()
     # Add Basis column if it doesn't exist
@@ -321,35 +359,3 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
     # Populate Basis column where expected value with basis
     df_out.loc[mask, basis_col] = basis
     return df_out
-
-
-def basis_qa_flag(trouble, basis, spec_col='MethodSpecificationName'):
-    """Get QA_flag for different basis in MethodsSpeciation and units.
-
-    NOTE: Deprecate - not currently in use anywhere
-
-    Parameters
-    ----------
-    trouble : str
-        Problem encountered (e.g., unit_basis != speciation).
-    basis : str
-        The basis from the unit that replaced the original speciation.
-    spec_col : str, optional
-        Column currently being checked. Default is 'MethodSpecificationName'
-
-    Returns
-    -------
-    str
-        Flag to use in QA_flag column.
-
-    Examples
-    --------
-    Formats QA_Flag
-    
-    >>> from harmonize_wq import basis
-    >>> basis.basis_qa_flag('(units)',
-    ...                     'updated from 25 deg C to @25C',
-    ...                     'ResultTemperatureBasisText')
-    'ResultTemperatureBasisText: updated from 25 deg C to @25C (units)'
-    """
-    return '{}: {} {}'.format(spec_col, basis, trouble)

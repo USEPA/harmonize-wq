@@ -14,7 +14,10 @@ def split_table(df_in):
     Splits :class:`pandas.DataFrame` in two, one with main results columns and
     one with Characteristic based metadata.
 
-    Note: runs datetime() and harmonize_depth() if expected columns are missing
+    Notes
+    -----
+    Runs :func:`clean.datetime` and :func:`cleanharmonize_depth` if expected
+    columns ('Activity_datetime' and 'Depth') are missing.
 
     Parameters
     ----------
@@ -31,7 +34,7 @@ def split_table(df_in):
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to divide the table into columns of
     interest (main_df) and characteristic specific metadata (chars_df).
     
@@ -53,8 +56,11 @@ def split_table(df_in):
 
 
 def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
-    """Split column so that each value is in a characteristic specific column.
+    """Move each row value from a column to a characteristic specific column.
 
+    Values are moved from the result_col in df_in to a new column where the
+    column name is col_prefix + characteristic.
+    
     Parameters
     ----------
     df_in : pandas.DataFrame
@@ -72,7 +78,7 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to split the QA column into multiple
     characteristic specific QA columns.
     
@@ -152,7 +158,7 @@ def collapse_results(df_in, cols=None):
     Examples
     --------
     See any of the 'Simple' notebooks found in 
-    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to combine rows with the same sample
     organization, activity, location, and datetime.
     
@@ -253,7 +259,7 @@ def get_activities_by_loc(characteristic_names, locations):
         
     Examples
     --------
-    See wrangle.add_activities_to_df()
+    See :func:`wrangle.add_activities_to_df`
     """
     # Split loc_list as query by list may cause the query url to be too long
     seg = 200  # Max length of each segment
@@ -277,7 +283,8 @@ def add_activities_to_df(df_in, mask=None):
     df_in : pandas.DataFrame
         DataFrame that will be updated.
     mask : pandas.Series
-        Row conditional mask to sub-set rows to get activities for
+        Row conditional mask to sub-set rows to get activities for.
+        The default None, uses the entire set.
 
     Returns
     -------
@@ -286,7 +293,9 @@ def add_activities_to_df(df_in, mask=None):
 
     Examples
     --------
-    Build example tables from tests
+    Build example df_in table from harmonize_wq tests to use in place of Water
+    Quality Portal query response, this table has 'Temperature, water' and 
+    'Phosphorous' results:
     
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
@@ -299,7 +308,7 @@ def add_activities_to_df(df_in, mask=None):
     >>> df_activities.shape
     (359505, 100)
     
-    Look at the columns added
+    Look at the columns added:
     
     >>> df_activities.columns[-65:]
     Index(['ActivityTypeCode', 'ActivityMediaName', 'ActivityMediaSubdivisionName',
@@ -376,7 +385,7 @@ def add_detection(df_in, char_val):
     df_in : pandas.DataFrame
         DataFrame that will be updated.
     char_val : str
-        Specific characteristic name to apply to
+        Specific characteristic name to apply to.
 
     Returns
     -------
@@ -385,7 +394,9 @@ def add_detection(df_in, char_val):
 
     Examples
     --------
-    Build example tables from tests
+    Build example df_in table from harmonize_wq tests to use in place of Water
+    Quality Portal query response, this table has 'Temperature, water' and 
+    'Phosphorous' results:
     
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
@@ -401,7 +412,7 @@ def add_detection(df_in, char_val):
     Note: the additional rows are due to one result being able to be assigned 
     multiple detection results.
     
-    Look at the columns added
+    Look at the columns added:
     
     >>> df_detects.columns[-3:]
     Index(['DetectionQuantitationLimitTypeName',
@@ -427,13 +438,16 @@ def add_detection(df_in, char_val):
 def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     """Get detection quantitation by location and characteristic (optional).
     
-    Retrieves detection quantitation results by location, and characteristic
-    name (Optional). ResultIdentifier can not be used to search, location id is
-    used instead and then results are limited by ResultIdentifiers.
+    Retrieves detection quantitation results by location and characteristic
+    name (optional). ResultIdentifier can not be used to search. Instead
+    location id from loc_series is used and then results are limited by
+    ResultIdentifiers from result_id_series.
 
-    NOTES: There can be multiple Result Detection Quantitation limits / result.
-           A result may have a ResultIdentifier without any corresponding data
-           in the Detection Quantitation limits table (NaN in return).
+    Notes
+    -----
+    There can be multiple Result Detection Quantitation limits / result.
+    A result may have a ResultIdentifier without any corresponding data in the
+    Detection Quantitation limits table (NaN in return).
 
     Parameters
     ----------
@@ -443,7 +457,7 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
         Series of result IDs to limit retrieved data.
     char_val : str, optional.
         Specific characteristic name to retrieve detection limits for.
-        The default None, uses all CharacteristicNames
+        The default None, uses all 'CharacteristicName' values returned.
 
     Returns
     -------
@@ -483,7 +497,7 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
     df1 : pandas.DataFrame
         DataFrame that will be updated.
     df2 : pandas.DataFrame
-        DataFrame with new columns (df2_cols) that will be added to df_in.
+        DataFrame with new columns (df2_cols) that will be added to df1.
     df2_cols : str, optional
         Columns in df2 to add to df1. The default is 'all', for all columns
         not already in df1.
@@ -494,11 +508,12 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
     Returns
     -------
     merged_results : pandas.DataFrame
-        Updated copy of df_in.
+        Updated copy of df1.
 
     Examples
     --------
-    Build example tables from tests
+    Build example table from harmonize_wq tests to use in place of Water
+    Quality Portal query responses:
     
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
@@ -574,8 +589,9 @@ def as_gdf(shp):
     
     Examples
     --------
-    Use area of interest from tests GeoJSON:
-
+    Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
+    harmonize_wq tests:
+        
     >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
     >>> type(wrangle.as_gdf(aoi_url))
@@ -603,7 +619,8 @@ def get_bounding_box(shp, idx=None):
     
     Examples
     --------
-    Use area of interest from tests GeoJSON:
+    Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
+    harmonize_wq tests:
 
     >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
@@ -625,12 +642,14 @@ def get_bounding_box(shp, idx=None):
 
 
 def clip_stations(stations, aoi):
-    """
-    Clip stations to area of interest (aoi).
+    """Clip stations to area of interest (aoi).
+    
+    Locations and results are queried by extent rather than the exact geometry.
+    Clipping by the exact geometry helps reduce the size of the results.
     
     Notes
     -----
-    aoi is first transformed to stations CRS.
+    aoi is first transformed to CRS of stations.
 
     Parameters
     ----------
@@ -646,10 +665,7 @@ def clip_stations(stations, aoi):
     
     Examples
     --------
-    Locations and results are queried by extent rather than the exact geometry, clipping
-    by the exact geometry helps reduce the size of the results
-    
-    Build example GeoDataFrame of locations for stations
+    Build example geopandas GeoDataFrame of locations for stations:
     
     >>> import geopandas
     >>> from shapely.geometry import Point
@@ -663,7 +679,8 @@ def clip_stations(stations, aoi):
     0                           In  POINT (-87.12500 30.50000)
     1                          Out  POINT (-87.50000 30.50000)
     
-    Use area of interest from tests GeoJSON:
+    Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
+    harmonize_wq tests:
 
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
        
@@ -682,8 +699,8 @@ def clip_stations(stations, aoi):
 def to_simple_shape(gdf, out_shp):
     """Simplify GeoDataFrame for better export to shapefile.
     
-    Adopts and adapts 'Simple' from NWQMC/pywqp. See domains.stations_rename()
-    for renaming of columns.
+    Adopts and adapts 'Simple' from `NWQMC/pywqp<github.com/NWQMC/pywqp>`_
+    See :func:`domains.stations_rename` for renaming of columns.
 
     Parameters
     ----------

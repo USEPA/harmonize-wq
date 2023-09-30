@@ -8,17 +8,17 @@ from harmonize_wq import wrangle
 
 
 def datetime(df_in):
-    """Format time using dataretrieval and 'ActivityStart'.
+    """Format time using :mod:`dataretrieval` and 'ActivityStart' columns.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with the expected activity date time columns.
+        DataFrame with the expected activity date, time and timezone columns.
 
     Returns
     -------
     df_out : pandas.DataFrame
-        DataFrame with the converted date and datetime columns.
+        DataFrame with the converted datetime column.
 
     Examples
     --------
@@ -55,7 +55,15 @@ def datetime(df_in):
 
 
 def harmonize_depth(df_in, units='meter'):
-    """Doesn't currently pass errors or unit registry (ureg).
+    """Create 'Depth' column with result depth values in consistent units.
+    
+    The new column is based on values from the 'ResultDepthHeightMeasure/MeasureValue' column and
+    units from the 'ResultDepthHeightMeasure/MeasureUnitCode' column.
+    
+    Notes
+    -----
+    If there are errors or unit registry (ureg) updates these are not currently
+    passed back. In the future activity depth columns may be considered if result depth missing.
 
     Parameters
     ----------
@@ -84,7 +92,7 @@ def harmonize_depth(df_in, units='meter'):
     1                                   NaN                                      NaN
     2                                    10                                       ft
     
-    Get clean depth column:
+    Get clean 'Depth' column:
     
     >>> from harmonize_wq import clean
     >>> clean.harmonize_depth(df)[['ResultDepthHeightMeasure/MeasureValue',
@@ -114,8 +122,12 @@ def harmonize_depth(df_in, units='meter'):
 
 
 def check_precision(df_in, col, limit=3):
-    """Note - be cautious of float type and real vs representable precision.
+    """Add QA_flag if value in column has precision lower than limit.
 
+    Notes
+    -----
+    Be cautious of float type and real vs representable precision.
+    
     Parameters
     ----------
     df_in : pandas.DataFrame
@@ -128,7 +140,7 @@ def check_precision(df_in, col, limit=3):
     Returns
     -------
     df_out : pandas.DataFrame
-        DataFrame with the quality assurance flag for precision
+        DataFrame with the quality assurance flag for precision.
 
     """
     df_out = df_in.copy()
@@ -141,6 +153,10 @@ def check_precision(df_in, col, limit=3):
 
 def methods_check(df_in, char_val, methods=None):
     """Check methods against list of accepted methods.
+    
+    Notes
+    -----
+    This is not fully implemented.
 
     Parameters
     ----------
@@ -151,12 +167,13 @@ def methods_check(df_in, char_val, methods=None):
     methods : dict, optional
         Dictionary where key is characteristic column name and value is list of
         dictionaries each with Source and Method keys. This allows updated
-        methods dictionaries to be used. The default None, uses the built-in
-        domains.accepted_methods().
+        methods dictionaries to be used. The default None uses the built-in
+        :meth:`domains.accepted_methods`.
 
     Returns
     -------
-    None.
+    accept : list
+        List of values from 'ResultAnalyticalMethod/MethodIdentifier' column in methods.
 
     """
     if methods is None:
@@ -179,19 +196,22 @@ def methods_check(df_in, char_val, methods=None):
 
 
 def wet_dry_checks(df_in, mask=None):
-    """Fix known errors in MediaName using WeightBasis/SampleFraction columns.
+    """Fix suspected errors in 'ActivityMediaName' column.
+    
+    Uses the 'ResultWeightBasisText' and 'ResultSampleFractionText' columns to swicth if the media is
+    wet/dry where appropriate.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
     mask : pandas.Series
-        Row conditional (bool) mask to limit df rows to check/fix
+        Row conditional (bool) mask to limit df rows to check/fix. The default is None.
 
     Returns
     -------
     df_out : pandas.DataFrame
-        Updated DataFrame
+        Updated DataFrame.
 
     """
     df_out = df_in.copy()
@@ -225,14 +245,14 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
     df_in : pandas.DataFrame
         DataFrame that will be updated.
     wet_dry : str, optional
-        Which values (Water/Sediment) to keep. The default is 'wet' (Water)
+        Which values (Water/Sediment) to keep. The default is 'wet' (Water).
     char_val : str, optional
         Apply to specific characteristic name. The default is None (for all).
 
     Returns
     -------
     df2 : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
     """
     df2 = df_in.copy()
     if char_val:

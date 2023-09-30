@@ -70,7 +70,7 @@ There are many columns in the :class:`pandas.DataFrame` that are characteristic 
     # Combine rows with the same sample organization, activity, location, and datetime
     df_wide = wrangle.collapse_results(main_df)
 
-The number of columns in the resulting table is greatly reduced
+The number of columns in the resulting table is greatly reduced:
 
 +----------------------------+-------------+----------------------------------------+-------------------------------+
 |        Output Column       |     Type    |               Source                   |           Changes             |

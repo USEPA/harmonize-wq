@@ -11,7 +11,7 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
 
     Parameters
     ----------
-    results_in : pandas.Dataframe
+    results_in : pandas.DataFrame
         DataFrame with subset of results.
     out_col : str
         Name of column in results_in with final result.
@@ -27,9 +27,9 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     See Also
     --------
     See any of the 'Detailed' notebooks found in 
-    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    `demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is leveraged by the
-    harmonize.harmonize_generic() report argument.
+    :func:`harmonize.harmonize_generic` report argument.
 
     """
     # Series with just usable results.
@@ -73,8 +73,9 @@ def map_counts(df_in, gdf, col=None):
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
         GeoDataFrame with monitoring locations.
-    col : str
+    col : str, optional
         Column in df_in to aggregate results to in addition to location.
+        The default is None, where results are only aggregated on locaion.
 
     Returns
     -------
@@ -159,11 +160,11 @@ def map_measure(df_in, gdf, col):
     Returns
     -------
     geopandas.GeoDataFrame
-        GeoDataFrame with average value of results for each station
+        GeoDataFrame with average value of results for each station.
         
     Examples
     --------
-    Build array of pint quantities for Temperature:
+    Build array of pint Quantity for Temperature:
     
     >>> from pint import Quantity
     >>> u = 'degree_Celsius'
@@ -229,19 +230,19 @@ def station_summary(df_in, col):
     """Get summary table for stations.
     
     Summary table as :class:`~pandas.DataFrame` with rows for each 
-    station, count and column average.
+    station, count, and column average.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with subset of results.
+        DataFrame with results to summarize.
     col : str
         Column name in df_in to summarize results for.
 
     Returns
     -------
     pandas.DataFrame
-
+        Table with result count and average summarized by station.
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'

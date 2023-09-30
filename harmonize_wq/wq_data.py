@@ -18,7 +18,7 @@ class WQCharData():
     df_in : pandas.DataFrame
         DataFrame that will be updated.
     char_val : str
-        Expected CharacteristicName.
+        Expected value in 'CharacteristicName' column.
 
     Attributes
     ----------
@@ -27,15 +27,15 @@ class WQCharData():
     c_mask : pandas.Series
         Row conditional (bool) mask to limit df rows to only those for the
         specific characteristic.
-    col : SimpleNamespace
-        Standard df column names for unit_in, unit_out, and measure.
+    col : types.SimpleNamespace
+        Standard WQCharData.df column names for unit_in, unit_out, and measure.
     out_col : str
         Column name in df for results, set using char_val.
-    ureg = pint.UnitRegistry()
-        Pint unit registry, starts set to standard unit registry.
-    units: str
-        Units all results in out_col will be converted into. Default units are
-        returned from domains.OUT_UNITS[out_col].
+    ureg : pint.UnitRegistry()
+        pint unit registry, initially standard unit registry.
+    units : str
+        Units all results in out_col column will be converted into.
+        Default units are returned from :func:`domains.OUT_UNITS`[out_col].
     
     Examples
     --------
@@ -261,9 +261,13 @@ class WQCharData():
         Parameters
         ----------
         flag_col : str, optional
-            Column to reference in QA_flags.
-            The default None uses WQCharData.col.unit_out instead.
-            
+            Column to reference in srting for 'QA_flags'.
+            The default None uses WQCharData.col.unit_out attribute.
+        
+        Returns
+        -------
+        None.
+        
         Examples
         --------
         Build DataFrame to use as input:
@@ -300,7 +304,8 @@ class WQCharData():
         1  Temperature, water   NaN                                                NaN
         2          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: 'Unknown' UNDEF...
         
-        Note: it didn't infer units for 'Temperature, water' because wq is Phosphorus specific
+        Note: it didn't infer units for 'Temperature, water' because wq is
+        Phosphorus specific.
         """
         # Replace unit by dict using domain
         self.replace_unit_by_dict(domains.UNITS_REPLACE[self.out_col])
@@ -336,7 +341,11 @@ class WQCharData():
         ----------
         basis_col : str, optional
             Basis column name. Default is 'MethodSpecificationName' which is
-            replaced by 'Speciation', others are updated in place.
+            replaced by 'Speciation'. Other columns are updated in place.
+            
+        Returns
+        -------
+        None.
         
         Examples
         --------
@@ -375,7 +384,8 @@ class WQCharData():
         1                     NaN         NaN
         2                     NaN         PO4
         
-        Note where basis was part of ResultMeasure/MeasureUnitCode it has been removed in Units:
+        Note where basis was part of 'ResultMeasure/MeasureUnitCode' it has
+        been removed in 'Units':
 
         >>> wq.df.iloc[0]
         CharacteristicName               Phosphorus
@@ -437,13 +447,17 @@ class WQCharData():
     def update_units(self, units_out):
         """Update class units attribute to convert everything into.
         
-        Note: It does not perform the conversion.
+        This just updates the attribute, it does not perform the conversion.
         
         Parameters
         ----------
         units_out : str
             Units to convert results into.
-
+            
+        Returns
+        -------
+        None.
+        
         Examples
         --------
         Build WQ Characteristic Data class:
@@ -468,8 +482,13 @@ class WQCharData():
         Parameters
         ----------
         column : str, optional
-            DataFrame column name to use. Default None uses self.out_col
-
+            DataFrame column name to use. Default None uses WQCharData.out_col
+            attribute.
+        
+        Returns
+        -------
+        None.
+        
         Examples
         --------
         >>> from harmonize_wq import wq_data
@@ -499,7 +518,11 @@ class WQCharData():
             If ‘raise’, invalid dimension conversions will raise an exception.
             If ‘skip’, invalid dimension conversions will not be converted.
             If ‘ignore’, invalid dimension conversions will be NaN.
-
+        
+        Returns
+        -------
+        None.
+        
         Examples
         --------
         Build pandas DataFrame to use as input:
@@ -554,6 +577,10 @@ class WQCharData():
             Mask to use to identify what is being converted.
             The default is None, creating a unit mask based on unit.
 
+        Returns
+        -------
+        None.
+
         Examples
         --------
         Build pandas DataFrame to use as input:
@@ -600,13 +627,13 @@ class WQCharData():
         self.df = df_out
 
     def dimensions_list(self, m_mask=None):
-        """Get list of unique dimensions.
+        """Get list of unique unit dimensions.
 
         Parameters
         ----------
         m_mask : pandas.Series, optional
             Conditional mask to limit rows.
-            The default None, uses measure_mask().
+            The default None, uses :meth:`measure_mask`.
 
         Returns
         -------
@@ -643,14 +670,14 @@ class WQCharData():
                                          self.ureg)
 
     def replace_unit_str(self, old, new, mask=None):
-        """Replace ALL instances of old str with new str in units.
+        """Replace ALL instances of old with in WQCharData.col.unit_out column.
 
         Parameters
         ----------
         old : str
-            sub-string to find and replace
+            Sub-string to find and replace.
         new : str
-            sub-string to replace old sub-string
+            Sub-string to replace old sub-string.
         mask : pandas.Series, optional
             Conditional mask to limit rows.
             The default None, uses the c_mask attribute.
@@ -703,7 +730,11 @@ class WQCharData():
         mask : pandas.Series, optional
             Conditional mask to limit rows.
             The default None, uses the c_mask attribute.
-
+            
+        Returns
+        -------
+        None.
+        
         Examples
         --------
         Build pandas DataFrame to use as input:
@@ -741,7 +772,7 @@ class WQCharData():
 
     def fraction(self, frac_dict=None, suffix=None,
                  fract_col='ResultSampleFractionText'):
-        """Create columns for sample fractions, use frac_dict to set names.
+        """Create columns for sample fractions using frac_dict to set names.
 
         Parameters
         ----------
@@ -758,11 +789,11 @@ class WQCharData():
         Returns
         -------
         frac_dict : dict
-            frac_dict updated to include any frac_col not already defined.
+            frac_dict updated to include any fract_col not already defined.
             
         Examples
         --------
-        Not fully implemented with TADA table yet
+        Not fully implemented with TADA table yet.
         """
         c_mask = self.c_mask
         if suffix is None:
@@ -850,15 +881,21 @@ class WQCharData():
     def dimension_fixes(self):
         """
         Input/output for dimension handling.
+        
+        Result dictionary key is old_unit and value is equation to get it into
+        the desired dimension. Result list has substance to include as part of
+        unit.
 
-        Note: this is done one dimension at a time, except for mole
-        conversions which are further divided by basis (one at a time)
+        Notes
+        -----
+        These are next processed interactively, one dimension at a time, except
+        for mole conversions which are further split by basis (one at a time).
 
         Returns
         -------
-        dimension_dict : dict
+        dimension_dict : ``dict``
             Dictionary with old_unit:new_unit.
-        mol_list : list
+        mol_list : ``list``
             List of Mole (substance) units.
 
         Examples
@@ -920,7 +957,11 @@ class WQCharData():
         ----------
         mol_list : list
             List of Mole (substance) units.
-
+            
+        Returns
+        -------
+        None.
+        
         Examples
         --------
         Build pandas DataFrame to use as input:

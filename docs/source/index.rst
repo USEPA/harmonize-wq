@@ -5,8 +5,8 @@
 
 harmonize_wq: 
 =============
-Standardize, clean and wrangle Water Quality Portal data into more analytic-ready formats
------------------------------------------------------------------------------------------
+Standardize, clean, and wrangle Water Quality Portal data into more analytic-ready formats
+------------------------------------------------------------------------------------------
 **Useful links**:
 `Code Repository <https://github.com/USEPA/harmonize-wq>`__ |
 `Issues <https://github.com/USEPA/harmonize-wq/issues>`__ 

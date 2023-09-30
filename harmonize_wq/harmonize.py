@@ -19,7 +19,7 @@ def df_checks(df_in, columns=None):
         DataFrame that will be checked.
     columns : list, optional
         List of strings for column names. Default None, uses:
-        'ResultMeasure/MeasureUnitCode','ResultMeasureValue','CharacteristicName'
+        'ResultMeasure/MeasureUnitCode','ResultMeasureValue','CharacteristicName'.
         
     Examples
     --------
@@ -71,7 +71,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
     """Convert quantities to consistent units.
 
     Convert list of quantities (quantity_list), each with a specified old unit,
-    to a quantity in units using pint constructor method.
+    to a quantity in units using :mod:`pint` constructor method.
 
     Parameters
     ----------
@@ -83,7 +83,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
     units : str
         Desired units.
     ureg : pint.UnitRegistry, optional
-        Unit Registry Object with any custom units defined. The default is None
+        Unit Registry Object with any custom units defined. The default is None.
     errors : str, optional
         Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
         If ‘raise’, invalid dimension conversions will raise an exception.
@@ -103,7 +103,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
     >>> quantity_series = Series([1, 10])
     >>> unit_series = Series(['mg/l', 'mg/ml',])
 
-    Convert series to series of pint objects in 'mg/l'
+    Convert series to series of pint Quantity objects in 'mg/l':
     
     >>> from harmonize_wq import harmonize
     >>> harmonize.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
@@ -145,7 +145,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
 
 
 def add_qa_flag(df_in, mask, flag):
-    """Add flag to "QA_field" column in df_in.
+    """Add flag to 'QA_flag' column in df_in.
 
     Parameters
     ----------
@@ -174,7 +174,7 @@ def add_qa_flag(df_in, mask, flag):
     1         Phosphorus              0.265
     2             Carbon                2.1
     
-    Assign simple flag string and mask to assign flag only to Carbon
+    Assign simple flag string and mask to assign flag only to Carbon:
     
     >>> flag = 'words'
     >>> mask = df['CharacteristicName']=='Carbon'
@@ -211,7 +211,8 @@ def units_dimension(series_in, units, ureg=None):
     units : str
         Desired units.
     ureg : pint.UnitRegistry, optional
-        Unit Registry Object with any custom units defined. The default is None
+        Unit Registry Object with any custom units defined.
+        The default is None.
 
     Returns
     -------
@@ -230,7 +231,7 @@ def units_dimension(series_in, units, ureg=None):
     2     g/kg
     dtype: object
 
-    Get list of unique units not in desired units dimension 'mg/l'
+    Get list of unique units not in desired units dimension 'mg/l':
     
     >>> from harmonize_wq import harmonize
     >>> harmonize.units_dimension(unit_series, units='mg/l')
@@ -249,19 +250,21 @@ def units_dimension(series_in, units, ureg=None):
 
 
 def dissolved_oxygen(wqp):
-    """Standardize 'Dissolved oxygen (DO)' characteristic.
+    """Standardize 'Dissolved Oxygen (DO)' characteristic.
     
-    Uses and returns WQP Characteristic Info Object.
+    Uses :class:`wq_data.WQCharData` to check units, check unit
+    dimensionality and perform appropriate unit conversions.
 
     Parameters
     ----------
-    wqp : WQCharData Object
-        WQP Characteristic Info Object.
+    wqp : wq_data.WQCharData
+        WQP Characteristic Info Object to check units, check unit
+        dimensionality and perform appropriate unit conversions.
 
     Returns
     -------
-    wqp : WQP Characteristic Info Object.
-        WQP Characteristic Info Object with updated attributes
+    wqp : wq_data.WQCharData
+        WQP Characteristic Info Object with updated attributes.
     """
     wqp.check_units()  # Replace know problem units, fix and flag missing units
 
@@ -281,19 +284,23 @@ def dissolved_oxygen(wqp):
 def salinity(wqp):
     """Standardize 'Salinity' characteristic.
     
-    Uses and returns WQP Characteristic Info Object.
+    Uses :class:`wq_data.WQCharData` to check basis, check units, check unit
+    dimensionality and perform appropriate unit conversions.
     
-    Note: PSU=PSS=ppth and 'ppt' is picopint in pint so it is changed to 'ppth'
+    Notes
+    -----
+    PSU=PSS=ppth and 'ppt' is picopint in :mod:`pint` so it is changed to
+    'ppth'.
 
     Parameters
     ----------
-    wqp : WQCharData Object
+    wqp : wq_data.WQCharData
         WQP Characteristic Info Object.
 
     Returns
     -------
-    wqp : WQP Characteristic Info Object.
-        WQP Characteristic Info Object with updated attributes
+    wqp : wq_data.WQCharData
+        WQP Characteristic Info Object with updated attributes.
     """
     wqp.check_basis(basis_col='ResultTemperatureBasisText')  # Moves '@25C' out
     wqp.check_units()  # Replace know problem units, fix and flag missing units
@@ -318,44 +325,46 @@ def salinity(wqp):
 def turbidity(wqp):
     """Standardize 'Turbidity' characteristic.
     
-    Uses and returns WQP Characteristic Info Object.
+    Uses :class:`wq_data.WQCharData` to check units, check unit
+    dimensionality and perform appropriate unit conversions
 
-    See USGS Report Chapter A6. Section 6.7. Turbidity
-        r"https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf"
+    See `USGS Report Chapter A6. Section 6.7. Turbidity
+    <https://pubs.usgs.gov/twri/twri9a6/twri9a67/twri9a_Section6.7_v2.1.pdf>`
     See ASTM D\315-17 for equivalent unit definitions:
-        'NTU'  - 400-680nm (EPA 180.1), range 0.0-40
-        'NTRU' - 400-680nm (2130B), range 0-10,000
-        'NTMU' - 400-680nm
-        'FNU'  - 780-900nm (ISO 7027), range 0-1000
-        'FNRU' - 780-900nm (ISO 7027), range 0-10,000
-        'FAU'  - 780-900nm, range 20-1000
+        'NTU'  - 400-680nm (EPA 180.1), range 0.0-40.
+        'NTRU' - 400-680nm (2130B), range 0-10,000.
+        'NTMU' - 400-680nm.
+        'FNU'  - 780-900nm (ISO 7027), range 0-1000.
+        'FNRU' - 780-900nm (ISO 7027), range 0-10,000.
+        'FAU'  - 780-900nm, range 20-1000.
     Older methods:
         'FTU' - lacks instrumentation specificity
         'SiO2' (ppm or mg/l) - concentration of calibration standard (=JTU)
         'JTU' - candle instead of formazin standard, near 40 NTU these may be
-        equivalent, but highly variable
+        equivalent, but highly variable.
     Conversions used:
-        cm <-> NTU see convert.cm_to_NTU()
-        r"https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/"
+        cm <-> NTU see :func:`convert.cm_to_NTU` from
+        `USU <https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/>`
 
-    Alternative conversions not currently used by default:
-        convert.FNU_to_NTU from Gohin (2011) Ocean Sci., 7, 705–732
-        r"https://doi.org/10.5194/os-7-705-2011"
-        convert.SiO2_to_NTU linear relation from Otilia et al. 2013
-        convert.JTU_to_NTU linear relation from Otilia et al. 2013
+    Alternative conversions available but not currently used by default:
+        :func:`convert.FNU_to_NTU` from Gohin (2011) Ocean Sci., 7, 705–732
+        `<https://doi.org/10.5194/os-7-705-2011>`.
+        :func:`convert.SiO2_to_NTU` linear relation from Otilia et al. 2013.
+        :func:`convert.JTU_to_NTU` linear relation from Otilia et al. 2013.
+        
         Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
-        "MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES."
-        r"https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf"
+        MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES.
+        `<https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf>`.
 
     Parameters
     ----------
-    wqp : WQCharData Object
+    wqp : wq_data.WQCharData
         WQP Characteristic Info Object.
 
     Returns
     -------
-    wqp : WQP Characteristic Info Object.
-        WQP Characteristic Info Object with updated attributes
+    wqp : wq_data.WQCharData
+        WQP Characteristic Info Object with updated attributes.
     """
     #These units exist but have not been encountered yet
     #formazin nephelometric multibeam unit (FNMU);
@@ -391,17 +400,18 @@ def turbidity(wqp):
 def sediment(wqp):
     """Standardize 'Sediment' characteristic.
     
-    Uses and returns WQP Characteristic Info Object.
+    Uses :class:`wq_data.WQCharData` to check basis, check units, and check
+    unit dimensionality.
 
     Parameters
     ----------
-    wqp : WQCharData Object
+    wqp : wq_data.WQCharData
         WQP Characteristic Info Object.
 
     Returns
     -------
-    wqp : WQP Characteristic Info Object.
-        WQP Characteristic Info Object with updated attributes
+    wqp : wq_data.WQCharData
+        WQP Characteristic Info Object with updated attributes.
     """
     #'< 0.0625 mm', < 0.125 mm, < 0.25 mm, < 0.5 mm, < 1 mm, < 2 mm, < 4 mm
     wqp.check_basis(basis_col='ResultParticleSizeBasisText')
@@ -419,15 +429,17 @@ def sediment(wqp):
 
 
 def harmonize_all(df_in, errors='raise'):
-    """Harmonization all 'CharacteristicNames' with existing functions.
+    """Harmonizes all 'CharacteristicNames' column values with methods.
     
     All results are standardized to default units. Intermediate columns are
-    not retained.
+    not retained. See :func:`domains.out_col_lookup` for list of values with
+    methods.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with the expected columns.
+        DataFrame with the expected columns (changes based on values in
+        'CharacteristicNames' column).
     errors : str, optional
         Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
         If ‘raise’, invalid dimension conversions will raise an exception.
@@ -437,11 +449,13 @@ def harmonize_all(df_in, errors='raise'):
     Returns
     -------
     df : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
     
     Examples
     --------
-    Build example table from tests to use in place of Water Quality Portal query response
+    Build example df_in table from harmonize_wq tests to use in place of Water
+    Quality Portal query response, this table has 'Temperature, water' and 
+    'Phosphorous' results:
     
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
@@ -467,6 +481,8 @@ def harmonize_all(df_in, errors='raise'):
     <BLANKLINE>
     [359505 rows x 42 columns]
     
+    List columns that were added:
+    
     >>> df_result.columns[-7:]
     Index(['QA_flag', 'Phosphorus', 'Speciation', 'TP_Phosphorus',
            'TDP_Phosphorus', 'Other_Phosphorus', 'Temperature'],
@@ -475,9 +491,9 @@ def harmonize_all(df_in, errors='raise'):
     See Also
     --------
     See any of the 'Simple' notebooks found in 
-    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
-    examples of how this function is used to standardize, clean and wrangle a Water Quality Portal 
-    query response.
+    'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
+    examples of how this function is used to standardize, clean, and wrangle a
+    Water Quality Portal query response.
     
     """
     df_out = df_in.copy()
@@ -490,16 +506,21 @@ def harmonize_all(df_in, errors='raise'):
 
 def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
                       intermediate_columns=False, report=False):
-    """Harmonize a given char_val using the appropriate function.
+    """Harmonize char_val rows based methods specific to that char_val.
 
+    All rows where the value in the 'CharacteristicName' column matches
+    char_val will have their results harmonized based on available methods for
+    that char_val.
+    
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with the expected activity date time columns.
+        DataFrame with the expected columns (change based on char_val).
     char_val : str
-        Expected 'CharacteristicName'.
+        Target value in 'CharacteristicName' column.
     units_out : str, optional
-        Desired units to convert values into. The default is None.
+        Desired units to convert results into.
+        The default None, uses the constant domains.OUT_UNITS.
     errors : str, optional
         Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
         If ‘raise’, then invalid dimension conversions will raise an exception.
@@ -513,12 +534,14 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     Returns
     -------
     df : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
 
     Examples
     --------
-    Build example table from tests to use in place of Water Quality Portal query response
-    
+    Build example df_in table from harmonize_wq tests to use in place of Water
+    Quality Portal query response, this table has 'Temperature, water' and 
+    'Phosphorous' results:
+        
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
     >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
@@ -543,15 +566,17 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     <BLANKLINE>
     [359505 rows x 37 columns]
     
+    List columns that were added:
+    
     >>> df_result.columns[-2:]
     Index(['QA_flag', 'Temperature'], dtype='object')
     
     See Also
     --------
     See any of the 'Detailed' notebooks found in 
-    :ref:'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
-    examples of how this function is used to standardize, clean and wrangle a Water Quality Portal 
-    query response, one CharacteristicName at a time.
+    'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for examples
+    of how this function is used to standardize, clean, and wrangle a Water
+    Quality Portal query response, one 'CharacteristicName' value at a time.
     """
     # Check/retrieve standard attributes and df columns as object
     wqp = WQCharData(df_in, char_val)
