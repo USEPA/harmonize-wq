@@ -61,7 +61,7 @@ jobs:
       - name: Run pip env using R reticulate
         run: |
           install.packages("reticulate")
-          import("harmonize_wq")
+          reticulate::import("harmonize_wq")
         shell: Rscript {0}
         
       - name: Run pytest
