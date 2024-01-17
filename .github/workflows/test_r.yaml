@@ -9,14 +9,15 @@ on:
       [main]
   schedule:
     - cron: '11 1 1 * *'
-    
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  
 jobs:
   R-test:
     name: python ${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
       REPO_NAME: ${{ github.event.repository.name }}
-      R_KEEP_PKG_SOURCE: yes
       
     strategy:
       matrix:
@@ -34,14 +35,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Set up R
-        uses: r-lib/actions/setup-pandoc@v2
-
-      - name: install R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: ${{ matrix.os }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          r-version: 'release'
+
+      - uses: r-lib/actions/setup-pandoc@v1
       
       - name: Update pip and install testing pkgs
         run: |
