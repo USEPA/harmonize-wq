@@ -62,7 +62,7 @@ jobs:
         run: |
           install.packages("reticulate")
           import("harmonize_wq")
-          shell: Rscript {0}
+        shell: Rscript {0}
         
       - name: Run pytest
         run: pytest -v harmonize_wq
