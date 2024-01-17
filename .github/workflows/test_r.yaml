@@ -39,7 +39,7 @@ jobs:
         with:
           r-version: 'release'
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-pandoc@v2
       
       - name: Update pip and install testing pkgs
         run: |
@@ -58,5 +58,10 @@ jobs:
           python -m pip install --no-deps .
           pip install -r requirements.txt
       
+      - name: point R to pip env
+        run: |
+          install.packages("reticulate")
+          import("harmonize_wq")
+        
       - name: Run pytest
         run: pytest -v harmonize_wq
