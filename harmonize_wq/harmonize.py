@@ -39,7 +39,9 @@ def df_checks(df_in, columns=None):
     If column is not in DataFrame it throws an AssertionError:
         
     >>> harmonize.df_checks(df, columns=['ResultMeasureValue'])
+    ... # doctest: +IGNORE_RESULT
     AssertionError: ResultMeasureValue not in DataFrame
+    
     """
     if columns is None:
         # Assign defaults
@@ -473,7 +475,7 @@ def harmonize_all(df_in, errors='raise'):
     2                  21FLGW_WQX  ...  22.42 degree_Celsius
     3                21FLMANA_WQX  ...   30.0 degree_Celsius
     4                21FLHILL_WQX  ...  30.37 degree_Celsius
-                          ...  ...                   ...
+    ...                       ...  ...                   ...
     359500           21FLHILL_WQX  ...  28.75 degree_Celsius
     359501           21FLHILL_WQX  ...  23.01 degree_Celsius
     359502            21FLTBW_WQX  ...  29.97 degree_Celsius
@@ -558,7 +560,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     2                  21FLGW_WQX  ...  22.42 degree_Celsius
     3                21FLMANA_WQX  ...   30.0 degree_Celsius
     4                21FLHILL_WQX  ...  30.37 degree_Celsius
-                          ...  ...                   ...
+    ...                       ...  ...                   ...
     359500           21FLHILL_WQX  ...  28.75 degree_Celsius
     359501           21FLHILL_WQX  ...  23.01 degree_Celsius
     359502            21FLTBW_WQX  ...  29.97 degree_Celsius

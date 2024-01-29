@@ -47,7 +47,7 @@ def infer_CRS(df_in,
     
     >>> from numpy import nan
     >>> df_in = pandas.DataFrame({'Datum': ['NAD83', 'WGS84', '', None, nan]})
-    >>> df_in
+    >>> df_in  # doctest: +NORMALIZE_WHITESPACE
        Datum
     0  NAD83
     1  WGS84
@@ -57,6 +57,7 @@ def infer_CRS(df_in,
 
     >>> from harmonize_wq import location
     >>> location.infer_CRS(df_in, out_EPSG=4326, crs_col='Datum')
+    ... # doctest: +NORMALIZE_WHITESPACE
        Datum                                  QA_flag    EPSG
     0  NAD83                                      NaN     NaN
     1  WGS84                                      NaN     NaN
@@ -136,21 +137,17 @@ def harmonize_locations(df_in, out_EPSG=4326,
     ...                                                                           'NAD27'],
     ...                          })
     >>> df_in
-       LatitudeMeasure  ...  HorizontalCoordinateReferenceSystemDatumName
-    0        27.595036  ...                                         NAD83
-    1        27.521830  ...                                         WGS84
-    2        28.066111  ...                                         NAD27
-    <BLANKLINE>
-    [3 rows x 3 columns]
+       LatitudeMeasure  LongitudeMeasure HorizontalCoordinateReferenceSystemDatumName
+    0        27.595036        -82.030086                                        NAD83
+    1        27.521830        -82.644760                                        WGS84
+    2        28.066111        -82.377500                                        NAD27
 
     >>> from harmonize_wq import location
     >>> location.harmonize_locations(df_in)
-       LatitudeMeasure  LongitudeMeasure  ... QA_flag                    geometry
-    0        27.595036        -82.030086  ...     NaN  POINT (-82.03009 27.59504)
-    1        27.521830        -82.644760  ...     NaN  POINT (-82.64476 27.52183)
-    2        28.066111        -82.377500  ...     NaN  POINT (-82.37750 28.06611)
-    <BLANKLINE>
-    [3 rows x 5 columns] 
+       LatitudeMeasure  LongitudeMeasure HorizontalCoordinateReferenceSystemDatumName QA_flag                    geometry
+    0        27.595036        -82.030086                                        NAD83     NaN  POINT (-82.03009 27.59504)
+    1        27.521830        -82.644760                                        WGS84     NaN  POINT (-82.64476 27.52183)
+    2        28.066111        -82.377500                                        NAD27     NaN  POINT (-82.37750 28.06611)
     """
     df2 = df_in.copy()
 

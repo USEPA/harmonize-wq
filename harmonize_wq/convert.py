@@ -509,7 +509,7 @@ def DO_saturation(val,
     --------
     >>> from harmonize_wq import convert
     >>> convert.DO_saturation(70)
-    ￼5.783632692599999 milligram / liter
+    <Quantity(5.78363269, 'milligram / liter')>
     
     At 2 atm (10m depth)
     >>> convert.DO_saturation(70, ('2 standard_atmosphere'))

@@ -11,6 +11,7 @@
 
 import os
 import sys
+import doctest
 
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../.."))
@@ -67,7 +68,24 @@ html_static_path = []
 #    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 #html_css_files = ["readthedocs-custom.css"] # Override some CSS settings
 
-# -- Options for Napolean output ---------------------------------------------
+
+# -- Options for doctest ------------------------------------------------------
+# default to ignoring whitespace
+doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+
+# Should enable IGNORE_RESULT option
+IGNORE_RESULT = doctest.register_optionflag('IGNORE_RESULT')
+
+OutputChecker = doctest.OutputChecker
+class CustomOutputChecker(OutputChecker):
+    def check_output(self, want, got, optionflags):
+        if IGNORE_RESULT & optionflags:
+            return True
+        return OutputChecker.check_output(self, want, got, optionflags)
+
+doctest.OutputChecker = CustomOutputChecker
+
+# -- Options for Napolean output ----------------------------------------------
 napolean_include_private_with_doc = False
 napolean_include_special_with_doc = False
 napoleon_include_init_with_doc = False
@@ -77,7 +95,7 @@ napolean_reprocess_types = True
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
 
-# -- Options for sphinx-contrib\apidoc -----------------------------------------------------
+# -- Options for sphinx-contrib\apidoc ----------------------------------------
 # NOT currently using apidoc
 #apidoc_separate_modules = True
 #apidoc_module_dir = "../harmonize_wq"

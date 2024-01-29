@@ -292,10 +292,11 @@ class WQCharData():
         0        NaN
         1        NaN
         2    Unknown
+        Name: Units, dtype: object
         
         Run check_units method to replace bad or missing units for phosphorus:
     
-        >>> wq.check_units()
+        >>> wq.check_units()  # doctest: +IGNORE_RESULT
         UserWarning: WARNING: 'Unknown' UNDEFINED UNIT for Phosphorus
         
         >>> wq.df[['CharacteristicName', 'Units', 'QA_flag']]
@@ -359,20 +360,18 @@ class WQCharData():
         ...                 'MethodSpecificationName': [nan, nan, 'as PO4',],        
         ...                 })
         >>> df
-           CharacteristicName  ... MethodSpecificationName
-        0          Phosphorus  ...                     NaN
-        1  Temperature, water  ...                     NaN
-        2          Phosphorus  ...                  as PO4
-        <BLANKLINE>
-        [3 rows x 4 columns]
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue MethodSpecificationName
+        0          Phosphorus                     mg/l as P                1.0                     NaN
+        1  Temperature, water                           NaN               67.0                     NaN
+        2          Phosphorus                          mg/l                 10                  as PO4
         
         Build WQ Characteristic Data class from pandas DataFrame:
         
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
-        >>> wq.df.columns
+        >>> wq.df.columns  # doctest: +NORMALIZE_WHITESPACE
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
-               'MethodSpecificationName', 'ResultMeasureValue', 'Units', 'Phosphorus'],
+               'ResultMeasureValue', 'MethodSpecificationName', 'Units', 'Phosphorus'],
               dtype='object')
         
         Run check_basis method to speciation for phosphorus:
@@ -382,7 +381,7 @@ class WQCharData():
           MethodSpecificationName  Speciation
         0                     NaN           P
         1                     NaN         NaN
-        2                     NaN         PO4
+        2                  as PO4         PO4
         
         Note where basis was part of 'ResultMeasure/MeasureUnitCode' it has
         been removed in 'Units':
@@ -491,8 +490,26 @@ class WQCharData():
         
         Examples
         --------
+        Build DataFrame to use as input:
+        
+        >>> from pandas import DataFrame
+        >>> from numpy import nan
+        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l',],
+        ...                 'ResultMeasureValue': ['1.0', '67.0', '10',],
+        ...                 'MethodSpecificationName': [nan, nan, 'as PO4',],        
+        ...                 })
+        >>> df
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue MethodSpecificationName
+        0          Phosphorus                     mg/l as P                1.0                     NaN
+        1  Temperature, water                           NaN               67.0                     NaN
+        2          Phosphorus                          mg/l                 10                  as PO4
+        
+        Build WQ Characteristic Data class from pandas DataFrame:
+        
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
+        
         >>> wq.measure_mask()
         0     True
         1    False
@@ -544,9 +561,9 @@ class WQCharData():
         
         >>> wq.convert_units()
         >>> wq.df
-           CharacteristicName  ...                            Phosphorus
-        0          Phosphorus  ...  1000.0000000000001 milligram / liter
-        1  Temperature, water  ...                                   NaN
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue  Units                            Phosphorus
+        0          Phosphorus                         mg/ml                1.0  mg/ml  1000.0000000000001 milligram / liter
+        1  Temperature, water                         deg C               10.0    NaN                                   NaN
         """
         if default_unit:
             self.units = default_unit
@@ -603,7 +620,7 @@ class WQCharData():
         >>> wq.df[['Units', 'DO']]
                        Units        DO
         0               mg/l  1.000000
-        1  milligram / liter  0.826233
+        1  milligram / liter  0.008262
         """
         # TODO: QA flag inexact conversions?
         df_out = self.df
@@ -701,15 +718,15 @@ class WQCharData():
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Temperature, water')
         >>> wq.df
-           CharacteristicName ResultMeasure/MeasureUnitCode  ...  Units Temperature
-        0  Temperature, water                         deg C  ...  deg C          31
-        1  Temperature, water                         deg F  ...  deg F          87
+           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue  Units  Temperature
+        0  Temperature, water                         deg C                 31  deg C           31
+        1  Temperature, water                         deg F                 87  deg F           87
          
         >>> wq.replace_unit_str(' ', '')
         >>> wq.df[['ResultMeasure/MeasureUnitCode', 'Units', 'Temperature']]
-           ResultMeasure/MeasureUnitCode Units Temperature
-        0                          deg C  degC          31
-        1                          deg F  degF          87
+          ResultMeasure/MeasureUnitCode Units  Temperature
+        0                         deg C  degC           31
+        1                         deg F  degF           87
         """
         df_out = self.df
         if mask is None:
@@ -754,17 +771,15 @@ class WQCharData():
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Fecal Coliform')
         >>> wq.df
-          CharacteristicName ResultMeasure/MeasureUnitCode  ...    Units Fecal_Coliform
-        0     Fecal Coliform                       #/100ml  ...  #/100ml            1.0
-        1     Fecal Coliform                           MPN  ...      MPN           10.0
-        <BLANKLINE>
-        [2 rows x 5 columns]
+          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue    Units  Fecal_Coliform
+        0     Fecal Coliform                       #/100ml                1.0  #/100ml             1.0
+        1     Fecal Coliform                           MPN                 10      MPN            10.0
          
         >>> wq.replace_unit_by_dict(domains.UNITS_REPLACE['Fecal_Coliform'])
         >>> wq.df
-          CharacteristicName ResultMeasure/MeasureUnitCode  ...        Units Fecal_Coliform
-        0     Fecal Coliform                       #/100ml  ...  CFU/(100ml)            1.0
-        1     Fecal Coliform                           MPN  ...  MPN/(100ml)           10.0
+          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue        Units  Fecal_Coliform
+        0     Fecal Coliform                       #/100ml                1.0  CFU/(100ml)             1.0
+        1     Fecal Coliform                           MPN                 10  MPN/(100ml)            10.0
         """
         col = self.col.unit_out
         for item in val_dict.items():

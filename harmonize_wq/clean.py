@@ -36,11 +36,9 @@ def datetime(df_in):
     1        2004-07-01                    NaN                            NaN
     >>> from harmonize_wq import clean
     >>> clean.datetime(df)
-      ActivityStartDate  ...         Activity_datetime
-    0        2004-09-01  ... 2004-09-01 15:01:00+00:00
-    1        2004-07-01  ...                       NaT
-    <BLANKLINE>
-    [2 rows x 4 columns]
+      ActivityStartDate ActivityStartTime/Time ActivityStartTime/TimeZoneCode         Activity_datetime
+    0        2004-09-01               10:01:00                          -0500 2004-09-01 15:01:00+00:00
+    1        2004-07-01                    NaN                            NaN                       NaT
     """
     # Expected columns
     date, time, tz = ('ActivityStartDate',
@@ -267,8 +265,7 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
     try:
         harmonize.df_checks(df2, media_col)
     except AssertionError:
-        problem = "{} missing, querying from activities...".format(media_col)
-        warn('Warning: ' + problem)
+        warn(f'Warning: {media_col} missing, querying from activities...')
         # Try query/join
         if char_val:
             df2 = wrangle.add_activities_to_df(df2, c_mask)

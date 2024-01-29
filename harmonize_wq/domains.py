@@ -92,12 +92,14 @@ def get_domain_dict(table, cols=None):
     Return dictionary for domain from WQP table (e.g., 'ResultSampleFraction'),
     The default keys ('Name') are shown as values ('Description') are long:
     
-    >>> domains.get_domain_dict('ResultSampleFraction').keys()
+    >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
-               'Dissolved', 'Extractable', 'Field', 'Filterable', 'Filtered field and/or lab',
+               'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
+               'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
+               'Extractable, residual', 'Field', 'Filterable', 'Filtered field and/or lab',
                'Filtered, field', 'Filtered, lab', 'Fixed', 'Free Available', 'Inorganic',
-               'Leachable', 'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile',
-               'None', 'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable', 'Sieved',
+               'Leachable', 'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile', 'None',
+               'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable', 'Sieved',
                'Strong Acid Diss', 'Supernate', 'Suspended', 'Total', 'Total Recoverable',
                'Total Residual', 'Total Soluble', 'Unfiltered', 'Unfiltered, field', 'Vapor',
                'Volatile', 'Weak Acid Diss', 'non-linear function'])
@@ -242,7 +244,7 @@ def registry_adds_list(out_col):
     Generate a new pint unit registry object for e.g., Sediment:
     
     >>> from harmonize_wq import domains
-    >>> domains.registry_adds_list('Sediment')
+    >>> domains.registry_adds_list('Sediment')  # doctest: +NORMALIZE_WHITESPACE
     ['fraction = [] = frac',
      'percent = 1e-2 frac',
      'parts_per_thousand = 1e-3 = ppth',
@@ -306,8 +308,8 @@ def bacteria_reg(ureg=None):
     --------
     Generate a new pint UnitRegistry for e.g., bacteria:
     
-    >>> domains.bacteria_reg()
-    <pint.registry.UnitRegistry object at 0x000002BED1999880>
+    >>> type(domains.bacteria_reg())
+    <class 'pint.registry.UnitRegistry'>
     """
     if ureg is None:
         ureg = pint.UnitRegistry()
@@ -374,16 +376,10 @@ def characteristic_cols(category=None):
     Running the function without a category returns the full list of column
     names, including a category returns only the columns in that category:
         
-    >>> domains.characteristic_cols('QA')
-    ['ResultDetectionConditionText',
-     'ResultStatusIdentifier',
-     'PrecisionValue',
-     'DataQuality/BiasValue',
-     'ConfidenceIntervalValue',
-     'UpperConfidenceLimitValue',
-     'LowerConfidenceLimitValue',
-     'ResultCommentText',
-     'ResultSamplingPointName',
+    >>> domains.characteristic_cols('QA')  # doctest: +NORMALIZE_WHITESPACE
+    ['ResultDetectionConditionText', 'ResultStatusIdentifier', 'PrecisionValue',
+     'DataQuality/BiasValue', 'ConfidenceIntervalValue', 'UpperConfidenceLimitValue',
+     'LowerConfidenceLimitValue', 'ResultCommentText', 'ResultSamplingPointName',
      'ResultDetectionQuantitationLimitUrl']
     """
     cols = {'ActivityStartDate': 'activity',

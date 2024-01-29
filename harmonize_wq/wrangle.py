@@ -303,10 +303,13 @@ def add_activities_to_df(df_in, mask=None):
     >>> df1.shape
     (359505, 35)
     
+    Run on the first 1000 results
+    df2 = df1[:1000]
+    
     >>> from harmonize_wq import wrangle
-    >>> df_activities = wrangle.add_activities_to_df(df1)
+    >>> df_activities = wrangle.add_activities_to_df(df2)
     >>> df_activities.shape
-    (359505, 100)
+    (1000, 101)
     
     Look at the columns added:
     
@@ -407,7 +410,7 @@ def add_detection(df_in, char_val):
     >>> from harmonize_wq import wrangle
     >>> df_detects = wrangle.add_detection(df1, 'Phosphorus')
     >>> df_detects.shape
-    (359712, 38)
+    (359507, 39)
     
     Note: the additional rows are due to one result being able to be assigned 
     multiple detection results.
@@ -712,6 +715,34 @@ def to_simple_shape(gdf, out_shp):
 
     Examples
     --------
+    Build example geopandas GeoDataFrame of locations for stations:
+    
+    >>> import geopandas
+    >>> from shapely.geometry import Point
+    >>> from numpy import nan
+    >>> d = {'MonitoringLocationIdentifier': ['In', 'Out'],
+    ...      'geometry': [Point (-87.1250, 30.50000),
+    ...                   Point (-87.5000, 30.50000),]}
+    >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
+    >>> gdf
+      MonitoringLocationIdentifier                    geometry
+    0                           In  POINT (-87.12500 30.50000)
+    1                          Out  POINT (-87.50000 30.50000)
+    
+    Add datetime column
+    
+    >>> gdf['ActivityStartDate'] = ['2004-09-01', '2004-02-18']
+    >>> gdf['ActivityStartTime/Time'] = ['10:01:00', '15:39:00']
+    >>> gdf['ActivityStartTime/TimeZoneCode'] = ['EST', 'EST']
+    >>> from harmonize_wq import clean
+    >>> gdf = clean.datetime(gdf)
+    >>> gdf
+      MonitoringLocationIdentifier  ...         Activity_datetime
+    0                           In  ... 2004-09-01 15:01:00+00:00
+    1                          Out  ... 2004-02-18 20:39:00+00:00
+    <BLANKLINE>
+    [2 rows x 6 columns]
+    
     >>> from harmonize_wq import wrangle
     >>> wrangle.to_simple_shape(gdf, 'dataframe.shp')
     """

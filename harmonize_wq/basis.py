@@ -145,6 +145,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
     >>> from numpy import nan
     >>> df['Speciation'] = [nan, 'as PO4']
     >>> df_speciation_change = basis.basis_from_unit(df, basis_dict, unit_col)
+    ... # doctest: +IGNORE_RESULT
     UserWarning: Mismatched Speciation: updated from as PO4 to as P (units)
     >>> df_speciation_change[['Speciation', 'QA_flag']]
       Speciation                                          QA_flag
@@ -168,7 +169,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
                                                            base)
                         if old_basis != base:
                             qa_mask = mask & (df[basis_col] == old_basis)
-                            warn('Mismatched {}'.format(flag))
+                            warn(f'Mismatched {flag}', UserWarning)
                             df = harmonize.add_qa_flag(df, qa_mask, flag)
                 # Add/update basis from unit
                 df = set_basis(df, mask, base, basis_col)
@@ -275,6 +276,7 @@ def update_result_basis(df_in, basis_col, unit_col):
     >>> df_temp_basis = basis.update_result_basis(df,
     ...                                           'ResultTemperatureBasisText',
     ...                                           'Units')
+    ... # doctest: +IGNORE_RESULT
     UserWarning: Mismatched ResultTemperatureBasisText: updated from 25 deg C to @25C (units)
     >>> df_temp_basis[['Units']]
        Units
@@ -335,7 +337,7 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
     ...                                        'Salinity'],
     ...                 'MethodSpecificationName': ['as P', 'as PO4', ''],
     ...                 })
-    >>> df
+    >>> df  # doctest: +NORMALIZE_WHITESPACE
       CharacteristicName MethodSpecificationName
     0         Phosphorus                    as P
     1         Phosphorus                  as PO4
