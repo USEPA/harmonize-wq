@@ -4,6 +4,8 @@
 Contains several unit conversion functions not in :mod:`pint`.
 """
 import pint
+import math
+
 
 # TODO: does this constant belong here or in domains?
 PERIODIC_MW = {'Organic carbon': 180.16,
@@ -507,18 +509,18 @@ def DO_saturation(val,
     --------
     >>> from harmonize_wq import convert
     >>> convert.DO_saturation(70)
-    ￼578.3632692599999 milligram / liter
+    ￼5.783632692599999 milligram / liter
+    
+    At 2 atm (10m depth)
+    >>> convert.DO_saturation(70, ('2 standard_atmosphere'))
+    ￼￼11.746159340060716 milligram / liter
     """
     p, t = pressure, temperature
     if p == 1 & (t == 25):
-        Cp = 8.262332418
+        cP = 8.262332418
     else:
-        Pwv = 11.8571-(3840.7/(t+273.15))-(216961/((t+273.15)**2))
-    # CP =((EXP(7.7117-1.31403*LN(t+45.93)))* P *
-    #      (1-EXP(Pwv)/p) *
-    #      (1-(0.000975-(0.00001426*t)+(0.00000006436*(t**2)))*p)) /
-    #     (1-EXP(Pwv))/(1-(0.000975-(0.00001426*t)+(0.00000006436*(t**2))))
-    return float(val) * Cp  # Divide by 100?
+        cP = _DO_concentration_eq(p, t)
+    return float(val)/100 * cP  # Divide by 100?
 
 
 @u_reg.wraps(None, (u_reg.milligram/u_reg.liter,
@@ -551,17 +553,31 @@ def DO_concentration(val,
     
     >>> from harmonize_wq import convert
     >>> convert.DO_concentration(input_DO)
-    """
-    # TODO: switch to kelvin?
+    6995.603308586222
+    """  
+    p, t = pressure, temperature
+    if p == 1 & (t == 25):
+        cP = 8.262332418
+    else:
+        cP = _DO_concentration_eq(p, t)
+    return 100*val /cP
+
+
+def _DO_concentration_eq(p, t):
+    """ Equilibrium oxygen concentration at non-standard"""
     # https://www.waterontheweb.org/under/waterquality/oxygen.html#:~:
     # text=Oxygen%20saturation%20is%20calculated%20as,
     # concentration%20at%20100%25%20saturation%20decreases.
-    p, t = pressure, temperature
-    standard = 0.000975 - (0.00001426*t) + (0.00000006436*(t**2))
-    numerator = ((1-Pwv)/p)*(1-(standard*p))
+    tk = t + 273.15  # t in kelvin (t is in C)
+    standard = 0.000975 - (1.426e-05*t) + (6.436e-08*(t**2))  # Theta
+    # partial pressure of water vapor, atm
+    Pwv = math.exp(11.8571 - (3840.7/tk) - (216961/(tk**2)))
+    # equilibrium oxygen concentration at std pres of 1 atm
+    cStar = math.exp(7.7117 - 1.31403 * math.log(t + 45.93))
+    numerator = (1-Pwv/p)*(1-(standard*p))
     denominator = (1-Pwv)*(1-standard)
-    Cp = C0*p(numerator/denominator)
-    return (100*val)/Cp
+    
+    return cStar*p*(numerator/denominator)
 
 
 @u_reg.wraps(u_reg.dimensionless, (u_reg.microsiemens / u_reg.centimeter,

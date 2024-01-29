@@ -500,15 +500,27 @@ def test_harmonize_DO():
     assert actual.iloc[4][orig_unit_col] == '%'  # Confirm orig unit
     assert str(actual.iloc[4]['DO'].units) == expected_unit
     assert actual.iloc[4][orig_val_col] == '68.7'  # Confirm original measure
-    assert actual.iloc[4]['DO'].magnitude == 5.676222371166
+    assert actual.iloc[4]['DO'].magnitude == 0.05676222371166
     # TODO: add tests for 99637 in ppm? Currently ppm == mg/l
+    
+    # TODO: add tests at different pressure and temperature
+    actual_p2 = str(convert.DO_saturation(70, '0.5 standard_atmosphere'))
+    expected_p2 = '2.7994178481769043 milligram / liter'
+    assert actual_p2 == expected_p2
+    from harmonize_wq.convert import u_reg
+    actual_p2 = str(convert.DO_concentration('0.7  milligram / liter',
+                                             '2 standard_atmosphere',
+                                             u_reg.Quantity(32, u_reg("degC"))))
+    expected_p2 = '4.681314214558987'
+    assert actual_p2 == expected_p2
+    
     # Inspect specific result - where units missing
     assert str(actual.iloc[6816][orig_unit_col]) == 'nan'  # Confirm missing
     # Confirm expected flag - for missing/infered units
     expected_flag = 'ResultMeasure/MeasureUnitCode: MISSING UNITS, mg/l assumed'
     actual_flags = actual.iloc[6816]['QA_flag'].split('; ')
     assert actual_flags[1] == expected_flag
-    # Check value unchagned for missing units
+    # Check value unchanged for missing units
     # TODO: values would stay the same (no conversion), but this example is '*Not Reported'
 
     # Inspect specific result - where value missing
