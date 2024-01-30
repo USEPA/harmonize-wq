@@ -476,7 +476,7 @@ def harmonize_all(df_in, errors='raise'):
     2                  21FLGW_WQX  ...              NaN
     3                21FLMANA_WQX  ...              NaN
     4                21FLHILL_WQX  ...              NaN
-                          ...  ...              ...
+    ...                       ...  ...              ...
     359500           21FLHILL_WQX  ...              NaN
     359501           21FLHILL_WQX  ...              NaN
     359502            21FLTBW_WQX  ...              NaN
@@ -488,6 +488,7 @@ def harmonize_all(df_in, errors='raise'):
     List columns that were added:
     
     >>> sorted(list(df_result_all.columns[-7:]))
+    ... # doctest: +NORMALIZE_WHITESPACE
     ['Other_Phosphorus', 'Phosphorus', 'QA_flag', 'Speciation',
      'TDP_Phosphorus', 'TP_Phosphorus', 'Temperature']
     
