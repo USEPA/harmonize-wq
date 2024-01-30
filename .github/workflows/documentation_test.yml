@@ -34,6 +34,7 @@ jobs:
           #sphinx-build docs/source _build
           cd docs
           make html
+          make doctest
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
