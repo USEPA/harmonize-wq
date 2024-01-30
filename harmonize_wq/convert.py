@@ -58,10 +58,11 @@ def mass_to_moles(ureg, char_val, Q_):
     >>> ureg = pint.UnitRegistry()
     
     Build pint quantity:
+    >>> Q_ = 1 * ureg('g')
     
-    >>> Q_ = pint.Quantity('1 g')
-    >>> convert.mass_to_moles(ureg, 'Phosphorus', Q_)
-
+    >>> from harmonize_wq import convert
+    >>> str(convert.mass_to_moles(ureg, 'Phosphorus', Q_))
+    '0.03228931223764934 mole'
     """
     # TODO: Not used yet
     m_w = PERIODIC_MW[char_val]
@@ -100,9 +101,11 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     
     Build quantity:
     
-    >>> Q_ = pint.Quantity('0.265 umol')
-    >>> convert.moles_to_mass(ureg, Q_, basis='as P')
-
+    >>> Q_ = 0.265 * ureg('umol')
+    
+    >>> from harmonize_wq import convert
+    >>> str(convert.moles_to_mass(ureg, Q_, basis='as P'))
+    '8.20705e-06 gram'
     """
     if basis:
         # Clean-up basis
