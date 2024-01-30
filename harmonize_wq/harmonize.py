@@ -468,29 +468,33 @@ def harmonize_all(df_in, errors='raise'):
     (359505, 35)
     
     >>> from harmonize_wq import harmonize
-    >>> df_result = harmonize.harmonize_all(df1)
-    >>> df_result
-           OrganizationIdentifier  ...           Temperature
-    0                21FLHILL_WQX  ...  29.93 degree_Celsius
-    1                21FLHILL_WQX  ...  17.82 degree_Celsius
-    2                  21FLGW_WQX  ...  22.42 degree_Celsius
-    3                21FLMANA_WQX  ...   30.0 degree_Celsius
-    4                21FLHILL_WQX  ...  30.37 degree_Celsius
-    ...                       ...  ...                   ...
-    359500           21FLHILL_WQX  ...  28.75 degree_Celsius
-    359501           21FLHILL_WQX  ...  23.01 degree_Celsius
-    359502            21FLTBW_WQX  ...  29.97 degree_Celsius
-    359503           21FLPDEM_WQX  ...  32.01 degree_Celsius
-    359504           21FLSMRC_WQX  ...                   NaN
+    >>> df_result_all = harmonize.harmonize_all(df1)
+    >>> df_result_all
+           OrganizationIdentifier  ... Other_Phosphorus
+    0                21FLHILL_WQX  ...              NaN
+    1                21FLHILL_WQX  ...              NaN
+    2                  21FLGW_WQX  ...              NaN
+    3                21FLMANA_WQX  ...              NaN
+    4                21FLHILL_WQX  ...              NaN
+                          ...  ...              ...
+    359500           21FLHILL_WQX  ...              NaN
+    359501           21FLHILL_WQX  ...              NaN
+    359502            21FLTBW_WQX  ...              NaN
+    359503           21FLPDEM_WQX  ...              NaN
+    359504           21FLSMRC_WQX  ...              NaN
     <BLANKLINE>
     [359505 rows x 42 columns]
     
     List columns that were added:
     
-    >>> df_result.columns[-7:]
-    Index(['QA_flag', 'Phosphorus', 'Speciation', 'TP_Phosphorus',
-           'TDP_Phosphorus', 'Other_Phosphorus', 'Temperature'],
-          dtype='object')
+    >>> sorted(list(df_result_all.columns[-7:]))
+    ['Other_Phosphorus',
+     'Phosphorus',
+     'QA_flag',
+     'Speciation',
+     'TDP_Phosphorus',
+     'TP_Phosphorus',
+     'Temperature']
     
     See Also
     --------
