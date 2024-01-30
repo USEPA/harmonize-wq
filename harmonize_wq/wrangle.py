@@ -303,7 +303,8 @@ def add_activities_to_df(df_in, mask=None):
     >>> df1.shape
     (359505, 35)
     
-    Run on the first 1000 results
+    Run on the first 1000 results:
+
     >>> df2 = df1[:1000]
     
     >>> from harmonize_wq import wrangle
