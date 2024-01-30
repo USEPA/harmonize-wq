@@ -39,7 +39,8 @@ def df_checks(df_in, columns=None):
     If column is not in DataFrame it throws an AssertionError:
         
     >>> harmonize.df_checks(df, columns=['ResultMeasureValue'])
-    ... # doctest: +IGNORE_RESULT
+    Traceback (most recent call last):
+        ...
     AssertionError: ResultMeasureValue not in DataFrame
     
     """
