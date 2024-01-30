@@ -58,6 +58,7 @@ def mass_to_moles(ureg, char_val, Q_):
     >>> ureg = pint.UnitRegistry()
     
     Build pint quantity:
+
     >>> Q_ = 1 * ureg('g')
     
     >>> from harmonize_wq import convert
