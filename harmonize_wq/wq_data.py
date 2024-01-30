@@ -59,7 +59,7 @@ class WQCharData():
     0          Phosphorus                            NaN  ...   NaN         1.0
     1  Temperature, water                            NaN  ...   NaN         NaN
     <BLANKLINE>
-    [2 rows x 5 columns]                         NaN               10.0    NaN         NaN
+    [2 rows x 5 columns]
     
     >>> wq.df.columns
     Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
@@ -992,37 +992,64 @@ class WQCharData():
         Build pandas DataFrame to use as input:
         
         >>> from pandas import DataFrame
-        >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Carbon',],
+        >>> from numpy import nan
+        >>> df = DataFrame({'CharacteristicName': ['Organic carbon', 'Organic carbon',],
         ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'umol',],
-        ...                 'ResultMeasureValue': ['1.0', '0.265',],      
+        ...                 'ResultMeasureValue': ['1.0', '0.265',],
+        ...                 'MethodSpecificationName': [nan, nan,],
         ...                 })
-        >>> df
-          CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
-        0             Carbon                          mg/l                1.0
-        1             Carbon                          umol              0.265
+        >>> df[['ResultMeasure/MeasureUnitCode', 'ResultMeasureValue']]
+          ResultMeasure/MeasureUnitCode ResultMeasureValue
+        0                          mg/l                1.0
+        1                          umol              0.265
         
         Build WQ Characteristic Data class from pandas DataFrame:
             
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Organic carbon')
         >>> wq.df
-          CharacteristicName ResultMeasure/MeasureUnitCode  ... Units Carbon
-        0             Carbon                          mg/l  ...  mg/l    1.0
-        1             Carbon                          umol  ...  umol  0.265
+          CharacteristicName ResultMeasure/MeasureUnitCode  ... Units  Carbon
+        0     Organic carbon                          mg/l  ...  mg/l   1.000
+        1     Organic carbon                          umol  ...  umol   0.265
         <BLANKLINE>
-        [2 rows x 5 columns]
+        [2 rows x 6 columns]
         
-        Assemble moles list:
+        Run required checks:
+            
+        >>> wq.check_basis()
+        >>> wq.check_units()
+        
+        Assemble dimensions dict and moles list:
 
         >>> dimension_dict, mol_list = wq.dimension_fixes()
+        >>> dimension_dict
+        {'micromole': '0.00018015999999999998 gram / l'}
         >>> mol_list
-        ['umol']
+        ['0.00018015999999999998 gram / l']
+        
+        Replace units by dimension_dict:
+            
+        >>> wq.replace_unit_by_dict(dimension_dict, wq.measure_mask())
+        >>> wq.df[['Units', 'Carbon']]
+                                     Units  Carbon
+        0                             mg/l   1.000
+        1  0.00018015999999999998 gram / l   0.265        
+        
+        Convert Carbon measure into whole units:
         
         >>> wq.moles_convert(mol_list)
-        >>> wq.df
-          CharacteristicName ResultMeasure/MeasureUnitCode  ... Units     Carbon
-        0             Carbon                          mg/l  ...  mg/l        1.0
-        1             Carbon                          umol  ...  mg/l  0.0477424
+        >>> wq.df[['Units', 'Carbon']]
+                  Units    Carbon
+        0          mg/l  1.000000
+        1  gram / liter  0.000048
+        
+        This allows final conversion without dimensionality issues:
+            
+        >>> wq.convert_units()
+        >>> wq.df['Carbon']
+        0          1.0 milligram / liter
+        1    0.0477424 milligram / liter
+        Name: Carbon, dtype: object
         """
         # Variables from WQP
         df_out = self.df
