@@ -150,7 +150,7 @@ def cm_to_NTU(val):
     
     >>> from harmonize_wq import convert
     >>> str(convert.cm_to_NTU(str(turbidity)))
-    '3941.8 NTU'
+    '3941.8 Nephelometric_Turbidity_Units'
     >>> type(convert.cm_to_NTU(str(turbidity)))
     <class 'pint.Quantity'>
     """
@@ -252,7 +252,7 @@ def JTU_to_NTU(val):
     
     >>> from harmonize_wq import convert
     >>> str(convert.JTU_to_NTU(str(turbidity)))
-    '18.9773 NTU'
+    '18.9773 Nephelometric_Turbidity_Units'
     >>> type(convert.JTU_to_NTU(str(turbidity)))
     <class 'pint.Quantity'>
     """
@@ -304,7 +304,7 @@ def SiO2_to_NTU(val):
     
     >>> from harmonize_wq import convert
     >>> str(convert.SiO2_to_NTU(str(turbidity)))
-    '7.5701 NTU'
+    '7.5701 Nephelometric_Turbidity_Units'
     >>> type(convert.SiO2_to_NTU(str(turbidity)))
     <class 'pint.Quantity'>
     """
@@ -445,8 +445,8 @@ def PSU_to_density(val,
     Convert to density:
 
     >>> from harmonize_wq import convert
-    >>> convert.PSU_to_density(input_psu)
-    997.0540284772519 milligram / milliliter
+    >>> str(convert.PSU_to_density(input_psu))
+    '997.0540284772519 milligram / milliliter'
     """
     p, t = pressure, temperature
 
