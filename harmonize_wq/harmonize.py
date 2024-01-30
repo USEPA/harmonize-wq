@@ -488,13 +488,8 @@ def harmonize_all(df_in, errors='raise'):
     List columns that were added:
     
     >>> sorted(list(df_result_all.columns[-7:]))
-    ['Other_Phosphorus',
-     'Phosphorus',
-     'QA_flag',
-     'Speciation',
-     'TDP_Phosphorus',
-     'TP_Phosphorus',
-     'Temperature']
+    ['Other_Phosphorus', 'Phosphorus', 'QA_flag', 'Speciation',
+     'TDP_Phosphorus', 'TP_Phosphorus', 'Temperature']
     
     See Also
     --------
