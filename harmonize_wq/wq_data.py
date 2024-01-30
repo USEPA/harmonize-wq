@@ -1023,7 +1023,7 @@ class WQCharData():
 
         >>> dimension_dict, mol_list = wq.dimension_fixes()
         >>> dimension_dict
-        {'micromole': '0.00018015999999999998 gram / l'}
+        {'umol': '0.00018015999999999998 gram / l'}
         >>> mol_list
         ['0.00018015999999999998 gram / l']
         
