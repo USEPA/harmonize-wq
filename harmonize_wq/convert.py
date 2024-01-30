@@ -5,6 +5,7 @@ Contains several unit conversion functions not in :mod:`pint`.
 """
 import pint
 import math
+from harmonize_wq import domains
 
 
 # TODO: does this constant belong here or in domains?
@@ -26,9 +27,10 @@ PERIODIC_MW = {'Organic carbon': 180.16,
 
 u_reg = pint.UnitRegistry()  # For use in wrappers
 # TODO: find more elegant way to do this with all definitions
-u_reg.define('NTU = [turbidity]')
-u_reg.define('Jackson_Turbidity_Units = [] = JTU')
-u_reg.define('SiO2 = []')
+for definition in domains.registry_adds_list('Turbidity'):
+    u_reg.define(definition)
+for definition in domains.registry_adds_list('Salinity'):
+    u_reg.define(definition)
 
 
 def mass_to_moles(ureg, char_val, Q_):
