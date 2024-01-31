@@ -18,7 +18,8 @@ Standardize, clean, and wrangle Water Quality Portal data into more analytic-rea
     overview
     installing
     example workflow
-    Harmonize_Tampa.ipynb
+    Harmonize_Tampa_Simple
+    Harmonize_Tampa_Detailed
 
 .. toctree::
     :maxdepth: 1
