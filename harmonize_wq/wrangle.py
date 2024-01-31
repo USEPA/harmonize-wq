@@ -408,13 +408,18 @@ def add_detection(df_in, char_val):
     >>> df1.shape
     (359505, 35)
     
+    Run on the 1000 results to speed it up:
+
+    >>> df2 = df1[19000:20000]
+    >>> df2.shape
+    
     >>> from harmonize_wq import wrangle
-    >>> df_detects = wrangle.add_detection(df1, 'Phosphorus')
+    >>> df_detects = wrangle.add_detection(df2, 'Phosphorus')
     >>> df_detects.shape
-    (359507, 39)
+    (1001, 38)
     
     Note: the additional rows are due to one result being able to be assigned 
-    multiple detection results.
+    multiple detection results. This is not the case for e.g., df1[:1000]
     
     Look at the columns added:
     
