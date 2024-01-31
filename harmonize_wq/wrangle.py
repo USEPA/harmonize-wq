@@ -412,6 +412,7 @@ def add_detection(df_in, char_val):
 
     >>> df2 = df1[19000:20000]
     >>> df2.shape
+    (1000, 35)
     
     >>> from harmonize_wq import wrangle
     >>> df_detects = wrangle.add_detection(df2, 'Phosphorus')
