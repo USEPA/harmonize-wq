@@ -23,6 +23,10 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
+      - name: install pandoc
+        uses: docker://pandoc/core:2.9
+        with:
+          args: "--help" # gets appended to pandoc command
       - uses: actions/setup-python@v3
         with:
           python-version: 3.9
