@@ -310,7 +310,7 @@ def add_activities_to_df(df_in, mask=None):
     >>> from harmonize_wq import wrangle
     >>> df_activities = wrangle.add_activities_to_df(df2)
     >>> df_activities.shape
-    (1000, 101)
+    (1000, 100)
     
     Look at the columns added:
     
