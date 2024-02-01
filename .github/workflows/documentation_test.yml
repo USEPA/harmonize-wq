@@ -24,7 +24,9 @@ jobs:
         id: pages
         uses: actions/configure-pages@v2
       - name: install pandoc
-        uses: docker://pandoc/core:2.9
+        run: |
+          # pandoc is not up to date in the ubuntu repos, so we install directly
+          wget https://github.com/jgm/pandoc/releases/download/3.1.2/pandoc-3.1.2-1-amd64.deb && sudo dpkg -i pandoc-3.1.2-1-amd64.deb
       - uses: actions/setup-python@v3
         with:
           python-version: 3.9
