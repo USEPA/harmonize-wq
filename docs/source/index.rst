@@ -25,7 +25,7 @@ Standardize, clean, and wrangle Water Quality Portal data into more analytic-rea
 
     Harmonize_Tampa_Simple
     Harmonize_Tampa_Detailed
-    notebooks/cape
+    notebooks/Harmonize_CapeCod_Simple
 
 .. toctree::
     :maxdepth: 1
