@@ -18,6 +18,10 @@ Standardize, clean, and wrangle Water Quality Portal data into more analytic-rea
     overview
     installing
     example workflow
+
+..totree::
+    :maxdepth: 1
+    :caption: Tutorial Notebooks
     Harmonize_Tampa_Simple
     Harmonize_Tampa_Detailed
 
