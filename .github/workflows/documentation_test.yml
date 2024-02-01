@@ -33,6 +33,7 @@ jobs:
           pip install sphinx sphinx_rtd_theme
           pip install sphinxcontrib-spelling
           pip install nbsphinx
+          pip install nbsphinx_link
       - name: Sphinx build
         run: |
           #sphinx-build docs/source _build

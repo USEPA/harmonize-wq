@@ -45,6 +45,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinxcontrib.spelling",
     "nbsphinx",
+    "nbsphinx_link",
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
