@@ -20,11 +20,12 @@ Standardize, clean, and wrangle Water Quality Portal data into more analytic-rea
     example workflow
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Tutorial Notebooks
 
     Harmonize_Tampa_Simple
     Harmonize_Tampa_Detailed
+    notebooks/cape
 
 .. toctree::
     :maxdepth: 1
