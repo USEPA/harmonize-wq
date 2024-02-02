@@ -29,6 +29,7 @@ Domain experts must decide what data meets their quality standards for data comp
     :maxdepth: 2
     :caption: Getting Started
 
+    Overview <self>
     installing
     example workflow
 
@@ -36,10 +37,10 @@ Domain experts must decide what data meets their quality standards for data comp
     :maxdepth: 1
     :caption: Tutorial Notebooks
 
+    notebooks
+
 .. _demos:
     To run these tutorials in ipython notebooks, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
-
-    notebooks
 
 .. toctree::
     :maxdepth: 1
