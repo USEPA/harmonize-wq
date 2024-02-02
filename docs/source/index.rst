@@ -39,7 +39,7 @@ Tutorial Notebooks
 To instead run tutorials directly in ipython notebooks, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
     :caption: Tutorial Notebooks
 
     notebooks/Harmonize_Pensacola_Simple
