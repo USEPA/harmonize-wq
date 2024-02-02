@@ -33,14 +33,18 @@ Domain experts must decide what data meets their quality standards for data comp
     installing
     example workflow
 
+    To instead run tutorials directly in ipython notebooks, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
+
 .. toctree::
-    :maxdepth: 1
-    :caption: Tutorial Notebooks
+   :maxdepth: 1
 
-    notebooks
-
-.. _demos:
-    To run these tutorials in ipython notebooks, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
+    notebooks/Harmonize_Pensacola_Simple
+    notebooks/Harmonize_Pensacola_Detailed
+    notebooks/Harmonize_Tampa_Simple
+    notebooks/Harmonize_Tampa_Detailed
+    notebooks/Harmonize_CapeCod_Simple
+    notebooks/Harmonize_CapeCod_Detailed
+    notebooks/Harmonize_GOM
 
 .. toctree::
     :maxdepth: 1
