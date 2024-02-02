@@ -12,7 +12,7 @@ Standardize, clean, and wrangle Water Quality Portal data into more analytic-rea
 `Issues <https://github.com/USEPA/harmonize-wq/issues>`__ 
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Getting Started
     overview
     example workflow
