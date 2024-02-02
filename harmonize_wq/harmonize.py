@@ -50,7 +50,7 @@ def df_checks(df_in, columns=None):
                    'ResultMeasureValue',
                    'CharacteristicName')
     for col in columns:
-        assert col in df_in.columns, '{} not in DataFrame'.format(col)
+        assert col in df_in.columns, f'{col} not in DataFrame'
 
 
 #timeit: 159.17
@@ -134,11 +134,11 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
             except pint.DimensionalityError as exception:
                 if errors=='skip':
                     # do nothing, leave result_list unconverted
-                    warn("WARNING: '{}' not converted".format(unit))
+                    warn(f"WARNING: '{unit}' not converted")
                 elif errors=='ignore':
                     # convert to NaN
                     result_list = [nan for val in result_list]
-                    warn("WARNING: '{}' converted to NaN".format(unit))
+                    warn(f"WARNING: '{unit}' converted to NaN")
                 else:
                     # errors=='raise', or anything else just in case
                     raise exception
@@ -196,8 +196,8 @@ def add_qa_flag(df_in, mask, flag):
     # Append flag where QA_flag is not nan
     cond_notna = mask & (df_out['QA_flag'].notna())  # Mask cond and not NA
     existing_flags = df_out.loc[cond_notna, 'QA_flag']  # Current QA flags
-    df_out.loc[cond_notna, 'QA_flag'] = ['{}; {}'.format(txt, flag) for
-                                     txt in existing_flags]
+    df_out.loc[cond_notna, 'QA_flag'] = [f'{txt}; {flag}' for
+                                         txt in existing_flags]
     # Equals flag where QA_flag is nan
     df_out.loc[mask & (df_out['QA_flag'].isna()), 'QA_flag'] = flag
 
@@ -279,7 +279,7 @@ def dissolved_oxygen(wqp):
         elif wqp.ureg(wqp.units).dimensionless:
             # Convert to dimensionless, e.g., mg/l -> % or ppm
             wqp.apply_conversion(convert.DO_concentration, unit)
-            warn('Need % saturation equation for {}'.format(unit))
+            warn(f'Need % saturation equation for {unit}')
 
     return wqp
 
@@ -387,17 +387,17 @@ def turbidity(wqp):
                     wqp.apply_conversion(convert.SiO2_to_NTU, unit)
                 else:
                     #raise ValueError('Bad Turbidity unit: {}'.format(unit))
-                    warn('Bad Turbidity unit: {}'.format(unit))
+                    warn(f'Bad Turbidity unit: {unit}')
             elif wqp.ureg(unit).check({'[length]': 1}):
                 wqp.apply_conversion(convert.cm_to_NTU, unit)
             else:
                 #raise ValueError('Bad Turbidity unit: {}'.format(unit))
-                warn('Bad Turbidity unit: {}'.format(unit))
+                warn(f'Bad Turbidity unit: {unit}')
         elif wqp.ureg(wqp.units).check({'[length]': 1}):
             wqp.apply_conversion(convert.NTU_to_cm, unit)
         else:
             #raise ValueError('Bad Turbidity unit: {}'.format(wqp.units))
-            warn('Bad Turbidity unit: {}'.format(unit))
+            warn(f'Bad Turbidity unit: {unit}')
     return wqp
 
 
@@ -638,7 +638,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
             wqp = harmonize_map[out_col](wqp)
         except KeyError:
             # out_col not recognized
-            warn("WARNING: '{}' not available yet.".format(out_col))
+            warn(f"WARNING: '{out_col}' not available yet.")
             raise
 
     # Update values in out_col with standard units
