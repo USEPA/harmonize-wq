@@ -290,33 +290,6 @@ def registry_adds_list(out_col):
     return ureg_adds[out_col]
 
 
-def bacteria_reg(ureg=None):
-    """Generate :class:`pint.UnitRegistry` with bacteria units defined.
-
-    Parameters
-    ----------
-    ureg : pint.UnitRegistry, optional
-        Unit Registry Object with any custom units defined. Default None
-        starts with new unit registry.
-
-    Returns
-    -------
-    unit_registry : pint.UnitRegistry
-        Unit registry with dimensionless bacteria units defined.
-    
-    Examples
-    --------
-    Generate a new pint UnitRegistry for e.g., bacteria:
-    
-    >>> type(domains.bacteria_reg())
-    <class 'pint.registry.UnitRegistry'>
-    """
-    if ureg is None:
-        ureg = pint.UnitRegistry()
-
-    return ureg
-
-
 def out_col_lookup():
     """Get {CharacteristicName: out_column_name}.
     
