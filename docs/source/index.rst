@@ -45,7 +45,7 @@ Domain experts must decide what data meets their quality standards for data comp
     notebooks/Harmonize_CapeCod_Detailed
     notebooks/Harmonize_GOM
 
-To instead run tutorials directly in ipython notebooks, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
+To instead run tutorials directly in ipython notebooks or using R, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
 
 .. toctree::
     :maxdepth: 1

@@ -30,16 +30,13 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install sphinx sphinx_rtd_theme
-          pip install sphinxcontrib-spelling
-          pip install nbsphinx
-          pip install nbsphinx_link
+          pip install -r requirements_dev.txt
       - name: Sphinx build
         run: |
           #sphinx-build docs/source _build
           cd docs
           make html
-          #make doctest
+          make doctest
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

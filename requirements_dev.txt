@@ -1,0 +1,6 @@
+pytest
+coverage
+sphinx sphinx_rtd_theme
+sphinxcontrib-spelling
+nbsphinx
+nbsphinx_link
