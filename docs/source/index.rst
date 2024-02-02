@@ -14,8 +14,8 @@ Standardize, clean, and wrangle Water Quality Portal data into more analytic-rea
 .. toctree::
     :maxdepth: 2
     :caption: Getting Started
-    overview
     example workflow
+    installing
 
 .. _overview:
 
@@ -32,25 +32,6 @@ US EPA’s `Water Quality Portal (WQP) <https://www.waterqualitydata.us/>`_ aggr
 Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
 
 For more complete tutorial information, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
-
-.. _installing:
-
-Installing harmonize_wq
-=======================
-
-harmonize_wq can be installed using pip:
-
-.. code-block:: python3
-   
-    pip install harmonize-wq
-
-
-
-To install the latest development version of harmonize_wq using pip:
-
-.. code-block:: python3
-   
-    pip install git+https://github.com/USEPA/harmonize-wq.git
 
 .. toctree::
     :maxdepth: 1
