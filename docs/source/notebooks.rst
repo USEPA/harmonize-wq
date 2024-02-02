@@ -3,8 +3,6 @@
 Tutorial Notebooks
 ==================
 
-For more complete tutorial information, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
-
 .. toctree::
    :maxdepth: 1
     notebooks/Harmonize_Pensacola_Simple
