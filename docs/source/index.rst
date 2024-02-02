@@ -11,13 +11,6 @@ Standardize, clean, and wrangle Water Quality Portal data into more analytic-rea
 `Code Repository <https://github.com/USEPA/harmonize-wq>`__ |
 `Issues <https://github.com/USEPA/harmonize-wq/issues>`__ 
 
-.. toctree::
-    :maxdepth: 2
-    :caption: Getting Started
-
-    example workflow
-    installing
-
 .. _overview:
 
 Overview
@@ -31,6 +24,13 @@ US EPA’s `Water Quality Portal (WQP) <https://www.waterqualitydata.us/>`_ aggr
 * Transform data from long to wide format
 
 Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Getting Started
+
+    installing
+    example workflow
 
 For more complete tutorial information, see: `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_
 
