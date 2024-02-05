@@ -509,6 +509,7 @@ def harmonize_all(df_in, errors='raise'):
     """
     df_out = df_in.copy()
     char_vals = list(set(df_out['CharacteristicName']))
+    char_vals.sort()
 
     for char_val in char_vals:
         df_out = harmonize(df_out, char_val, errors=errors)
