@@ -122,6 +122,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
     Q_ = ureg.Quantity
 
     lst_series = [pandas.Series(dtype='object')]
+    # Note: set of series does not preservce order and must be sorted at end
     for unit in list(set(unit_series)):
         # Filter quantity_series by unit_series where == unit
         f_quant_series = quantity_series.where(unit_series==unit).dropna()
@@ -144,7 +145,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
                     raise exception
         # Re-index and add series to list
         lst_series.append(pandas.Series(result_list, index=f_quant_series.index))
-    return pandas.concat(lst_series)
+    return pandas.concat(lst_series).sort_index()
 
 
 def add_qa_flag(df_in, mask, flag):
