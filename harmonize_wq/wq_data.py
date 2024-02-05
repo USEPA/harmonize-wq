@@ -859,8 +859,8 @@ class WQCharData():
 
         >>> from numpy import nan
         >>> frac_dict = {'TP_Phosphorus': ['Total'],
-                         'TDP_Phosphorus': ['Dissolved'],
-                        'Other_Phosphorus': ['', nan],}
+        ...              'TDP_Phosphorus': ['Dissolved'],
+        ...              'Other_Phosphorus': ['', nan],}
         >>> wq.fraction(frac_dict)
         >>> wq.df.columns
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
