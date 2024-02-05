@@ -160,13 +160,12 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
                 mask = df[unit_col] == old_unit  # Update mask
                 if basis_col in df.columns:
                     # Add flags anywhere the values are updated
-                    flag1 = '{}: updated from '.format(basis_col)
+                    flag1 = f'{basis_col}: updated from '
                     # List of unique basis values
                     basis_list = list(set(df.loc[mask, basis_col].dropna()))
                     # Loop over existing values in basis field
                     for old_basis in basis_list:
-                        flag = '{}{} to {} (units)'.format(flag1, old_basis,
-                                                           base)
+                        flag = f'{flag1}{old_basis} to {base} (units)'
                         if old_basis != base:
                             qa_mask = mask & (df[basis_col] == old_basis)
                             warn(f'Mismatched {flag}', UserWarning)
@@ -178,7 +177,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
     return df
 
 
-def basis_from_methodSpec(df_in):
+def basis_from_method_spec(df_in):
     """Copy speciation from MethodSpecificationName to new 'Speciation' column.
     
     Parameters
@@ -207,7 +206,7 @@ def basis_from_methodSpec(df_in):
     1         Phosphorus                     NaN         NWIS
 
     >>> from harmonize_wq import basis    
-    >>> basis.basis_from_methodSpec(df)
+    >>> basis.basis_from_method_spec(df)
       CharacteristicName MethodSpecificationName ProviderName Speciation
     0         Phosphorus                    as P         NWIS       as P
     1         Phosphorus                     NaN         NWIS        NaN
@@ -302,7 +301,7 @@ def update_result_basis(df_in, basis_col, unit_col):
     elif basis_col == 'ResultTimeBasisText':
         df_out = df_in.copy()
     else:
-        raise ValueError('{} not recognized basis column'.format(basis_col))
+        raise ValueError(f'{basis_col} not recognized basis column')
 
     return df_out
 

@@ -3,8 +3,8 @@
 
 Contains several unit conversion functions not in :mod:`pint`.
 """
-import pint
 import math
+import pint
 from harmonize_wq import domains
 
 
@@ -560,7 +560,7 @@ def DO_concentration(val,
     >>> from harmonize_wq import convert
     >>> convert.DO_concentration(input_DO)
     6995.603308586222
-    """  
+    """
     p, t = pressure, temperature
     if p == 1 & (t == 25):
         cP = 8.262332418
@@ -582,7 +582,7 @@ def _DO_concentration_eq(p, t):
     cStar = math.exp(7.7117 - 1.31403 * math.log(t + 45.93))
     numerator = (1-Pwv/p)*(1-(standard*p))
     denominator = (1-Pwv)*(1-standard)
-    
+
     return cStar*p*(numerator/denominator)
 
 

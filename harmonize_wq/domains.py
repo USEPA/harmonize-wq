@@ -6,7 +6,6 @@ be hard-coded. A URL based method can be used to get the most up to date domain
 list.
 """
 import requests
-import pint
 import pandas
 
 
@@ -109,11 +108,11 @@ def get_domain_dict(table, cols=None):
         cols = ['Name', 'Description']
     if not table.endswith('_CSV'):
         table += '_CSV'
-    url = '{}{}.zip'.format(BASE_URL, table)
+    url = f'{BASE_URL}{table}.zip'
     # Very limited url handling
     if requests.get(url).status_code != 200:
         status_code = requests.get(url).status_code
-        print("{} web service response {}".format(url, status_code))
+        print(f"{url} web service response {status_code}")
     df = pandas.read_csv(url, usecols=cols)
     return dict(df.values)
 
@@ -155,7 +154,7 @@ def harmonize_TADA_dict():
             # Replace old smaple fraction dict with new using keys
             full_dict[k_char][k_target] = new_target
 
-    return full_dict 
+    return full_dict
 
 
 def re_case(word, domain_list):

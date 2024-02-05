@@ -8,7 +8,7 @@ from numpy import nan
 from harmonize_wq import domains
 from harmonize_wq import basis
 from harmonize_wq import convert
-from harmonize_wq import harmonize 
+from harmonize_wq import harmonize
 
 class WQCharData():
     """Class for specific characteristic in Water Quality Portal results.
@@ -106,11 +106,10 @@ class WQCharData():
         for bad_meas in pandas.unique(bad_measures):
             # Flag each unique bad measure one measure (not row) at a time
             if pandas.isna(bad_meas):
-                flag = '{}: missing (NaN) result'.format(meas_col)
+                flag = f'{meas_col}: missing (NaN) result'
                 cond = c_mask & (df_out[meas_col].isna())
             else:
-                flag = '{}: "{}" result cannot be used'.format(meas_col,
-                                                               bad_meas)
+                flag = f'{meas_col}: "{bad_meas}" result cannot be used'
                 cond = c_mask & (df_out[meas_col] == bad_meas)
             # Flag bad measures
             df_out = harmonize.add_qa_flag(df_out, cond, flag)
@@ -149,7 +148,7 @@ class WQCharData():
         """Generate a QA_flag flag string for the units column.
         
         If unit_col is a copy flag_col can specify the original column name for
-        the flag.
+        the flag. The default units, self.units replaces the problem unit.
     
         Parameters
         ----------
@@ -164,13 +163,11 @@ class WQCharData():
         string
             Flag to use in QA_flag column.
         """
-        unit = self.units  # The default unit that replaced the problem unit
         if flag_col:
-            return '{}: {} UNITS, {} assumed'.format(flag_col, trouble, unit)
+            return f'{flag_col}: {trouble} UNITS, {self.units} assumed'
         # Else: Used when flag_col is None, typically the column being checked
-        unit_col = self.col.unit_out
-        return '{}: {} UNITS, {} assumed'.format(unit_col, trouble, unit)
-        
+        return f'{self.col.unit_out}: {trouble} UNITS, {self.units} assumed'
+
     def _replace_in_col(self, col, old_val, new_val, mask=None):
         """Replace string throughout column, filter rows to skip by mask.
     
@@ -203,7 +200,7 @@ class WQCharData():
         #str.replace did not work for short str to long str (over-replaces)
         #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
         df_in.loc[mask_old, col] = new_val  # This should be more explicit
-    
+
         return df_in
 
     def _dimension_handling(self, unit, quant=None, ureg=None):
@@ -230,7 +227,7 @@ class WQCharData():
         units = self.units
         if ureg is None:
             ureg = pint.UnitRegistry()
-    
+
         # Conversion to moles performed a level up from here (class method)
         if ureg(units).check({'[length]': -3, '[mass]': 1}):
             # Convert to density, e.g., '%' -> 'mg/l'
@@ -328,7 +325,7 @@ class WQCharData():
             except pint.UndefinedUnitError:
                 # WARNING: Does not catch '%' or bad units in ureg (eg deg F)
                 # If bad, flag and replace
-                problem = "'{}' UNDEFINED UNIT for {}".format(unit, self.out_col)
+                problem = f"'{unit}' UNDEFINED UNIT for {self.out_col}"
                 warn("WARNING: " + problem)
                 flag = self._unit_qa_flag(problem, flag_col)
                 # New mask for bad units
@@ -406,13 +403,13 @@ class WQCharData():
 
         # Basis from MethodSpecificationName
         if basis_col == 'MethodSpecificationName':
-            
+
             # Add basis out column (i.e., 'Speciation') if it doesn't exist
             if self.col.basis not in self.df.columns:
                 self.df[self.col.basis] = nan
-            
+
             # Mask to characteristic
-            self.df[c_mask] = basis.basis_from_methodSpec(self.df[c_mask])
+            self.df[c_mask] = basis.basis_from_method_spec(self.df[c_mask])
 
             # Basis from unit
             try:
@@ -824,7 +821,7 @@ class WQCharData():
         if suffix is None:
             suffix = self.out_col
 
-        catch_all = 'Other_{}'.format(suffix)
+        catch_all = f'Other_{suffix}'
         if frac_dict is None:
             frac_dict = {catch_all: ''}
         else:
@@ -859,7 +856,7 @@ class WQCharData():
         harmonize_fract = harmonize_dict[char.upper()]
         # Loop through dictionary making updates to sample fraction
         for fract_set in harmonize_fract.values():
-            for row in fract_set.items():            
+            for row in fract_set.items():
                 fract_mask = df_out[c_mask][fract_col].isin(row[1])  # Mask by values
                 df_out[c_mask][fract_mask][fract_col] = row[0]  # Update to key
         # Compare df_out againt self.df to add QA flag if changed
@@ -869,20 +866,18 @@ class WQCharData():
         # TODO: LEFT OFF ABOVE IS STILL EMPTY
 
         self.df = df_out
-        
+
         # Make column for any unexpected Sample Fraction values, loudly
         for s_f in set(df_out[c_mask][fract_col].dropna()):
             if s_f not in samp_fract_set:
-                char = '{}_{}'.format(s_f.replace(' ', '_'), suffix)
+                char = f"{s_f.replace(' ', '_')}_{suffix}"
                 frac_dict[char] = s_f
-                prob = '"{}" column for {}, may be error'.format(char, s_f)
-                warn('Warning: ' + prob)
+                warn(f'Warning: "{char}" column for {s_f}, may be error')
                 # TODO: add QA_flag
         # Test we didn't skip any SampleFraction
         samp_fract_set = sorted({x for v in frac_dict.values() for x in v})
         for s_f in set(df_out[c_mask][fract_col].dropna()):
-            assert s_f in samp_fract_set, '{} check in {}'.format(s_f,
-                                                                      fract_col)
+            assert s_f in samp_fract_set, f'{s_f} check in {fract_col}'
         # Create out columns for each sample fraction
         for frac in frac_dict.items():
             col = frac[0]  # New column name

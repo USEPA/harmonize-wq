@@ -4,7 +4,7 @@ from pyproj import Transformer
 from shapely.geometry import shape
 import geopandas
 import pandas
-import dataretrieval.wqp as wqp
+from dataretrieval import wqp
 from harmonize_wq import harmonize
 from harmonize_wq import domains
 from harmonize_wq import wrangle
@@ -71,13 +71,11 @@ def infer_CRS(df_in,
     df_out = df_in.copy()
     if bad_crs_val:
         # QA flag for bad CRS based on bad_crs_val
-        flag = '{}: Bad datum {}, EPSG:{} assumed'.format(crs_col,
-                                                          bad_crs_val,
-                                                          out_EPSG)
+        flag = f'{crs_col}: Bad datum {bad_crs_val}, EPSG:{out_EPSG} assumed'
         c_mask = df_out[crs_col] == bad_crs_val  # Mask for bad CRS value
     else:
         # QA flag for missing CRS
-        flag = '{}: MISSING datum, EPSG:{} assumed'.format(crs_col, out_EPSG)
+        flag = f'{crs_col}: MISSING datum, EPSG:{out_EPSG} assumed'
         c_mask = df_out[crs_col].isna()  # Mask for missing units
     df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flag
     df_out.loc[c_mask, out_col] = out_EPSG  # Update with infered unit

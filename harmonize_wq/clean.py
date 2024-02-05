@@ -146,7 +146,7 @@ def check_precision(df_in, col, limit=3):
     df_out = df_in.copy()
     # Create T/F mask based on len of everything after the decimal
     c_mask = [len(str(x).split('.')[1]) < limit for x in df_out[col]]
-    flag = '{}: Imprecise: lessthan{}decimaldigits'.format(col, limit)
+    flag = f'{col}: Imprecise: lessthan{limit}decimaldigits'
     df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
 
@@ -221,7 +221,7 @@ def wet_dry_checks(df_in, mask=None):
                                  'ResultSampleFractionText',
                                  'ResultWeightBasisText'])
     # QA - Sample Media, fix assigned 'Water' that are actually 'Sediment'
-    qa_flag = '{}: Water changed to Sediment'.format(media_col)
+    qa_flag = f'{media_col}: Water changed to Sediment'
     # Create mask for bad data
     media_mask = ((df_out['ResultSampleFractionText'] == 'Bed Sediment') &
                   (df_out['ResultWeightBasisText'] == 'Dry') &

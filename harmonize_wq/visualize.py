@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Functions to help visualize data."""
+from math import sqrt
 import pandas
 import geopandas
-from math import sqrt
 from harmonize_wq import wrangle
 
 
@@ -40,11 +40,11 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     # Series with just magnitude
     results_s = pandas.Series([x.magnitude for x in results])
     # Number of usable results
-    print('-Usable results-\n{}'.format(results_s.describe()))
+    print(f'-Usable results-\n{results_s.describe()}')
     # Number measures unused
-    print('Unusable results: {}'.format(len(results_in)-len(results)))
+    print(f'Unusable results: {len(results_in)-len(results)}')
     # Number of infered result units
-    print('Usable results with inferred units: {}'.format(len(inferred)))
+    print(f'Usable results with inferred units: {len(inferred)}')
     # Results outside thresholds
     if not threshold:
         # TODO: Default mean +/-1 standard deviation works here but generally 6
@@ -53,9 +53,8 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     inside = results_s[(results_s <= threshold['max']) &
                        (results_s >= threshold['min'])]
     diff = len(results) - len(inside)
-    print('Results outside threshold ({} to {}): {}'.format(threshold['min'],
-                                                            threshold['max'],
-                                                            diff))
+    threshold_range = f"{threshold['min']} to {threshold['max']}"
+    print(f'Results outside threshold ({threshold_range}): {diff}')
 
     # Graphic representation of stats
     inside.hist(bins=int(sqrt(inside.count())))

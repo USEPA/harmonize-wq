@@ -5,7 +5,7 @@ import geopandas
 from harmonize_wq import domains
 from harmonize_wq import harmonize
 from harmonize_wq.clean import datetime, harmonize_depth
-import dataretrieval.wqp as wqp
+from dataretrieval import wqp
 
 
 def split_table(df_in):
@@ -169,13 +169,14 @@ def collapse_results(df_in, cols=None):
     df = df.drop_duplicates()
 
     # TODO: use date instead of datetime if na?   (date_idx)
-    idx_cols = ['MonitoringLocationIdentifier',
+    if not cols:
+        cols = ['MonitoringLocationIdentifier',
                 'Activity_datetime',
                 'ActivityIdentifier',
                 'OrganizationIdentifier']
-    df_indexed = df.groupby(by=idx_cols, dropna=False).first()
+    df_indexed = df.groupby(by=cols, dropna=False).first()
     # TODO: warn about multi-lines with values (only returns first)
-    problems = df.groupby(by=idx_cols, dropna=False).first(min_count=2)
+    problems = df.groupby(by=cols, dropna=False).first(min_count=2)
     problems = problems.dropna(axis=1, how='all')
     return df_indexed
 
@@ -561,14 +562,14 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
         # Check columns in both tables
         shared = [x for x in list(df1.columns) if x in col2_list]
         for col in merge_cols:
-            assert col in shared, '{} not in both DataFrames'.format(col)
+            assert col in shared, f'{col} not in both DataFrames'
     # Columns to add from df2
     if df2_cols == 'all':
         # All columns not in df1
         df2_cols = [x for x in col2_list if x not in list(df1.columns)]
     else:
         for col in df2_cols:
-            assert col in col2_list, '{} not in DataFrame'.format(col)
+            assert col in col2_list, f'{col} not in DataFrame'
 
     # Merge activity columns to narrow results
     df2 = df2[merge_cols + df2_cols]  # Limit df2 to columns we want
@@ -640,15 +641,15 @@ def get_bounding_box(shp, idx=None):
     shp = as_gdf(shp)
 
     if idx is None:
-        bBox = shp.total_bounds
+        bbox = shp.total_bounds
     else:
         xmin = shp.bounds['minx'][idx]
         xmax = shp.bounds['maxx'][idx]
         ymin = shp.bounds['miny'][idx]
         ymax = shp.bounds['maxy'][idx]
-        bBox = [xmin, ymin, xmax, ymax]
+        bbox = [xmin, ymin, xmax, ymax]
 
-    return ','.join(map(str, bBox))
+    return ','.join(map(str, bbox))
 
 
 def clip_stations(stations, aoi):
@@ -756,10 +757,10 @@ def to_simple_shape(gdf, out_shp):
     cols = gdf.columns  # List of current column names
     names_dict = domains.stations_rename()  # Dict of column names to update
     # Rename non-results columns that are too long for shp field names
-    renaming_list = [col for col in cols if col in names_dict.keys()]
+    renaming_list = [col for col in cols if col in names_dict]
     renaming_dict = {old_col: names_dict[old_col] for old_col in renaming_list}
     # Identify possible results columns before renaming columns
-    possible_results = [col for col in cols if col not in names_dict.keys()]
+    possible_results = [col for col in cols if col not in names_dict]
     gdf = gdf.rename(columns=renaming_dict)  # Rename columns
     # TODO: old_field should be assigned to alias if output driver allows
     # field_map1...
