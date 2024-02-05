@@ -666,7 +666,7 @@ def test_harmonize_nitrogen():
     actual = harmonize.harmonize(NARROW_RESULTS3, 'Nitrogen')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
-    assert actual.size ==  16482  # Test size
+    assert actual.size ==  16728  # Test size
     assert 'Nitrogen' in actual.columns  # Check for column
     assert len(actual['Nitrogen'].dropna()) == 182  # Number of results
     # Confirm orginal data was not altered
@@ -708,7 +708,11 @@ def test_harmonize_nitrogen():
     # TODO: add test case where 'g/kg'
     # TODO: add test case where 'cm3/g @STP'
     # TODO: add test case where 'cm3/g STP'
-
+    
+    # check sample fraction, everything went to total mixed forms
+    assert len(actual['Nitrogen'].dropna()) == 182, "Fraction issue"
+    fract_col = 'TOTAL NITROGEN_ MIXED FORMS'
+    assert len(actual[fract_col].dropna()) == 182, "Fraction issue"
 
 #@pytest.mark.skip(reason="no change")
 def test_harmonize_conductivity():
@@ -1220,8 +1224,8 @@ def test_split_table(harmonized_tables):
                 'DetectionQuantitationLimitMeasure/MeasureValue',
                 'DetectionQuantitationLimitMeasure/MeasureUnitCode',
                 'ProviderName', 'QA_flag', 'Nitrogen', 'Speciation',
-                'Conductivity', 'Activity_datetime',
-                'Depth']
+                'TOTAL NITROGEN_ MIXED FORMS', 'Conductivity',
+                'Activity_datetime', 'Depth']
     assert list(actual_main.columns) == expected
     expected = ['ActivityStartDate', 'ActivityStartTime/Time',
                 'ActivityStartTime/TimeZoneCode',

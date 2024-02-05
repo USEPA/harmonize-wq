@@ -648,12 +648,17 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     # Note: just phosphorus right now
     # Total is TP (digested) from the whole water sample (vs total dissolved)
     # Dissolved is TDP (total) filtered water digested (vs undigested DIP)
-    if out_col == 'Phosphorus':
-        frac_dict = {'TP_Phosphorus': ['Total'],
-                     'TDP_Phosphorus': ['Dissolved'],
-                     'Other_Phosphorus': [''],}
-        # Make columns for Sample Fractions, loudly if unexpected (not in dict)
+    if out_col in ['Phosphorus', 'Nitrogen']:
+        # NOTE: only top level fractions, while TADA has lower for:
+        #'Chlorophyll a', 'Turbidity', 'Fecal Coliform', 'Escherichia coli'
+        if out_col=='Phosphorus':
+            frac_dict = {'TP_Phosphorus': ['Total'],
+                         'TDP_Phosphorus': ['Dissolved'],
+                         'Other_Phosphorus': [''],}
+        else:
+            frac_dict = 'TADA'
         frac_dict = wqp.fraction(frac_dict)  # Run sample fraction on WQP
+        
 
     df_out = wqp.df
 
