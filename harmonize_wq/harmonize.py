@@ -490,7 +490,7 @@ def harmonize_all(df_in, errors='raise'):
     359503           21FLPDEM_WQX  ...  32.01 degree_Celsius
     359504           21FLSMRC_WQX  ...                   NaN
     <BLANKLINE>
-    [grows x 42 columns]
+    [359505 rows x 42 columns]
     
     List columns that were added:
     
