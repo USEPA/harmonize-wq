@@ -467,8 +467,14 @@ def harmonize_all(df_in, errors='raise'):
     >>> df1.shape
     (359505, 35)
     
+    When running the function there may be read outs or warnings, as things are 
+    encountered such as unexpected nutrient sample fractions:
+        
     >>> from harmonize_wq import harmonize
     >>> df_result_all = harmonize.harmonize_all(df1)
+    2 Phosphorus sample fractions not in frac_dict
+    1 Phosphorus sample fractions not in frac_dict found in expected domains, mapped to "Other_Phosphorus"
+    
     >>> df_result_all
            OrganizationIdentifier  ... Other_Phosphorus
     0                21FLHILL_WQX  ...              NaN
@@ -654,7 +660,7 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
         if out_col=='Phosphorus':
             frac_dict = {'TP_Phosphorus': ['Total'],
                          'TDP_Phosphorus': ['Dissolved'],
-                         'Other_Phosphorus': [''],}
+                         'Other_Phosphorus': ['', nan],}
         else:
             frac_dict = 'TADA'
         frac_dict = wqp.fraction(frac_dict)  # Run sample fraction on WQP

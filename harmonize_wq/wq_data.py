@@ -817,11 +817,78 @@ class WQCharData():
             
         Examples
         --------
-        Not fully implemented with TADA table yet.
+        Build pandas DataFrame to use as input:
+        
+        >>> from pandas import DataFrame
+        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
+        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'mg/kg',],
+        ...                 'ResultMeasureValue': ['1.0', '10',],
+        ...                 'ResultSampleFractionText': ['Dissolved', ''],
+        ...                 })
+        >>> df
+          CharacteristicName  ... ResultSampleFractionText
+        0         Phosphorus  ...                Dissolved
+        1         Phosphorus  ...                         
+        <BLANKLINE>
+        [2 rows x 4 columns]
+        
+        Build WQ Characteristic Data class from pandas DataFrame:
+            
+        >>> from harmonize_wq import wq_data
+        >>> wq = wq_data.WQCharData(df, 'Phosphorus')
+        
+        Go through required checks and conversions
+        
+        >>> wq.check_units()
+        >>> dimension_dict, mol_list = wq.dimension_fixes()
+        >>> wq.replace_unit_by_dict(dimension_dict, wq.measure_mask())
+        >>> wq.moles_convert(mol_list)
+        >>> wq.convert_units()
+        >>> wq.df.columns
+        Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
+               'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
+               'QA_flag'],
+              dtype='object')
+        >>> wq.df['Phosphorus']
+        0                   1.0 milligram / liter
+        1    10.000000000000002 milligram / liter
+        Name: Phosphorus, dtype: object
+        
+        These results may have differen, non-comprable sample fractions. First,
+        split results using a provided frac_dict (as used in harmonize()):
+
+        >>> from numpy import nan
+        >>> frac_dict = {'TP_Phosphorus': ['Total'],
+                         'TDP_Phosphorus': ['Dissolved'],
+                        'Other_Phosphorus': ['', nan],}
+        >>> wq.fraction(frac_dict)
+        >>> wq.df.columns
+        Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
+               'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
+               'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus'],
+              dtype='object')
+        >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]
+                  TDP_Phosphorus                      Other_Phosphorus
+        0  1.0 milligram / liter                                   NaN
+        1                    NaN  10.000000000000002 milligram / liter
+        
+        Alternatively, the sample fraction lists from tada can be used, in this case they are added:
+            
+        >>> wq.fraction('TADA')
+        >>> wq.df.columns
+        Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
+               'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
+               'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus',
+               'TOTAL PHOSPHORUS_ MIXED FORMS'],
+              dtype='object')
+        >>> wq.df[['TOTAL PHOSPHORUS_ MIXED FORMS', 'Other_Phosphorus']]
+          TOTAL PHOSPHORUS_ MIXED FORMS                      Other_Phosphorus
+        0         1.0 milligram / liter                                   NaN
+        1                           NaN  10.000000000000002 milligram / liter
         """
         # Check for sample fraction column
         harmonize.df_checks(self.df, [fract_col])
-        
+
         c_mask = self.c_mask
 
         fracs = list(set(self.df[c_mask][fract_col]))  # List of fracs in data
@@ -831,10 +898,9 @@ class WQCharData():
             # Replace bad sample fraction w/ nan
             self.df = self._replace_in_col(fract_col, ' ', nan, c_mask)
             fracs.remove(' ')
-        
+
         df_out = self.df  # Set var for easier referencing
         char = list(set(df_out[self.c_mask]['CharacteristicName']))[0]
-        
 
         # Deal with lack of args
         if suffix is None:
@@ -857,7 +923,7 @@ class WQCharData():
         #else: dict was already provided
         if catch_all not in frac_dict.keys():
             frac_dict[catch_all] = ['', nan]
-        # Make sure catch_all exists 
+        # Make sure catch_all exists
         if not isinstance(frac_dict[catch_all], list):
             frac_dict[catch_all] = [frac_dict[catch_all]]
 
@@ -899,8 +965,6 @@ class WQCharData():
                 df_out.loc[frac_mask, frac[0]] = df_out.loc[frac_mask, self.out_col]
 
         self.df = df_out
-
-        return frac_dict
 
     def dimension_fixes(self):
         """
