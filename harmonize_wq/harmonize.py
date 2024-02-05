@@ -477,20 +477,20 @@ def harmonize_all(df_in, errors='raise'):
     1 Phosphorus sample fractions not in frac_dict found in expected domains, mapped to "Other_Phosphorus"
     
     >>> df_result_all
-           OrganizationIdentifier  ... Other_Phosphorus
-    0                21FLHILL_WQX  ...              NaN
-    1                21FLHILL_WQX  ...              NaN
-    2                  21FLGW_WQX  ...              NaN
-    3                21FLMANA_WQX  ...              NaN
-    4                21FLHILL_WQX  ...              NaN
-    ...                       ...  ...              ...
-    359500           21FLHILL_WQX  ...              NaN
-    359501           21FLHILL_WQX  ...              NaN
-    359502            21FLTBW_WQX  ...              NaN
-    359503           21FLPDEM_WQX  ...              NaN
-    359504           21FLSMRC_WQX  ...              NaN
+           OrganizationIdentifier  ...           Temperature
+    0                21FLHILL_WQX  ...  29.93 degree_Celsius
+    1                21FLHILL_WQX  ...  17.82 degree_Celsius
+    2                  21FLGW_WQX  ...  22.42 degree_Celsius
+    3                21FLMANA_WQX  ...   30.0 degree_Celsius
+    4                21FLHILL_WQX  ...  30.37 degree_Celsius
+    ...                       ...  ...                   ...
+    359500           21FLHILL_WQX  ...  28.75 degree_Celsius
+    359501           21FLHILL_WQX  ...  23.01 degree_Celsius
+    359502            21FLTBW_WQX  ...  29.97 degree_Celsius
+    359503           21FLPDEM_WQX  ...  32.01 degree_Celsius
+    359504           21FLSMRC_WQX  ...                   NaN
     <BLANKLINE>
-    [359505 rows x 42 columns]
+    [grows x 42 columns]
     
     List columns that were added:
     
