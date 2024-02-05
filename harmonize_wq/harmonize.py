@@ -504,12 +504,12 @@ def harmonize_all(df_in, errors='raise'):
     char_vals = list(set(df_out['CharacteristicName']))
 
     for char_val in char_vals:
-        df_out = harmonize_generic(df_out, char_val, errors=errors)
+        df_out = harmonize(df_out, char_val, errors=errors)
     return df_out
 
 
-def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
-                      intermediate_columns=False, report=False):
+def harmonize(df_in, char_val, units_out=None, errors='raise',
+              intermediate_columns=False, report=False):
     """Harmonize char_val rows based methods specific to that char_val.
 
     All rows where the value in the 'CharacteristicName' column matches
@@ -553,7 +553,7 @@ def harmonize_generic(df_in, char_val, units_out=None, errors='raise',
     (359505, 35)
     
     >>> from harmonize_wq import harmonize
-    >>> df_result = harmonize.harmonize_generic(df1, 'Temperature, water')
+    >>> df_result = harmonize.harmonize(df1, 'Temperature, water')
     >>> df_result
            OrganizationIdentifier  ...           Temperature
     0                21FLHILL_WQX  ...  29.93 degree_Celsius

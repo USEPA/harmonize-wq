@@ -158,9 +158,8 @@ def harmonized_tables():
         Harmonized results for Nitrogen and Conductivity.
 
     """
-    harmonized_table = harmonize.harmonize_generic(NARROW_RESULTS3, 'Nitrogen')
-    harmonized_table = harmonize.harmonize_generic(harmonized_table,
-                                                   'Conductivity')
+    harmonized_table = harmonize.harmonize(NARROW_RESULTS3, 'Nitrogen')
+    harmonized_table = harmonize.harmonize(harmonized_table, 'Conductivity')
     return harmonized_table
 
 
@@ -240,7 +239,7 @@ def test_harmonize_phosphorus(merged_tables):
         Read from data/wqp_results.txt.
     """
     # TODO: Test for expected dimensionalityError with NARROW_RESULTS?
-    actual = harmonize.harmonize_generic(merged_tables, 'Phosphorus')  # mg/l
+    actual = harmonize.harmonize(merged_tables, 'Phosphorus')  # mg/l
     # TODO: test conversion to moles and other non-standard units
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
@@ -368,10 +367,10 @@ def test_harmonize_temperature():
     NARROW_RESULTS : pandas.DataFrame
         Read from data/wqp_results.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS, 'Temperature, water')
-    actual2 = harmonize.harmonize_generic(NARROW_RESULTS.iloc[0:10],
-                                          'Temperature, water',
-                                          units_out='deg F')
+    actual = harmonize.harmonize(NARROW_RESULTS, 'Temperature, water')
+    actual2 = harmonize.harmonize(NARROW_RESULTS.iloc[0:10],
+                                  'Temperature, water',
+                                  units_out='deg F')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 13301685  # Test size #14784040
@@ -424,8 +423,7 @@ def test_harmonize_secchi():
     NARROW_RESULTS1 : pandas.DataFrame
         Read from data/wqp_results1.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS1,
-                                         'Depth, Secchi disk depth')
+    actual = harmonize.harmonize(NARROW_RESULTS1, 'Depth, Secchi disk depth')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 11818094  # Test size
@@ -478,8 +476,7 @@ def test_harmonize_DO():
     NARROW_RESULTS1 : pandas.DataFrame
         Read from data/wqp_results1.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS1,
-                                         'Dissolved oxygen (DO)')
+    actual = harmonize.harmonize(NARROW_RESULTS1, 'Dissolved oxygen (DO)')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 11818094  # Test size
@@ -547,8 +544,7 @@ def test_harmonize_salinity():
     NARROW_RESULTS2 : pandas.DataFrame
         Read from data/wqp_results2.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS2, 'Salinity',
-                                         units_out='PSS')
+    actual = harmonize.harmonize(NARROW_RESULTS2, 'Salinity', units_out='PSS')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 12181392  # Test size
@@ -612,7 +608,7 @@ def test_harmonize_pH():
         Read from data/wqp_results2.txt.
     """
     # actual1 = harmonize.harmonize_pH(NARROW_RESULTS2, units='dimensionless')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS2, 'pH')
+    actual = harmonize.harmonize(NARROW_RESULTS2, 'pH')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 12181392  # Test size
@@ -667,7 +663,7 @@ def test_harmonize_nitrogen():
         Read from data/wqp_results3.txt.
     """
     # actual1 = harmonize.harmonize_Nitrogen(NARROW_RESULTS3, units='mg/l')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS3, 'Nitrogen')
+    actual = harmonize.harmonize(NARROW_RESULTS3, 'Nitrogen')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size ==  16482  # Test size
@@ -725,7 +721,7 @@ def test_harmonize_conductivity():
         Read from data/wqp_results3.txt.
     """
     #actual1 = harmonize.harmonize_Conductivity(NARROW_RESULTS3, units='uS/cm')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS3, 'Conductivity')
+    actual = harmonize.harmonize(NARROW_RESULTS3, 'Conductivity')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 16236  # Test size
@@ -781,7 +777,7 @@ def test_harmonize_carbon_organic():
     """
     #actual1 = harmonize.harmonize_Carbon_organic(NARROW_RESULTS4, units='mg/l')
     #actual2 = harmonize.harmonize_Carbon_organic(NARROW_RESULTS4, units='g/kg')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS4, 'Organic carbon')
+    actual = harmonize.harmonize(NARROW_RESULTS4, 'Organic carbon')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 6906695  # Test size
@@ -838,7 +834,7 @@ def test_harmonize_chlorophyll_a():
     NARROW_RESULTS4 : pandas.DataFrame
         Read from data/wqp_results4.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS4, 'Chlorophyll a')
+    actual = harmonize.harmonize(NARROW_RESULTS4, 'Chlorophyll a')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 6803610  # Test size
@@ -893,7 +889,7 @@ def test_harmonize_turbidity():
     NARROW_RESULTS5 : pandas.DataFrame
         Read from data/wqp_results5.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS5, 'Turbidity')
+    actual = harmonize.harmonize(NARROW_RESULTS5, 'Turbidity')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8628100  # Test size
@@ -970,9 +966,9 @@ def test_harmonize_sediment():
     NARROW_RESULTS5 : pandas.DataFrame
         Read from data/wqp_results5.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS5,
-                                         char_val='Sediment',
-                                         units_out='g/kg')
+    actual = harmonize.harmonize(NARROW_RESULTS5,
+                                 char_val='Sediment',
+                                 units_out='g/kg')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8628100  # Test size
@@ -1060,7 +1056,7 @@ def test_harmonize_fecal_coliform():
     NARROW_RESULTS7 : pandas.DataFrame
         Read from data/wqp_results7.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS7, 'Fecal Coliform')
+    actual = harmonize.harmonize(NARROW_RESULTS7, 'Fecal Coliform')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8778720  # Test size
@@ -1113,7 +1109,7 @@ def test_harmonize_E_Coli():
     NARROW_RESULTS7 : pandas.DataFrame
         Read from data/wqp_results7.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS7, 'Escherichia coli')
+    actual = harmonize.harmonize(NARROW_RESULTS7, 'Escherichia coli')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8778720  # Test size
