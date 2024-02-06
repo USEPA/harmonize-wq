@@ -19,6 +19,8 @@ from harmonize_wq import harmonize
 from harmonize_wq import convert
 from harmonize_wq import wrangle
 from harmonize_wq import clean
+from harmonize_wq import visualize as viz
+
 
 # CI
 DIRPATH = os.path.dirname(os.path.realpath(__file__))
@@ -190,7 +192,7 @@ def test_harmonize_depth():
     expected_unit = 'meter'
     assert str(actual.iloc[135227]['Depth'].units) == expected_unit
 
-
+@pytest.fixture(scope='session')
 def test_harmonize_locations():
     """
     Test functions standardizes the sites correctly
@@ -226,6 +228,8 @@ def test_harmonize_locations():
     actual_imprecise = actual.iloc[302]['QA_flag']
     expected_imprecise = 'LatitudeMeasure: Imprecise: lessthan3decimaldigits'
     assert actual_imprecise == expected_imprecise
+    
+    return actual
 
 
 #@pytest.mark.skip(reason="no change")
@@ -357,6 +361,7 @@ def test_harmonize_phosphorus(merged_tables):
     # TODO: no bad value
 
 
+@pytest.fixture(scope='session')
 #@pytest.mark.skip(reason="no change")
 def test_harmonize_temperature():
     """
@@ -411,6 +416,7 @@ def test_harmonize_temperature():
     # Confirm expected flag - for un-usable value
     expected_flag = 'ResultMeasureValue: "Not Reported" result cannot be used'
     assert actual.iloc[359504]['QA_flag'] == expected_flag
+    return actual
 
 
 #@pytest.mark.skip(reason="no change")
@@ -1265,3 +1271,41 @@ def test_split_table(harmonized_tables):
                 'SampleCollectionMethod/MethodName',
                 'SampleCollectionEquipmentName', 'PreparationStartDate', ]
     assert list(actual_chars.columns) == expected
+
+#test viz
+def test_map_counts(test_harmonize_locations, test_harmonize_temperature):
+    actual = viz.map_counts(test_harmonize_temperature,
+                            test_harmonize_locations,
+                            'Temperature')
+    assert len(actual['cnt']) == 21075
+    assert sum(actual['cnt']) == 346210
+
+def test_map_measure(test_harmonize_locations, test_harmonize_temperature):
+    actual = viz.map_measure(test_harmonize_temperature,
+                            test_harmonize_locations,
+                            'Temperature')
+    assert len(actual['mean']) == 21075
+    assert sum(actual['mean']) == 523776.35504297394
+
+def test_station_summary(test_harmonize_temperature):
+    actual = viz.station_summary(test_harmonize_temperature, 'Temperature')
+    assert list(actual.columns) == ['MonitoringLocationIdentifier', 'cnt', 'mean']
+    assert len(actual['cnt']) == 21075
+    assert sum(actual['cnt']) == 346210
+    assert len(actual['mean']) == 21075
+    assert sum(actual['mean']) == 523776.35504297394
+
+def test_print_report(test_harmonize_temperature, capsys):
+    viz.print_report(test_harmonize_temperature,
+                     'Temperature',
+                     'ResultMeasure/MeasureUnitCode')
+    captured, err = capsys.readouterr()
+    expected = "-Usable results-\ncount    346210.000000\n"
+    expected += "mean         25.175700\nstd         143.175647\n"
+    expected += "min          -9.990000\n25%          20.920000\n"
+    expected += "50%          25.500000\n75%          28.980000\n"
+    expected += "max       72000.000000\ndtype: float64\n"
+    expected += "Unusable results: 13295\n"
+    expected += "Usable results with inferred units: 0\n"
+    expected += "Results outside threshold (0.0 to 884.2295835882991): 4\n"
+    assert captured == expected
