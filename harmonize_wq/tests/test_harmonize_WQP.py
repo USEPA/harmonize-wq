@@ -579,8 +579,7 @@ def test_harmonize_salinity():
     assert str(actual.iloc[335435]['Salinity'].units)
     assert actual.iloc[335435][orig_val_col] == 120.0  # Confirm measure
     assert actual.iloc[335435]['Salinity'].magnitude == 125.28127999999992
-    # 157.1; 4.014
-    print(actual.iloc[335435]['Salinity'].magnitude)
+    psu_example = str(actual.iloc[335435]['Salinity'])
 
     # Inspect specific result - where units missing
     assert str(actual.iloc[21277][orig_unit_col]) == 'nan'  # Confirm missing
@@ -601,7 +600,9 @@ def test_harmonize_salinity():
     # Confirm expected flag - for un-usable value
     expected_flag = 'ResultMeasureValue: "*Not Reported" result cannot be used'
     assert actual.iloc[21277]['QA_flag'].split('; ')[0] == expected_flag
-
+    # Backward test PSU to density
+    density = convert.PSU_to_density(psu_example)
+    assert str(density) == '997.1428971400308 milligram / milliliter'
 
 #@pytest.mark.skip(reason="no change")
 def test_harmonize_pH():
