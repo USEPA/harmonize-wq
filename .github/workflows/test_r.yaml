@@ -3,7 +3,7 @@ name: R-test
 on:
   push:
     branches:
-      [main, new_release_0-3-8]
+      [main, dev]
   pull_request:
     branches:
       [main]
