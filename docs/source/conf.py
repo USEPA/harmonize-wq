@@ -27,7 +27,7 @@ copyright = '2023, US Environmental Protection Agency'
 author = 'Justin Bousquin (US Environmental Protection Agency)'
 
 # ToDO:single source version
-version = "0.3.1"
+version = "0.3.8"
 #release = version(project)
 #release = harmonize_wq.__version__
 #version = '.'.join(release.split('.')[:2])
