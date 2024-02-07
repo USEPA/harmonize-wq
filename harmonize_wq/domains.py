@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions to return domain lists with all potential values, mainly for use
-    as filters. Small or frequently utilized domains may be hardcoded. A url
-    based method can be used to get the most up to date domain list.
+"""Functions to return domain lists with all potential values.
+
+These are mainly for use as filters. Small or frequently utilized domains may
+be hard-coded. A URL based method can be used to get the most up to date domain
+list.
 """
 import requests
-import pint
 import pandas
 
 
 BASE_URL = 'https://cdx.epa.gov/wqx/download/DomainValues/'
+TADA_DATA_URL = r'https://raw.githubusercontent.com/USEPA/TADA/'
 
 UNITS_REPLACE = {'Secchi': {},
                  'DO': {'%': 'percent'},
@@ -70,12 +71,11 @@ domain_tables = {'ActivityMedia': 'ActivityMedia_CSV',
 # get_domain_list(field):
 
 def get_domain_dict(table, cols=None):
-    """
-    Retrieves domain values as dictionary for specified table
+    """Get domain values for specified table.
 
     Parameters
     ----------
-    table : string
+    table : str
         csv table name (without extension).
     cols : list, optional
         Columns to use as {key, value}.
@@ -83,24 +83,172 @@ def get_domain_dict(table, cols=None):
 
     Returns
     -------
-    dictionary
+    dict
         Dictionary where {cols[0]: cols[1]}
 
+    Examples
+    --------
+    Return dictionary for domain from WQP table (e.g., 'ResultSampleFraction'),
+    The default keys ('Name') are shown as values ('Description') are long:
+    
+    >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE
+    dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
+               'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
+               'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
+               'Extractable, residual', 'Field', 'Filterable', 'Filtered field and/or lab',
+               'Filtered, field', 'Filtered, lab', 'Fixed', 'Free Available', 'Inorganic',
+               'Leachable', 'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile', 'None',
+               'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable', 'Sieved',
+               'Strong Acid Diss', 'Supernate', 'Suspended', 'Total', 'Total Recoverable',
+               'Total Residual', 'Total Soluble', 'Unfiltered', 'Unfiltered, field', 'Vapor',
+               'Volatile', 'Weak Acid Diss', 'non-linear function'])
+    
     """
     if cols is None:
         cols = ['Name', 'Description']
     if not table.endswith('_CSV'):
         table += '_CSV'
-    url = '{}{}.zip'.format(BASE_URL, table)
+    url = f'{BASE_URL}{table}.zip'
     # Very limited url handling
     if requests.get(url).status_code != 200:
         status_code = requests.get(url).status_code
-        print("{} web service response {}".format(url, status_code))
+        print(f"{url} web service response {status_code}")
     df = pandas.read_csv(url, usecols=cols)
     return dict(df.values)
 
 
+def harmonize_TADA_dict():
+    """Get structured dictionary from TADA HarmonizationTemplate csv.
+    
+    Based on target column names and sample fractions.
+
+    Returns
+    -------
+    full_dict : dict
+        {'TADA.CharacteristicName': {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText [Target.TADA.ResultSampleFractionText]}}}
+    """
+    # Note: too nested for refactor into single function w/ char_tbl_TADA
+
+    # Read from github
+    csv = f'{TADA_DATA_URL}develop/inst/extdata/HarmonizationTemplate.csv'
+    df = pandas.read_csv(csv)  # Read csv url to DataFrame
+    full_dict = {}  # Setup results dict
+    # Loop over one unique characteristicName at a time
+    for char in list(set(df['TADA.CharacteristicName'].to_list())):
+        sub_df = df[df['TADA.CharacteristicName']==char]  # Mask by char
+        full_dict[char] = char_tbl_TADA(sub_df, char)  # Build dictionary
+
+    # Domains to check agaisnt
+    domain_list = list(get_domain_dict('ResultSampleFraction').keys())
+
+    # Update in/out with expected sample Fraction case
+    for k_char, v_char in full_dict.items():
+        for k_target, v_target in v_char.items():
+            new_target = {}
+            for k_sf, v_sf in v_target.items():
+                # re-case new keys
+                new_k_sf = re_case(k_sf, domain_list)
+                # re-case old values
+                new_v_sf = [re_case(x, domain_list) for x in v_sf]
+                new_target[new_k_sf] = new_v_sf
+            # Replace old smaple fraction dict with new using keys
+            full_dict[k_char][k_target] = new_target
+
+    return full_dict
+
+
+def re_case(word, domain_list):
+    """Change instance of word in domain_list to UPPERCASE.
+
+    Parameters
+    ----------
+    word : str
+        Word to alter in domain_list.
+    domain_list : list
+        List including word.
+
+    Returns
+    -------
+    str
+        Word from domain_list in UPPERCASE.
+    """
+    domain_list_upper = [x.upper() for x in domain_list]
+    try:
+        idx = domain_list_upper.index(word)
+    except:
+        return word
+    return domain_list[idx]
+
+
+def char_tbl_TADA(df, char):
+    """Get structured dictionary for TADA.CharacteristicName from TADA df.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Table from TADA for specific characteristic.
+    char : str
+        CharacteristicName.
+        
+    Returns
+    -------
+    new_char_dict : dict
+        {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText: [Target.TADA.ResultSampleFractionText]} 
+    """
+    cols = ['Target.TADA.CharacteristicName',
+            'TADA.ResultSampleFractionText',
+            'Target.TADA.ResultSampleFractionText']
+    sub_df = df[cols].drop_duplicates()  # TODO: superfluous?
+
+    # Update Output/target columns
+    sub_df[cols[0]] = sub_df[cols[0]].fillna(char)  # new_char
+    sub_df[cols[2]] = sub_df[cols[2]].fillna(sub_df[cols[1]])  # new_fract
+
+    sub_df.drop_duplicates(inplace=True)
+
+    # loop over new chars, getting {new_fract: [old fracts]}
+    new_char_dict = {}
+    for new_char in list(set(sub_df[cols[0]])):
+        new_char_df = sub_df[sub_df[cols[0]]==new_char]  # Mask by new_char
+        new_fract_dict = {}
+        for new_fract in list(set(new_char_df[cols[2]])):
+            # TODO: {nan: []}? Doesn't break but needs handling later
+            # Mask by new_fract
+            new_fract_df = new_char_df[new_char_df[cols[2]]==new_fract]
+            # Add a list of possible old_fract for new_fract key
+            new_fract_dict[new_fract] = list(set(new_fract_df[cols[1]]))
+        new_char_dict[new_char] = new_fract_dict
+
+    return new_char_dict
+
+
 def registry_adds_list(out_col):
+    """Get units to add to :mod:`pint` unit registry by out_col column.
+    
+    Typically out_col refers back to column used for a value from the
+    'CharacteristicName' column.
+
+    Parameters
+    ----------
+    out_col : str
+        The result column a unit registry is being built for.
+
+    Returns
+    -------
+    list
+        List of strings with unit additions in expected format.
+
+    Examples
+    --------
+    Generate a new pint unit registry object for e.g., Sediment:
+    
+    >>> from harmonize_wq import domains
+    >>> domains.registry_adds_list('Sediment')  # doctest: +NORMALIZE_WHITESPACE
+    ['fraction = [] = frac',
+     'percent = 1e-2 frac',
+     'parts_per_thousand = 1e-3 = ppth',
+     'parts_per_million = 1e-6 fraction = ppm']
+    """
     # TODO: 'PSU' = 'PSS' ~ ppth/1.004715
 
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
@@ -141,35 +289,25 @@ def registry_adds_list(out_col):
     return ureg_adds[out_col]
 
 
-def bacteria_reg(ureg=None):
-    """
-    Generate standard pint unit registry with bacteria units defined.
-
-    Parameters
-    ----------
-    ureg : pint.UnitRegistry, optional
-        Unit Registry Object with any custom units defined. Default None
-        starts with new unit registry
-
-    Returns
-    -------
-    unit_registry : pint.UnitRegistry
-        Unit registry with dimensionless bacteria units defined.
-    """
-    if ureg is None:
-        ureg = pint.UnitRegistry()
-
-    return ureg
-
-
 def out_col_lookup():
-    """
+    """Get {CharacteristicName: out_column_name}.
+    
+    This is often subset and used to write results to a new column from the
+    'CharacteristicName' column.
 
     Returns
     -------
     dict
         {WQP CharacteristicName:Column Name}.
 
+    Examples
+    --------
+    The function returns the full dictionary {CharacteristicName: out_column_name}.
+    It can be subset by a 'CharactisticName' column value to get the name of
+    the column for results:
+        
+    >>> domains.out_col_lookup()['Escherichia coli']
+    'E_coli'
     """
     # TODO: something special for phosphorus? Currently return suffix.
     # 'Phosphorus' -> ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']
@@ -191,12 +329,11 @@ def out_col_lookup():
 
 
 def characteristic_cols(category=None):
-    """
-    Return characteristic specific columns, can subset those by category.
+    """Get characteristic specific columns list, can subset those by category.
 
     Parameters
     ----------
-    category : string, optional
+    category : str, optional
         Subset results: 'Basis', 'Bio', 'Depth', 'QA', 'activity', 'analysis',
         'depth', 'measure', 'sample'.
         The default is None.
@@ -206,6 +343,16 @@ def characteristic_cols(category=None):
     col_list : list
         List of columns.
 
+    Examples
+    --------
+    Running the function without a category returns the full list of column
+    names, including a category returns only the columns in that category:
+        
+    >>> domains.characteristic_cols('QA')  # doctest: +NORMALIZE_WHITESPACE
+    ['ResultDetectionConditionText', 'ResultStatusIdentifier', 'PrecisionValue',
+     'DataQuality/BiasValue', 'ConfidenceIntervalValue', 'UpperConfidenceLimitValue',
+     'LowerConfidenceLimitValue', 'ResultCommentText', 'ResultSamplingPointName',
+     'ResultDetectionQuantitationLimitUrl']
     """
     cols = {'ActivityStartDate': 'activity',
             'ActivityStartTime/Time': 'activity',
@@ -354,14 +501,16 @@ def characteristic_cols(category=None):
 
 
 def xy_datum():
-    """
-    Get dictionary where key is expected string and value is dictionary with
-    "Description": string (Not currently used) and "EPSG": int (4-digit code).
+    """Get dictionary of expected horizontal datums.
+
+    The structure has {key as expected string: value as {"Description": string
+    and "EPSG": integer (4-digit code)}.
 
     Notes
     -----
-    source url: f'{BASE_URL}HorizontalCoordinateReferenceSystemDatum_CSV.zip'
-    Anything not in dict will be nan, i.e. must be int so these are missing:
+    source WQP: HorizontalCoordinateReferenceSystemDatum_CSV.zip
+    
+    Anything not in dict will be NaN, and non-integer EPSG will be missing:
     "OTHER": {"Description": 'Other', "EPSG": nan},
     "UNKWN": {"Description": 'Unknown', "EPSG": nan}
 
@@ -371,6 +520,17 @@ def xy_datum():
         Dictionary where exhaustive:
             {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
             EPSG:int}}
+
+    Examples
+    --------
+    Running the function returns the full dictionary with {abbreviation:
+    {'Description':values, 'EPSG':values}}. The abbreviation key can be used to
+    get the EPSG code:
+        
+    >>> domains.xy_datum()['NAD83']
+    {'Description': 'North American Datum 1983', 'EPSG': 4269}
+    >>> domains.xy_datum()['NAD83']['EPSG']
+    4269
     """
     return {"NAD27": {"Description": 'North American Datum 1927',
                       "EPSG": 4267},
@@ -407,17 +567,26 @@ def xy_datum():
 
 def stations_rename():
 #     Default field mapping writes full name to alias but a short name to field
-    """
-    ESRI places a length restriction on shapefile field names. This returns a
-    dictionary with the original water quality portal field name (as key) and
-    shortened column name for writing as shp. We suggest using the longer
-    original name as the field alias when writing as .shp.
+    """Get shortened column names for shapefile (.shp) fields.
+    
+    ESRI places a length restriction on shapefile (.shp) field names. This
+    returns a dictionary with the original water quality portal field name (as
+    key) and shortened column name for writing as .shp. We suggest using the
+    longer original name as the field alias when writing as .shp.
 
     Returns
     -------
-    field_mapping : dictionary
-        dictionary where key = WQP field name and value = short name for shp.
-
+    field_mapping : dict
+        Dictionary where key = WQP field name and value = short name for .shp.
+        
+    Examples
+    --------
+    Although running the function returns the full dictionary of Key:Value
+    pairs, here we show how the current name can be used as a key to get the
+    new name:
+        
+    >>> domains.stations_rename()['OrganizationIdentifier']
+    'org_ID'
     """
     return {'OrganizationIdentifier': 'org_ID',
             'OrganizationFormalName': 'org_name',
@@ -461,10 +630,12 @@ def stations_rename():
 
 
 def accepted_methods():
-    """
-    Accepted methods for each characteristic.
+    """Get accepted methods for each characteristic.
 
-    Note: Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
+    Notes
+    -----
+    Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
+    column. This is not fully implemented.
 
     Returns
     -------

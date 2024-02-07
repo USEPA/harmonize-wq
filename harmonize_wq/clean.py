@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions that can be applied to the entire dataset or subsets of the
-    dataset to clean/correct additional columns.
-"""
+"""Functions to clean/correct additional columns in subset/entire dataset."""
 from warnings import warn
 import dataretrieval.utils
 from harmonize_wq import harmonize
@@ -11,19 +8,39 @@ from harmonize_wq import wrangle
 
 
 def datetime(df_in):
-    """
-    Format time using dataretrieval and 'ActivityStart'
+    """Format time using :mod:`dataretrieval` and 'ActivityStart' columns.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with the expected activity date time columns.
+        DataFrame with the expected activity date, time and timezone columns.
 
     Returns
     -------
     df_out : pandas.DataFrame
-        Dataframe with the converted date and datetime columns.
+        DataFrame with the converted datetime column.
 
+    Examples
+    --------
+    Build pandas DataFrame for example:
+    
+    >>> from pandas import DataFrame
+    >>> from numpy import nan
+    >>> df = DataFrame({'ActivityStartDate': ['2004-09-01', '2004-07-01',],
+    ...                 'ActivityStartTime/Time': ['10:01:00', nan,],
+    ...                 'ActivityStartTime/TimeZoneCode':  ['EST', nan],
+    ...                 })
+    >>> df
+      ActivityStartDate ActivityStartTime/Time ActivityStartTime/TimeZoneCode
+    0        2004-09-01               10:01:00                            EST
+    1        2004-07-01                    NaN                            NaN
+    >>> from harmonize_wq import clean
+    >>> clean.datetime(df)
+      ActivityStartDate  ...         Activity_datetime
+    0        2004-09-01  ... 2004-09-01 15:01:00+00:00
+    1        2004-07-01  ...                       NaT
+    <BLANKLINE>
+    [2 rows x 4 columns]
     """
     # Expected columns
     date, time, tz = ('ActivityStartDate',
@@ -38,23 +55,52 @@ def datetime(df_in):
 
 
 def harmonize_depth(df_in, units='meter'):
-    """
+    """Create 'Depth' column with result depth values in consistent units.
+    
+    The new column is based on values from the 'ResultDepthHeightMeasure/MeasureValue' column and
+    units from the 'ResultDepthHeightMeasure/MeasureUnitCode' column.
+    
     Notes
     -----
-    Doesn't currently pass errors or ureg
+    If there are errors or unit registry (ureg) updates these are not currently
+    passed back. In the future activity depth columns may be considered if result depth missing.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame with the required 'ResultDepthHeight' columns.
-    units : string, optional
+    units : str, optional
         Desired units. The default is 'meter'.
 
     Returns
     -------
     df_out : pandas.DataFrame
         DataFrame with new Depth column replacing 'ResultDepthHeight' columns.
-
+    
+    Examples
+    --------
+    Build pandas DataFrame for example:
+        
+    >>> from pandas import DataFrame
+    >>> from numpy import nan
+    >>> df = DataFrame({'ResultDepthHeightMeasure/MeasureValue': ['3.0', nan, 10],
+    ...                 'ResultDepthHeightMeasure/MeasureUnitCode': ['m', nan, 'ft'],
+    ...                 })
+    >>> df
+      ResultDepthHeightMeasure/MeasureValue ResultDepthHeightMeasure/MeasureUnitCode
+    0                                   3.0                                        m
+    1                                   NaN                                      NaN
+    2                                    10                                       ft
+    
+    Get clean 'Depth' column:
+    
+    >>> from harmonize_wq import clean
+    >>> clean.harmonize_depth(df)[['ResultDepthHeightMeasure/MeasureValue',
+    ...                            'Depth']]
+      ResultDepthHeightMeasure/MeasureValue                     Depth
+    0                                   3.0                 3.0 meter
+    1                                   NaN                       NaN
+    2                                    10  3.0479999999999996 meter
     """
     df_out = df_in.copy()
     # Default columns
@@ -71,57 +117,63 @@ def harmonize_depth(df_in, units='meter'):
     df_out.loc[na_mask, "Depth"] = harmonize.convert_unit_series(**params)
 
     # TODO: where result depth is missing use activity depth?
-    # TODO: drop old cols like datetime does (.pop them)
 
     return df_out
 
 
 def check_precision(df_in, col, limit=3):
-    """
-    Note - be cautious of float type and real vs representable precision
+    """Add QA_flag if value in column has precision lower than limit.
 
+    Notes
+    -----
+    Be cautious of float type and real vs representable precision.
+    
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame with the required 'ResultDepthHeight' columns.
-    unit_col : string
+    unit_col : str
         Desired column in df_in.
-    limit : integer, optional
+    limit : int, optional
         Number of decimal places under which to detect. The default is 3.
 
     Returns
     -------
     df_out : pandas.DataFrame
-        DataFrame with the quality assurance flag for precision
+        DataFrame with the quality assurance flag for precision.
 
     """
     df_out = df_in.copy()
     # Create T/F mask based on len of everything after the decimal
     c_mask = [len(str(x).split('.')[1]) < limit for x in df_out[col]]
-    flag = '{}: Imprecise: lessthan{}decimaldigits'.format(col, limit)
+    flag = f'{col}: Imprecise: lessthan{limit}decimaldigits'
     df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
 
 
 def methods_check(df_in, char_val, methods=None):
-    """
-    Check methods against list of accepted methods.
+    """Check methods against list of accepted methods.
+    
+    Notes
+    -----
+    This is not fully implemented.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    char_val : string
+    char_val : str
         Characteristic name.
-    methods : dictionary, optional
+    methods : dict, optional
         Dictionary where key is characteristic column name and value is list of
         dictionaries each with Source and Method keys. This allows updated
-        methods dictionaries to be used. The default None, uses the built-in
-        domains.accepted_methods().
+        methods dictionaries to be used. The default None uses the built-in
+        :meth:`domains.accepted_methods`.
 
     Returns
     -------
-    None.
+    accept : list
+        List of values from 'ResultAnalyticalMethod/MethodIdentifier' column in methods.
 
     """
     if methods is None:
@@ -144,21 +196,22 @@ def methods_check(df_in, char_val, methods=None):
 
 
 def wet_dry_checks(df_in, mask=None):
-    """
-    Fix known errors in MediaName based on WeightBasis and SampleFraction
-    columns.
+    """Fix suspected errors in 'ActivityMediaName' column.
+    
+    Uses the 'ResultWeightBasisText' and 'ResultSampleFractionText' columns to
+    switch if the media is wet/dry where appropriate.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
     mask : pandas.Series
-        Row conditional (bool) mask to limit df rows to check/fix
+        Row conditional (bool) mask to limit df rows to check/fix. The default is None.
 
     Returns
     -------
     df_out : pandas.DataFrame
-        Updated DataFrame
+        Updated DataFrame.
 
     """
     df_out = df_in.copy()
@@ -168,7 +221,7 @@ def wet_dry_checks(df_in, mask=None):
                                  'ResultSampleFractionText',
                                  'ResultWeightBasisText'])
     # QA - Sample Media, fix assigned 'Water' that are actually 'Sediment'
-    qa_flag = '{}: Water changed to Sediment'.format(media_col)
+    qa_flag = f'{media_col}: Water changed to Sediment'
     # Create mask for bad data
     media_mask = ((df_out['ResultSampleFractionText'] == 'Bed Sediment') &
                   (df_out['ResultWeightBasisText'] == 'Dry') &
@@ -185,22 +238,21 @@ def wet_dry_checks(df_in, mask=None):
 
 
 def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
-    """
-    Restrict to only water or only sediment samples
+    """Restrict to only water or only sediment samples.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
         DataFrame that will be updated.
-    wet_dry : string, optional
-        Which values (Water/Sediment) to keep. The default is 'wet' (Water)
-    char_val : string, optional
+    wet_dry : str, optional
+        Which values (Water/Sediment) to keep. The default is 'wet' (Water).
+    char_val : str, optional
         Apply to specific characteristic name. The default is None (for all).
 
     Returns
     -------
     df2 : pandas.DataFrame
-        Updated copy of df_in
+        Updated copy of df_in.
     """
     df2 = df_in.copy()
     if char_val:
@@ -215,8 +267,7 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
     try:
         harmonize.df_checks(df2, media_col)
     except AssertionError:
-        problem = "{} missing, querying from activities...".format(media_col)
-        warn('Warning: ' + problem)
+        warn(f'Warning: {media_col} missing, querying from activities...')
         # Try query/join
         if char_val:
             df2 = wrangle.add_activities_to_df(df2, c_mask)

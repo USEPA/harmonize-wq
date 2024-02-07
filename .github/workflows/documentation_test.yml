@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       [main]
+  push:
+    branches:
+      [main, dev]
 
 # Allows you to run this workflow manually from the Actions tab
 #workflow_dispatch:
@@ -20,16 +23,20 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
+      - uses: r-lib/actions/setup-pandoc@v2
       - uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install sphinx sphinx_rtd_theme
+          pip install -r requirements_dev.txt
       - name: Sphinx build
         run: |
           #sphinx-build docs/source _build
           cd docs
           make html
+          make doctest
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

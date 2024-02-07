@@ -7,15 +7,15 @@ packages = ["harmonize_wq"]
 
 [metadata]
 name = "harmonize_wq"
-version = "0.3.1"
+version = "0.3.8"
 
 [project]
 name = "harmonize_wq"
-version = "0.3.1"
+version = "0.3.8"
 authors = [
   { name="Justin Bousquin", email="Bousquin.Justin@epa.gov" },
 ]
-description = "Package to standardize, clean and wrangle Water Quality Portal data into more analytic-ready formats"
+description = "Package to standardize, clean, and wrangle Water Quality Portal data into more analytic-ready formats"
 readme = "README.md"
 requires-python = ">=3.7"
 keywords = ["USEPA", "water data", "water quality"]

@@ -3,15 +3,17 @@
 Installing harmonize_wq
 =======================
 
-harmonize_wq can be installed using pip:
+Install harmonize_wq using pip:
+*******************************
 
 .. code-block:: python3
    
-    $ python3 -m pip install harmonize-wq
+    pip install harmonize-wq
 
 
 
-To install the latest development version of harmonize_wq using pip:
+Install the latest development version of harmonize_wq using pip:
+*****************************************************************
 
 .. code-block:: python3
    

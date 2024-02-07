@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+"""Functions to convert from one unit to another, sometimes using :mod:`pint` decorators.
+
+Contains several unit conversion functions not in :mod:`pint`.
 """
-    Functions to convert from one unit to another, sometimes using
-    pint decorators. Contains several unit conversion functions not in Pint.
-"""
+import math
 import pint
+from harmonize_wq import domains
+
 
 # TODO: does this constant belong here or in domains?
 PERIODIC_MW = {'Organic carbon': 180.16,
@@ -24,29 +27,43 @@ PERIODIC_MW = {'Organic carbon': 180.16,
 
 u_reg = pint.UnitRegistry()  # For use in wrappers
 # TODO: find more elegant way to do this with all definitions
-u_reg.define('NTU = [turbidity]')
-u_reg.define('Jackson_Turbidity_Units = [] = JTU')
-u_reg.define('SiO2 = []')
+for definition in domains.registry_adds_list('Turbidity'):
+    u_reg.define(definition)
+for definition in domains.registry_adds_list('Salinity'):
+    u_reg.define(definition)
 
 
 def mass_to_moles(ureg, char_val, Q_):
-    """
-    Converts a mass to moles substance.
+    """Convert a mass to moles substance.
 
     Parameters
     ----------
     ureg : pint.UnitRegistry
         Unit Registry Object with any custom units defined.
-    char_val : TYPE
-        DESCRIPTION.
-    Q_ : TYPE
-        DESCRIPTION.
+    char_val : str
+        Characteristic name to use to find corresponding molecular weight.
+    Q_ : pint.Quantity
+        Mass to convert to moles.
 
     Returns
     -------
     pint.Quantity
         Value in moles of substance.
+    
+    Examples
+    --------
+    Build standard pint unit registry:
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    
+    Build pint quantity:
 
+    >>> Q_ = 1 * ureg('g')
+    
+    >>> from harmonize_wq import convert
+    >>> str(convert.mass_to_moles(ureg, 'Phosphorus', Q_))
+    '0.03228931223764934 mole'
     """
     # TODO: Not used yet
     m_w = PERIODIC_MW[char_val]
@@ -54,9 +71,10 @@ def mass_to_moles(ureg, char_val, Q_):
 
 
 def moles_to_mass(ureg, Q_, basis=None, char_val=None):
-    """
-    Converts moles substance to mass.
+    """Convert moles substance to mass.
 
+    Either basis or char_val must have a non-default value.
+    
     Parameters
     ----------
     ureg : pint.UnitRegistry
@@ -75,6 +93,20 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     pint.Quantity
         Value in mass (g).
 
+    Examples
+    --------
+    Build standard pint unit registry:
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    
+    Build quantity:
+    
+    >>> Q_ = 0.265 * ureg('umol')
+    
+    >>> from harmonize_wq import convert
+    >>> str(convert.moles_to_mass(ureg, Q_, basis='as P'))
+    '8.20705e-06 gram'
     """
     if basis:
         # Clean-up basis
@@ -91,8 +123,7 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
 
 @u_reg.wraps(u_reg.NTU, u_reg.centimeter)
 def cm_to_NTU(val):
-    """
-    Convert Turbidity measured in centimeters to NTU
+    """Convert turbidity measured in centimeters to NTU.
 
     Parameters
     ----------
@@ -101,8 +132,31 @@ def cm_to_NTU(val):
 
     Returns
     -------
+    pint.Quantity
         The turbidity value in NTU.
+    
+    Examples
+    --------
+    Build standard pint unit registry:
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    
+    Build cm units aware pint Quantity (already in standard unit registry):
 
+    >>> turbidity = ureg.Quantity('cm')
+    >>> str(turbidity)
+    '1 centimeter'
+    >>> type(turbidity)
+    <class 'pint.Quantity'>
+    
+    Convert to cm:
+    
+    >>> from harmonize_wq import convert
+    >>> str(convert.cm_to_NTU(str(turbidity)))
+    '3941.8 Nephelometric_Turbidity_Units'
+    >>> type(convert.cm_to_NTU(str(turbidity)))
+    <class 'pint.Quantity'>
     """
     # TODO: Currently exports None since NTU is not defined in u_reg
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
@@ -114,8 +168,7 @@ def cm_to_NTU(val):
 
 @u_reg.wraps(u_reg.centimeter, u_reg.NTU)
 def NTU_to_cm(val):
-    """
-    Convert Turbidity measured in NTU to centimeters
+    """Convert turbidity in NTU (Nephelometric Turbidity Units) to centimeters.
 
     Parameters
     ----------
@@ -124,8 +177,35 @@ def NTU_to_cm(val):
 
     Returns
     -------
+    pint.Quantity
         The turbidity value in centimeters.
 
+    Examples
+    --------
+    NTU is not a standard pint unit and must be added to a unit registry first
+    (normally done by WQCharData.update_ureg() method):
+        
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> from harmonize_wq import domains
+    >>> for definition in domains.registry_adds_list('Turbidity'):
+    ...     ureg.define(definition) 
+    
+    Build NTU aware pint pint Quantity:
+
+    >>> turbidity = ureg.Quantity('NTU')
+    >>> str(turbidity)
+    '1 Nephelometric_Turbidity_Units'
+    >>> type(turbidity)
+    <class 'pint.Quantity'>
+    
+    Convert to cm:
+    
+    >>> from harmonize_wq import convert
+    >>> str(convert.NTU_to_cm('1 NTU'))
+    '241.27 centimeter'
+    >>> type(convert.NTU_to_cm('1 NTU'))
+    <class 'pint.Quantity'>
     """
     # TODO: add wrapper
     # https://extension.usu.edu/utahwaterwatch/monitoring/field-instructions/
@@ -137,7 +217,49 @@ def NTU_to_cm(val):
 
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def JTU_to_NTU(val):
-    """Linear relationship, 1 -> 19, 0.053 -> 1, 0.4 -> 7.5 """
+    """Convert turbidity units from JTU (Jackson Turbidity Units) to NTU.
+    
+    Notes
+    -----
+    This is based on linear relationship: 1 -> 19, 0.053 -> 1, 0.4 -> 7.5
+
+    Parameters
+    ----------
+    val : pint.Quantity
+        The turbidity value in JTU (dimensionless).
+
+    Returns
+    -------
+    NTU : pint.Quantity
+        The turbidity value in dimensionless NTU.
+        
+    Examples
+    --------
+    JTU is not a standard pint unit and must be added to a unit registry first
+    (normally done by WQCharData.update_ureg() method):
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> from harmonize_wq import domains
+    >>> for definition in domains.registry_adds_list('Turbidity'):
+    ...     ureg.define(definition) 
+    
+    Build JTU units aware pint Quantity:
+
+    >>> turbidity = ureg.Quantity('JTU')
+    >>> str(turbidity)
+    '1 Jackson_Turbidity_Units'
+    >>> type(turbidity)
+    <class 'pint.Quantity'>
+    
+    Convert to NTU:
+    
+    >>> from harmonize_wq import convert
+    >>> str(convert.JTU_to_NTU(str(turbidity)))
+    '18.9773 Nephelometric_Turbidity_Units'
+    >>> type(convert.JTU_to_NTU(str(turbidity)))
+    <class 'pint.Quantity'>
+    """
     # Alternative relation (Macneina 1990): NTU = JTU **0.943
     # from Maceina, M. J., & Soballe, D. M. (1990).
     #      Wind-related limnological variation in Lake Okeechobee, Florida.
@@ -147,11 +269,74 @@ def JTU_to_NTU(val):
 
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
 def SiO2_to_NTU(val):
-    """Linear relationship, 2.5 -> 19, 0.13 -> 1, 1 -> 7.5"""
+    """Convert turbidity units from SiO2 (silicon dioxide) to NTU.
+    
+    Notes
+    -----
+    This is based on a linear relationship: 0.13 -> 1, 1 -> 7.5, 2.5 -> 19
+
+    Parameters
+    ----------
+    val : pint.Quantity.build_quantity_class
+        The turbidity value in SiO2 units (dimensionless).
+
+    Returns
+    -------
+    NTU : pint.Quantity.build_quantity_class
+        The turbidity value in dimensionless NTU.
+    
+    Examples
+    --------
+    SiO2 is not a standard pint unit and must be added to a unit registry first
+    (normally done using WQCharData.update_ureg() method):
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> from harmonize_wq import domains
+    >>> for definition in domains.registry_adds_list('Turbidity'):
+    ...     ureg.define(definition) 
+    
+    Build SiO2 units aware pint Quantity:
+
+    >>> turbidity = ureg.Quantity('SiO2')
+    >>> str(turbidity)
+    '1 SiO2'
+    >>> type(turbidity)
+    <class 'pint.Quantity'>
+    
+    Convert to NTU:
+    
+    >>> from harmonize_wq import convert
+    >>> str(convert.SiO2_to_NTU(str(turbidity)))
+    '7.5701 Nephelometric_Turbidity_Units'
+    >>> type(convert.SiO2_to_NTU(str(turbidity)))
+    <class 'pint.Quantity'>
+    """
     return 7.6028 * val - 0.0327
 
 
 def FNU_to_NTU(val):
+    """Convert turbidity units from FNU (Formazin Nephelometric Units) to NTU.
+
+    Parameters
+    ----------
+    val : float
+        The turbidity magnitude (FNU is dimensionless).
+
+    Returns
+    -------
+    NTU : float
+        The turbidity magnitude (NTU is dimensionless).
+    
+    Examples
+    --------
+    Convert to NTU:
+
+    >>> from harmonize_wq import convert
+    >>> convert.FNU_to_NTU(8)
+    10.136    
+
+    """
     return val * 1.267
 
 
@@ -161,24 +346,42 @@ def FNU_to_NTU(val):
 def density_to_PSU(val,
                    pressure=1*u_reg("atm"),
                    temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert absolute salinity as density (mass/volume) to Practical Salinity
-    Units
+    """Convert salinity as density (mass/volume) to Practical Salinity Units.
 
     Parameters
     ----------
-    val : pint.quantity.build_quantity_class
+    val : pint.Quantity.build_quantity_class
         The salinity value in density units.
-    pressure : pint.quantity.build_quantity_class, optional
+    pressure : pint.Quantity.build_quantity_class, optional
         The pressure value. The default is 1*ureg("atm").
-    temperature : pint.quantity.build_quantity_class, optional
+    temperature : pint.Quantity.build_quantity_class, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
 
     Returns
     -------
-    PSU : pint.quantity.build_quantity_class
+    PSU : pint.Quantity.build_quantity_class
         The salinity value in dimensionless PSU.
-
+    
+    Examples
+    --------
+    PSU (Practical Salinity Units) is not a standard pint unit and must be added to a unit registry
+    first (normally done by WQCharData.update_ureg() method):
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> from harmonize_wq import domains
+    >>> for definition in domains.registry_adds_list('Salinity'):
+    ...     ureg.define(definition) 
+    
+    Build units aware pint Quantity, as string:
+    
+    >>> input_density = '1000 milligram / milliliter'
+    
+    Convert to Practical Salinity Units:
+    
+    >>> from harmonize_wq import convert
+    >>> convert.density_to_PSU(input_density)
+    <Quantity(4.71542857, 'gram / kilogram')>
     """
     # Standard Reference Value
     ref = 35.16504/35.0
@@ -199,10 +402,11 @@ def density_to_PSU(val,
 def PSU_to_density(val,
                    pressure=1*u_reg("atm"),
                    temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert salinity as Practical Salinity Units to density (mass/volume)
+    """Convert salinity as Practical Salinity Units (PSU) to density.
 
-
+    Dimensionality changes from dimensionless Practical Salinity Units (PSU) to
+    mass/volume density.
+    
     Parameters
     ----------
     val : pint.Quantity
@@ -214,9 +418,39 @@ def PSU_to_density(val,
 
     Returns
     -------
-    density : pint.quantity.build_quantity_class
+    density : pint.Quantity.build_quantity_class
         The salinity value in density units (mg/ml).
+    
+    Examples
+    --------
+    PSU is not a standard pint unit and must be added to a unit registry first.
+    This can be done using the WQCharData.update_ureg method:
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> from harmonize_wq import domains
+    >>> for definition in domains.registry_adds_list('Salinity'):
+    ...     ureg.define(definition) 
+    
+    Build units aware pint Quantity, as string because it is an altered unit
+    registry:
+    
+    >>> unit = ureg.Quantity('PSU')
+    >>> unit
+    <Quantity(1, 'Practical_Salinity_Units')>
+    
+    >>> type(unit)
+    <class 'pint.Quantity'>
+    
+    >>> input_psu = str(8*unit)
+    >>> input_psu
+    '8 Practical_Salinity_Units'
+    
+    Convert to density:
 
+    >>> from harmonize_wq import convert
+    >>> str(convert.PSU_to_density(input_psu))
+    '997.0540284772519 milligram / milliliter'
     """
     p, t = pressure, temperature
 
@@ -259,14 +493,14 @@ def PSU_to_density(val,
 def DO_saturation(val,
                   pressure=1*u_reg("atm"),
                   temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert Dissolved Oxygen as percent saturation (%) to mg/l concentration.
+    """Convert Dissolved Oxygen (DO) from saturation (%) to concentration (mg/l).
+    
     Defaults assume STP where pressure is 1 atmosphere and temperature 25C.
 
     Parameters
     ----------
-    val : pint.quantity.build_quantity_class
-        The Dissolved Oxygen saturation value in dimensionless percent.
+    val : pint.Quantity.build_quantity_class
+        The DO saturation value in dimensionless percent.
     pressure : pint.Quantity, optional
         The pressure value. The default is 1*ureg("atm").
     temperature : pint.Quantity, optional
@@ -275,19 +509,24 @@ def DO_saturation(val,
     Returns
     -------
     pint.Quantity
-        Value in mg/l.
-
+        DO value in mg/l.
+    
+    Examples
+    --------
+    >>> from harmonize_wq import convert
+    >>> convert.DO_saturation(70)
+    <Quantity(5.78363269, 'milligram / liter')>
+    
+    At 2 atm (10m depth)
+    >>> convert.DO_saturation(70, ('2 standard_atmosphere'))
+    ￼￼11.746159340060716 milligram / liter
     """
     p, t = pressure, temperature
     if p == 1 & (t == 25):
-        Cp = 8.262332418
+        cP = 8.262332418
     else:
-        Pwv = 11.8571-(3840.7/(t+273.15))-(216961/((t+273.15)**2))
-    # CP =((EXP(7.7117-1.31403*LN(t+45.93)))* P *
-    #      (1-EXP(Pwv)/p) *
-    #      (1-(0.000975-(0.00001426*t)+(0.00000006436*(t**2)))*p)) /
-    #     (1-EXP(Pwv))/(1-(0.000975-(0.00001426*t)+(0.00000006436*(t**2))))
-    return float(val) * Cp  # Divide by 100?
+        cP = _DO_concentration_eq(p, t)
+    return float(val)/100 * cP  # Divide by 100?
 
 
 @u_reg.wraps(None, (u_reg.milligram/u_reg.liter,
@@ -296,34 +535,55 @@ def DO_saturation(val,
 def DO_concentration(val,
                      pressure=1*u_reg("atm"),
                      temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Convert Dissolved Oxygen from concentration (e.g., mg/ml) to saturation (%)
+    """Convert Dissolved Oxygen (DO) from concentration (mg/l) to saturation (%).
 
     Parameters
     ----------
-    val : pint.quantity.build_quantity_class
-        The DO value (converted to mg/L)
+    val : pint.Quantity.build_quantity_class
+        The DO value (converted to mg/L).
     pressure : pint.Quantity, optional
         The pressure value. The default is 1*ureg("atm").
-    temperature : TYPE, optional
+    temperature : pint.Quantity, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
 
     Returns
     -------
     float
-        Dissolved Oxygen as saturation (dimensionless).
-
+        Dissolved Oxygen (DO) as saturation (dimensionless).
+    
+    Examples
+    --------
+    Build units aware pint Quantity, as string:
+    
+    >>> input_DO = '578 mg/l'
+    
+    >>> from harmonize_wq import convert
+    >>> convert.DO_concentration(input_DO)
+    6995.603308586222
     """
-    # TODO: switch to kelvin?
+    p, t = pressure, temperature
+    if p == 1 & (t == 25):
+        cP = 8.262332418
+    else:
+        cP = _DO_concentration_eq(p, t)
+    return 100*val /cP
+
+
+def _DO_concentration_eq(p, t):
+    """ Equilibrium oxygen concentration at non-standard"""
     # https://www.waterontheweb.org/under/waterquality/oxygen.html#:~:
     # text=Oxygen%20saturation%20is%20calculated%20as,
     # concentration%20at%20100%25%20saturation%20decreases.
-    p, t = pressure, temperature
-    standard = 0.000975 - (0.00001426*t) + (0.00000006436*(t**2))
-    numerator = ((1-Pwv)/p)*(1-(standard*p))
+    tk = t + 273.15  # t in kelvin (t is in C)
+    standard = 0.000975 - (1.426e-05*t) + (6.436e-08*(t**2))  # Theta
+    # partial pressure of water vapor, atm
+    Pwv = math.exp(11.8571 - (3840.7/tk) - (216961/(tk**2)))
+    # equilibrium oxygen concentration at std pres of 1 atm
+    cStar = math.exp(7.7117 - 1.31403 * math.log(t + 45.93))
+    numerator = (1-Pwv/p)*(1-(standard*p))
     denominator = (1-Pwv)*(1-standard)
-    Cp = C0*p(numerator/denominator)
-    return (100*val)/Cp
+
+    return cStar*p*(numerator/denominator)
 
 
 @u_reg.wraps(u_reg.dimensionless, (u_reg.microsiemens / u_reg.centimeter,
@@ -332,16 +592,15 @@ def DO_concentration(val,
 def conductivity_to_PSU(val,
                         pressure=0*u_reg("atm"),
                         temperature=u_reg.Quantity(25, u_reg("degC"))):
-    """
-    Estimate salinity (PSU) from conductivity
+    """Estimate salinity (PSU) from conductivity.
 
     Parameters
     ----------
-    val : pint.quantity.build_quantity_class
-        The conductivity value (converted to microsiemens / centimeter)
+    val : pint.Quantity.build_quantity_class
+        The conductivity value (converted to microsiemens / centimeter).
     pressure : pint.Quantity, optional
         The pressure value. The default is 0*ureg("atm").
-    temperature : TYPE, optional
+    temperature : pint.Quantity, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
 
     Returns
@@ -349,22 +608,47 @@ def conductivity_to_PSU(val,
     pint.Quantity
         Estimated salinity (PSU).
 
-    Additional Notes:
-    Conductivity to salinity conversion PSS 1978 method
+    Notes
+    -----
+    Conductivity to salinity conversion PSS 1978 method.
     c-numeric conductivity in uS (microsiemens).
-    t-numeric Celsius temperature (defaults to 25)
-    P-numeric optional pressure (defaults to 0)
+    t-numeric Celsius temperature (defaults to 25).
+    P-numeric optional pressure (defaults to 0).
 
-    References:
-    IOC, SCOR and IAPSO, 2010: The international thermodynamic
-        equation of seawater – 2010: Calculation and use of thermodynamic
-        properties. Intergovernmental Oceanographic Commission, Manuals
-        and Guides No. 56, UNESCO (English), 196 pp
+    References
+    ----------
+    IOC, SCOR and IAPSO, 2010: The international thermodynamic equation of
+    seawater – 2010: Calculation and use of thermodynamic properties.
+    Intergovernmental Oceanographic Commission, Manuals and Guides No. 56,
+    UNESCO (English), 196 pp.
 
-    code: Alan D. Jassby and James E. Cloern (2015). wq: Some tools for
-                exploring water quality monitoring data. R package v0.4.4.
-                See the wq::ec2pss function.
-    Function: https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R
+    Alan D. Jassby and James E. Cloern (2015). wq: Some
+    tools for  exploring water quality monitoring data. R package v0.4.4.
+    See the ec2pss function.
+    
+    Adapted from R `cond2sal_shiny
+    <https://github.com/jsta/cond2sal_shiny/blob/master/helpers.R>`_
+    
+    Examples
+    --------
+    PSU (Practical Salinity Units) is not a standard pint unit and must be
+    added to a unit registry first:
+    
+    >>> import pint
+    >>> ureg = pint.UnitRegistry()
+    >>> from harmonize_wq import domains
+    >>> for definition in domains.registry_adds_list('Salinity'):
+    ...     ureg.define(definition) 
+    
+    Build units aware pint Quantity, as string:
+    
+    >>> input_conductivity = '111.0 uS/cm'
+    
+    Convert to Practical Salinity Units:
+
+    >>> from harmonize_wq import convert
+    >>> convert.conductivity_to_PSU(input_conductivity)
+    <Quantity(0.057, 'dimensionless')>
     """
     # Units wrapper returns magnitude only (faster)
     p, t = pressure, temperature

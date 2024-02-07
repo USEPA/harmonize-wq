@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
-"""
-    Functions to help visualize data.
-"""
+"""Functions to help visualize data."""
+from math import sqrt
 import pandas
 import geopandas
-from math import sqrt
 from harmonize_wq import wrangle
 
 
 def print_report(results_in, out_col, unit_col_in, threshold=None):
-    """
-    Prints a standardized report of changes made
+    """Print a standardized report of changes made.
 
     Parameters
     ----------
-    results_in : pandas.Dataframe
+    results_in : pandas.DataFrame
         DataFrame with subset of results.
-    out_col : string
+    out_col : str
         Name of column in results_in with final result.
-    unit_col_in : string
+    unit_col_in : str
         Name of column with original units.
     threshold : dict, optional
         Dictionary with min and max keys. The default is None.
@@ -26,6 +23,13 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     Returns
     -------
     None.
+        
+    See Also
+    --------
+    See any of the 'Detailed' notebooks found in 
+    `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
+    examples of how this function is leveraged by the
+    :func:`harmonize.harmonize_generic` report argument.
 
     """
     # Series with just usable results.
@@ -36,11 +40,11 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     # Series with just magnitude
     results_s = pandas.Series([x.magnitude for x in results])
     # Number of usable results
-    print('-Usable results-\n{}'.format(results_s.describe()))
+    print(f'-Usable results-\n{results_s.describe()}')
     # Number measures unused
-    print('Unusable results: {}'.format(len(results_in)-len(results)))
+    print(f'Unusable results: {len(results_in)-len(results)}')
     # Number of infered result units
-    print('Usable results with inferred units: {}'.format(len(inferred)))
+    print(f'Usable results with inferred units: {len(inferred)}')
     # Results outside thresholds
     if not threshold:
         # TODO: Default mean +/-1 standard deviation works here but generally 6
@@ -49,9 +53,8 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     inside = results_s[(results_s <= threshold['max']) &
                        (results_s >= threshold['min'])]
     diff = len(results) - len(inside)
-    print('Results outside threshold ({} to {}): {}'.format(threshold['min'],
-                                                            threshold['max'],
-                                                            diff))
+    threshold_range = f"{threshold['min']} to {threshold['max']}"
+    print(f'Results outside threshold ({threshold_range}): {diff}')
 
     # Graphic representation of stats
     inside.hist(bins=int(sqrt(inside.count())))
@@ -61,8 +64,7 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
 
 
 def map_counts(df_in, gdf, col=None):
-    """
-    Return GeoDataFrame summarized by count of results for each station
+    """Get GeoDataFrame summarized by count of results for each station.
 
     Parameters
     ----------
@@ -70,17 +72,56 @@ def map_counts(df_in, gdf, col=None):
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
         GeoDataFrame with monitoring locations.
-
-    Examples
-    --------
-    Return a GeoDataFrame summarized by counts and plot it::
-        
-        cnt_gdf = harmonize.visualize.map_counts(df, stations_clipped)
-        cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
+    col : str, optional
+        Column in df_in to aggregate results to in addition to location.
+        The default is None, where results are only aggregated on location.
 
     Returns
     -------
     geopandas.GeoDataFrame
+        GeoDataFrame with count of results for each station
+
+    Examples
+    --------
+    Build example DataFrame of results:
+    
+    >>> from pandas import DataFrame
+    >>> df_in = DataFrame({'ResultMeasureValue': [5.1, 1.2, 8.7],
+    ...                    'MonitoringLocationIdentifier': ['ID1', 'ID2', 'ID1']
+    ...                           })
+    >>> df_in
+       ResultMeasureValue MonitoringLocationIdentifier
+    0                 5.1                          ID1
+    1                 1.2                          ID2
+    2                 8.7                          ID1
+    
+    Build example GeoDataFrame of monitoring locations:
+    
+    >>> import geopandas
+    >>> from shapely.geometry import Point
+    >>> from numpy import nan
+    >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
+    ...      'QA_flag': [nan, nan],
+    ...      'geometry': [Point(1, 2), Point(2, 1)]}
+    >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
+    >>> gdf
+      MonitoringLocationIdentifier  QA_flag                 geometry
+    0                          ID1      NaN  POINT (1.00000 2.00000)
+    1                          ID2      NaN  POINT (2.00000 1.00000)
+    
+    Combine these to get an aggregation of results per station:
+    
+    >>> import harmonize_wq
+    >>> cnt_gdf = harmonize_wq.visualize.map_counts(df_in, gdf)
+    >>> cnt_gdf
+      MonitoringLocationIdentifier  cnt                 geometry  QA_flag
+    0                          ID1    2  POINT (1.00000 2.00000)      NaN
+    1                          ID2    1  POINT (2.00000 1.00000)      NaN
+
+    These aggregate results can then be plotted:
+
+    >>> cnt_gdf.plot(column='cnt', cmap='Blues', legend=True)
+    <Axes: >
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'
@@ -101,8 +142,10 @@ def map_counts(df_in, gdf, col=None):
 
 
 def map_measure(df_in, gdf, col):
-    """
-    Return GeoDataFrame summarized by average of results for each station
+    """Get GeoDataFrame summarized by average of results for each station.
+    
+    :class:`geopandas.GeoDataFrame` will have new column 'mean' with the
+    average of col values for that location.
 
     Parameters
     ----------
@@ -110,13 +153,61 @@ def map_measure(df_in, gdf, col):
         DataFrame with subset of results.
     gdf : geopandas.GeoDataFrame
         GeoDataFrame with monitoring locations.
-    col : string
+    col : str
         Column name in df_in to aggregate results for.
 
     Returns
     -------
     geopandas.GeoDataFrame
+        GeoDataFrame with average value of results for each station.
+        
+    Examples
+    --------
+    Build array of pint Quantity for Temperature:
+    
+    >>> from pint import Quantity
+    >>> u = 'degree_Celsius'
+    >>> temperatures = [Quantity(5.1, u), Quantity(1.2, u), Quantity(8.7, u)]
+    
+    Build example pandas DataFrame of results:
+    
+    >>> from pandas import DataFrame
+    >>> df_in = DataFrame({'Temperature': temperatures,
+    ...                    'MonitoringLocationIdentifier': ['ID1', 'ID2', 'ID1']
+    ...                    })
+    >>> df_in
+              Temperature MonitoringLocationIdentifier
+    0  5.1 degree_Celsius                          ID1
+    1  1.2 degree_Celsius                          ID2
+    2  8.7 degree_Celsius                          ID1
+    
+    Build example geopandas GeoDataFrame of monitoring locations:
+    
+    >>> import geopandas
+    >>> from shapely.geometry import Point
+    >>> from numpy import nan
+    >>> d = {'MonitoringLocationIdentifier': ['ID1', 'ID2'],
+    ...      'QA_flag': [nan, nan],
+    ...      'geometry': [Point(1, 2), Point(2, 1)]}
+    >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
+    >>> gdf
+      MonitoringLocationIdentifier  QA_flag                 geometry
+    0                          ID1      NaN  POINT (1.00000 2.00000)
+    1                          ID2      NaN  POINT (2.00000 1.00000)
+    
+    Combine these to get an aggregation of results per station:
+     
+    >>> from harmonize_wq import visualize
+    >>> avg_temp = visualize.map_measure(df_in, gdf, 'Temperature')
+    >>> avg_temp
+      MonitoringLocationIdentifier  cnt  mean                 geometry  QA_flag
+    0                          ID1    2   6.9  POINT (1.00000 2.00000)      NaN
+    1                          ID2    1   1.2  POINT (2.00000 1.00000)      NaN
 
+    These aggregate results can then be plotted:
+
+    >>> avg_temp.plot(column='mean', cmap='Blues', legend=True)
+    <Axes: >
     """
     merge_cols = ['MonitoringLocationIdentifier']
 
@@ -135,20 +226,22 @@ def map_measure(df_in, gdf, col):
 
 
 def station_summary(df_in, col):
-    """
-    Return summary table with rows for each station, count and column average
+    """Get summary table for stations.
+    
+    Summary table as :class:`~pandas.DataFrame` with rows for each 
+    station, count, and column average.
 
     Parameters
     ----------
     df_in : pandas.DataFrame
-        DataFrame with subset of results.
-    col : string
+        DataFrame with results to summarize.
+    col : str
         Column name in df_in to summarize results for.
 
     Returns
     -------
     pandas.DataFrame
-
+        Table with result count and average summarized by station.
     """
     # Column for station
     loc_id = 'MonitoringLocationIdentifier'

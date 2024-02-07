@@ -19,6 +19,8 @@ from harmonize_wq import harmonize
 from harmonize_wq import convert
 from harmonize_wq import wrangle
 from harmonize_wq import clean
+from harmonize_wq import visualize as viz
+
 
 # CI
 DIRPATH = os.path.dirname(os.path.realpath(__file__))
@@ -158,9 +160,8 @@ def harmonized_tables():
         Harmonized results for Nitrogen and Conductivity.
 
     """
-    harmonized_table = harmonize.harmonize_generic(NARROW_RESULTS3, 'Nitrogen')
-    harmonized_table = harmonize.harmonize_generic(harmonized_table,
-                                                   'Conductivity')
+    harmonized_table = harmonize.harmonize(NARROW_RESULTS3, 'Nitrogen')
+    harmonized_table = harmonize.harmonize(harmonized_table, 'Conductivity')
     return harmonized_table
 
 
@@ -191,7 +192,7 @@ def test_harmonize_depth():
     expected_unit = 'meter'
     assert str(actual.iloc[135227]['Depth'].units) == expected_unit
 
-
+@pytest.fixture(scope='session')
 def test_harmonize_locations():
     """
     Test functions standardizes the sites correctly
@@ -227,6 +228,8 @@ def test_harmonize_locations():
     actual_imprecise = actual.iloc[302]['QA_flag']
     expected_imprecise = 'LatitudeMeasure: Imprecise: lessthan3decimaldigits'
     assert actual_imprecise == expected_imprecise
+    
+    return actual
 
 
 #@pytest.mark.skip(reason="no change")
@@ -240,7 +243,7 @@ def test_harmonize_phosphorus(merged_tables):
         Read from data/wqp_results.txt.
     """
     # TODO: Test for expected dimensionalityError with NARROW_RESULTS?
-    actual = harmonize.harmonize_generic(merged_tables, 'Phosphorus')  # mg/l
+    actual = harmonize.harmonize(merged_tables, 'Phosphorus')  # mg/l
     # TODO: test conversion to moles and other non-standard units
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
@@ -358,6 +361,7 @@ def test_harmonize_phosphorus(merged_tables):
     # TODO: no bad value
 
 
+@pytest.fixture(scope='session')
 #@pytest.mark.skip(reason="no change")
 def test_harmonize_temperature():
     """
@@ -368,10 +372,10 @@ def test_harmonize_temperature():
     NARROW_RESULTS : pandas.DataFrame
         Read from data/wqp_results.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS, 'Temperature, water')
-    actual2 = harmonize.harmonize_generic(NARROW_RESULTS.iloc[0:10],
-                                          'Temperature, water',
-                                          units_out='deg F')
+    actual = harmonize.harmonize(NARROW_RESULTS, 'Temperature, water')
+    actual2 = harmonize.harmonize(NARROW_RESULTS.iloc[0:10],
+                                  'Temperature, water',
+                                  units_out='deg F')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 13301685  # Test size #14784040
@@ -412,6 +416,7 @@ def test_harmonize_temperature():
     # Confirm expected flag - for un-usable value
     expected_flag = 'ResultMeasureValue: "Not Reported" result cannot be used'
     assert actual.iloc[359504]['QA_flag'] == expected_flag
+    return actual
 
 
 #@pytest.mark.skip(reason="no change")
@@ -424,8 +429,7 @@ def test_harmonize_secchi():
     NARROW_RESULTS1 : pandas.DataFrame
         Read from data/wqp_results1.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS1,
-                                         'Depth, Secchi disk depth')
+    actual = harmonize.harmonize(NARROW_RESULTS1, 'Depth, Secchi disk depth')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 11818094  # Test size
@@ -478,8 +482,7 @@ def test_harmonize_DO():
     NARROW_RESULTS1 : pandas.DataFrame
         Read from data/wqp_results1.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS1,
-                                         'Dissolved oxygen (DO)')
+    actual = harmonize.harmonize(NARROW_RESULTS1, 'Dissolved oxygen (DO)')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 11818094  # Test size
@@ -500,15 +503,27 @@ def test_harmonize_DO():
     assert actual.iloc[4][orig_unit_col] == '%'  # Confirm orig unit
     assert str(actual.iloc[4]['DO'].units) == expected_unit
     assert actual.iloc[4][orig_val_col] == '68.7'  # Confirm original measure
-    assert actual.iloc[4]['DO'].magnitude == 5.676222371166
+    assert actual.iloc[4]['DO'].magnitude == 0.05676222371166
     # TODO: add tests for 99637 in ppm? Currently ppm == mg/l
+    
+    # TODO: add tests at different pressure and temperature
+    actual_p2 = str(convert.DO_saturation(70, '0.5 standard_atmosphere'))
+    expected_p2 = '2.7994178481769043 milligram / liter'
+    assert actual_p2 == expected_p2
+    from harmonize_wq.convert import u_reg
+    actual_p2 = str(convert.DO_concentration('0.7  milligram / liter',
+                                             '2 standard_atmosphere',
+                                             u_reg.Quantity(32, u_reg("degC"))))
+    expected_p2 = '4.681314214558987'
+    assert actual_p2 == expected_p2
+    
     # Inspect specific result - where units missing
     assert str(actual.iloc[6816][orig_unit_col]) == 'nan'  # Confirm missing
     # Confirm expected flag - for missing/infered units
     expected_flag = 'ResultMeasure/MeasureUnitCode: MISSING UNITS, mg/l assumed'
     actual_flags = actual.iloc[6816]['QA_flag'].split('; ')
     assert actual_flags[1] == expected_flag
-    # Check value unchagned for missing units
+    # Check value unchanged for missing units
     # TODO: values would stay the same (no conversion), but this example is '*Not Reported'
 
     # Inspect specific result - where value missing
@@ -535,8 +550,7 @@ def test_harmonize_salinity():
     NARROW_RESULTS2 : pandas.DataFrame
         Read from data/wqp_results2.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS2, 'Salinity',
-                                         units_out='PSS')
+    actual = harmonize.harmonize(NARROW_RESULTS2, 'Salinity', units_out='PSS')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 12181392  # Test size
@@ -565,8 +579,7 @@ def test_harmonize_salinity():
     assert str(actual.iloc[335435]['Salinity'].units)
     assert actual.iloc[335435][orig_val_col] == 120.0  # Confirm measure
     assert actual.iloc[335435]['Salinity'].magnitude == 125.28127999999992
-    # 157.1; 4.014
-    print(actual.iloc[335435]['Salinity'].magnitude)
+    psu_example = str(actual.iloc[335435]['Salinity'])
 
     # Inspect specific result - where units missing
     assert str(actual.iloc[21277][orig_unit_col]) == 'nan'  # Confirm missing
@@ -587,7 +600,9 @@ def test_harmonize_salinity():
     # Confirm expected flag - for un-usable value
     expected_flag = 'ResultMeasureValue: "*Not Reported" result cannot be used'
     assert actual.iloc[21277]['QA_flag'].split('; ')[0] == expected_flag
-
+    # Backward test PSU to density
+    density = convert.PSU_to_density(psu_example)
+    assert str(density) == '997.1428971400308 milligram / milliliter'
 
 #@pytest.mark.skip(reason="no change")
 def test_harmonize_pH():
@@ -600,7 +615,7 @@ def test_harmonize_pH():
         Read from data/wqp_results2.txt.
     """
     # actual1 = harmonize.harmonize_pH(NARROW_RESULTS2, units='dimensionless')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS2, 'pH')
+    actual = harmonize.harmonize(NARROW_RESULTS2, 'pH')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 12181392  # Test size
@@ -655,10 +670,10 @@ def test_harmonize_nitrogen():
         Read from data/wqp_results3.txt.
     """
     # actual1 = harmonize.harmonize_Nitrogen(NARROW_RESULTS3, units='mg/l')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS3, 'Nitrogen')
+    actual = harmonize.harmonize(NARROW_RESULTS3, 'Nitrogen')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
-    assert actual.size ==  16482  # Test size
+    assert actual.size ==  16728  # Test size
     assert 'Nitrogen' in actual.columns  # Check for column
     assert len(actual['Nitrogen'].dropna()) == 182  # Number of results
     # Confirm orginal data was not altered
@@ -700,7 +715,11 @@ def test_harmonize_nitrogen():
     # TODO: add test case where 'g/kg'
     # TODO: add test case where 'cm3/g @STP'
     # TODO: add test case where 'cm3/g STP'
-
+    
+    # check sample fraction, everything went to total mixed forms
+    assert len(actual['Nitrogen'].dropna()) == 182, "Fraction issue"
+    fract_col = 'TOTAL NITROGEN_ MIXED FORMS'
+    assert len(actual[fract_col].dropna()) == 182, "Fraction issue"
 
 #@pytest.mark.skip(reason="no change")
 def test_harmonize_conductivity():
@@ -713,7 +732,7 @@ def test_harmonize_conductivity():
         Read from data/wqp_results3.txt.
     """
     #actual1 = harmonize.harmonize_Conductivity(NARROW_RESULTS3, units='uS/cm')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS3, 'Conductivity')
+    actual = harmonize.harmonize(NARROW_RESULTS3, 'Conductivity')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 16236  # Test size
@@ -769,7 +788,7 @@ def test_harmonize_carbon_organic():
     """
     #actual1 = harmonize.harmonize_Carbon_organic(NARROW_RESULTS4, units='mg/l')
     #actual2 = harmonize.harmonize_Carbon_organic(NARROW_RESULTS4, units='g/kg')
-    actual = harmonize.harmonize_generic(NARROW_RESULTS4, 'Organic carbon')
+    actual = harmonize.harmonize(NARROW_RESULTS4, 'Organic carbon')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 6906695  # Test size
@@ -826,7 +845,7 @@ def test_harmonize_chlorophyll_a():
     NARROW_RESULTS4 : pandas.DataFrame
         Read from data/wqp_results4.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS4, 'Chlorophyll a')
+    actual = harmonize.harmonize(NARROW_RESULTS4, 'Chlorophyll a')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 6803610  # Test size
@@ -881,7 +900,7 @@ def test_harmonize_turbidity():
     NARROW_RESULTS5 : pandas.DataFrame
         Read from data/wqp_results5.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS5, 'Turbidity')
+    actual = harmonize.harmonize(NARROW_RESULTS5, 'Turbidity')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8628100  # Test size
@@ -958,9 +977,9 @@ def test_harmonize_sediment():
     NARROW_RESULTS5 : pandas.DataFrame
         Read from data/wqp_results5.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS5,
-                                         char_val='Sediment',
-                                         units_out='g/kg')
+    actual = harmonize.harmonize(NARROW_RESULTS5,
+                                 char_val='Sediment',
+                                 units_out='g/kg')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8628100  # Test size
@@ -1048,7 +1067,7 @@ def test_harmonize_fecal_coliform():
     NARROW_RESULTS7 : pandas.DataFrame
         Read from data/wqp_results7.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS7, 'Fecal Coliform')
+    actual = harmonize.harmonize(NARROW_RESULTS7, 'Fecal Coliform')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8778720  # Test size
@@ -1101,7 +1120,7 @@ def test_harmonize_E_Coli():
     NARROW_RESULTS7 : pandas.DataFrame
         Read from data/wqp_results7.txt.
     """
-    actual = harmonize.harmonize_generic(NARROW_RESULTS7, 'Escherichia coli')
+    actual = harmonize.harmonize(NARROW_RESULTS7, 'Escherichia coli')
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 8778720  # Test size
@@ -1212,8 +1231,8 @@ def test_split_table(harmonized_tables):
                 'DetectionQuantitationLimitMeasure/MeasureValue',
                 'DetectionQuantitationLimitMeasure/MeasureUnitCode',
                 'ProviderName', 'QA_flag', 'Nitrogen', 'Speciation',
-                'Conductivity', 'Activity_datetime',
-                'Depth']
+                'TOTAL NITROGEN_ MIXED FORMS', 'Conductivity',
+                'Activity_datetime', 'Depth']
     assert list(actual_main.columns) == expected
     expected = ['ActivityStartDate', 'ActivityStartTime/Time',
                 'ActivityStartTime/TimeZoneCode',
@@ -1253,3 +1272,41 @@ def test_split_table(harmonized_tables):
                 'SampleCollectionMethod/MethodName',
                 'SampleCollectionEquipmentName', 'PreparationStartDate', ]
     assert list(actual_chars.columns) == expected
+
+#test viz
+def test_map_counts(test_harmonize_locations, test_harmonize_temperature):
+    actual = viz.map_counts(test_harmonize_temperature,
+                            test_harmonize_locations,
+                            'Temperature')
+    assert len(actual['cnt']) == 21075
+    assert sum(actual['cnt']) == 346210
+
+def test_map_measure(test_harmonize_locations, test_harmonize_temperature):
+    actual = viz.map_measure(test_harmonize_temperature,
+                            test_harmonize_locations,
+                            'Temperature')
+    assert len(actual['mean']) == 21075
+    assert sum(actual['mean']) == 523776.35504297394
+
+def test_station_summary(test_harmonize_temperature):
+    actual = viz.station_summary(test_harmonize_temperature, 'Temperature')
+    assert list(actual.columns) == ['MonitoringLocationIdentifier', 'cnt', 'mean']
+    assert len(actual['cnt']) == 21075
+    assert sum(actual['cnt']) == 346210
+    assert len(actual['mean']) == 21075
+    assert sum(actual['mean']) == 523776.35504297394
+
+def test_print_report(test_harmonize_temperature, capsys):
+    viz.print_report(test_harmonize_temperature,
+                     'Temperature',
+                     'ResultMeasure/MeasureUnitCode')
+    captured, err = capsys.readouterr()
+    expected = "-Usable results-\ncount    346210.000000\n"
+    expected += "mean         25.175700\nstd         143.175647\n"
+    expected += "min          -9.990000\n25%          20.920000\n"
+    expected += "50%          25.500000\n75%          28.980000\n"
+    expected += "max       72000.000000\ndtype: float64\n"
+    expected += "Unusable results: 13295\n"
+    expected += "Usable results with inferred units: 0\n"
+    expected += "Results outside threshold (0.0 to 884.2295835882991): 4\n"
+    assert captured == expected

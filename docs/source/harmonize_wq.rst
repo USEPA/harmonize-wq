@@ -57,6 +57,14 @@ harmonize\_wq.visualize module
    :undoc-members:
    :show-inheritance:
 
+harmonize\_wq.wq_data module
+----------------------------
+
+.. automodule:: harmonize_wq.wq_data
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 harmonize\_wq.wrangle module
 ----------------------------
 
