@@ -1,3 +1,6 @@
+[![PyPi](https://img.shields.io/pypi/v/harmonize-wq.svg)](https://pypi.python.org/pypi/harmonize-wq)
+[![Documentation Status](https://github.com/USEPA/harmonize-wq/actions/workflows/documentation_deploy.yaml/badge.svg)](https://github.com/USEPA/harmonize-wq/actions/workflows/documentation_deploy.yaml)
+
 # harmonize-wq
 Standardize, clean, and wrangle Water Quality Portal data into more analytic-ready formats
 
