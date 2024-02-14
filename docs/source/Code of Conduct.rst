@@ -1,0 +1,1 @@
+.. include::  ../../Code of Conduct.rst
