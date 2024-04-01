@@ -264,16 +264,16 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
 
     # Set variables for columns and check they're in df
     media_col = 'ActivityMediaName'
-    try:
-        harmonize.df_checks(df2, media_col)
-    except AssertionError:
-        warn(f'Warning: {media_col} missing, querying from activities...')
+#    try:
+    df_checks(df2, media_col)
+#    except AssertionError:
+#        warn(f'Warning: {media_col} missing, querying from activities...')
         # Try query/join
-        if char_val:
-            df2 = wrangle.add_activities_to_df(df2, c_mask)
-        else:
-            df2 = wrangle.add_activities_to_df(df2)  # no mask, runs on all
-        harmonize.df_checks(df2, [media_col])  # Check it's been added
+#        if char_val:
+#            df2 = add_activities_to_df(df2, c_mask)
+#        else:
+#            df2 = add_activities_to_df(df2)  # no mask, runs on all
+#        df_checks(df2, [media_col])  # Check it's been added
         # if ERROR?
         # print('Query and join activities first')
 
