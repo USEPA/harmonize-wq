@@ -3,9 +3,12 @@
 
 Contains several unit conversion functions not in :mod:`pint`.
 """
+from warnings import warn
 import math
+import pandas
 import pint
-from harmonize_wq import domains
+from numpy import nan
+from harmonize_wq.domains import registry_adds_list
 
 
 # TODO: does this constant belong here or in domains?
@@ -27,10 +30,105 @@ PERIODIC_MW = {'Organic carbon': 180.16,
 
 u_reg = pint.UnitRegistry()  # For use in wrappers
 # TODO: find more elegant way to do this with all definitions
-for definition in domains.registry_adds_list('Turbidity'):
+for definition in registry_adds_list('Turbidity'):
     u_reg.define(definition)
-for definition in domains.registry_adds_list('Salinity'):
+for definition in registry_adds_list('Salinity'):
     u_reg.define(definition)
+
+
+#timeit: 159.17
+# def convert_unit_series(quantity_series, unit_series, units, ureg=None):
+#     # Convert quantities to float if they aren't already (should be)
+#     if quantity_series.dtype=='O':
+#         quantity_series = pandas.to_numeric(quantity_series)
+#     # Initialize classes from pint
+#     if ureg is None:
+#         ureg = pint.UnitRegistry()
+#     Q_ = ureg.Quantity
+#     # Create list of Quantity objects
+#     val_list = [Q_(q, ureg(unit)) for q, unit in zip(quantity_series,
+#                                                      unit_series)]
+#     # Convert Quantity objects to new unit
+#     out_list = [val.to(ureg(units)) for val in val_list]
+#     # Re-index to return series
+#     return pandas.Series(out_list, index=quantity_series.index)
+#timeit: 27.08
+def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='raise'):
+    """Convert quantities to consistent units.
+
+    Convert list of quantities (quantity_list), each with a specified old unit,
+    to a quantity in units using :mod:`pint` constructor method.
+
+    Parameters
+    ----------
+    quantity_series : pandas.Series
+        List of quantities. Values should be numeric, must not include NaN.
+    unit_series : pandas.Series
+        List of units for each quantity in quantity_series. Values should be
+        string, must not include NaN.
+    units : str
+        Desired units.
+    ureg : pint.UnitRegistry, optional
+        Unit Registry Object with any custom units defined. The default is None.
+    errors : str, optional
+        Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
+        If ‘raise’, invalid dimension conversions will raise an exception.
+        If ‘skip’, invalid dimension conversions will not be converted.
+        If ‘ignore’, invalid dimension conversions will return the NaN.
+
+    Returns
+    -------
+    pandas.Series
+        Converted values from quantity_series in units with original index.
+
+    Examples
+    --------
+    Build series to use as input:
+    
+    >>> from pandas import Series
+    >>> quantity_series = Series([1, 10])
+    >>> unit_series = Series(['mg/l', 'mg/ml',])
+
+    Convert series to series of pint Quantity objects in 'mg/l':
+    
+    >>> from harmonize_wq import harmonize
+    >>> harmonize.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
+    0                   1.0 milligram / liter
+    1    10000.000000000002 milligram / liter
+    dtype: object
+    """
+    if quantity_series.dtype=='O':
+        quantity_series = pandas.to_numeric(quantity_series)
+    # Initialize classes from pint
+    if ureg is None:
+        ureg = pint.UnitRegistry()
+    Q_ = ureg.Quantity
+
+    lst_series = [pandas.Series(dtype='object')]
+    # Note: set of series does not preservce order and must be sorted at end
+    for unit in list(set(unit_series)):
+        # Filter quantity_series by unit_series where == unit
+        f_quant_series = quantity_series.where(unit_series==unit).dropna()
+        unit_ = ureg(unit)  # Set unit once per unit
+        result_list = [Q_(q, unit_) for q in f_quant_series]
+        if unit != units:
+            # Convert (units are all same so if one fails all will fail)
+            try:
+                result_list = [val.to(ureg(units)) for val in result_list]
+            except pint.DimensionalityError as exception:
+                if errors=='skip':
+                    # do nothing, leave result_list unconverted
+                    warn(f"WARNING: '{unit}' not converted")
+                elif errors=='ignore':
+                    # convert to NaN
+                    result_list = [nan for val in result_list]
+                    warn(f"WARNING: '{unit}' converted to NaN")
+                else:
+                    # errors=='raise', or anything else just in case
+                    raise exception
+        # Re-index and add series to list
+        lst_series.append(pandas.Series(result_list, index=f_quant_series.index))
+    return pandas.concat(lst_series).sort_index()
 
 
 def mass_to_moles(ureg, char_val, Q_):
