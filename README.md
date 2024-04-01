@@ -76,7 +76,8 @@ df_cleaned
 ```
 
 ### Transform results from long to wide format
-There are many columns in the dataframe that are characteristic specific, that is they have different values for the same sample depending on the characteristic. To ensure one result for each sample after the transformation of the data these columns must either be split, generating a new column for each characteristic with values, or moved out from the table if not being used.
+There are many columns in the dataframe that are characteristic specific, that is they have different values for the same sample depending on the characteristic.
+To ensure one result for each sample after the transformation of the data these columns must either be split, generating a new column for each characteristic with values, or moved out from the table if not being used.
 
 ```python
 from harmonize_wq import wrangle
@@ -111,6 +112,7 @@ QA_Temperature | QA | NA | harmonization processing quality issues
 
 ## Issue Tracker
 harmonize_wq is under development. Please report any bugs and enhancement ideas using the issue track:
+
 https://github.com/USEPA/harmonize-wq/issues
 
 
