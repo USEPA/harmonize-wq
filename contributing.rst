@@ -34,8 +34,7 @@ To contribute fixes, code, tests, or documentation, fork harmonize_wq in GitHub_
 and submit the changes using a pull request against the **main** branch.
 
 - If you are submitting new code, add tests (see below) and documentation.
-- Write "Closes #<bug number>" in the PR description or a comment, as described in the
-  `GitHub docs`_.
+- Write "Closes #<bug number>" in the PR description or a comment, as described in the `GitHub docs`_.
 - Check tests and resolve any issues.
 
 In any case, feel free to use the `issue tracker`_ to discuss ideas for new features or improvements.
@@ -45,8 +44,7 @@ machine but not in GitHub actions. There might be multiple reasons for this but 
 the most common:
 
 - Your new code does not work for other operating systems or Python versions.
-- The documentation is not being built properly or the examples in the docs are
-  not working.
+- The documentation is not being built properly or the examples in the docs are not working.
 
 
 .. _`issue tracker`: https://github.com/USEPA/harmonize-wq/issues
