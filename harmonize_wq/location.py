@@ -5,10 +5,9 @@ from shapely.geometry import shape
 import geopandas
 import pandas
 from dataretrieval import wqp
-from harmonize_wq import harmonize
-from harmonize_wq import domains
-from harmonize_wq import wrangle
-from harmonize_wq import clean
+from harmonize_wq.domains import xy_datum
+from harmonize_wq.wrangle import clip_stations
+from harmonize_wq.clean import check_precision, df_checks, add_qa_flag
 
 
 def infer_CRS(df_in,
@@ -77,7 +76,7 @@ def infer_CRS(df_in,
         # QA flag for missing CRS
         flag = f'{crs_col}: MISSING datum, EPSG:{out_EPSG} assumed'
         c_mask = df_out[crs_col].isna()  # Mask for missing units
-    df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flag
+    df_out = add_qa_flag(df_out, c_mask, flag)  # Assign flag
     df_out.loc[c_mask, out_col] = out_EPSG  # Update with infered unit
 
     return df_out
@@ -160,18 +159,18 @@ def harmonize_locations(df_in, out_EPSG=4326,
     lon_col = kwargs.get('lon_col', 'LongitudeMeasure')
 
     # Check columns are in df
-    harmonize.df_checks(df2, [crs_col, lat_col, lon_col])
+    df_checks(df2, [crs_col, lat_col, lon_col])
 
     # Check location precision
-    df2 = clean.check_precision(df2, lat_col)
-    df2 = clean.check_precision(df2, lon_col)
+    df2 = check_precision(df2, lat_col)
+    df2 = check_precision(df2, lon_col)
 
     # Create tuple column
     df2['geom_orig'] = list(zip(df2[lon_col], df2[lat_col]))
 
     # Create/populate EPSG column
-    crs_mask = df2[crs_col].isin(domains.xy_datum().keys())  # w/ known datum
-    df2.loc[crs_mask, 'EPSG'] = [domains.xy_datum()[crs]['EPSG'] for crs
+    crs_mask = df2[crs_col].isin(xy_datum().keys())  # w/ known datum
+    df2.loc[crs_mask, 'EPSG'] = [xy_datum()[crs]['EPSG'] for crs
                                  in df2.loc[crs_mask, crs_col]]
 
     # Fix/flag missing
@@ -271,6 +270,6 @@ def get_harmonized_stations(query, aoi=None):
 
     if aoi is not None:
         # Clip Stations to area of interest
-        stations_gdf = wrangle.clip_stations(stations_gdf, aoi)
+        stations_gdf = clip_stations(stations_gdf, aoi)
 
     return stations_gdf, stations, site_md
