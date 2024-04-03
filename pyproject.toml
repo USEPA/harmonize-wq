@@ -35,3 +35,20 @@ doc = ["sphinx"]
 "Homepage" = "https://github.com/USEPA/harmonize-wq"
 "Documentation" = "https://usepa.github.io/harmonize-wq/"
 "Bug Tracker" = "https://github.com/USEPA/harmonize-wq/issues"
+
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "W",
+    "I"
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["harmonize_wq"]
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+
