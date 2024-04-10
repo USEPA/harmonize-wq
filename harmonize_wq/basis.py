@@ -2,8 +2,7 @@
 """Functions to process characteristic basis or return basis dictionary."""
 from warnings import warn
 from numpy import nan
-from harmonize_wq import harmonize
-
+from harmonize_wq.clean import add_qa_flag
 
 def unit_basis_dict(out_col):
     """Characteristic specific basis dictionary to define basis from units.
@@ -169,7 +168,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
                         if old_basis != base:
                             qa_mask = mask & (df[basis_col] == old_basis)
                             warn(f'Mismatched {flag}', UserWarning)
-                            df = harmonize.add_qa_flag(df, qa_mask, flag)
+                            df = add_qa_flag(df, qa_mask, flag)
                 # Add/update basis from unit
                 df = set_basis(df, mask, base, basis_col)
                 df[unit_col] = [new_unit if x == old_unit else x

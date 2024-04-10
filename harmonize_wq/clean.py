@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Functions to clean/correct additional columns in subset/entire dataset."""
-from warnings import warn
+#from warnings import warn
+from numpy import nan
 import dataretrieval.utils
-from harmonize_wq import harmonize
-from harmonize_wq import domains
-from harmonize_wq import wrangle
+from harmonize_wq.convert import convert_unit_series
+from harmonize_wq.domains import accepted_methods
+#from harmonize_wq.wrangle import add_activities_to_df
 
 
 def datetime(df_in):
@@ -108,17 +109,60 @@ def harmonize_depth(df_in, units='meter'):
     unit_col = 'ResultDepthHeightMeasure/MeasureUnitCode'
     # Note: there are also 'Activity' cols for both of these & top/bottom depth
 
-    harmonize.df_checks(df_out, [meas_col, unit_col])  # Confirm columns in df
+    df_checks(df_out, [meas_col, unit_col])  # Confirm columns in df
     na_mask = df_out[meas_col].notna()  # Mask NA to speed up processing
     # TODO: if units missing?
     params = {'quantity_series': df_out.loc[na_mask, meas_col],
               'unit_series': df_out.loc[na_mask, unit_col],
               'units': units, }
-    df_out.loc[na_mask, "Depth"] = harmonize.convert_unit_series(**params)
+    df_out.loc[na_mask, "Depth"] = convert_unit_series(**params)
 
     # TODO: where result depth is missing use activity depth?
 
     return df_out
+
+
+def df_checks(df_in, columns=None):
+    """Check :class:`pandas.DataFrame` for columns.
+
+    Parameters
+    ----------
+    df_in : pandas.DataFrame
+        DataFrame that will be checked.
+    columns : list, optional
+        List of strings for column names. Default None, uses:
+        'ResultMeasure/MeasureUnitCode','ResultMeasureValue','CharacteristicName'.
+        
+    Examples
+    --------
+    Build pandas DataFrame for example:
+    
+    >>> from pandas import DataFrame
+    >>> df = DataFrame({'CharacteristicName': ['Phosphorus'],})
+    >>> df
+      CharacteristicName
+    0         Phosphorus
+    
+    Check for existing column:
+
+    >>> from harmonize_wq import clean
+    >>> clean.df_checks(df, columns=['CharacteristicName'])
+    
+    If column is not in DataFrame it throws an AssertionError:
+        
+    >>> clean.df_checks(df, columns=['ResultMeasureValue'])
+    Traceback (most recent call last):
+        ...
+    AssertionError: ResultMeasureValue not in DataFrame
+    
+    """
+    if columns is None:
+        # Assign defaults
+        columns = ('ResultMeasure/MeasureUnitCode',
+                   'ResultMeasureValue',
+                   'CharacteristicName')
+    for col in columns:
+        assert col in df_in.columns, f'{col} not in DataFrame'
 
 
 def check_precision(df_in, col, limit=3):
@@ -147,7 +191,7 @@ def check_precision(df_in, col, limit=3):
     # Create T/F mask based on len of everything after the decimal
     c_mask = [len(str(x).split('.')[1]) < limit for x in df_out[col]]
     flag = f'{col}: Imprecise: lessthan{limit}decimaldigits'
-    df_out = harmonize.add_qa_flag(df_out, c_mask, flag)  # Assign flags
+    df_out = add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
 
 
@@ -177,7 +221,7 @@ def methods_check(df_in, char_val, methods=None):
 
     """
     if methods is None:
-        methods = domains.accepted_methods()
+        methods = accepted_methods()
     method_col = 'ResultAnalyticalMethod/MethodIdentifier'
     df2 = df_in.copy()
     # TODO: check df for method_col
@@ -217,9 +261,9 @@ def wet_dry_checks(df_in, mask=None):
     df_out = df_in.copy()
     media_col = 'ActivityMediaName'
     # Check columns are in df
-    harmonize.df_checks(df_out, [media_col,
-                                 'ResultSampleFractionText',
-                                 'ResultWeightBasisText'])
+    df_checks(df_out, [media_col,
+                       'ResultSampleFractionText',
+                       'ResultWeightBasisText'])
     # QA - Sample Media, fix assigned 'Water' that are actually 'Sediment'
     qa_flag = f'{media_col}: Water changed to Sediment'
     # Create mask for bad data
@@ -230,9 +274,66 @@ def wet_dry_checks(df_in, mask=None):
     if mask:
         media_mask = mask & (media_mask)
     # Assign QA flag where data was bad
-    df_out = harmonize.add_qa_flag(df_out, media_mask, qa_flag)
+    df_out = add_qa_flag(df_out, media_mask, qa_flag)
     # Fix the data
     df_out.loc[media_mask, 'ActivityMediaName'] = 'Sediment'
+
+    return df_out
+
+
+def add_qa_flag(df_in, mask, flag):
+    """Add flag to 'QA_flag' column in df_in.
+
+    Parameters
+    ----------
+    df_in : pandas.DataFrame
+        DataFrame that will be updated.
+    mask : pandas.Series
+        Row conditional mask to limit rows.
+    flag : str
+        Text to populate the new flag with.
+
+    Returns
+    -------
+    df_out : pandas.DataFrame
+        Updated copy of df_in.
+        
+    Examples
+    --------
+    Build pandas DataFrame to use as input:
+    
+    >>> from pandas import DataFrame
+    >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Phosphorus', 'Carbon',],
+    ...                 'ResultMeasureValue': ['1.0', '0.265', '2.1'],})
+    >>> df
+      CharacteristicName ResultMeasureValue
+    0             Carbon                1.0
+    1         Phosphorus              0.265
+    2             Carbon                2.1
+    
+    Assign simple flag string and mask to assign flag only to Carbon:
+    
+    >>> flag = 'words'
+    >>> mask = df['CharacteristicName']=='Carbon'
+    
+    >>> from harmonize_wq import clean
+    >>> clean.add_qa_flag(df, mask, flag)
+      CharacteristicName ResultMeasureValue QA_flag
+    0             Carbon                1.0   words
+    1         Phosphorus              0.265     NaN
+    2             Carbon                2.1   words
+    """
+    df_out = df_in.copy()
+    if 'QA_flag' not in list(df_out.columns):
+        df_out['QA_flag'] = nan
+
+    # Append flag where QA_flag is not nan
+    cond_notna = mask & (df_out['QA_flag'].notna())  # Mask cond and not NA
+    existing_flags = df_out.loc[cond_notna, 'QA_flag']  # Current QA flags
+    df_out.loc[cond_notna, 'QA_flag'] = [f'{txt}; {flag}' for
+                                         txt in existing_flags]
+    # Equals flag where QA_flag is nan
+    df_out.loc[mask & (df_out['QA_flag'].isna()), 'QA_flag'] = flag
 
     return df_out
 
@@ -264,16 +365,16 @@ def wet_dry_drop(df_in, wet_dry='wet', char_val=None):
 
     # Set variables for columns and check they're in df
     media_col = 'ActivityMediaName'
-    try:
-        harmonize.df_checks(df2, media_col)
-    except AssertionError:
-        warn(f'Warning: {media_col} missing, querying from activities...')
+#    try:
+    df_checks(df2, media_col)
+#    except AssertionError:
+#        warn(f'Warning: {media_col} missing, querying from activities...')
         # Try query/join
-        if char_val:
-            df2 = wrangle.add_activities_to_df(df2, c_mask)
-        else:
-            df2 = wrangle.add_activities_to_df(df2)  # no mask, runs on all
-        harmonize.df_checks(df2, [media_col])  # Check it's been added
+#        if char_val:
+#            df2 = add_activities_to_df(df2, c_mask)
+#        else:
+#            df2 = add_activities_to_df(df2)  # no mask, runs on all
+#        df_checks(df2, [media_col])  # Check it's been added
         # if ERROR?
         # print('Query and join activities first')
 

@@ -3,13 +3,16 @@
 Contributing to harmonize_wq
 ============================
 
-We’re so glad you’re thinking about contributing to an EPA open source project! If you’re unsure about anything, just ask — or submit your issue or pull request anyway. The worst that can happen is we’ll politely ask you to change something. We appreciate all friendly contributions.
+We’re so glad you’re thinking about contributing to an EPA open source project!
+If you’re unsure about anything, just ask — or submit your issue or pull request anyway.
+The worst that can happen is we’ll politely ask you to change something. We appreciate all friendly contributions.
 
 We encourage you to read this project’s CONTRIBUTING policy (you are here), its
 `LICENSE <https://github.com/USEPA/harmonize-wq/blob/81b172afc3b72bec0a9f5624bade59eb2527510f/LICENSE>`_,
 and its `README <https://github.com/USEPA/harmonize-wq/blob/main/README.md>`_.
 
-All contributions to this project will be released under the MIT dedication. By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.
+All contributions to this project will be released under the MIT dedication.
+By submitting a pull request or issue, you are agreeing to comply with this waiver of copyright interest.
 
 harmonize_wq uses:
 
@@ -34,19 +37,17 @@ To contribute fixes, code, tests, or documentation, fork harmonize_wq in GitHub_
 and submit the changes using a pull request against the **main** branch.
 
 - If you are submitting new code, add tests (see below) and documentation.
-- Write "Closes #<bug number>" in the PR description or a comment, as described in the
-  `GitHub docs`_.
+- Write "Closes #<bug number>" in the PR description or a comment, as described in the `GitHub docs`_.
 - Check tests and resolve any issues.
 
 In any case, feel free to use the `issue tracker`_ to discuss ideas for new features or improvements.
 
-Notice that we will not merge a PR if tests are failing. In certain cases tests pass in your
-machine but not in GitHub actions. There might be multiple reasons for this but these are some of
-the most common:
+Notice that we will not merge a PR if tests are failing.
+In certain cases tests pass in your machine but not in GitHub actions.
+There might be multiple reasons for this but these are some of the most common:
 
 - Your new code does not work for other operating systems or Python versions.
-- The documentation is not being built properly or the examples in the docs are
-  not working.
+- The documentation is not being built properly or the examples in the docs are not working.
 
 
 .. _`issue tracker`: https://github.com/USEPA/harmonize-wq/issues

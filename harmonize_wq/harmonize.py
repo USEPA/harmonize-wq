@@ -1,256 +1,11 @@
 # -*- coding: utf-8 -*-
 """Functions to harmonize data retrieved from EPA's Water Quality Portal."""
 from warnings import warn
-import pandas
-import pint
 from numpy import nan
 from harmonize_wq.wq_data import WQCharData
-from harmonize_wq import domains
 from harmonize_wq import convert
-from harmonize_wq import visualize as viz
-
-
-def df_checks(df_in, columns=None):
-    """Check :class:`pandas.DataFrame` for columns.
-
-    Parameters
-    ----------
-    df_in : pandas.DataFrame
-        DataFrame that will be checked.
-    columns : list, optional
-        List of strings for column names. Default None, uses:
-        'ResultMeasure/MeasureUnitCode','ResultMeasureValue','CharacteristicName'.
-        
-    Examples
-    --------
-    Build pandas DataFrame for example:
-    
-    >>> from pandas import DataFrame
-    >>> df = DataFrame({'CharacteristicName': ['Phosphorus'],})
-    >>> df
-      CharacteristicName
-    0         Phosphorus
-    
-    Check for existing column:
-
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.df_checks(df, columns=['CharacteristicName'])
-    
-    If column is not in DataFrame it throws an AssertionError:
-        
-    >>> harmonize.df_checks(df, columns=['ResultMeasureValue'])
-    Traceback (most recent call last):
-        ...
-    AssertionError: ResultMeasureValue not in DataFrame
-    
-    """
-    if columns is None:
-        # Assign defaults
-        columns = ('ResultMeasure/MeasureUnitCode',
-                   'ResultMeasureValue',
-                   'CharacteristicName')
-    for col in columns:
-        assert col in df_in.columns, f'{col} not in DataFrame'
-
-
-#timeit: 159.17
-# def convert_unit_series(quantity_series, unit_series, units, ureg=None):
-#     # Convert quantities to float if they aren't already (should be)
-#     if quantity_series.dtype=='O':
-#         quantity_series = pandas.to_numeric(quantity_series)
-#     # Initialize classes from pint
-#     if ureg is None:
-#         ureg = pint.UnitRegistry()
-#     Q_ = ureg.Quantity
-#     # Create list of Quantity objects
-#     val_list = [Q_(q, ureg(unit)) for q, unit in zip(quantity_series,
-#                                                      unit_series)]
-#     # Convert Quantity objects to new unit
-#     out_list = [val.to(ureg(units)) for val in val_list]
-#     # Re-index to return series
-#     return pandas.Series(out_list, index=quantity_series.index)
-#timeit: 27.08
-def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='raise'):
-    """Convert quantities to consistent units.
-
-    Convert list of quantities (quantity_list), each with a specified old unit,
-    to a quantity in units using :mod:`pint` constructor method.
-
-    Parameters
-    ----------
-    quantity_series : pandas.Series
-        List of quantities. Values should be numeric, must not include NaN.
-    unit_series : pandas.Series
-        List of units for each quantity in quantity_series. Values should be
-        string, must not include NaN.
-    units : str
-        Desired units.
-    ureg : pint.UnitRegistry, optional
-        Unit Registry Object with any custom units defined. The default is None.
-    errors : str, optional
-        Values of ‘ignore’, ‘raise’, or ‘skip’. The default is ‘raise’.
-        If ‘raise’, invalid dimension conversions will raise an exception.
-        If ‘skip’, invalid dimension conversions will not be converted.
-        If ‘ignore’, invalid dimension conversions will return the NaN.
-
-    Returns
-    -------
-    pandas.Series
-        Converted values from quantity_series in units with original index.
-
-    Examples
-    --------
-    Build series to use as input:
-    
-    >>> from pandas import Series
-    >>> quantity_series = Series([1, 10])
-    >>> unit_series = Series(['mg/l', 'mg/ml',])
-
-    Convert series to series of pint Quantity objects in 'mg/l':
-    
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
-    0                   1.0 milligram / liter
-    1    10000.000000000002 milligram / liter
-    dtype: object
-    """
-    if quantity_series.dtype=='O':
-        quantity_series = pandas.to_numeric(quantity_series)
-    # Initialize classes from pint
-    if ureg is None:
-        ureg = pint.UnitRegistry()
-    Q_ = ureg.Quantity
-
-    lst_series = [pandas.Series(dtype='object')]
-    # Note: set of series does not preservce order and must be sorted at end
-    for unit in list(set(unit_series)):
-        # Filter quantity_series by unit_series where == unit
-        f_quant_series = quantity_series.where(unit_series==unit).dropna()
-        unit_ = ureg(unit)  # Set unit once per unit
-        result_list = [Q_(q, unit_) for q in f_quant_series]
-        if unit != units:
-            # Convert (units are all same so if one fails all will fail)
-            try:
-                result_list = [val.to(ureg(units)) for val in result_list]
-            except pint.DimensionalityError as exception:
-                if errors=='skip':
-                    # do nothing, leave result_list unconverted
-                    warn(f"WARNING: '{unit}' not converted")
-                elif errors=='ignore':
-                    # convert to NaN
-                    result_list = [nan for val in result_list]
-                    warn(f"WARNING: '{unit}' converted to NaN")
-                else:
-                    # errors=='raise', or anything else just in case
-                    raise exception
-        # Re-index and add series to list
-        lst_series.append(pandas.Series(result_list, index=f_quant_series.index))
-    return pandas.concat(lst_series).sort_index()
-
-
-def add_qa_flag(df_in, mask, flag):
-    """Add flag to 'QA_flag' column in df_in.
-
-    Parameters
-    ----------
-    df_in : pandas.DataFrame
-        DataFrame that will be updated.
-    mask : pandas.Series
-        Row conditional mask to limit rows.
-    flag : str
-        Text to populate the new flag with.
-
-    Returns
-    -------
-    df_out : pandas.DataFrame
-        Updated copy of df_in.
-        
-    Examples
-    --------
-    Build pandas DataFrame to use as input:
-    
-    >>> from pandas import DataFrame
-    >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Phosphorus', 'Carbon',],
-    ...                 'ResultMeasureValue': ['1.0', '0.265', '2.1'],})
-    >>> df
-      CharacteristicName ResultMeasureValue
-    0             Carbon                1.0
-    1         Phosphorus              0.265
-    2             Carbon                2.1
-    
-    Assign simple flag string and mask to assign flag only to Carbon:
-    
-    >>> flag = 'words'
-    >>> mask = df['CharacteristicName']=='Carbon'
-    
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.add_qa_flag(df, mask, flag)
-      CharacteristicName ResultMeasureValue QA_flag
-    0             Carbon                1.0   words
-    1         Phosphorus              0.265     NaN
-    2             Carbon                2.1   words
-    """
-    df_out = df_in.copy()
-    if 'QA_flag' not in list(df_out.columns):
-        df_out['QA_flag'] = nan
-
-    # Append flag where QA_flag is not nan
-    cond_notna = mask & (df_out['QA_flag'].notna())  # Mask cond and not NA
-    existing_flags = df_out.loc[cond_notna, 'QA_flag']  # Current QA flags
-    df_out.loc[cond_notna, 'QA_flag'] = [f'{txt}; {flag}' for
-                                         txt in existing_flags]
-    # Equals flag where QA_flag is nan
-    df_out.loc[mask & (df_out['QA_flag'].isna()), 'QA_flag'] = flag
-
-    return df_out
-
-
-def units_dimension(series_in, units, ureg=None):
-    """List unique units not in desired units dimension.
-
-    Parameters
-    ----------
-    series_in : pandas.Series
-        Series of units.
-    units : str
-        Desired units.
-    ureg : pint.UnitRegistry, optional
-        Unit Registry Object with any custom units defined.
-        The default is None.
-
-    Returns
-    -------
-    dim_list : list
-        List of units with mismatched dimensions.
-
-    Examples
-    --------
-    Build series to use as input:
-    
-    >>> from pandas import Series
-    >>> unit_series = Series(['mg/l', 'mg/ml', 'g/kg'])
-    >>> unit_series
-    0     mg/l
-    1    mg/ml
-    2     g/kg
-    dtype: object
-
-    Get list of unique units not in desired units dimension 'mg/l':
-    
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.units_dimension(unit_series, units='mg/l')
-    ['g/kg']
-    """
-    if ureg is None:
-        ureg = pint.UnitRegistry()
-    dim_list = []  # List for units with mismatched dimensions
-    dimension = ureg(units).dimensionality  # units dimension
-    # Loop over list of unique units
-    for unit in list(set(series_in)):
-        q_ = ureg(unit)
-        if not q_.check(dimension):
-            dim_list.append(unit)
-    return dim_list
+from harmonize_wq.domains import OUT_UNITS, UNITS_REPLACE
+from harmonize_wq.visualize import print_report
 
 
 def dissolved_oxygen(wqp):
@@ -597,7 +352,7 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     if units_out:
         wqp.update_units(units_out)
     else:
-        units_out = domains.OUT_UNITS[out_col]
+        units_out = OUT_UNITS[out_col]
 
     # Update local units registry to define characteristic specific units
     wqp.update_ureg()  # This is done based on out_col/char_val
@@ -615,7 +370,7 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
         # Replace known special character in unit ('#' count assumed as CFU)
         wqp.replace_unit_str('#', 'CFU')
         # Replace known unit problems (e.g., assume CFU/MPN is /100ml)
-        wqp.replace_unit_by_dict(domains.UNITS_REPLACE[out_col])
+        wqp.replace_unit_by_dict(UNITS_REPLACE[out_col])
         #TODO: figure out why the above must be done before replace_unit_str
         # Replace all instances in results column
         wqp.replace_unit_str('/100ml', '/(100ml)')
@@ -666,20 +421,21 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
         else:
             frac_dict = 'TADA'
         frac_dict = wqp.fraction(frac_dict)  # Run sample fraction on WQP
-        
+
 
     df_out = wqp.df
 
     # TODO: add activities/detection limits and filter on quality? e.g., cols:
     # 'ResultStatusIdentifier' = ['Historical', 'Accepted', 'Final']
     # 'ResultValueTypeName' = ['Actual', 'Estimated', 'Calculated']
-    # 'ResultDetectionConditionText' = ['*Non-detect', '*Present <QL', '*Not Reported', 'Not Detected']
+    # 'ResultDetectionConditionText' = ['*Non-detect', '*Present <QL',
+    #                                   '*Not Reported', 'Not Detected']
     # df_out = wrangle.add_activities_to_df(df_out, wqp.c_mask)
     # df_out = wrangle.add_detection(df_out, char_val)
 
     # Functionality only available w/ generic
     if report:
-        viz.print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
+        print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
     if not intermediate_columns:
         df_out = df_out.drop(['Units'], axis=1)  # Drop intermediate columns
     return df_out

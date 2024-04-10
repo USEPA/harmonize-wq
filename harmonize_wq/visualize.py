@@ -3,7 +3,7 @@
 from math import sqrt
 import pandas
 import geopandas
-from harmonize_wq import wrangle
+from harmonize_wq.wrangle import merge_tables
 
 
 def print_report(results_in, out_col, unit_col_in, threshold=None):
@@ -137,7 +137,7 @@ def map_counts(df_in, gdf, col=None):
     # Join it to geometry
     merge_cols = ['MonitoringLocationIdentifier']
     gdf_cols = ['geometry', 'QA_flag']
-    results_df = wrangle.merge_tables(df_cnt, gdf, gdf_cols, merge_cols)
+    results_df = merge_tables(df_cnt, gdf, gdf_cols, merge_cols)
     return geopandas.GeoDataFrame(results_df, geometry='geometry')
 
 
@@ -220,7 +220,7 @@ def map_measure(df_in, gdf, col):
 
     # Join it to geometry
     gdf_cols = ['geometry', 'QA_flag']
-    results_df = wrangle.merge_tables(df_agg, gdf, gdf_cols, merge_cols)
+    results_df = merge_tables(df_agg, gdf, gdf_cols, merge_cols)
 
     return geopandas.GeoDataFrame(results_df, geometry='geometry')
 

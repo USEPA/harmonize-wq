@@ -7,8 +7,58 @@ import pint
 from numpy import nan
 from harmonize_wq import domains
 from harmonize_wq import basis
-from harmonize_wq import convert
-from harmonize_wq import harmonize
+from harmonize_wq.clean import df_checks, add_qa_flag
+from harmonize_wq.convert import convert_unit_series, moles_to_mass
+
+
+def units_dimension(series_in, units, ureg=None):
+    """List unique units not in desired units dimension.
+
+    Parameters
+    ----------
+    series_in : pandas.Series
+        Series of units.
+    units : str
+        Desired units.
+    ureg : pint.UnitRegistry, optional
+        Unit Registry Object with any custom units defined.
+        The default is None.
+
+    Returns
+    -------
+    dim_list : list
+        List of units with mismatched dimensions.
+
+    Examples
+    --------
+    Build series to use as input:
+    
+    >>> from pandas import Series
+    >>> unit_series = Series(['mg/l', 'mg/ml', 'g/kg'])
+    >>> unit_series
+    0     mg/l
+    1    mg/ml
+    2     g/kg
+    dtype: object
+
+    Get list of unique units not in desired units dimension 'mg/l':
+    
+    >>> from harmonize_wq import wq_data
+    >>> wq_data.units_dimension(unit_series, units='mg/l')
+    ['g/kg']
+    """
+    #TODO: this should be a method
+    if ureg is None:
+        ureg = pint.UnitRegistry()
+    dim_list = []  # List for units with mismatched dimensions
+    dimension = ureg(units).dimensionality  # units dimension
+    # Loop over list of unique units
+    for unit in list(set(series_in)):
+        q_ = ureg(unit)
+        if not q_.check(dimension):
+            dim_list.append(unit)
+    return dim_list
+
 
 class WQCharData():
     """Class for specific characteristic in Water Quality Portal results.
@@ -71,7 +121,7 @@ class WQCharData():
     def __init__(self, df_in, char_val):
         df_out = df_in.copy()
         # self.check_df(df)
-        harmonize.df_checks(df_out)
+        df_checks(df_out)
         c_mask = df_out['CharacteristicName'] == char_val
         self.c_mask = c_mask
         # Deal with units: set out = in
@@ -112,7 +162,7 @@ class WQCharData():
                 flag = f'{meas_col}: "{bad_meas}" result cannot be used'
                 cond = c_mask & (df_out[meas_col] == bad_meas)
             # Flag bad measures
-            df_out = harmonize.add_qa_flag(df_out, cond, flag)
+            df_out = add_qa_flag(df_out, cond, flag)
         df_out[self.out_col] = meas_s  # Return coerced results
 
         self.df = df_out
@@ -138,7 +188,7 @@ class WQCharData():
         flag = self._unit_qa_flag('MISSING', flag_col)
         # Update mask for missing units
         units_mask = self.c_mask & self.df[self.col.unit_out].isna()
-        self.df = harmonize.add_qa_flag(self.df, units_mask, flag)  # Assign flag
+        self.df = add_qa_flag(self.df, units_mask, flag)  # Assign flag
         # Update with infered unit
         self.df.loc[units_mask, self.col.unit_out] = self.units
         # Note: .fillna(self.units) is slightly faster but hits datatype issues
@@ -331,7 +381,7 @@ class WQCharData():
                 # New mask for bad units
                 u_mask = self._unit_mask(unit)
                 # Assign flag to bad units
-                df_out = harmonize.add_qa_flag(df_out, u_mask, flag)
+                df_out = add_qa_flag(df_out, u_mask, flag)
                 df_out.loc[u_mask, self.col.unit_out] = self.units  # Replace w/ default
         self.df = df_out
 
@@ -399,7 +449,7 @@ class WQCharData():
         c_mask = self.c_mask
 
         # Check for Method Specification column
-        harmonize.df_checks(self.df, [basis_col])
+        df_checks(self.df, [basis_col])
 
         # Basis from MethodSpecificationName
         if basis_col == 'MethodSpecificationName':
@@ -578,7 +628,7 @@ class WQCharData():
                   'units': self.units,
                   'ureg': self.ureg,
                   'errors': errors}
-        df_out.loc[m_mask, self.out_col] = harmonize.convert_unit_series(**params)
+        df_out.loc[m_mask, self.out_col] = convert_unit_series(**params)
         self.df = df_out
 
     def apply_conversion(self, convert_fun, unit, u_mask=None):
@@ -684,10 +734,10 @@ class WQCharData():
         """
         if m_mask is None:
             m_mask = self.measure_mask()
-        return harmonize.units_dimension(self.df.loc[m_mask,
-                                                     self.col.unit_out],
-                                         self.units,
-                                         self.ureg)
+        return units_dimension(self.df.loc[m_mask,
+                                           self.col.unit_out],
+                               self.units,
+                               self.ureg)
 
     def replace_unit_str(self, old, new, mask=None):
         """Replace ALL instances of old with in WQCharData.col.unit_out column.
@@ -887,7 +937,7 @@ class WQCharData():
         1                           NaN  10.000000000000002 milligram / liter
         """
         # Check for sample fraction column
-        harmonize.df_checks(self.df, [fract_col])
+        df_checks(self.df, [fract_col])
 
         c_mask = self.c_mask
 
@@ -1026,7 +1076,7 @@ class WQCharData():
                 basis_lst = list(set(self.df.loc[self.c_mask, self.col.basis]))
                 for speciation in basis_lst:
                     mol_params['basis'] = speciation
-                    quant = str(convert.moles_to_mass(**mol_params))
+                    quant = str(moles_to_mass(**mol_params))
                     dim_tup = self._dimension_handling(unit,
                                                        quant,
                                                        self.ureg)

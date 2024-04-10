@@ -3,8 +3,7 @@
 import pandas
 import geopandas
 from harmonize_wq import domains
-from harmonize_wq import harmonize
-from harmonize_wq.clean import datetime, harmonize_depth
+from harmonize_wq.clean import datetime, harmonize_depth, df_checks
 from dataretrieval import wqp
 
 
@@ -16,7 +15,7 @@ def split_table(df_in):
 
     Notes
     -----
-    Runs :func:`clean.datetime` and :func:`cleanharmonize_depth` if expected
+    Runs :func:`clean.datetime` and :func:`clean.harmonize_depth` if expected
     columns ('Activity_datetime' and 'Depth') are missing.
 
     Parameters
@@ -365,7 +364,7 @@ def add_activities_to_df(df_in, mask=None):
     df_out = df_in.copy()
     # Check df for loc_field
     loc_col = 'MonitoringLocationIdentifier'
-    harmonize.df_checks(df_out, [loc_col])
+    df_checks(df_out, [loc_col])
     # List of unique sites and characteristicNames
     if mask:
         loc_list = list(set(df_out.loc[mask, loc_col].dropna()))
@@ -435,7 +434,7 @@ def add_detection(df_in, char_val):
     # Check df for loc_field
     loc_col = 'MonitoringLocationIdentifier'
     res_id = 'ResultIdentifier'
-    harmonize.df_checks(df_out, [loc_col, res_id])
+    df_checks(df_out, [loc_col, res_id])
     c_mask = df_out['CharacteristicName'] == char_val  # Mask to limit rows
     loc_series = df_out.loc[c_mask, loc_col]  # Location Series
     res_series = df_out.loc[c_mask, res_id]  # Location Series
