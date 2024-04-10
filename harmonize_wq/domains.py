@@ -96,13 +96,15 @@ def get_domain_dict(table, cols=None):
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
                'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
                'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
-               'Extractable, residual', 'Field', 'Filterable', 'Filtered field and/or lab',
-               'Filtered, field', 'Filtered, lab', 'Fixed', 'Free Available', 'Inorganic',
-               'Leachable', 'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile', 'None',
-               'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable', 'Sieved',
-               'Strong Acid Diss', 'Supernate', 'Suspended', 'Total', 'Total Recoverable',
-               'Total Residual', 'Total Soluble', 'Unfiltered', 'Unfiltered, field', 'Vapor',
-               'Volatile', 'Weak Acid Diss', 'non-linear function'])
+               'Extractable, residual', 'Field', 'Filter/sieve residue', 'Filterable',
+               'Filtered field and/or lab', 'Filtered, field', 'Filtered, lab',
+               'Fixed', 'Free Available', 'Inorganic', 'Leachable',
+               'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile',
+               'None', 'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable',
+               'Sieved', 'Strong Acid Diss', 'Supernate', 'Suspended', 'Total',
+               'Total Recoverable', 'Total Residual', 'Total Soluble',
+               'Unfiltered', 'Unfiltered, field', 'Vapor', 'Volatile',
+               'Weak Acid Diss', 'Yield', 'non-linear function'])
     
     """
     if cols is None:
