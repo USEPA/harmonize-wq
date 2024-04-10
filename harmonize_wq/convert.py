@@ -91,8 +91,8 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
 
     Convert series to series of pint Quantity objects in 'mg/l':
     
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
+    >>> from harmonize_wq import convert
+    >>> convert.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
     0                   1.0 milligram / liter
     1    10000.000000000002 milligram / liter
     dtype: object

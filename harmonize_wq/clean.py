@@ -145,12 +145,12 @@ def df_checks(df_in, columns=None):
     
     Check for existing column:
 
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.df_checks(df, columns=['CharacteristicName'])
+    >>> from harmonize_wq import clean
+    >>> clean.df_checks(df, columns=['CharacteristicName'])
     
     If column is not in DataFrame it throws an AssertionError:
         
-    >>> harmonize.df_checks(df, columns=['ResultMeasureValue'])
+    >>> clean.df_checks(df, columns=['ResultMeasureValue'])
     Traceback (most recent call last):
         ...
     AssertionError: ResultMeasureValue not in DataFrame
@@ -316,8 +316,8 @@ def add_qa_flag(df_in, mask, flag):
     >>> flag = 'words'
     >>> mask = df['CharacteristicName']=='Carbon'
     
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.add_qa_flag(df, mask, flag)
+    >>> from harmonize_wq import clean
+    >>> clean.add_qa_flag(df, mask, flag)
       CharacteristicName ResultMeasureValue QA_flag
     0             Carbon                1.0   words
     1         Phosphorus              0.265     NaN

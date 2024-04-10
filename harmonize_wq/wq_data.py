@@ -43,8 +43,8 @@ def units_dimension(series_in, units, ureg=None):
 
     Get list of unique units not in desired units dimension 'mg/l':
     
-    >>> from harmonize_wq import harmonize
-    >>> harmonize.units_dimension(unit_series, units='mg/l')
+    >>> from harmonize_wq import wq_data
+    >>> wq_data.units_dimension(unit_series, units='mg/l')
     ['g/kg']
     """
     #TODO: this should be a method
