@@ -217,7 +217,7 @@ def basis_from_method_spec(df_in):
     # TODO: this seems overly-complex to do a pop from one column to another,
     # consider _coerce_basis()
     # List unique basis
-    basis_list = df[old_col].dropna().unique()
+    basis_list = list(set(df[old_col].dropna()))
     for base in basis_list:
         mask = df[old_col] == base
         df = set_basis(df, mask, base)
