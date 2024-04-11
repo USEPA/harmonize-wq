@@ -531,7 +531,7 @@ get the EPSG code:
 
 >>> domains.xy_datum['NAD83']
 {'Description': 'North American Datum 1983', 'EPSG': 4269}
->>> domains.xy_datum()['NAD83']['EPSG']
+>>> domains.xy_datum['NAD83']['EPSG']
 4269
 """
 xy_datum = {
@@ -549,8 +549,9 @@ xy_datum = {
     "WAKE": {"Description": "Wake-Eniwetok 1960", "EPSG": 6732},
     "WGS72": {"Description": "World Geodetic System 1972", "EPSG": 6322},
     "WGS84": {"Description": "World Geodetic System 1984", "EPSG": 4326},
-    "HARN": {"Description": "High Accuracy Reference Network for NAD83",
-            "EPSG": 4152,
+    "HARN": {
+        "Description": "High Accuracy Reference Network for NAD83",
+        "EPSG": 4152,
         },
     }
 
@@ -573,7 +574,7 @@ Although running the function returns the full dictionary of Key:Value
 pairs, here we show how the current name can be used as a key to get the
 new name:
 
->>> domains.stations_rename()['OrganizationIdentifier']
+>>> domains.stations_rename['OrganizationIdentifier']
 'org_ID'
 """
 stations_rename = {
