@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions to process characteristic basis or return basis dictionary."""
+import numpy
 from warnings import warn
 from numpy import nan
 from harmonize_wq.clean import add_qa_flag
@@ -353,9 +354,8 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
     2           Salinity                                NaN
     """
     df_out = df_in.copy()
-    # Add Basis column if it doesn't exist
     if basis_col not in df_out.columns:
-        df_out[basis_col] = nan
-    # Populate Basis column where expected value with basis
-    df_out.loc[mask, basis_col] = basis
-    return df_out
+        # Add Basis column w/ nan if it didn't exist
+        return df_out.assign(**{basis_col: numpy.where(mask, basis, nan)})
+    # Otherwise don't mess with existing values that are not part of mask
+    return df_out.assign(**{basis_col: numpy.where(mask, basis, df_out[basis_col])})
