@@ -162,7 +162,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
                     # Add flags anywhere the values are updated
                     flag1 = f'{basis_col}: updated from '
                     # List of unique basis values
-                    basis_list = list(set(df.loc[mask, basis_col].dropna()))
+                    basis_list = df.loc[mask, basis_col].dropna().unique()
                     # Loop over existing values in basis field
                     for old_basis in basis_list:
                         flag = f'{flag1}{old_basis} to {base} (units)'
@@ -217,7 +217,7 @@ def basis_from_method_spec(df_in):
     # TODO: this seems overly-complex to do a pop from one column to another,
     # consider _coerce_basis()
     # List unique basis
-    basis_list = list(set(df[old_col].dropna()))
+    basis_list = df[old_col].dropna().unique()
     for base in basis_list:
         mask = df[old_col] == base
         df = set_basis(df, mask, base)
