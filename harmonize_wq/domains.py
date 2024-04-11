@@ -178,7 +178,7 @@ def re_case(word, domain_list):
     domain_list_upper = [x.upper() for x in domain_list]
     try:
         idx = domain_list_upper.index(word)
-    except:
+    except ValueError:
         return word
     return domain_list[idx]
 
