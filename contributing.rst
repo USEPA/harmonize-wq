@@ -38,6 +38,7 @@ and submit the changes using a pull request against the **main** branch.
 
 - If you are submitting new code, add tests (see below) and documentation.
 - Write "Closes #<bug number>" in the PR description or a comment, as described in the `GitHub docs`_.
+- Classes, methods, functions, etc. should have docstrings.
 - Check tests and resolve any issues.
 
 In any case, feel free to use the `issue tracker`_ to discuss ideas for new features or improvements.
@@ -49,6 +50,16 @@ There might be multiple reasons for this but these are some of the most common:
 - Your new code does not work for other operating systems or Python versions.
 - The documentation is not being built properly or the examples in the docs are not working.
 
+Development environment setup
+-----------------------------
+
+- pip install the latest development version of the package from `GitHub <https://github.com/USEPA/harmonize-wq>`_
+- Install the requirements for the development environment by pip installing the additional requirements-dev.txt file.
+
+docs are built using sphinx
+tests are run using pytest
+
+There are workflows using GitHub actions for both docs and tests to help avoid 'it worked on my machine' type development issues.
 
 .. _`issue tracker`: https://github.com/USEPA/harmonize-wq/issues
 .. _`GitHub docs`: https://help.github.com/articles/closing-issues-via-commit-messages/
