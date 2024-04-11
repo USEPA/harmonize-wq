@@ -291,7 +291,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     # Basis from unit
     if basis_col == 'ResultTemperatureBasisText':
-        df_out = basis_from_unit(df_in.copy(), stp_dict(), unit_col, basis_col)
+        df_out = basis_from_unit(df_in.copy(), stp_dict, unit_col, basis_col)
         # NOTE: in the test case 25 deg C -> @25C
     elif basis_col == 'ResultParticleSizeBasisText':
         # NOTE: These are normally 'less than x mm', no errors so far to fix

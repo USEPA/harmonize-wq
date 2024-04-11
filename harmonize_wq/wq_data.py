@@ -463,7 +463,7 @@ class WQCharData():
 
             # Basis from unit
             try:
-                basis_dict = basis.unit_basis_dict(self.out_col)
+                basis_dict = basis.unit_basis_dict[self.out_col]
                 self.df[c_mask] = basis.basis_from_unit(self.df[c_mask],
                                                         basis_dict,
                                                         self.col.unit_out)
