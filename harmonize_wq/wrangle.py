@@ -87,7 +87,7 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     char_list = list(set(df_out['CharacteristicName']))
 
     # TODO: try/catch on key error
-    col_list = [domains.out_col_lookup()[char_name] for char_name in char_list]
+    col_list = [domains.out_col_lookup[char_name] for char_name in char_list]
 
     # TODO: generalize to multi-characteristics other than phosphorus
     char = 'Phosphorus'

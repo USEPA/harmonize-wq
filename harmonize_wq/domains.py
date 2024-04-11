@@ -292,43 +292,43 @@ def registry_adds_list(out_col):
     return ureg_adds[out_col]
 
 
-def out_col_lookup():
-    """Get {CharacteristicName: out_column_name}.
+"""Get {CharacteristicName: out_column_name}.
+
+This is often subset and used to write results to a new column from the
+'CharacteristicName' column.
+
+Returns
+-------
+dict
+    {WQP CharacteristicName:Column Name}.
+
+Examples
+--------
+The function returns the full dictionary {CharacteristicName: out_column_name}.
+It can be subset by a 'CharactisticName' column value to get the name of
+the column for results:
     
-    This is often subset and used to write results to a new column from the
-    'CharacteristicName' column.
-
-    Returns
-    -------
-    dict
-        {WQP CharacteristicName:Column Name}.
-
-    Examples
-    --------
-    The function returns the full dictionary {CharacteristicName: out_column_name}.
-    It can be subset by a 'CharactisticName' column value to get the name of
-    the column for results:
-        
-    >>> domains.out_col_lookup()['Escherichia coli']
-    'E_coli'
-    """
-    # TODO: something special for phosphorus? Currently return suffix.
-    # 'Phosphorus' -> ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']
-    return {'Depth, Secchi disk depth': 'Secchi',
-            'Dissolved oxygen (DO)': 'DO',
-            'Temperature, water': 'Temperature',
-            'Salinity': 'Salinity',
-            'pH': 'pH',
-            'Nitrogen': 'Nitrogen',
-            'Conductivity': 'Conductivity',
-            'Organic carbon': 'Carbon',
-            'Chlorophyll a': 'Chlorophyll',
-            'Turbidity': 'Turbidity',
-            'Sediment': 'Sediment',
-            'Fecal Coliform': 'Fecal_Coliform',
-            'Escherichia coli': 'E_coli',
-            'Phosphorus': 'Phosphorus',
-            }
+>>> domains.out_col_lookup['Escherichia coli']
+'E_coli'
+"""
+# TODO: something special for phosphorus? Currently return suffix.
+# 'Phosphorus' -> ['TP_Phosphorus', 'TDP_Phosphorus', 'Other_Phosphorus']
+out_col_lookup = {
+    "Depth, Secchi disk depth": "Secchi",
+    "Dissolved oxygen (DO)": "DO",
+    "Temperature, water": "Temperature",
+    "Salinity": "Salinity",
+    "pH": "pH",
+    "Nitrogen": "Nitrogen",
+    "Conductivity": "Conductivity",
+    "Organic carbon": "Carbon",
+    "Chlorophyll a": "Chlorophyll",
+    "Turbidity": "Turbidity",
+    "Sediment": "Sediment",
+    "Fecal Coliform": "Fecal_Coliform",
+    "Escherichia coli": "E_coli",
+    "Phosphorus": "Phosphorus",
+    }
 
 
 def characteristic_cols(category=None):
