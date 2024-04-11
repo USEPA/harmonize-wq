@@ -137,7 +137,7 @@ def harmonize_TADA_dict():
     df = pandas.read_csv(csv)  # Read csv url to DataFrame
     full_dict = {}  # Setup results dict
     # Loop over one unique characteristicName at a time
-    for char in list(set(df['TADA.CharacteristicName'].to_list())):
+    for char in df['TADA.CharacteristicName'].unique():
         sub_df = df[df['TADA.CharacteristicName']==char]  # Mask by char
         full_dict[char] = char_tbl_TADA(sub_df, char)  # Build dictionary
 
@@ -211,15 +211,15 @@ def char_tbl_TADA(df, char):
 
     # loop over new chars, getting {new_fract: [old fracts]}
     new_char_dict = {}
-    for new_char in list(set(sub_df[cols[0]])):
+    for new_char in sub_df[cols[0]].unique():
         new_char_df = sub_df[sub_df[cols[0]]==new_char]  # Mask by new_char
         new_fract_dict = {}
-        for new_fract in list(set(new_char_df[cols[2]])):
+        for new_fract in new_char_df[cols[2]].unique():
             # TODO: {nan: []}? Doesn't break but needs handling later
             # Mask by new_fract
             new_fract_df = new_char_df[new_char_df[cols[2]]==new_fract]
             # Add a list of possible old_fract for new_fract key
-            new_fract_dict[new_fract] = list(set(new_fract_df[cols[1]]))
+            new_fract_dict[new_fract] = new_fract_df[cols[1]].unique()
         new_char_dict[new_char] = new_fract_dict
 
     return new_char_dict
