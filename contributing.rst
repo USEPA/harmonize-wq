@@ -38,6 +38,7 @@ and submit the changes using a pull request against the **main** branch.
 
 - If you are submitting new code, add tests (see below) and documentation.
 - Write "Closes #<bug number>" in the PR description or a comment, as described in the `GitHub docs`_.
+- Classes, methods, functions, etc. should have docstrings.
 - Check tests and resolve any issues.
 
 In any case, feel free to use the `issue tracker`_ to discuss ideas for new features or improvements.
