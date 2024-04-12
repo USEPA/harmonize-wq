@@ -87,7 +87,7 @@ Get dictionary for taking temperature basis our of units:
 >>> basis.stp_dict
 {'@25C': {'mg/mL': ['mg/mL @25C']}}
 """
-stp_dict = {"@25C": {"mg/m": ["mg/mL @25C"]}}
+stp_dict = {"@25C": {"mg/mL": ["mg/mL @25C"]}}
 
 
 def basis_from_unit(df_in, basis_dict, unit_col="Units", basis_col="Speciation"):
