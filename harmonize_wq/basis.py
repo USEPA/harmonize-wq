@@ -43,9 +43,9 @@ unit_basis_dict = {
     "Carbon": {},
 }
 
-"""Get dictionary of conversion factors to convert basis/speciation.
+"""basis.bass_conversionGet dictionary of conversion factors to convert basis/speciation.
 
-For example, this is used to convert 'as PO4' to 'as P'.
+basis.bass_conversion. For example, this is used to convert 'as PO4' to 'as P'.
 
 Returns
 -------
@@ -67,7 +67,7 @@ basis_conversion = {
     "PO4": 0.326,
 }
 
-"""Get standard temperature and pressure to define basis from units.
+"""basis.stp_dict: Get standard temperature and pressure to define basis from units.
 
 Notes
 -----
@@ -77,14 +77,6 @@ Returns
 -------
 dict
     Dictionary with {'standard temp' : {'units': [values to replace]}}.
-
-Examples
---------
-Get dictionary for taking temperature basis our of units:
-
->>> from harmonize_wq import basis
->>> basis.stp_dict
-{'@25C': {'mg/mL': ['mg/mL @25C']}}
 """
 stp_dict = {"@25C": {"mg/mL": ["mg/mL @25C"]}}
 
