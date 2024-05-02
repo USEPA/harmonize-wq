@@ -107,7 +107,7 @@ However, you may still need to specify the location. If needed, update the code 
 ```{r, results = 'hide'}
 # update the 'dir' in this chuck to specify the location of conda.exe on your computer
 # Note that the environment name may need to include the full path (e.g. "C:/Users/USERNAME/AppData/Local/miniforge3/Scripts/conda.exe")
-options(reticulate.conda_binary = "C:/Users/CMULLI01/AppData/Local/miniforge3/Scripts/conda.exe")
+options(reticulate.conda_binary = "~/AppData/Local/miniforge3/Scripts/conda.exe")
 ```
 
 Next, update the code chunk below to create a new Python environment in the envs
@@ -115,7 +115,7 @@ folder on your computer called "wq_harmonize".
 
 ```{r, results = 'hide'}
 # Note that the environment name may need to include the full path (e.g. "C:/Users/USERNAME/AppData/Local/miniforge3/envs/wq_harmonize")
-reticulate::conda_create("C:/Users/CMULLI01/AppData/Local/miniforge3/envs/wq_harmonize")
+reticulate::conda_create("~/AppData/Local/miniforge3/envs/wq_harmonize")
 ```
 
 Install the following python and R packages to the newly created
