@@ -98,7 +98,7 @@ First, run the chunk below to install the reticulate package to use
 Python in R.
 
 ```{r, results = 'hide'}
-install.packages("reticulate")
+install.packages("reticulate", repos = "http://cran.us.r-project.org")
 library(reticulate)
 ```
 
