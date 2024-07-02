@@ -169,8 +169,8 @@ def harmonize_locations(df_in, out_EPSG=4326,
     df2['geom_orig'] = list(zip(df2[lon_col], df2[lat_col]))
 
     # Create/populate EPSG column
-    crs_mask = df2[crs_col].isin(xy_datum().keys())  # w/ known datum
-    df2.loc[crs_mask, 'EPSG'] = [xy_datum()[crs]['EPSG'] for crs
+    crs_mask = df2[crs_col].isin(xy_datum.keys())  # w/ known datum
+    df2.loc[crs_mask, 'EPSG'] = [xy_datum[crs]['EPSG'] for crs
                                  in df2.loc[crs_mask, crs_col]]
 
     # Fix/flag missing

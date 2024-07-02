@@ -134,7 +134,7 @@ class WQCharData():
                                                            self.col.unit_in]
         self.df = df_out
         # Deal with values: set out_col = in
-        self.out_col = domains.out_col_lookup()[char_val]
+        self.out_col = domains.out_col_lookup[char_val]
         self._coerce_measure()
         self.ureg = pint.UnitRegistry()  # Add standard unit registry
         self.units = domains.OUT_UNITS[self.out_col]
@@ -463,7 +463,7 @@ class WQCharData():
 
             # Basis from unit
             try:
-                basis_dict = basis.unit_basis_dict(self.out_col)
+                basis_dict = basis.unit_basis_dict[self.out_col]
                 self.df[c_mask] = basis.basis_from_unit(self.df[c_mask],
                                                         basis_dict,
                                                         self.col.unit_out)
@@ -473,7 +473,7 @@ class WQCharData():
             col = self.col.basis
 
             # Get built-in char_val based on out_col attribute
-            char_keys, char_vals = zip(*domains.out_col_lookup().items())
+            char_keys, char_vals = zip(*domains.out_col_lookup.items())
             char_val = list(char_keys)[list(char_vals).index(self.out_col)]
 
             self.df.loc[c_mask, col] = self.df.loc[c_mask, col].fillna(char_val)
