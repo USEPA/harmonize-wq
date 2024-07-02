@@ -144,7 +144,7 @@ Install EPA's harmonize-wq package.
 reticulate::py_install("harmonize-wq", pip = TRUE, envname = "wq_harmonize")
 
 # Uncomment below to install the development version of harmonize-wq from GitHub instead (optional)
-# py_install("git+https://github.com/USEPA/harmonize-wq.git@new_release_0-3-8", pip = TRUE, envname = "wq_harmonize")
+# py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 ```
 
 Specify the Python environment to be used, "wq_harmonize", and test that
