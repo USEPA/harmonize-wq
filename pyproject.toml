@@ -25,6 +25,9 @@ dependencies = [
     "geopandas",
     "pint",
     "dataretrieval",
+    "pandas",
+	  "numpy",
+	  "requests",
 ]
 
 [project.optional-dependencies]

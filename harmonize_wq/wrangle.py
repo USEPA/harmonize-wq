@@ -87,13 +87,13 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     char_list = list(set(df_out['CharacteristicName']))
 
     # TODO: try/catch on key error
-    col_list = [domains.out_col_lookup()[char_name] for char_name in char_list]
+    col_list = [domains.out_col_lookup[char_name] for char_name in char_list]
 
     # TODO: generalize to multi-characteristics other than phosphorus
     char = 'Phosphorus'
     if char in char_list:
         i = char_list.index(char)
-        suffix = '_' + domains.out_col_lookup()[char]
+        suffix = '_' + domains.out_col_lookup[char]
         col_list[i] = [col for col in df_out.columns if col.endswith(suffix)]
 
     # Drop rows where result na
@@ -754,7 +754,7 @@ def to_simple_shape(gdf, out_shp):
     >>> wrangle.to_simple_shape(gdf, 'dataframe.shp')
     """
     cols = gdf.columns  # List of current column names
-    names_dict = domains.stations_rename()  # Dict of column names to update
+    names_dict = domains.stations_rename  # Dict of column names to update
     # Rename non-results columns that are too long for shp field names
     renaming_list = [col for col in cols if col in names_dict]
     renaming_dict = {old_col: names_dict[old_col] for old_col in renaming_list}
@@ -766,7 +766,7 @@ def to_simple_shape(gdf, out_shp):
 
     # Results columns need to be str not pint (.astype(str))
     # Narrow based on out_col lookup dictionary
-    results_cols = [col for col in possible_results if col in domains.out_col_lookup().values()]
+    results_cols = [col for col in possible_results if col in domains.out_col_lookup.values()]
     # TODO: check based on suffix: e.g. Phosphorus
     # Rename each column w/ units and write results as str
     for col in results_cols:

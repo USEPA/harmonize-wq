@@ -1,97 +1,89 @@
 # -*- coding: utf-8 -*-
 """Functions to process characteristic basis or return basis dictionary."""
+
+import numpy
 from warnings import warn
-from numpy import nan
 from harmonize_wq.clean import add_qa_flag
 
-def unit_basis_dict(out_col):
-    """Characteristic specific basis dictionary to define basis from units.
 
-    The out_col is often derived from :attr:`WQCharData.char_val`. The desired
-    basis can be used as a key to subset result.
+"""Characteristic specific basis dictionary to define basis from units.
 
-    Parameters
-    ----------
-    out_col : str
-        Column name where results are written.
+The out_col is often derived from :attr:`WQCharData.char_val`. The desired
+basis can be used as a key to subset result.
 
-    Returns
-    -------
-     dict
-         Dictionary with logic for determining basis from units string and
-         standard :mod:`pint` units to replace those with.
-         The structure is {Basis: {standard units: [unit strings with basis]}}.
+Parameters
+----------
+out_col : str
+    Column name where results are written.
 
-    Examples
-    --------
-    Get dictionary for Phosphorus and subset for 'as P':
+Returns
+-------
+ dict
+     Dictionary with logic for determining basis from units string and
+     standard :mod:`pint` units to replace those with.
+     The structure is {Basis: {standard units: [unit strings with basis]}}.
+
+Examples
+--------
+Get dictionary for Phosphorus and subset for 'as P':
+
+>>> from harmonize_wq import basis
+>>> basis.unit_basis_dict['Phosphorus']['as P']
+{'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']}
+"""
+unit_basis_dict = {
+    "Phosphorus": {
+        "as P": {"mg/l": ["mg/l as P", "mg/l P"], "mg/kg": ["mg/kg as P", "mg/kg P"]},
+        "as PO4": {
+            "mg/l": ["mg/l as PO4", "mg/l PO4"],
+            "mg/kg": ["mg/kg as PO4", "mg/kg PO4"],
+        },
+    },
+    "Nitrogen": {"as N": {"mg/l": ["mg/l as N", "mg/l N"]}},
+    "Carbon": {},
+}
+
+"""basis.bass_conversionGet dictionary of conversion factors to convert basis/speciation.
+
+basis.bass_conversion. For example, this is used to convert 'as PO4' to 'as P'.
+
+Returns
+-------
+dict
+    Dictionary with structure {basis: conversion factor}
+     
+See Also
+--------
+:func:`convert.moles_to_mass`
+
+`Best Practices for Submitting Nutrient Data to the Water Quality eXchange
+<www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>`_
+"""
+basis_conversion = {
+    "NH3": 0.822,
+    "NH4": 0.776,
+    "NO2": 0.304,
+    "NO3": 0.225,
+    "PO4": 0.326,
+}
+
+"""basis.stp_dict: Get standard temperature and pressure to define basis from units.
+
+Notes
+-----
+    This needs to be updated to include pressure or needs to be renamed.
     
-    >>> from harmonize_wq import basis
-    >>> basis.unit_basis_dict('Phosphorus')['as P']
-    {'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']}
-    """
-    dictionary = {'Phosphorus': {'as P': {'mg/l': ['mg/l as P', 'mg/l P'],
-                                          'mg/kg': ['mg/kg as P', 'mg/kg P']},
-                                 'as PO4': {'mg/l': ['mg/l as PO4',
-                                                     'mg/l PO4'],
-                                            'mg/kg': ['mg/kg as PO4',
-                                                      'mg/kg PO4']}},
-                  'Nitrogen': {'as N': {'mg/l': ['mg/l as N', 'mg/l N']}},
-                  'Carbon': {},
-                  }
-    return dictionary[out_col]
+Returns
+-------
+dict
+    Dictionary with {'standard temp' : {'units': [values to replace]}}.
+"""
+stp_dict = {"@25C": {"mg/mL": ["mg/mL @25C"]}}
 
 
-def basis_conversion():
-    """Get dictionary of conversion factors to convert basis/speciation.
-    
-    For example, this is used to convert 'as PO4' to 'as P'.
-    
-    Returns
-    -------
-    dict
-        Dictionary with structure {basis: conversion factor}
-         
-    See Also
-    --------
-    :func:`convert.moles_to_mass`
-    
-    `Best Practices for Submitting Nutrient Data to the Water Quality eXchange
-    <www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>`_
-    """
-    return {'NH3': 0.822,
-            'NH4': 0.776,
-            'NO2': 0.304,
-            'NO3': 0.225,
-            'PO4': 0.326}
-
-
-def stp_dict():
-    """Get standard temperature and pressure to define basis from units.
-
-    Notes
-    -----
-        This needs to be updated to include pressure or needs to be renamed.
-        
-    Returns
-    -------
-    dict
-        Dictionary with {'standard temp' : {'units': [values to replace]}}.
-
-    Examples
-    --------
-    Get dictionary for taking temperature basis our of units:
-    
-    >>> from harmonize_wq import basis
-    >>> basis.stp_dict()
-    {'@25C': {'mg/mL': ['mg/mL @25C']}}
-    """
-    return {'@25C': {'mg/mL': ['mg/mL @25C']}}
-
-
-def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation'):
+def basis_from_unit(df_in, basis_dict, unit_col="Units", basis_col="Speciation"):
     """Move basis from units to basis column in :class:`pandas.DataFrame`.
-    
+
     Move basis information from units in unit_col column to basis in basis_col
     column based on basis_dict. If basis_col does not exist in df_in it will be
     created. The unit_col column is updated in place. To maintain data
@@ -119,7 +111,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
     Examples
     --------
     Build pandas DataFrame for example:
-    
+
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
     ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', 'mg/kg as P'],
@@ -131,16 +123,16 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
     1         Phosphorus                    mg/kg as P  mg/kg as P
 
     >>> from harmonize_wq import basis
-    >>> basis_dict = basis.unit_basis_dict('Phosphorus')
+    >>> basis_dict = basis.unit_basis_dict['Phosphorus']
     >>> unit_col = 'Units'
     >>> basis.basis_from_unit(df, basis_dict, unit_col)
       CharacteristicName ResultMeasure/MeasureUnitCode  Units Speciation
     0         Phosphorus                     mg/l as P   mg/l       as P
     1         Phosphorus                    mg/kg as P  mg/kg       as P
-    
-    If an existing basis_col value is different, a warning is issued when it is 
+
+    If an existing basis_col value is different, a warning is issued when it is
     updated and a QA_flag is assigned:
-    
+
     >>> from numpy import nan
     >>> df['Speciation'] = [nan, 'as PO4']
     >>> df_speciation_change = basis.basis_from_unit(df, basis_dict, unit_col)
@@ -161,7 +153,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
                     # Add flags anywhere the values are updated
                     flag1 = f'{basis_col}: updated from '
                     # List of unique basis values
-                    basis_list = list(set(df.loc[mask, basis_col].dropna()))
+                    basis_list = df.loc[mask, basis_col].dropna().unique()
                     # Loop over existing values in basis field
                     for old_basis in basis_list:
                         flag = f'{flag1}{old_basis} to {base} (units)'
@@ -178,7 +170,7 @@ def basis_from_unit(df_in, basis_dict, unit_col='Units', basis_col='Speciation')
 
 def basis_from_method_spec(df_in):
     """Copy speciation from MethodSpecificationName to new 'Speciation' column.
-    
+
     Parameters
     ----------
     df_in : pandas.DataFrame
@@ -192,7 +184,7 @@ def basis_from_method_spec(df_in):
     Examples
     --------
     Build pandas DataFrame for example:
-    
+
     >>> from pandas import DataFrame
     >>> from numpy import nan
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
@@ -204,7 +196,7 @@ def basis_from_method_spec(df_in):
     0         Phosphorus                    as P         NWIS
     1         Phosphorus                     NaN         NWIS
 
-    >>> from harmonize_wq import basis    
+    >>> from harmonize_wq import basis
     >>> basis.basis_from_method_spec(df)
       CharacteristicName MethodSpecificationName ProviderName Speciation
     0         Phosphorus                    as P         NWIS       as P
@@ -221,23 +213,23 @@ def basis_from_method_spec(df_in):
         mask = df[old_col] == base
         df = set_basis(df, mask, base)
         # Remove basis from MethodSpecificationName
-        #TODO: why update old field?
-        #df[old_col] = [nan if x == base else x for x in df[old_col]]
+        # TODO: why update old field?
+        # df[old_col] = [nan if x == base else x for x in df[old_col]]
     # Test we didn't miss any methodSpec
-    #assert set(df[old_col].dropna()) == set(), (set(df[old_col].dropna()))
+    # assert set(df[old_col].dropna()) == set(), (set(df[old_col].dropna()))
 
     return df
 
 
 def update_result_basis(df_in, basis_col, unit_col):
     """Move basis from unit_col column to basis_col column.
-    
+
     This is usually used in place of basis_from_unit when the basis_col is not
     'ResultMeasure/MeasureUnitCode' (i.e., not speciation).
-    
+
     Notes
     -----
-    Rather than creating many new empty columns this function currently overwrites the original 
+    Rather than creating many new empty columns this function currently overwrites the original
     basis_col values. The original values are noted in the QA_flag.
 
     Parameters
@@ -258,7 +250,7 @@ def update_result_basis(df_in, basis_col, unit_col):
     Examples
     --------
     Build pandas DataFrame for example:
-    
+
     >>> from pandas import DataFrame
     >>> from numpy import nan
     >>> df = DataFrame({'CharacteristicName': ['Salinity', 'Salinity',],
@@ -269,8 +261,8 @@ def update_result_basis(df_in, basis_col, unit_col):
       CharacteristicName ResultTemperatureBasisText       Units
     0           Salinity                   25 deg C  mg/mL @25C
     1           Salinity                        NaN  mg/mL @25C
-        
-    >>> from harmonize_wq import basis    
+
+    >>> from harmonize_wq import basis
     >>> df_temp_basis = basis.update_result_basis(df,
     ...                                           'ResultTemperatureBasisText',
     ...                                           'Units')
@@ -290,7 +282,7 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     # Basis from unit
     if basis_col == 'ResultTemperatureBasisText':
-        df_out = basis_from_unit(df_in.copy(), stp_dict(), unit_col, basis_col)
+        df_out = basis_from_unit(df_in.copy(), stp_dict, unit_col, basis_col)
         # NOTE: in the test case 25 deg C -> @25C
     elif basis_col == 'ResultParticleSizeBasisText':
         # NOTE: These are normally 'less than x mm', no errors so far to fix
@@ -328,7 +320,7 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
     Examples
     --------
     Build pandas DataFrame for example:
-    
+
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus',
     ...                                        'Phosphorus',
@@ -339,12 +331,12 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
       CharacteristicName MethodSpecificationName
     0         Phosphorus                    as P
     1         Phosphorus                  as PO4
-    2           Salinity                        
-    
+    2           Salinity
+
     Build mask for example:
 
     >>> mask = df['CharacteristicName']=='Phosphorus'
-    
+
     >>> from harmonize_wq import basis
     >>> basis.set_basis(df, mask, basis='as P')
       CharacteristicName MethodSpecificationName Speciation
@@ -353,9 +345,8 @@ def set_basis(df_in, mask, basis, basis_col='Speciation'):
     2           Salinity                                NaN
     """
     df_out = df_in.copy()
-    # Add Basis column if it doesn't exist
     if basis_col not in df_out.columns:
-        df_out[basis_col] = nan
-    # Populate Basis column where expected value with basis
+        df_out[basis_col] = numpy.nan
+    # Otherwise don't mess with existing values that are not part of mask
     df_out.loc[mask, basis_col] = basis
     return df_out

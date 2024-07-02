@@ -221,7 +221,7 @@ def methods_check(df_in, char_val, methods=None):
 
     """
     if methods is None:
-        methods = accepted_methods()
+        methods = accepted_methods
     method_col = 'ResultAnalyticalMethod/MethodIdentifier'
     df2 = df_in.copy()
     # TODO: check df for method_col

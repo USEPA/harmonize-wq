@@ -12,7 +12,7 @@ dataretrieval Query for a GeoJSON
     from harmonize_wq import wrangle
 
     # File for area of interest
-    aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/master/harmonize_wq/tests/data/PPBays_NCCA.geojson'
+    aoi_url = r'https://github.com/USEPA/harmonize-wq/raw/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
 
     # Build query
     query = {'characteristicName': ['Temperature, water',
