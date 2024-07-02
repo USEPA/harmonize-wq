@@ -71,7 +71,7 @@ jobs:
           
           reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 
-          rmarkdown::render(input = "demos/harmonize_Pensacola.Rmd")
+          rmarkdown::render(input = "demos/Harmonize_Pensacola.Rmd")
         
       - name: Run pytest
         run: pytest -v harmonize_wq
