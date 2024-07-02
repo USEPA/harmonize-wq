@@ -53,14 +53,21 @@ jobs:
         run: |
           library(reticulate)
 
-          path_to_venv <- virtualenv_create(
-            envname = "wq-harmonize",
-            python = Sys.which("python"), # placed on PATH by the setup-python action
-            packages = c(
+          packages = c(
               "pytest", "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18",
               "dataretrieval>=1.0, <1.0.5", "requests"
-            )
-          )
+              )
+          
+          reticulate::install_miniconda()
+          reticulate::conda_create("wq_harmonize")
+          reticulate::conda_install("wq_harmonize", packages)
+
+          #path_to_venv <- virtualenv_create(
+          #  envname = "wq_harmonize",
+          #  python = Sys.which("python"), # placed on PATH by the setup-python action
+          #  packages
+          #)
+          #use_virtualenv("wq_harmonize")
 
           rmarkdown::render(input = "demos/harmonize_Pensacola.Rmd")
         
