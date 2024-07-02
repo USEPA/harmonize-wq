@@ -88,7 +88,6 @@ To install and set up the harmonize-wq package using the command line:
 
         > pip install git+<https://github.com/USEPA/harmonize-wq.git>
 
-
 #### Option 2: Install the harmonize-wq Package Using R
 
 **Alternatively**, you may be able to set up your environment and import
@@ -110,41 +109,43 @@ installation of Conda (conda.exe) on your computer.
 # options(reticulate.conda_binary = 'dir')
 ```
 
-However, you may still need to specify the conda.exe location.
-To do so, update the code below to specify your conda.exe location
+However, you may still need to specify the conda.exe location. To do so,
+update the last line of code below to specify your conda.exe location
 
 ```{r, results = 'hide'}
 # update the 'dir' in this chuck to specify the location of conda.exe on your computer
-# Note that the environment name may need to include the full path (e.g. "C:/Users/USERNAME/AppData/Local/miniforge3/Scripts/conda.exe")
-options(reticulate.conda_binary = "~/AppData/Local/miniforge3/Scripts/conda.exe")
+# Note: that the environment name may need to include the full path (e.g. "C:/Users/USERNAME/AppData/Local/miniforge3/Scripts/conda.exe")
+# options(reticulate.conda_binary = "~/AppData/Local/miniforge3/Scripts/conda.exe")
 ```
 
 Next, update the code chunk below to create a new Python environment in
-the envs folder called "wq_harmonize".
+the envs folder called "wq_harmonize". Note that the environment name
+may need to include the full path (e.g.
+"C:/Users/USERNAME/AppData/Local/miniforge3/envs/wq_harmonize")
 
 ```{r, results = 'hide'}
-# Note that the environment name may need to include the full path (e.g. "C:/Users/USERNAME/AppData/Local/miniforge3/envs/wq_harmonize")
-reticulate::conda_create("~/AppData/Local/miniforge3/envs/wq_harmonize")
+# reticulate::conda_create("~/AppData/Local/miniforge3/envs/wq_harmonize")
 ```
 
 Install the following python packages to the newly created Python
 environment called "wq_harmonize".
 
 ```{r, results = 'hide'}
-reticulate::conda_install("wq_harmonize", "geopandas")
-reticulate::conda_install("wq_harmonize", "pint")
-reticulate::conda_install("wq_harmonize", "dataretrieval")
+#reticulate::conda_install("wq_harmonize", "geopandas")
+#reticulate::conda_install("wq_harmonize", "pint")
+#reticulate::conda_install("wq_harmonize", "dataretrieval")
 ```
 
-Install EPA's harmonize-wq package.
+Uncomment to install EPA's harmonize-wq package most recent release or
+development version.
 
 ```{r, results = 'hide'}
 # Install the most recent release of the harmonize-wq package
 # This only works with py_install() (pip = TRUE), which defaults to use virtualenvs
-reticulate::py_install("harmonize-wq", pip = TRUE, envname = "wq_harmonize")
+# reticulate::py_install("harmonize-wq", pip = TRUE, envname = "wq_harmonize")
 
-# Uncomment below to install the development version of harmonize-wq from GitHub instead (optional)
-# py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
+# Install the development version of harmonize-wq from GitHub (optional)
+#py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 ```
 
 Specify the Python environment to be used, "wq_harmonize", and test that
