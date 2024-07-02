@@ -176,6 +176,7 @@ import geopandas
 import dataretrieval.wqp as wqp
 import pint
 import mapclassify
+import matplotlib.pyplot as plt
 from harmonize_wq import harmonize
 from harmonize_wq import convert
 from harmonize_wq import wrangle
@@ -266,5 +267,7 @@ stations_gdf, stations, site_md = location.get_harmonized_stations(query, aoi=ao
 
 # Map average temperature results at each station
 gdf_temperature = visualize.map_measure(df_wide, stations_gdf, 'Temperature')
+plt.figure()
 gdf_temperature.plot(column = 'mean', cmap = 'OrRd', legend = True)
+plt.show()
 ```
