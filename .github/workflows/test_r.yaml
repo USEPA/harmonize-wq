@@ -39,7 +39,7 @@ jobs:
         with:
           r-version: 'release'
       
-      - uses: r-lib/actions/setup-renv@v2
+      #- uses: r-lib/actions/setup-renv@v2
       
       - uses: r-lib/actions/setup-pandoc@v2
       
@@ -62,7 +62,7 @@ jobs:
       
       - name: Run pip env using R reticulate
         run: |
-          install.packages(c("knitr", "rmarkdown", "reticulate"))'
+          install.packages(c("knitr", "rmarkdown", "reticulate"))
           reticulate::import("harmonize_wq")
         shell: Rscript {0}
         
