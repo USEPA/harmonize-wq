@@ -98,7 +98,7 @@ def get_domain_dict(table, cols=None):
                'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
                'Extractable, residual', 'Field', 'Filter/sieve residue', 'Filterable',
                'Filtered field and/or lab', 'Filtered, field', 'Filtered, lab',
-               'Fixed', 'Free Available', 'Inorganic', 'Leachable',
+               'Fixed', 'Free Available', 'Inorganic', 'Leachable', 'Net (Hot)',
                'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile',
                'None', 'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable',
                'Sieved', 'Strong Acid Diss', 'Supernate', 'Suspended', 'Total',
