@@ -48,21 +48,24 @@ jobs:
         run: |
           install.packages(c("knitr", "rmarkdown", "reticulate"))
         
-      - name: setup r-reticulate venv & render rmd
+      - name: setup r-reticulate venv
         shell: Rscript {0}
         run: |
           library(reticulate)
 
           path_to_venv <- virtualenv_create(
-            envname = "r-reticulate",
+            envname = "wq-harmonize",
             python = Sys.which("python"), # placed on PATH by the setup-python action
             packages = c(
               "pytest", "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18",
               "dataretrieval>=1.0, <1.0.5", "requests"
             )
           )
-          
-          rmarkdown::render(input = "demos/harmonize_Pensacola.Rmd")'
+      
+      - name: Render-rmd
+        run: |
+          echo "Rendering the page..."
+          Rscript -e 'rmarkdown::render(input = "demos/harmonize_Pensacola.Rmd")'
         
       - name: Run pytest
         run: pytest -v harmonize_wq
