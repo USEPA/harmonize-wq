@@ -1,6 +1,8 @@
 [![PyPi](https://img.shields.io/pypi/v/harmonize-wq.svg)](https://pypi.python.org/pypi/harmonize-wq)
 [![Documentation Status](https://github.com/USEPA/harmonize-wq/actions/workflows/documentation_deploy.yaml/badge.svg)](https://github.com/USEPA/harmonize-wq/actions/workflows/documentation_deploy.yaml)
-
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![test](https://github.com/USEPA/harmonize-wq/actions/workflows/test.yml/badge.svg)](https://github.com/USEPA/harmonize-wq/actions/workflows/test.yml)
+[![python version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 # harmonize-wq
 Standardize, clean, and wrangle Water Quality Portal data into more analytic-ready formats
 
