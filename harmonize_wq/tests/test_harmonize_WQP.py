@@ -28,7 +28,7 @@ DIRPATH = os.path.dirname(os.path.realpath(__file__))
 # Test datasets
 test_dir = os.path.join(DIRPATH, 'data')
 
-AOI_URL = r'https://github.com/USEPA/Coastal_Ecological_Indicators/raw/master/DGGS_Coastal/temperature_data/TampaBay.geojson'
+AOI_URL = r'https://raw.githubusercontent.com/USEPA/Coastal_Ecological_Indicators/c5ef16cc21b07302216cda39790c76c546bcbcfb/DGGS_Coastal/temperature_data/TampaBay.geojson'
 
 # results for dataretrieval.wqp.what_sites(**query)
 STATIONS = pandas.read_csv(os.path.join(test_dir, 'wqp_sites.txt'))
