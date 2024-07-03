@@ -47,8 +47,6 @@ jobs:
         
       - name: setup r-reticulate venv & render rmd
         shell: Rscript {0}
-        with:
-          python-version: ${{ matrix.python-version }}
         run: |
           library(reticulate)
 
@@ -58,7 +56,7 @@ jobs:
               )
           
           reticulate::install_miniconda()
-          reticulate::conda_create("wq_harmonize", python_version=python-version)
+          reticulate::conda_create("wq_harmonize", python_version = ${{ matrix.python-version }})
           reticulate::conda_install("wq_harmonize", packages)
 
           #path_to_venv <- virtualenv_create(
