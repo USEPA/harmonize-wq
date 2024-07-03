@@ -56,7 +56,7 @@ jobs:
               )
           
           reticulate::install_miniconda()
-          reticulate::conda_create("wq_harmonize", python_version = ${{ matrix.python-version }})
+          reticulate::conda_create("wq_harmonize", python_version = "${{ matrix.python-version }}")
           reticulate::conda_install("wq_harmonize", packages)
 
           #path_to_venv <- virtualenv_create(
