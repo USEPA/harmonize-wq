@@ -53,11 +53,33 @@ There might be multiple reasons for this but these are some of the most common:
 Development environment setup
 -----------------------------
 
-- pip install the latest development version of the package from `GitHub <https://github.com/USEPA/harmonize-wq>`_
-- Install the requirements for the development environment by pip installing the additional requirements-dev.txt file.
+- pip install the latest development version of the package from `GitHub <https://github.com/USEPA/harmonize-wq>`_, e.g.,:
 
-docs are built using sphinx
-tests are run using pytest
+.. code-block:: python3
+   
+    pip install git+https://github.com/USEPA/harmonize-wq.git
+
+
+- Install the requirements for the development environment by pip installing the additional requirements-dev.txt file, e.g.,:
+
+.. code-block:: python3
+   
+    pip install -r requirements_dev.txt
+
+docs are built using sphinx, by navigating to the doc folder and making the desired type (html):
+
+.. code-block:: python3
+   
+  cd doc
+  make html
+
+
+tests are run using pytest, e.g., 
+
+.. code-block:: python3
+   
+  pytest harmonize_wq
+
 
 There are workflows using GitHub actions for both docs and tests to help avoid 'it worked on my machine' type development issues.
 
