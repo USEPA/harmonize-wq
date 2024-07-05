@@ -10,7 +10,7 @@ import pandas
 
 
 BASE_URL = 'https://cdx.epa.gov/wqx/download/DomainValues/'
-TADA_DATA_URL = r'https://raw.githubusercontent.com/USEPA/TADA/'
+TADA_DATA_URL = r'https://raw.githubusercontent.com/USEPA/EPATADA/'
 
 UNITS_REPLACE = {'Secchi': {},
                  'DO': {'%': 'percent'},

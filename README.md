@@ -1,6 +1,8 @@
 [![PyPi](https://img.shields.io/pypi/v/harmonize-wq.svg)](https://pypi.python.org/pypi/harmonize-wq)
 [![Documentation Status](https://github.com/USEPA/harmonize-wq/actions/workflows/documentation_deploy.yaml/badge.svg)](https://github.com/USEPA/harmonize-wq/actions/workflows/documentation_deploy.yaml)
-
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![test](https://github.com/USEPA/harmonize-wq/actions/workflows/test.yml/badge.svg)](https://github.com/USEPA/harmonize-wq/actions/workflows/test.yml)
+[![python version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 # harmonize-wq
 Standardize, clean, and wrangle Water Quality Portal data into more analytic-ready formats
 
@@ -15,7 +17,7 @@ Recognizing the definition of analysis-ready varies depending on the analysis, t
 
 Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
 
-For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
+For more complete, documentsion see [docs](https://usepa.github.io/harmonize-wq/index.html). For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
 
 ## Quick Start
 
@@ -111,9 +113,7 @@ Temperature | Result | ResultMeasureValue, ResultMeasure/MeasureUnitCode | stand
 QA_Temperature | QA | NA | harmonization processing quality issues
 
 ## Issue Tracker
-harmonize_wq is under development. Please report any bugs and enhancement ideas using the issue track:
-
-https://github.com/USEPA/harmonize-wq/issues
+harmonize_wq is under development. Please report any bugs and enhancement ideas using [issues](https://github.com/USEPA/harmonize-wq/issues)
 
 
 ## Disclaimer
