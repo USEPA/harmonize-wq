@@ -75,4 +75,4 @@ jobs:
         with:
           name: demos-artifact
           # Upload entire demos folder
-          path: /demos
+          path: './demos'
