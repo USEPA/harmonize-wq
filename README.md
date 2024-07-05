@@ -17,7 +17,7 @@ Recognizing the definition of analysis-ready varies depending on the analysis, t
 
 Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
 
-For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
+For more complete, documentsion see [docs](https://usepa.github.io/harmonize-wq/index.html). For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
 
 ## Quick Start
 
@@ -113,9 +113,7 @@ Temperature | Result | ResultMeasureValue, ResultMeasure/MeasureUnitCode | stand
 QA_Temperature | QA | NA | harmonization processing quality issues
 
 ## Issue Tracker
-harmonize_wq is under development. Please report any bugs and enhancement ideas using the issue track:
-
-https://github.com/USEPA/harmonize-wq/issues
+harmonize_wq is under development. Please report any bugs and enhancement ideas using [issues](https://github.com/USEPA/harmonize-wq/issues)
 
 
 ## Disclaimer
