@@ -55,15 +55,12 @@ data comparability and any thresholds for acceptance or rejection.
 
 ## Installation & Setup
 
-An installation of Conda is required to run EPA's harmonize-wq package
-using R/reticulate.
+Using R/reticulate requires an installation of Python to bind to, and EPA's harmonize-wq package must be run from a python environment with the packages it depends on.
 
-There are multiple installers available for Conda (see:
-<https://conda.io/projects/conda/en/latest/user-guide/install/index.html>).
+For environment management, reticulate requires either conda (recommended) or virtualenv.
 
-One example installer is
-[miniforge](https://github.com/conda-forge/miniforge). We use miniforge3
-in these examples.
+There are multiple installers available for [Conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
+The examples use miniforge3, one of several verions of [miniforge](https://github.com/conda-forge/miniforge). In R, [miniconda](https://docs.anaconda.com/miniconda/) can be installed using reticulate::install_miniconda().
 
 #### Option 1: Install the harmonize-wq Package Using the Command Line
 
@@ -80,9 +77,11 @@ To install and set up the harmonize-wq package using the command line:
 
     -   conda create --name wq_harmonize
 
-    -   activate wq_harmonize
+    -   conda activate wq_harmonize
 
-    -   conda install geopandas pip dataretrieval pint
+    -   conda install dependencies (from requirements.txt):
+
+        > conda install "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18", "dataretrieval>=1.0, <1.0.5", "pip"
 
     -   pip install harmonize-wq (dev-version shown):
 
@@ -114,14 +113,14 @@ update the last line of code below to specify your conda.exe location
 
 ```{r, results = 'hide'}
 # update the 'dir' in this chuck to specify the location of conda.exe on your computer
-# Note: that the environment name may need to include the full path (e.g. "C:/Users/USERNAME/AppData/Local/miniforge3/Scripts/conda.exe")
+# Note: that the environment name may need to include the full path (e.g. "C:/Users/<USERNAME>/AppData/Local/miniforge3/Scripts/conda.exe")
 # options(reticulate.conda_binary = "~/AppData/Local/miniforge3/Scripts/conda.exe")
 ```
 
 Next, update the code chunk below to create a new Python environment in
 the envs folder called "wq_harmonize". Note that the environment name
 may need to include the full path (e.g.
-"C:/Users/USERNAME/AppData/Local/miniforge3/envs/wq_harmonize")
+"C:/Users/<USERNAME>/AppData/Local/miniforge3/envs/wq_harmonize")
 
 ```{r, results = 'hide'}
 # reticulate::conda_create("~/AppData/Local/miniforge3/envs/wq_harmonize")
@@ -131,9 +130,11 @@ Install the following python packages to the newly created Python
 environment called "wq_harmonize".
 
 ```{r, results = 'hide'}
-#reticulate::conda_install("wq_harmonize", "geopandas")
-#reticulate::conda_install("wq_harmonize", "pint")
-#reticulate::conda_install("wq_harmonize", "dataretrieval")
+# packages = c(
+#              "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18",
+#              "dataretrieval>=1.0, <1.0.5", "pip"
+#              )
+# reticulate::conda_install("wq_harmonize", packages)
 ```
 
 Uncomment to install EPA's harmonize-wq package most recent release or
