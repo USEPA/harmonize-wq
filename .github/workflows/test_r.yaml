@@ -69,3 +69,9 @@ jobs:
           reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 
           rmarkdown::render(input = "demos/Harmonize_Pensacola.Rmd")
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Upload entire demos folder
+          path: '/demos'
