@@ -21,20 +21,15 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = [
-    "geopandas",
-    "pint",
-    "dataretrieval",
-    "pandas",
-	  "numpy",
-	  "requests",
-]
-
-[project.optional-dependencies]
-test = ["pytest"]
-doc = ["sphinx"]
+dynamic = ["dependencies", "optional-dependencies"]
 
 [project.urls]
 "Homepage" = "https://github.com/USEPA/harmonize-wq"
 "Documentation" = "https://usepa.github.io/harmonize-wq/"
 "Bug Tracker" = "https://github.com/USEPA/harmonize-wq/issues"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements-dev.txt"] }
