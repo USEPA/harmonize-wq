@@ -81,7 +81,7 @@ To install and set up the harmonize-wq package using the command line:
 
     -   conda install dependencies (from requirements.txt):
 
-        > conda install "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18", "dataretrieval>=1.0, <1.0.5", "pip"
+        > conda install "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "pip"
 
     -   pip install harmonize-wq (dev-version shown):
 
