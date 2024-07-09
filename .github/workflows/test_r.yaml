@@ -23,7 +23,7 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10', '3.11']
-        miniforge-version: 'latest'
+        
     steps:
       - uses: actions/checkout@v4
 
@@ -31,15 +31,17 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
+          miniforge-version: 'latest'
+          
       - name: Conda install
         shell: bash -el {0}
         run: |
-          #conda deactivate
-          #conda rename -n test wq_harmonize
+          # conda deactivate
+          # conda rename -n test wq_harmonize
           conda install "pytest" "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "requests"
           conda create --name wq_harmonize --clone test
           conda install pip
-          pip install .
+          # pip install .
 
       - name: Print Conda environment
         shell: bash -l {0}
