@@ -35,7 +35,7 @@ jobs:
         run: |
           conda deactivate
           conda rename -n test wq_harmonize
-          conda install -n wq_harmonize "pytest" "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "requests"
+          conda install -n wq_harmonize "pytest" "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "requests" -c conda-forge
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
