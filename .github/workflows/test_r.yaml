@@ -39,9 +39,9 @@ jobs:
           # conda deactivate
           # conda rename -n test wq_harmonize
           conda install "pytest" "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "requests"
-          conda create --name wq_harmonize --clone test
           conda install pip
           pip install .
+          conda create --name wq_harmonize --clone test
 
       - name: Print Conda environment
         shell: bash -l {0}
