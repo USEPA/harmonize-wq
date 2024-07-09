@@ -5,9 +5,8 @@ from warnings import warn
 import pandas
 import pint
 from numpy import nan
-from harmonize_wq import domains
-from harmonize_wq import basis
-from harmonize_wq.clean import df_checks, add_qa_flag
+from harmonize_wq import basis, domains
+from harmonize_wq.clean import add_qa_flag, df_checks
 from harmonize_wq.convert import convert_unit_series, moles_to_mass
 
 

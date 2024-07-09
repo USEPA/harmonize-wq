@@ -2,10 +2,10 @@
 """Functions to harmonize data retrieved from EPA's Water Quality Portal."""
 from warnings import warn
 from numpy import nan
-from harmonize_wq.wq_data import WQCharData
 from harmonize_wq import convert
 from harmonize_wq.domains import OUT_UNITS, UNITS_REPLACE
 from harmonize_wq.visualize import print_report
+from harmonize_wq.wq_data import WQCharData
 
 
 def dissolved_oxygen(wqp):

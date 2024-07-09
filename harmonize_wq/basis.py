@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """Functions to process characteristic basis or return basis dictionary."""
-
-import numpy
 from warnings import warn
+import numpy
 from harmonize_wq.clean import add_qa_flag
 
 

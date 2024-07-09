@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Functions to help re-shape the WQP pandas DataFrame."""
-import pandas
 import geopandas
-from harmonize_wq import domains
-from harmonize_wq.clean import datetime, harmonize_depth, df_checks
+import pandas
 from dataretrieval import wqp
+from harmonize_wq import domains
+from harmonize_wq.clean import datetime, df_checks, harmonize_depth
 
 
 def split_table(df_in):

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Functions to clean/correct location data."""
-from pyproj import Transformer
-from shapely.geometry import shape
 import geopandas
 import pandas
 from dataretrieval import wqp
+from pyproj import Transformer
+from shapely.geometry import shape
+from harmonize_wq.clean import add_qa_flag, check_precision, df_checks
 from harmonize_wq.domains import xy_datum
 from harmonize_wq.wrangle import clip_stations
-from harmonize_wq.clean import check_precision, df_checks, add_qa_flag
 
 
 def infer_CRS(df_in,

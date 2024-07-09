@@ -3,8 +3,8 @@
 
 Contains several unit conversion functions not in :mod:`pint`.
 """
-from warnings import warn
 import math
+from warnings import warn
 import pandas
 import pint
 from numpy import nan

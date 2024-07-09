@@ -5,8 +5,8 @@ These are mainly for use as filters. Small or frequently utilized domains may
 be hard-coded. A URL based method can be used to get the most up to date domain
 list.
 """
-import requests
 import pandas
+import requests
 
 
 BASE_URL = 'https://cdx.epa.gov/wqx/download/DomainValues/'
