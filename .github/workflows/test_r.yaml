@@ -26,10 +26,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: setup python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
+      - name: Conda install
+        shell: bash -el {0}
+        run: |
+          conda rename -n test wq_harmonize
+          conda install -n wq_harmonize "pytest" "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "requests"
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
@@ -50,23 +55,24 @@ jobs:
         run: |
           library(reticulate)
 
-          packages = c(
-              "pytest", "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18",
-              "dataretrieval>=1.0, <1.0.5", "requests"
-              )
+          # packages = c(
+          #     "pytest", "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18",
+          #     "dataretrieval>=1.0, <1.0.5", "requests"
+          #     )
           
-          reticulate::install_miniconda()
-          reticulate::conda_create("wq_harmonize", python_version = "${{ matrix.python-version }}")
-          reticulate::conda_install("wq_harmonize", packages)
+          # reticulate::install_miniconda()
+          # reticulate::conda_create("wq_harmonize", python_version = "${{ matrix.python-version }}")
+          # reticulate::conda_install("wq_harmonize", packages)
 
-          #path_to_venv <- virtualenv_create(
+          # path_to_venv <- virtualenv_create(
           #  envname = "wq_harmonize",
           #  python = Sys.which("python"), # placed on PATH by the setup-python action
           #  packages
-          #)
-          #use_virtualenv("wq_harmonize")
+          # )
+          # use_virtualenv("wq_harmonize")
           
-          reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
+          reticulate::use_condaenv("wq_harmonize")
+          #reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 
           rmarkdown::render(input = "demos/Harmonize_Pensacola.Rmd")
 
