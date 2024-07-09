@@ -17,7 +17,7 @@ Recognizing the definition of analysis-ready varies depending on the analysis, t
 
 Domain experts must decide what data meets their quality standards for data comparability and any thresholds for acceptance or rejection.
 
-For more complete, documentsion see [docs](https://usepa.github.io/harmonize-wq/index.html). For more complete tutorial information, see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
+For complete documentation see [docs](https://usepa.github.io/harmonize-wq/index.html). For more complete tutorial information see: [demos](https://github.com/USEPA/harmonize-wq/tree/main/demos)
 
 ## Quick Start
 
