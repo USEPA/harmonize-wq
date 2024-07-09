@@ -23,7 +23,7 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10', '3.11']
-        miniforge-version: latest
+        miniforge-version: 'latest'
     steps:
       - uses: actions/checkout@v4
 
