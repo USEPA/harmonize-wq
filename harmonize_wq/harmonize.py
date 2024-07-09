@@ -10,7 +10,7 @@ from harmonize_wq.wq_data import WQCharData
 
 def dissolved_oxygen(wqp):
     """Standardize 'Dissolved Oxygen (DO)' characteristic.
-    
+
     Uses :class:`wq_data.WQCharData` to check units, check unit
     dimensionality and perform appropriate unit conversions.
 
