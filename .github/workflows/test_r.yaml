@@ -23,6 +23,7 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10', '3.11']
+        miniforge-version: latest
     steps:
       - uses: actions/checkout@v4
 
@@ -35,7 +36,7 @@ jobs:
         run: |
           #conda deactivate
           #conda rename -n test wq_harmonize
-          conda install "pytest" "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "requests" -c conda-forge
+          conda install "pytest" "numpy<2.0" "pandas<2.0" "geopandas>=0.10.2, <0.13" "pint>=0.18" "dataretrieval>=1.0, <1.0.5" "requests"
           conda create --name wq_harmonize --clone test
 
       - name: Set up R
