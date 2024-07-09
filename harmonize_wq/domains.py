@@ -136,9 +136,8 @@ def harmonize_TADA_dict():
     csv = f'{TADA_DATA_URL}develop/inst/extdata/HarmonizationTemplate.csv'
     df = pandas.read_csv(csv)  # Read csv url to DataFrame
     full_dict = {}  # Setup results dict
-    # Loop over one unique characteristicName at a time
-    for char in df['TADA.CharacteristicName'].unique():
-        sub_df = df[df['TADA.CharacteristicName']==char]  # Mask by char
+    # Build dict one unique characteristicName at a time
+    for char, sub_df in df.groupby('TADA.CharacteristicName'):
         full_dict[char] = char_tbl_TADA(sub_df, char)  # Build dictionary
 
     # Domains to check agaisnt
