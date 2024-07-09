@@ -24,7 +24,7 @@ def datetime(df_in):
     Examples
     --------
     Build pandas DataFrame for example:
-    
+
     >>> from pandas import DataFrame
     >>> from numpy import nan
     >>> df = DataFrame({'ActivityStartDate': ['2004-09-01', '2004-07-01',],
@@ -57,10 +57,10 @@ def datetime(df_in):
 
 def harmonize_depth(df_in, units='meter'):
     """Create 'Depth' column with result depth values in consistent units.
-    
+
     The new column is based on values from the 'ResultDepthHeightMeasure/MeasureValue' column and
     units from the 'ResultDepthHeightMeasure/MeasureUnitCode' column.
-    
+
     Notes
     -----
     If there are errors or unit registry (ureg) updates these are not currently
@@ -77,11 +77,11 @@ def harmonize_depth(df_in, units='meter'):
     -------
     df_out : pandas.DataFrame
         DataFrame with new Depth column replacing 'ResultDepthHeight' columns.
-    
+
     Examples
     --------
     Build pandas DataFrame for example:
-        
+
     >>> from pandas import DataFrame
     >>> from numpy import nan
     >>> df = DataFrame({'ResultDepthHeightMeasure/MeasureValue': ['3.0', nan, 10],
@@ -92,9 +92,9 @@ def harmonize_depth(df_in, units='meter'):
     0                                   3.0                                        m
     1                                   NaN                                      NaN
     2                                    10                                       ft
-    
+
     Get clean 'Depth' column:
-    
+
     >>> from harmonize_wq import clean
     >>> clean.harmonize_depth(df)[['ResultDepthHeightMeasure/MeasureValue',
     ...                            'Depth']]
@@ -132,29 +132,29 @@ def df_checks(df_in, columns=None):
     columns : list, optional
         List of strings for column names. Default None, uses:
         'ResultMeasure/MeasureUnitCode','ResultMeasureValue','CharacteristicName'.
-        
+
     Examples
     --------
     Build pandas DataFrame for example:
-    
+
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus'],})
     >>> df
       CharacteristicName
     0         Phosphorus
-    
+
     Check for existing column:
 
     >>> from harmonize_wq import clean
     >>> clean.df_checks(df, columns=['CharacteristicName'])
-    
+
     If column is not in DataFrame it throws an AssertionError:
-        
+
     >>> clean.df_checks(df, columns=['ResultMeasureValue'])
     Traceback (most recent call last):
         ...
     AssertionError: ResultMeasureValue not in DataFrame
-    
+
     """
     if columns is None:
         # Assign defaults
@@ -171,7 +171,7 @@ def check_precision(df_in, col, limit=3):
     Notes
     -----
     Be cautious of float type and real vs representable precision.
-    
+
     Parameters
     ----------
     df_in : pandas.DataFrame
@@ -197,7 +197,7 @@ def check_precision(df_in, col, limit=3):
 
 def methods_check(df_in, char_val, methods=None):
     """Check methods against list of accepted methods.
-    
+
     Notes
     -----
     This is not fully implemented.
@@ -241,7 +241,7 @@ def methods_check(df_in, char_val, methods=None):
 
 def wet_dry_checks(df_in, mask=None):
     """Fix suspected errors in 'ActivityMediaName' column.
-    
+
     Uses the 'ResultWeightBasisText' and 'ResultSampleFractionText' columns to
     switch if the media is wet/dry where appropriate.
 
@@ -297,11 +297,11 @@ def add_qa_flag(df_in, mask, flag):
     -------
     df_out : pandas.DataFrame
         Updated copy of df_in.
-        
+
     Examples
     --------
     Build pandas DataFrame to use as input:
-    
+
     >>> from pandas import DataFrame
     >>> df = DataFrame({'CharacteristicName': ['Carbon', 'Phosphorus', 'Carbon',],
     ...                 'ResultMeasureValue': ['1.0', '0.265', '2.1'],})
@@ -310,12 +310,12 @@ def add_qa_flag(df_in, mask, flag):
     0             Carbon                1.0
     1         Phosphorus              0.265
     2             Carbon                2.1
-    
+
     Assign simple flag string and mask to assign flag only to Carbon:
-    
+
     >>> flag = 'words'
     >>> mask = df['CharacteristicName']=='Carbon'
-    
+
     >>> from harmonize_wq import clean
     >>> clean.add_qa_flag(df, mask, flag)
       CharacteristicName ResultMeasureValue QA_flag

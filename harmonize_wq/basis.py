@@ -50,7 +50,7 @@ Returns
 -------
 dict
     Dictionary with structure {basis: conversion factor}
-     
+
 See Also
 --------
 :func:`convert.moles_to_mass`
@@ -71,7 +71,7 @@ basis_conversion = {
 Notes
 -----
     This needs to be updated to include pressure or needs to be renamed.
-    
+
 Returns
 -------
 dict

@@ -9,7 +9,7 @@ from harmonize_wq.clean import datetime, df_checks, harmonize_depth
 
 def split_table(df_in):
     """Split DataFrame columns axis into main and characteristic based.
-    
+
     Splits :class:`pandas.DataFrame` in two, one with main results columns and
     one with Characteristic based metadata.
 
@@ -32,11 +32,11 @@ def split_table(df_in):
 
     Examples
     --------
-    See any of the 'Simple' notebooks found in 
+    See any of the 'Simple' notebooks found in
     `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to divide the table into columns of
     interest (main_df) and characteristic specific metadata (chars_df).
-    
+
     """
     # Run datetime on activity fields if not already done
     if 'Activity_datetime' not in list(df_in.columns):
@@ -59,7 +59,7 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
     Values are moved from the result_col in df_in to a new column where the
     column name is col_prefix + characteristic.
-    
+
     Parameters
     ----------
     df_in : pandas.DataFrame
@@ -76,11 +76,11 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
     Examples
     --------
-    See any of the 'Simple' notebooks found in 
+    See any of the 'Simple' notebooks found in
     `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to split the QA column into multiple
     characteristic specific QA columns.
-    
+
     """
     # TODO: is this function doing too much?
     df_out = df_in.copy()
@@ -139,7 +139,7 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
 def collapse_results(df_in, cols=None):
     """Group rows/results that seems like the same sample.
-    
+
     Default columns are organization, activity, location, and datetime.
 
     Parameters
@@ -156,11 +156,11 @@ def collapse_results(df_in, cols=None):
 
     Examples
     --------
-    See any of the 'Simple' notebooks found in 
+    See any of the 'Simple' notebooks found in
     `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is used to combine rows with the same sample
     organization, activity, location, and datetime.
-    
+
     """
     df = df_in.copy()
 
@@ -241,8 +241,8 @@ def collapse_results(df_in, cols=None):
 
 def get_activities_by_loc(characteristic_names, locations):
     """Segment batch what_activities.
-    
-    Warning this is not fully implemented and may not stay. Retrieves in batch 
+
+    Warning this is not fully implemented and may not stay. Retrieves in batch
     using :func:`dataretrieval.what_activities`.
 
     Parameters
@@ -256,7 +256,7 @@ def get_activities_by_loc(characteristic_names, locations):
     -------
     activities : pandas.DataFrame
         Combined activities for locations.
-        
+
     Examples
     --------
     See :func:`wrangle.add_activities_to_df`
@@ -294,26 +294,26 @@ def add_activities_to_df(df_in, mask=None):
     Examples
     --------
     Build example df_in table from harmonize_wq tests to use in place of Water
-    Quality Portal query response, this table has 'Temperature, water' and 
+    Quality Portal query response, this table has 'Temperature, water' and
     'Phosphorous' results:
-    
+
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
     >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
     >>> df1.shape
     (359505, 35)
-    
+
     Run on the first 1000 results:
 
     >>> df2 = df1[:1000]
-    
+
     >>> from harmonize_wq import wrangle
     >>> df_activities = wrangle.add_activities_to_df(df2)
     >>> df_activities.shape
     (1000, 100)
-    
+
     Look at the columns added:
-    
+
     >>> df_activities.columns[-65:]
     Index(['ActivityTypeCode', 'ActivityMediaName', 'ActivityMediaSubdivisionName',
            'ActivityEndDate', 'ActivityEndTime/Time',
@@ -399,31 +399,31 @@ def add_detection(df_in, char_val):
     Examples
     --------
     Build example df_in table from harmonize_wq tests to use in place of Water
-    Quality Portal query response, this table has 'Temperature, water' and 
+    Quality Portal query response, this table has 'Temperature, water' and
     'Phosphorous' results:
-    
+
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
     >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
     >>> df1.shape
     (359505, 35)
-    
+
     Run on the 1000 results to speed it up:
 
     >>> df2 = df1[19000:20000]
     >>> df2.shape
     (1000, 35)
-    
+
     >>> from harmonize_wq import wrangle
     >>> df_detects = wrangle.add_detection(df2, 'Phosphorus')
     >>> df_detects.shape
     (1001, 38)
-    
-    Note: the additional rows are due to one result being able to be assigned 
+
+    Note: the additional rows are due to one result being able to be assigned
     multiple detection results. This is not the case for e.g., df1[:1000]
-    
+
     Look at the columns added:
-    
+
     >>> df_detects.columns[-3:]
     Index(['DetectionQuantitationLimitTypeName',
            'DetectionQuantitationLimitMeasure/MeasureValue',
@@ -447,7 +447,7 @@ def add_detection(df_in, char_val):
 
 def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     """Get detection quantitation by location and characteristic (optional).
-    
+
     Retrieves detection quantitation results by location and characteristic
     name (optional). ResultIdentifier can not be used to search. Instead
     location id from loc_series is used and then results are limited by
@@ -499,7 +499,7 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
 
 def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
     """Merge df1 and df2.
-    
+
     Merge tables(df1 and df2), adding df2_cols to df1 where merge_cols match.
 
     Parameters
@@ -524,17 +524,17 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
     --------
     Build example table from harmonize_wq tests to use in place of Water
     Quality Portal query responses:
-    
+
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
     >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
     >>> df1.shape
     (359505, 35)
-    
+
     >>> df2 = pandas.read_csv(tests_url + '/data/wqp_activities.txt')
     >>> df2.shape
     (353911, 40)
-    
+
     >>> from harmonize_wq import wrangle
     >>> merged = wrangle.merge_tables(df1, df2)
     >>> merged.shape
@@ -596,12 +596,12 @@ def as_gdf(shp):
     -------
     shp : geopandas.GeoDataFrame
         GeoDataFrame for shp if it isn't already a GeoDataFrame.
-    
+
     Examples
     --------
     Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
     harmonize_wq tests:
-        
+
     >>> from harmonize_wq import wrangle
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
     >>> type(wrangle.as_gdf(aoi_url))
@@ -626,7 +626,7 @@ def get_bounding_box(shp, idx=None):
     Returns
     -------
         Coordinates for bounding box as string and separated by ', '.
-    
+
     Examples
     --------
     Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
@@ -653,10 +653,10 @@ def get_bounding_box(shp, idx=None):
 
 def clip_stations(stations, aoi):
     """Clip stations to area of interest (aoi).
-    
+
     Locations and results are queried by extent rather than the exact geometry.
     Clipping by the exact geometry helps reduce the size of the results.
-    
+
     Notes
     -----
     aoi is first transformed to CRS of stations.
@@ -672,11 +672,11 @@ def clip_stations(stations, aoi):
     -------
     pandas.DataFrame
         stations_gdf points clipped to the aoi_gdf.
-    
+
     Examples
     --------
     Build example geopandas GeoDataFrame of locations for stations:
-    
+
     >>> import geopandas
     >>> from shapely.geometry import Point
     >>> from numpy import nan
@@ -688,12 +688,12 @@ def clip_stations(stations, aoi):
       MonitoringLocationIdentifier                    geometry
     0                           In  POINT (-87.12500 30.50000)
     1                          Out  POINT (-87.50000 30.50000)
-    
+
     Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
     harmonize_wq tests:
 
     >>> aoi_url = r'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests/data/PPBays_NCCA.geojson'
-       
+
     >>> stations_in_aoi = harmonize_wq.wrangle.clip_stations(stations_gdf, aoi_url)
     >>> stations_in_aoi
       MonitoringLocationIdentifier                    geometry
@@ -708,7 +708,7 @@ def clip_stations(stations, aoi):
 
 def to_simple_shape(gdf, out_shp):
     """Simplify GeoDataFrame for better export to shapefile.
-    
+
     Adopts and adapts 'Simple' from `NWQMC/pywqp <github.com/NWQMC/pywqp>`_
     See :func:`domains.stations_rename` for renaming of columns.
 
@@ -723,7 +723,7 @@ def to_simple_shape(gdf, out_shp):
     Examples
     --------
     Build example geopandas GeoDataFrame of locations for stations:
-    
+
     >>> import geopandas
     >>> from shapely.geometry import Point
     >>> from numpy import nan
@@ -735,9 +735,9 @@ def to_simple_shape(gdf, out_shp):
       MonitoringLocationIdentifier                    geometry
     0                           In  POINT (-87.12500 30.50000)
     1                          Out  POINT (-87.50000 30.50000)
-    
+
     Add datetime column
-    
+
     >>> gdf['ActivityStartDate'] = ['2004-09-01', '2004-02-18']
     >>> gdf['ActivityStartTime/Time'] = ['10:01:00', '15:39:00']
     >>> gdf['ActivityStartTime/TimeZoneCode'] = ['EST', 'EST']
@@ -749,7 +749,7 @@ def to_simple_shape(gdf, out_shp):
     1                          Out  ... 2004-02-18 20:39:00+00:00
     <BLANKLINE>
     [2 rows x 6 columns]
-    
+
     >>> from harmonize_wq import wrangle
     >>> wrangle.to_simple_shape(gdf, 'dataframe.shp')
     """

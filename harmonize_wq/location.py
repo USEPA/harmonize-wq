@@ -16,7 +16,7 @@ def infer_CRS(df_in,
               bad_crs_val=None,
               crs_col='HorizontalCoordinateReferenceSystemDatumName'):
     """Replace missing or unrecognized Coordinate Reference System (CRS).
-    
+
     Replaces with desired CRS and notes it was missing in 'QA_flag' column.
 
     Parameters
@@ -43,14 +43,14 @@ def infer_CRS(df_in,
     --------
     Build pandas DataFrame to use in example, where crs_col name is 'Datum'
     rather than default 'HorizontalCoordinateReferenceSystemDatumName':
-    
+
     >>> from numpy import nan
     >>> df_in = pandas.DataFrame({'Datum': ['NAD83', 'WGS84', '', None, nan]})
     >>> df_in  # doctest: +NORMALIZE_WHITESPACE
        Datum
     0  NAD83
     1  WGS84
-    2       
+    2
     3   None
     4    NaN
 
@@ -85,7 +85,7 @@ def infer_CRS(df_in,
 def harmonize_locations(df_in, out_EPSG=4326,
                         intermediate_columns=False, **kwargs):
     """Create harmonized geopandas GeoDataframe from pandas DataFrame.
-    
+
     Takes a :class:`~pandas.DataFrame` with lat/lon in multiple Coordinate
     Reference Systems (CRS), transforms them to out_EPSG CRS, and converts to
     :class:`geopandas.GeoDataFrame`. A 'QA_flag' column is added to the result
@@ -122,7 +122,7 @@ def harmonize_locations(df_in, out_EPSG=4326,
     Examples
     --------
     Build pandas DataFrame to use in example:
-    
+
     >>> df_in = pandas.DataFrame({'LatitudeMeasure': [27.5950355,
     ...                                               27.52183,
     ...                                               28.0661111],
@@ -226,7 +226,7 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
 
 def get_harmonized_stations(query, aoi=None):
     """Query, harmonize and clip stations.
-    
+
     Queries the `Water Quality Portal <https://waterquality.data.us>`_ for
     stations with data matching the query, harmonizes those stations' location
     information, and clips it to the area of interest (aoi) if specified.
@@ -250,13 +250,13 @@ def get_harmonized_stations(query, aoi=None):
         Raw station results from WQP.
     site_md : ``dataretrieval.utils.Metadata``
         Custom ``dataretrieval`` metadata object pertaining to the WQP query.
-        
+
     Examples
     --------
-    See any of the 'Simple' notebooks found in 
+    See any of the 'Simple' notebooks found in
     'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>'_ for
     examples of how this function is used to query and harmonize stations.
-    
+
     """
     # TODO: **kwargs instead of query dict?
 

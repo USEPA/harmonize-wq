@@ -90,7 +90,7 @@ def get_domain_dict(table, cols=None):
     --------
     Return dictionary for domain from WQP table (e.g., 'ResultSampleFraction'),
     The default keys ('Name') are shown as values ('Description') are long:
-    
+
     >>> from harmonize_wq import domains
     >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
@@ -105,7 +105,7 @@ def get_domain_dict(table, cols=None):
                'Total Recoverable', 'Total Residual', 'Total Soluble',
                'Unfiltered', 'Unfiltered, field', 'Vapor', 'Volatile',
                'Weak Acid Diss', 'Yield', 'non-linear function'])
-    
+
     """
     if cols is None:
         cols = ['Name', 'Description']
@@ -122,7 +122,7 @@ def get_domain_dict(table, cols=None):
 
 def harmonize_TADA_dict():
     """Get structured dictionary from TADA HarmonizationTemplate csv.
-    
+
     Based on target column names and sample fractions.
 
     Returns
@@ -184,18 +184,18 @@ def re_case(word, domain_list):
 
 def char_tbl_TADA(df, char):
     """Get structured dictionary for TADA.CharacteristicName from TADA df.
-    
+
     Parameters
     ----------
     df : pandas.DataFrame
         Table from TADA for specific characteristic.
     char : str
         CharacteristicName.
-        
+
     Returns
     -------
     new_char_dict : dict
-        {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText: [Target.TADA.ResultSampleFractionText]} 
+        {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText: [Target.TADA.ResultSampleFractionText]}
     """
     cols = ['Target.TADA.CharacteristicName',
             'TADA.ResultSampleFractionText',
@@ -226,7 +226,7 @@ def char_tbl_TADA(df, char):
 
 def registry_adds_list(out_col):
     """Get units to add to :mod:`pint` unit registry by out_col column.
-    
+
     Typically out_col refers back to column used for a value from the
     'CharacteristicName' column.
 
@@ -243,7 +243,7 @@ def registry_adds_list(out_col):
     Examples
     --------
     Generate a new pint unit registry object for e.g., Sediment:
-    
+
     >>> from harmonize_wq import domains
     >>> domains.registry_adds_list('Sediment')  # doctest: +NORMALIZE_WHITESPACE
     ['fraction = [] = frac',
@@ -306,7 +306,7 @@ Examples
 The function returns the full dictionary {CharacteristicName: out_column_name}.
 It can be subset by a 'CharactisticName' column value to get the name of
 the column for results:
-    
+
 >>> domains.out_col_lookup['Escherichia coli']
 'E_coli'
 """
@@ -349,7 +349,7 @@ def characteristic_cols(category=None):
     --------
     Running the function without a category returns the full list of column
     names, including a category returns only the columns in that category:
-        
+
     >>> domains.characteristic_cols('QA')  # doctest: +NORMALIZE_WHITESPACE
     ['ResultDetectionConditionText', 'ResultStatusIdentifier', 'PrecisionValue',
      'DataQuality/BiasValue', 'ConfidenceIntervalValue', 'UpperConfidenceLimitValue',

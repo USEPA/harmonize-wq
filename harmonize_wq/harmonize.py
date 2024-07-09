@@ -42,10 +42,10 @@ def dissolved_oxygen(wqp):
 
 def salinity(wqp):
     """Standardize 'Salinity' characteristic.
-    
+
     Uses :class:`wq_data.WQCharData` to check basis, check units, check unit
     dimensionality and perform appropriate unit conversions.
-    
+
     Notes
     -----
     PSU=PSS=ppth and 'ppt' is picopint in :mod:`pint` so it is changed to
@@ -83,7 +83,7 @@ def salinity(wqp):
 
 def turbidity(wqp):
     """Standardize 'Turbidity' characteristic.
-    
+
     Uses :class:`wq_data.WQCharData` to check units, check unit
     dimensionality and perform appropriate unit conversions
 
@@ -111,7 +111,7 @@ def turbidity(wqp):
     `<https://doi.org/10.5194/os-7-705-2011>`_.
     :func:`convert.SiO2_to_NTU` linear relation from Otilia et al. 2013.
     :func:`convert.JTU_to_NTU` linear relation from Otilia et al. 2013.
-        
+
     Otilia, Rusănescu Carmen, Rusănescu Marin, and Stoica Dorel.
     MONITORING OF PHYSICAL INDICATORS IN WATER SAMPLES.
     `<https://hidraulica.fluidas.ro/2013/nr_2/84_89.pdf>`_.
@@ -159,7 +159,7 @@ def turbidity(wqp):
 
 def sediment(wqp):
     """Standardize 'Sediment' characteristic.
-    
+
     Uses :class:`wq_data.WQCharData` to check basis, check units, and check
     unit dimensionality.
 
@@ -190,7 +190,7 @@ def sediment(wqp):
 
 def harmonize_all(df_in, errors='raise'):
     """Harmonizes all 'CharacteristicNames' column values with methods.
-    
+
     All results are standardized to default units. Intermediate columns are
     not retained. See :func:`domains.out_col_lookup` for list of values with
     methods.
@@ -210,27 +210,27 @@ def harmonize_all(df_in, errors='raise'):
     -------
     df : pandas.DataFrame
         Updated copy of df_in.
-    
+
     Examples
     --------
     Build example df_in table from harmonize_wq tests to use in place of Water
-    Quality Portal query response, this table has 'Temperature, water' and 
+    Quality Portal query response, this table has 'Temperature, water' and
     'Phosphorous' results:
-    
+
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
     >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
     >>> df1.shape
     (359505, 35)
-    
-    When running the function there may be read outs or warnings, as things are 
+
+    When running the function there may be read outs or warnings, as things are
     encountered such as unexpected nutrient sample fractions:
-        
+
     >>> from harmonize_wq import harmonize
     >>> df_result_all = harmonize.harmonize_all(df1)
     1 Phosphorus sample fractions not in frac_dict
     1 Phosphorus sample fractions not in frac_dict found in expected domains, mapped to "Other_Phosphorus"
-    
+
     >>> df_result_all
            OrganizationIdentifier  ...           Temperature
     0                21FLHILL_WQX  ...  29.93 degree_Celsius
@@ -246,21 +246,21 @@ def harmonize_all(df_in, errors='raise'):
     359504           21FLSMRC_WQX  ...                   NaN
     <BLANKLINE>
     [359505 rows x 42 columns]
-    
+
     List columns that were added:
-    
+
     >>> sorted(list(df_result_all.columns[-7:]))
     ... # doctest: +NORMALIZE_WHITESPACE
     ['Other_Phosphorus', 'Phosphorus', 'QA_flag', 'Speciation',
      'TDP_Phosphorus', 'TP_Phosphorus', 'Temperature']
-    
+
     See Also
     --------
-    See any of the 'Simple' notebooks found in 
+    See any of the 'Simple' notebooks found in
     'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for
     examples of how this function is used to standardize, clean, and wrangle a
     Water Quality Portal query response.
-    
+
     """
     df_out = df_in.copy()
     char_vals = list(set(df_out['CharacteristicName']))
@@ -278,7 +278,7 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     All rows where the value in the 'CharacteristicName' column matches
     char_val will have their results harmonized based on available methods for
     that char_val.
-    
+
     Parameters
     ----------
     df_in : pandas.DataFrame
@@ -306,15 +306,15 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     Examples
     --------
     Build example df_in table from harmonize_wq tests to use in place of Water
-    Quality Portal query response, this table has 'Temperature, water' and 
+    Quality Portal query response, this table has 'Temperature, water' and
     'Phosphorous' results:
-        
+
     >>> import pandas
     >>> tests_url = 'https://raw.githubusercontent.com/USEPA/harmonize-wq/main/harmonize_wq/tests'
     >>> df1 = pandas.read_csv(tests_url + '/data/wqp_results.txt')
     >>> df1.shape
     (359505, 35)
-    
+
     >>> from harmonize_wq import harmonize
     >>> df_result = harmonize.harmonize(df1, 'Temperature, water')
     >>> df_result
@@ -332,15 +332,15 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     359504           21FLSMRC_WQX  ...                   NaN
     <BLANKLINE>
     [359505 rows x 37 columns]
-    
+
     List columns that were added:
-    
+
     >>> df_result.columns[-2:]
     Index(['QA_flag', 'Temperature'], dtype='object')
-    
+
     See Also
     --------
-    See any of the 'Detailed' notebooks found in 
+    See any of the 'Detailed' notebooks found in
     'demos<https://github.com/USEPA/harmonize-wq/tree/main/demos>' for examples
     of how this function is used to standardize, clean, and wrangle a Water
     Quality Portal query response, one 'CharacteristicName' value at a time.

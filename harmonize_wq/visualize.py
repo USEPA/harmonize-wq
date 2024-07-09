@@ -23,10 +23,10 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
     Returns
     -------
     None.
-        
+
     See Also
     --------
-    See any of the 'Detailed' notebooks found in 
+    See any of the 'Detailed' notebooks found in
     `demos <https://github.com/USEPA/harmonize-wq/tree/main/demos>`_ for
     examples of how this function is leveraged by the
     :func:`harmonize.harmonize_generic` report argument.
@@ -84,7 +84,7 @@ def map_counts(df_in, gdf, col=None):
     Examples
     --------
     Build example DataFrame of results:
-    
+
     >>> from pandas import DataFrame
     >>> df_in = DataFrame({'ResultMeasureValue': [5.1, 1.2, 8.7],
     ...                    'MonitoringLocationIdentifier': ['ID1', 'ID2', 'ID1']
@@ -94,9 +94,9 @@ def map_counts(df_in, gdf, col=None):
     0                 5.1                          ID1
     1                 1.2                          ID2
     2                 8.7                          ID1
-    
+
     Build example GeoDataFrame of monitoring locations:
-    
+
     >>> import geopandas
     >>> from shapely.geometry import Point
     >>> from numpy import nan
@@ -108,9 +108,9 @@ def map_counts(df_in, gdf, col=None):
       MonitoringLocationIdentifier  QA_flag                 geometry
     0                          ID1      NaN  POINT (1.00000 2.00000)
     1                          ID2      NaN  POINT (2.00000 1.00000)
-    
+
     Combine these to get an aggregation of results per station:
-    
+
     >>> import harmonize_wq
     >>> cnt_gdf = harmonize_wq.visualize.map_counts(df_in, gdf)
     >>> cnt_gdf
@@ -143,7 +143,7 @@ def map_counts(df_in, gdf, col=None):
 
 def map_measure(df_in, gdf, col):
     """Get GeoDataFrame summarized by average of results for each station.
-    
+
     :class:`geopandas.GeoDataFrame` will have new column 'mean' with the
     average of col values for that location.
 
@@ -160,17 +160,17 @@ def map_measure(df_in, gdf, col):
     -------
     geopandas.GeoDataFrame
         GeoDataFrame with average value of results for each station.
-        
+
     Examples
     --------
     Build array of pint Quantity for Temperature:
-    
+
     >>> from pint import Quantity
     >>> u = 'degree_Celsius'
     >>> temperatures = [Quantity(5.1, u), Quantity(1.2, u), Quantity(8.7, u)]
-    
+
     Build example pandas DataFrame of results:
-    
+
     >>> from pandas import DataFrame
     >>> df_in = DataFrame({'Temperature': temperatures,
     ...                    'MonitoringLocationIdentifier': ['ID1', 'ID2', 'ID1']
@@ -180,9 +180,9 @@ def map_measure(df_in, gdf, col):
     0  5.1 degree_Celsius                          ID1
     1  1.2 degree_Celsius                          ID2
     2  8.7 degree_Celsius                          ID1
-    
+
     Build example geopandas GeoDataFrame of monitoring locations:
-    
+
     >>> import geopandas
     >>> from shapely.geometry import Point
     >>> from numpy import nan
@@ -194,9 +194,9 @@ def map_measure(df_in, gdf, col):
       MonitoringLocationIdentifier  QA_flag                 geometry
     0                          ID1      NaN  POINT (1.00000 2.00000)
     1                          ID2      NaN  POINT (2.00000 1.00000)
-    
+
     Combine these to get an aggregation of results per station:
-     
+
     >>> from harmonize_wq import visualize
     >>> avg_temp = visualize.map_measure(df_in, gdf, 'Temperature')
     >>> avg_temp
@@ -227,8 +227,8 @@ def map_measure(df_in, gdf, col):
 
 def station_summary(df_in, col):
     """Get summary table for stations.
-    
-    Summary table as :class:`~pandas.DataFrame` with rows for each 
+
+    Summary table as :class:`~pandas.DataFrame` with rows for each
     station, count, and column average.
 
     Parameters
