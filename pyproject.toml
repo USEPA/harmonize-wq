@@ -47,4 +47,3 @@ known-first-party = ["harmonize_wq"]
 
 [tool.ruff.format]
 quote-style = "single"
-docstring-code-format = true
