@@ -4,6 +4,65 @@
 These are mainly for use as filters. Small or frequently utilized domains may
 be hard-coded. A URL based method can be used to get the most up to date domain
 list.
+
+Attributes
+----------
+accepted_methods : dict
+  Get accepted methods for each characteristic. Dictionary where key is
+  characteristic column name and value is list of dictionaries each with Source
+  and Method keys.
+  
+  Notes
+  -----
+  Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
+  column. This is not fully implemented.
+
+stations_rename : dict
+  Get shortened column names for shapefile (.shp) fields.
+  
+  Dictionary where key = WQP field name and value = short name for .shp.
+
+  ESRI places a length restriction on shapefile (.shp) field names. This
+  returns a dictionary with the original water quality portal field name (as
+  key) and shortened column name for writing as .shp. We suggest using the
+  longer original name as the field alias when writing as .shp.
+  
+  Examples
+  --------
+  Although running the function returns the full dictionary of Key:Value
+  pairs, here we show how the current name can be used as a key to get the
+  new name:
+  
+  >>> domains.stations_rename['OrganizationIdentifier']
+  'org_ID'
+  
+xy_datum : dict
+  
+  Get dictionary of expected horizontal datums, where exhaustive:
+          {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
+          EPSG:int}}
+  
+  The structure has {key as expected string: value as {"Description": string
+  and "EPSG": integer (4-digit code)}.
+  
+  Notes
+  -----
+  source WQP: HorizontalCoordinateReferenceSystemDatum_CSV.zip
+  
+  Anything not in dict will be NaN, and non-integer EPSG will be missing:
+  "OTHER": {"Description": 'Other', "EPSG": nan},
+  "UNKWN": {"Description": 'Unknown', "EPSG": nan}
+  
+  Examples
+  --------
+  Running the function returns the full dictionary with {abbreviation:
+  {'Description':values, 'EPSG':values}}. The abbreviation key can be used to
+  get the EPSG code:
+  
+  >>> domains.xy_datum['NAD83']
+  {'Description': 'North American Datum 1983', 'EPSG': 4269}
+  >>> domains.xy_datum['NAD83']['EPSG']
+  4269
 """
 import pandas
 import requests
@@ -502,37 +561,6 @@ def characteristic_cols(category=None):
     return col_list
 
 
-"""Get dictionary of expected horizontal datums.
-
-The structure has {key as expected string: value as {"Description": string
-and "EPSG": integer (4-digit code)}.
-
-Notes
------
-source WQP: HorizontalCoordinateReferenceSystemDatum_CSV.zip
-
-Anything not in dict will be NaN, and non-integer EPSG will be missing:
-"OTHER": {"Description": 'Other', "EPSG": nan},
-"UNKWN": {"Description": 'Unknown', "EPSG": nan}
-
-Returns
--------
-dict
-    Dictionary where exhaustive:
-        {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
-        EPSG:int}}
-
-Examples
---------
-Running the function returns the full dictionary with {abbreviation:
-{'Description':values, 'EPSG':values}}. The abbreviation key can be used to
-get the EPSG code:
-
->>> domains.xy_datum['NAD83']
-{'Description': 'North American Datum 1983', 'EPSG': 4269}
->>> domains.xy_datum['NAD83']['EPSG']
-4269
-"""
 xy_datum = {
     "NAD27": {"Description": "North American Datum 1927", "EPSG": 4267},
     "NAD83": {"Description": "North American Datum 1983", "EPSG": 4269},
@@ -555,27 +583,6 @@ xy_datum = {
     }
 
 #     Default field mapping writes full name to alias but a short name to field
-"""Get shortened column names for shapefile (.shp) fields.
-
-ESRI places a length restriction on shapefile (.shp) field names. This
-returns a dictionary with the original water quality portal field name (as
-key) and shortened column name for writing as .shp. We suggest using the
-longer original name as the field alias when writing as .shp.
-
-Returns
--------
-field_mapping : dict
-    Dictionary where key = WQP field name and value = short name for .shp.
-
-Examples
---------
-Although running the function returns the full dictionary of Key:Value
-pairs, here we show how the current name can be used as a key to get the
-new name:
-
->>> domains.stations_rename['OrganizationIdentifier']
-'org_ID'
-"""
 stations_rename = {
     "OrganizationIdentifier": "org_ID",
     "OrganizationFormalName": "org_name",
@@ -617,20 +624,6 @@ stations_rename = {
     "ResultIdentifier": "result_ID",
     }
 
-"""Get accepted methods for each characteristic.
-
-Notes
------
-Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
-column. This is not fully implemented.
-
-Returns
--------
-dict
-    Dictionary where key is characteristic column name and value is list of
-    dictionaries each with Source and Method keys.
-
-"""
 accepted_methods = {
     "Secchi": [
         {"Source": "APHA", "Method": "2320-B"},
