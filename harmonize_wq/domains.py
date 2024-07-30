@@ -155,7 +155,7 @@ def get_domain_dict(table, cols=None):
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
                'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
                'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
-               'Extractable, residual', 'Field', 'Filter/sieve residue', 'Filterable',
+               'Extractable, residual', 'Field***', 'Filter/sieve residue', 'Filterable',
                'Filtered field and/or lab', 'Filtered, field', 'Filtered, lab',
                'Fixed', 'Free Available', 'Inorganic', 'Leachable', 'Net (Hot)',
                'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile',
