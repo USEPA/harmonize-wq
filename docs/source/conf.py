@@ -49,7 +49,9 @@ extensions = [
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
-html_show_sourcelink = False  # Remove 'view source code' from top of page (for html, not python)
+
+# Remove 'view source code' from top of page (for html, not python)
+html_show_sourcelink = False
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', '_templates']
@@ -62,7 +64,7 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = []
 
 # Readthedocs theme (may be useful for actions)
-# on_rtd is whether on readthedocs.org, this line of code grabbed from docs.readthedocs.org...
+# This line from docs.readthedocs.org, on_rtd is whether on readthedocs.org
 #on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 #if not on_rtd:  # only import and set the theme if we're building docs locally
 #    import sphinx_rtd_theme
