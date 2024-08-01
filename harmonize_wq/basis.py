@@ -228,8 +228,8 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     Notes
     -----
-    Rather than creating many new empty columns this function currently overwrites the original
-    basis_col values. The original values are noted in the QA_flag.
+    Currently overwrites the original basis_col values rather than create many new empty
+    columns. The original values are noted in the QA_flag.
 
     Parameters
     ----------
