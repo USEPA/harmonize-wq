@@ -58,13 +58,13 @@ def datetime(df_in):
 def harmonize_depth(df_in, units='meter'):
     """Create 'Depth' column with result depth values in consistent units.
 
-    The new column is based on values from the 'ResultDepthHeightMeasure/MeasureValue' column and
-    units from the 'ResultDepthHeightMeasure/MeasureUnitCode' column.
+    New column combines values from the 'ResultDepthHeightMeasure/MeasureValue' column
+    with units from the 'ResultDepthHeightMeasure/MeasureUnitCode' column.
 
     Notes
     -----
-    If there are errors or unit registry (ureg) updates these are not currently
-    passed back. In the future activity depth columns may be considered if result depth missing.
+    Currently unit registry (ureg) updates or errors are not passed back.
+    In the future activity depth columns may be considered if result depth missing.
 
     Parameters
     ----------
