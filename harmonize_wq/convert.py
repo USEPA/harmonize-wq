@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Functions to convert from one unit to another, sometimes using :mod:`pint` decorators.
+"""Functions to convert from one unit to another, at times using :mod:`pint` decorators.
 
 Contains several unit conversion functions not in :mod:`pint`.
 """
@@ -462,8 +462,8 @@ def density_to_PSU(val,
 
     Examples
     --------
-    PSU (Practical Salinity Units) is not a standard pint unit and must be added to a unit registry
-    first (normally done by WQCharData.update_ureg() method):
+    PSU (Practical Salinity Units) is not a standard pint unit and must be added to a
+    unit registry first (normally done by WQCharData.update_ureg() method):
 
     >>> import pint
     >>> ureg = pint.UnitRegistry()
