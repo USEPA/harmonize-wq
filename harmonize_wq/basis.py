@@ -1,35 +1,53 @@
 # -*- coding: utf-8 -*-
-"""Functions to process characteristic basis or return basis dictionary."""
+"""Functions to process characteristic basis or return basis dictionary.
+
+Attributes
+----------
+unit_basis_dict : dict
+  Characteristic specific basis dictionary to define basis from units.
+
+  Notes
+  -----
+  Dictionary with logic for determining basis from units string and
+  standard :mod:`pint` units to replace those with.
+  The structure is {Basis: {standard units: [unit strings with basis]}}.
+  
+  The out_col is often derived from :attr:`WQCharData.char_val`. The desired
+  basis can be used as a key to subset result.
+
+  Examples
+  --------
+  Get dictionary for Phosphorus and subset for 'as P':
+
+  >>> from harmonize_wq import basis
+  >>> basis.unit_basis_dict['Phosphorus']['as P']
+  {'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']}
+
+basis_conversion : dict
+  Get dictionary of conversion factors to convert basis/speciation.
+  For example, this is used to convert 'as PO4' to 'as P'.
+  Dictionary structure {basis: conversion factor}.
+
+  See Also
+  --------
+  :func:`convert.moles_to_mass`
+
+  `Best Practices for Submitting Nutrient Data to the Water Quality eXchange
+  <www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>`_
+
+stp_dict : dict
+  Get standard temperature and pressure to define basis from units.
+  Dictionary structure {'standard temp' : {'units': [values to replace]}}.
+
+  Notes
+  -----
+  This needs to be updated to include pressure or needs to be renamed.
+"""
 from warnings import warn
 import numpy
 from harmonize_wq.clean import add_qa_flag
 
 
-"""Characteristic specific basis dictionary to define basis from units.
-
-The out_col is often derived from :attr:`WQCharData.char_val`. The desired
-basis can be used as a key to subset result.
-
-Parameters
-----------
-out_col : str
-    Column name where results are written.
-
-Returns
--------
- dict
-     Dictionary with logic for determining basis from units string and
-     standard :mod:`pint` units to replace those with.
-     The structure is {Basis: {standard units: [unit strings with basis]}}.
-
-Examples
---------
-Get dictionary for Phosphorus and subset for 'as P':
-
->>> from harmonize_wq import basis
->>> basis.unit_basis_dict['Phosphorus']['as P']
-{'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']}
-"""
 unit_basis_dict = {
     "Phosphorus": {
         "as P": {"mg/l": ["mg/l as P", "mg/l P"], "mg/kg": ["mg/kg as P", "mg/kg P"]},
@@ -42,22 +60,6 @@ unit_basis_dict = {
     "Carbon": {},
 }
 
-"""basis.bass_conversionGet dictionary of conversion factors to convert basis/speciation.
-
-basis.bass_conversion. For example, this is used to convert 'as PO4' to 'as P'.
-
-Returns
--------
-dict
-    Dictionary with structure {basis: conversion factor}
-
-See Also
---------
-:func:`convert.moles_to_mass`
-
-`Best Practices for Submitting Nutrient Data to the Water Quality eXchange
-<www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>`_
-"""
 basis_conversion = {
     "NH3": 0.822,
     "NH4": 0.776,
@@ -66,17 +68,6 @@ basis_conversion = {
     "PO4": 0.326,
 }
 
-"""basis.stp_dict: Get standard temperature and pressure to define basis from units.
-
-Notes
------
-    This needs to be updated to include pressure or needs to be renamed.
-
-Returns
--------
-dict
-    Dictionary with {'standard temp' : {'units': [values to replace]}}.
-"""
 stp_dict = {"@25C": {"mg/mL": ["mg/mL @25C"]}}
 
 
