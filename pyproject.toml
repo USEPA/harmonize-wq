@@ -44,6 +44,3 @@ select = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["harmonize_wq"]
-
-[tool.ruff.format]
-quote-style = "single"
