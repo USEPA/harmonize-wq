@@ -34,7 +34,7 @@ dependencies = { file = ["requirements.txt"] }
 [tool.setuptools.dynamic.optional-dependencies]
 dev = { file = ["requirements-dev.txt"] }
 
-[tool.ruff]
+[tool.ruff.lint]
 select = [
     "E",
     "F",
@@ -42,7 +42,7 @@ select = [
     "I"
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["harmonize_wq"]
 
 [tool.ruff.format]
