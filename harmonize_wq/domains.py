@@ -151,7 +151,7 @@ def get_domain_dict(table, cols=None):
     The default keys ('Name') are shown as values ('Description') are long:
 
     >>> from harmonize_wq import domains
-    >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE
+    >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE # noqa: E501
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
                'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
                'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
