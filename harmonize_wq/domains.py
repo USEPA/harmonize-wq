@@ -152,7 +152,7 @@ def get_domain_dict(table, cols=None):
 
     >>> from harmonize_wq import domains
     >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE # noqa: E501
-    dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
+    dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',  # noqa: E501
                'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
                'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
                'Extractable, residual', 'Field***', 'Filter/sieve residue', 'Filterable',
