@@ -1133,7 +1133,8 @@ def test_harmonize_fecal_coliform():
     # Inspect specific result - where value missing
     assert str(actual.iloc[1][orig_val_col]) == "*Non-detect"  # Confirm missing
     # Confirm expected flag - for missing value
-    expected_flag = 'ResultMeasureValue: "*Non-detect" result cannot be used; ResultMeasure/MeasureUnitCode: MISSING UNITS, CFU/(100ml) assumed'
+    expected_flag = 'ResultMeasureValue: "*Non-detect" result cannot be used; '
+    expected_flag += "ResultMeasure/MeasureUnitCode: MISSING UNITS, CFU/(100ml) assumed"
     assert actual.iloc[1]["QA_flag"] == expected_flag
     # Inspect specific result - un-usable non-numeric values
     assert actual.iloc[75305][orig_val_col] == "Not Reported"

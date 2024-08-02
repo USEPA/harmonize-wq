@@ -257,7 +257,14 @@ def char_tbl_TADA(df, char):
     Returns
     -------
     new_char_dict : dict
-        {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText: [Target.TADA.ResultSampleFractionText]}
+        Returned dictionary follows general structure:
+            {
+                "Target.TADA.CharacteristicName": {
+                    "Target.TADA.ResultSampleFractionText": [
+                        "Target.TADA.ResultSampleFractionText"
+                    ]
+                }
+            }
     """
     cols = [
         "Target.TADA.CharacteristicName",
