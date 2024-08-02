@@ -1,4 +1,5 @@
 from importlib.metadata import PackageNotFoundError, version
+
 from harmonize_wq import harmonize as harmonize
 
 try:

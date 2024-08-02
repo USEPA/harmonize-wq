@@ -44,9 +44,10 @@ stp_dict : dict
   This needs to be updated to include pressure or needs to be renamed.
 """
 from warnings import warn
-import numpy
-from harmonize_wq.clean import add_qa_flag
 
+import numpy
+
+from harmonize_wq.clean import add_qa_flag
 
 unit_basis_dict = {
     "Phosphorus": {

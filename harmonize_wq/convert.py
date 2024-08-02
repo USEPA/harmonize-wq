@@ -5,11 +5,12 @@ Contains several unit conversion functions not in :mod:`pint`.
 """
 import math
 from warnings import warn
+
 import pandas
 import pint
 from numpy import nan
-from harmonize_wq.domains import registry_adds_list
 
+from harmonize_wq.domains import registry_adds_list
 
 # TODO: does this constant belong here or in domains?
 PERIODIC_MW = {'Organic carbon': 180.16,

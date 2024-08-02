@@ -8,16 +8,13 @@ used to construct the query.
 @author: jbousqui
 """
 import os
-import pytest
+
 import geopandas
 import pandas
-from harmonize_wq import location
-from harmonize_wq import harmonize
-from harmonize_wq import convert
-from harmonize_wq import wrangle
-from harmonize_wq import clean
-from harmonize_wq import visualize as viz
+import pytest
 
+from harmonize_wq import clean, convert, harmonize, location, wrangle
+from harmonize_wq import visualize as viz
 
 # CI
 DIRPATH = os.path.dirname(os.path.realpath(__file__))

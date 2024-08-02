@@ -2,9 +2,11 @@
 """Class for harmonizing data retrieved from EPA's Water Quality Portal."""
 from types import SimpleNamespace
 from warnings import warn
+
 import pandas
 import pint
 from numpy import nan
+
 from harmonize_wq import basis, domains
 from harmonize_wq.clean import add_qa_flag, df_checks
 from harmonize_wq.convert import convert_unit_series, moles_to_mass

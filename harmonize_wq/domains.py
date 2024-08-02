@@ -67,7 +67,6 @@ xy_datum : dict
 import pandas
 import requests
 
-
 BASE_URL = "https://cdx.epa.gov/wqx/download/DomainValues/"
 TADA_DATA_URL = "https://raw.githubusercontent.com/USEPA/EPATADA/"
 

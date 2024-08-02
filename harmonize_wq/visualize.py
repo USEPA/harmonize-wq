@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Functions to help visualize data."""
 from math import sqrt
+
 import geopandas
 import pandas
+
 from harmonize_wq.wrangle import merge_tables
 
 
