@@ -877,7 +877,7 @@ class WQCharData:
         1     Fecal Coliform                           MPN  ...  MPN/(100ml)           10.0
         <BLANKLINE>
         [2 rows x 5 columns]
-        """
+        """  # noqa: E501
         col = self.col.unit_out
         for item in val_dict.items():
             self._replace_in_col(col, item[0], item[1], mask)

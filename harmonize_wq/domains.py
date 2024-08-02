@@ -151,8 +151,8 @@ def get_domain_dict(table, cols=None):
     The default keys ('Name') are shown as values ('Description') are long:
 
     >>> from harmonize_wq import domains
-    >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE # noqa: E501
-    dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',  # noqa: E501
+    >>> domains.get_domain_dict('ResultSampleFraction').keys() # doctest: +NORMALIZE_WHITESPACE
+    dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
                'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
                'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
                'Extractable, residual', 'Field***', 'Filter/sieve residue', 'Filterable',
@@ -164,8 +164,7 @@ def get_domain_dict(table, cols=None):
                'Total Recoverable', 'Total Residual', 'Total Soluble',
                'Unfiltered', 'Unfiltered, field', 'Vapor', 'Volatile',
                'Weak Acid Diss', 'Yield', 'non-linear function'])
-
-    """
+    """  # noqa: E501
     if cols is None:
         cols = ["Name", "Description"]
     if not table.endswith("_CSV"):

@@ -264,7 +264,7 @@ def harmonize_all(df_in, errors="raise"):
     examples of how this function is used to standardize, clean, and wrangle a
     Water Quality Portal query response.
 
-    """
+    """  # noqa: E501
     df_out = df_in.copy()
     char_vals = list(set(df_out["CharacteristicName"]))
     char_vals.sort()
