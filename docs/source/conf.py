@@ -81,11 +81,14 @@ doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 IGNORE_RESULT = doctest.register_optionflag("IGNORE_RESULT")
 
 OutputChecker = doctest.OutputChecker
+
+
 class CustomOutputChecker(OutputChecker):
     def check_output(self, want, got, optionflags):
         if IGNORE_RESULT & optionflags:
             return True
         return OutputChecker.check_output(self, want, got, optionflags)
+
 
 doctest.OutputChecker = CustomOutputChecker
 
@@ -125,25 +128,25 @@ intersphinx_mapping = {
     "dataretrieval": (
         "https://doi-usgs.github.io/dataretrieval-python/",
         "https://doi-usgs.github.io/dataretrieval-python/objects.inv",
-        ),
+    ),
     "pint": (
         "https://pint.readthedocs.io/en/stable/",
         "https://pint.readthedocs.io/en/stable/objects.inv",
-        ),
+    ),
     "geopandas": (
         "https://geopandas.org/en/stable/",
         "https://geopandas.org/en/stable/objects.inv",
-        ),
+    ),
     "pandas": (
         "https://pandas.pydata.org/pandas-docs/stable/",
         "https://pandas.pydata.org/pandas-docs/stable/objects.inv",
-        ),
+    ),
     "pyproj": (
         "https://pyproj4.github.io/pyproj/stable/",
         "https://pyproj4.github.io/pyproj/stable/objects.inv",
-        ),
+    ),
     "python": (
         "https://docs.python.org/3",
         "https://docs.python.org/3/objects.inv",
-        ),
-    }
+    ),
+}
