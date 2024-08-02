@@ -325,10 +325,25 @@ class WQCharData:
 
         >>> from pandas import DataFrame
         >>> from numpy import nan
-        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus',],
-        ...                 'ResultMeasure/MeasureUnitCode': [nan, nan, 'Unknown',],
-        ...                 'ResultMeasureValue': ['1.0', '67.0', '10',],
-        ...                 })
+        >>> df = DataFrame(
+        ...   {
+        ...     "CharacteristicName": [
+        ...       "Phosphorus",
+        ...       "Temperature, water",
+        ...       "Phosphorus",
+        ...     ],
+        ...     "ResultMeasure/MeasureUnitCode": [
+        ...       nan,
+        ...       nan,
+        ...       "Unknown",
+        ...     ],
+        ...     "ResultMeasureValue": [
+        ...       "1.0",
+        ...       "67.0",
+        ...       "10",
+        ...     ],
+        ...   }
+        ... )
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0          Phosphorus                           NaN                1.0
