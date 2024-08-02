@@ -29,13 +29,13 @@ def dissolved_oxygen(wqp):
 
     # Check/fix dimensionality issues (Type III)
     for unit in wqp.dimensions_list():
-        if wqp.ureg(wqp.units).check({'[length]': -3, '[mass]': 1}):
+        if wqp.ureg(wqp.units).check({"[length]": -3, "[mass]": 1}):
             # Convert to density, e.g., % or ppm -> mg/l (assumes STP for now)
             wqp.apply_conversion(convert.DO_saturation, unit)
         elif wqp.ureg(wqp.units).dimensionless:
             # Convert to dimensionless, e.g., mg/l -> % or ppm
             wqp.apply_conversion(convert.DO_concentration, unit)
-            warn(f'Need % saturation equation for {unit}')
+            warn(f"Need % saturation equation for {unit}")
 
     return wqp
 
@@ -61,20 +61,20 @@ def salinity(wqp):
     wqp : wq_data.WQCharData
         WQP Characteristic Info Object with updated attributes.
     """
-    wqp.check_basis(basis_col='ResultTemperatureBasisText')  # Moves '@25C' out
+    wqp.check_basis(basis_col="ResultTemperatureBasisText")  # Moves '@25C' out
     wqp.check_units()  # Replace know problem units, fix and flag missing units
 
     # Check/fix dimensionality issues (Type III)
     for unit in wqp.dimensions_list():
         if wqp.ureg(wqp.units).dimensionless:
             # Convert to dimensionless
-            if wqp.ureg(unit).check({'[length]': -3, '[mass]': 1}):
+            if wqp.ureg(unit).check({"[length]": -3, "[mass]": 1}):
                 # Density, e.g., 'mg/l' -> 'PSU'/'PSS'/'ppth'
                 wqp.apply_conversion(convert.density_to_PSU, unit)
             else:
                 # Will cause dimensionality error, kick it there for handling
                 continue
-        elif wqp.ureg(wqp.units).check({'[length]': -3, '[mass]': 1}):
+        elif wqp.ureg(wqp.units).check({"[length]": -3, "[mass]": 1}):
             # Convert to density, e.g., PSU -> 'mg/l'
             wqp.apply_conversion(convert.PSU_to_density, unit)
 
@@ -126,34 +126,34 @@ def turbidity(wqp):
     wqp : wq_data.WQCharData
         WQP Characteristic Info Object with updated attributes.
     """
-    #These units exist but have not been encountered yet
-    #formazin nephelometric multibeam unit (FNMU);
-    #formazin backscatter unit (FBU);
-    #backscatter units (BU); attenuation units (AU)
+    # These units exist but have not been encountered yet
+    # formazin nephelometric multibeam unit (FNMU);
+    # formazin backscatter unit (FBU);
+    # backscatter units (BU); attenuation units (AU)
 
     wqp.check_units()  # Replace know problem units, fix and flag missing units
 
     # Check/fix dimensionality issues (Type III)
     for unit in wqp.dimensions_list():
-        if wqp.ureg(wqp.units).check({'[turbidity]': 1}):
+        if wqp.ureg(wqp.units).check({"[turbidity]": 1}):
             if wqp.ureg(unit).dimensionless:
-                if unit=='JTU':
+                if unit == "JTU":
                     wqp.apply_conversion(convert.JTU_to_NTU, unit)
-                elif unit=='SiO2':
+                elif unit == "SiO2":
                     wqp.apply_conversion(convert.SiO2_to_NTU, unit)
                 else:
-                    #raise ValueError('Bad Turbidity unit: {}'.format(unit))
-                    warn(f'Bad Turbidity unit: {unit}')
-            elif wqp.ureg(unit).check({'[length]': 1}):
+                    # raise ValueError('Bad Turbidity unit: {}'.format(unit))
+                    warn(f"Bad Turbidity unit: {unit}")
+            elif wqp.ureg(unit).check({"[length]": 1}):
                 wqp.apply_conversion(convert.cm_to_NTU, unit)
             else:
-                #raise ValueError('Bad Turbidity unit: {}'.format(unit))
-                warn(f'Bad Turbidity unit: {unit}')
-        elif wqp.ureg(wqp.units).check({'[length]': 1}):
+                # raise ValueError('Bad Turbidity unit: {}'.format(unit))
+                warn(f"Bad Turbidity unit: {unit}")
+        elif wqp.ureg(wqp.units).check({"[length]": 1}):
             wqp.apply_conversion(convert.NTU_to_cm, unit)
         else:
-            #raise ValueError('Bad Turbidity unit: {}'.format(wqp.units))
-            warn(f'Bad Turbidity unit: {unit}')
+            # raise ValueError('Bad Turbidity unit: {}'.format(wqp.units))
+            warn(f"Bad Turbidity unit: {unit}")
     return wqp
 
 
@@ -173,8 +173,8 @@ def sediment(wqp):
     wqp : wq_data.WQCharData
         WQP Characteristic Info Object with updated attributes.
     """
-    #'< 0.0625 mm', < 0.125 mm, < 0.25 mm, < 0.5 mm, < 1 mm, < 2 mm, < 4 mm
-    wqp.check_basis(basis_col='ResultParticleSizeBasisText')
+    # '< 0.0625 mm', < 0.125 mm, < 0.25 mm, < 0.5 mm, < 1 mm, < 2 mm, < 4 mm
+    wqp.check_basis(basis_col="ResultParticleSizeBasisText")
 
     wqp.check_units()  # Replace know problem units, fix and flag missing units
 
@@ -188,7 +188,7 @@ def sediment(wqp):
     return wqp
 
 
-def harmonize_all(df_in, errors='raise'):
+def harmonize_all(df_in, errors="raise"):
     """Harmonizes all 'CharacteristicNames' column values with methods.
 
     All results are standardized to default units. Intermediate columns are
@@ -263,7 +263,7 @@ def harmonize_all(df_in, errors='raise'):
 
     """
     df_out = df_in.copy()
-    char_vals = list(set(df_out['CharacteristicName']))
+    char_vals = list(set(df_out["CharacteristicName"]))
     char_vals.sort()
 
     for char_val in char_vals:
@@ -271,8 +271,14 @@ def harmonize_all(df_in, errors='raise'):
     return df_out
 
 
-def harmonize(df_in, char_val, units_out=None, errors='raise',
-              intermediate_columns=False, report=False):
+def harmonize(
+    df_in,
+    char_val,
+    units_out=None,
+    errors="raise",
+    intermediate_columns=False,
+    report=False,
+):
     """Harmonize char_val rows based methods specific to that char_val.
 
     All rows where the value in the 'CharacteristicName' column matches
@@ -358,25 +364,25 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     wqp.update_ureg()  # This is done based on out_col/char_val
 
     # Use out_col to dictate function
-    if out_col in ['pH', 'Secchi']:
+    if out_col in ["pH", "Secchi"]:
         wqp.check_units()  # Fix and flag missing units
         # NOTE: pH undefined units -> NAN -> units,
-    elif out_col in ['Conductivity', 'Chlorophyll']:
+    elif out_col in ["Conductivity", "Chlorophyll"]:
         # Replace know problem units, fix and flag missing units
         wqp.check_units()
-    elif out_col in ['Fecal_Coliform', 'E_coli']:
+    elif out_col in ["Fecal_Coliform", "E_coli"]:
         # NOTE: Ecoli ['cfu/100ml', 'MPN/100ml', '#/100ml']
         # NOTE: feca ['CFU', 'MPN/100ml', 'cfu/100ml', 'MPN/100 ml', '#/100ml']
         # Replace known special character in unit ('#' count assumed as CFU)
-        wqp.replace_unit_str('#', 'CFU')
+        wqp.replace_unit_str("#", "CFU")
         # Replace known unit problems (e.g., assume CFU/MPN is /100ml)
         wqp.replace_unit_by_dict(UNITS_REPLACE[out_col])
-        #TODO: figure out why the above must be done before replace_unit_str
+        # TODO: figure out why the above must be done before replace_unit_str
         # Replace all instances in results column
-        wqp.replace_unit_str('/100ml', '/(100ml)')
-        wqp.replace_unit_str('/100 ml', '/(100ml)')
+        wqp.replace_unit_str("/100ml", "/(100ml)")
+        wqp.replace_unit_str("/100 ml", "/(100ml)")
         wqp.check_units()  # Fix and flag missing units
-    elif out_col in ['Carbon', 'Phosphorus', 'Nitrogen']:
+    elif out_col in ["Carbon", "Phosphorus", "Nitrogen"]:
         # Set Basis from unit and MethodSpec column
         wqp.check_basis()
         # Replace know problem units, fix and flag missing units (wet/dry?)
@@ -386,17 +392,18 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
         # Replace units by dictionary
         wqp.replace_unit_by_dict(dimension_dict, wqp.measure_mask())
         wqp.moles_convert(mol_list)  # Fix up units/measures where moles
-    elif out_col == 'Temperature':
+    elif out_col == "Temperature":
         # Remove spaces from units for pint ('deg C' == degree coulomb)
-        wqp.update_units(wqp.units.replace(' ', ''))  # No spaces in units_out
-        wqp.replace_unit_str(' ', '')  # Replace in results column
+        wqp.update_units(wqp.units.replace(" ", ""))  # No spaces in units_out
+        wqp.replace_unit_str(" ", "")  # Replace in results column
         wqp.check_units()  # Fix and flag missing units
     else:
-        harmonize_map = {'DO': dissolved_oxygen,
-                         'Salinity': salinity,
-                         'Turbidity':  turbidity,
-                         'Sediment': sediment,
-                         }
+        harmonize_map = {
+            "DO": dissolved_oxygen,
+            "Salinity": salinity,
+            "Turbidity": turbidity,
+            "Sediment": sediment,
+        }
         try:
             wqp = harmonize_map[out_col](wqp)
         except KeyError:
@@ -411,17 +418,18 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     # Note: just phosphorus right now
     # Total is TP (digested) from the whole water sample (vs total dissolved)
     # Dissolved is TDP (total) filtered water digested (vs undigested DIP)
-    if out_col in ['Phosphorus', 'Nitrogen']:
+    if out_col in ["Phosphorus", "Nitrogen"]:
         # NOTE: only top level fractions, while TADA has lower for:
-        #'Chlorophyll a', 'Turbidity', 'Fecal Coliform', 'Escherichia coli'
-        if out_col=='Phosphorus':
-            frac_dict = {'TP_Phosphorus': ['Total'],
-                         'TDP_Phosphorus': ['Dissolved'],
-                         'Other_Phosphorus': ['', nan],}
+        # 'Chlorophyll a', 'Turbidity', 'Fecal Coliform', 'Escherichia coli'
+        if out_col == "Phosphorus":
+            frac_dict = {
+                "TP_Phosphorus": ["Total"],
+                "TDP_Phosphorus": ["Dissolved"],
+                "Other_Phosphorus": ["", nan],
+            }
         else:
-            frac_dict = 'TADA'
+            frac_dict = "TADA"
         frac_dict = wqp.fraction(frac_dict)  # Run sample fraction on WQP
-
 
     df_out = wqp.df
 
@@ -437,5 +445,5 @@ def harmonize(df_in, char_val, units_out=None, errors='raise',
     if report:
         print_report(df_out.loc[wqp.c_mask], out_col, wqp.col.unit_in)
     if not intermediate_columns:
-        df_out = df_out.drop(['Units'], axis=1)  # Drop intermediate columns
+        df_out = df_out.drop(["Units"], axis=1)  # Drop intermediate columns
     return df_out

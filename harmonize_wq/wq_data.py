@@ -46,7 +46,7 @@ def units_dimension(series_in, units, ureg=None):
     >>> wq_data.units_dimension(unit_series, units='mg/l')
     ['g/kg']
     """
-    #TODO: this should be a method
+    # TODO: this should be a method
     if ureg is None:
         ureg = pint.UnitRegistry()
     dim_list = []  # List for units with mismatched dimensions
@@ -59,7 +59,7 @@ def units_dimension(series_in, units, ureg=None):
     return dim_list
 
 
-class WQCharData():
+class WQCharData:
     """Class for specific characteristic in Water Quality Portal results.
 
     Parameters
@@ -121,16 +121,17 @@ class WQCharData():
         df_out = df_in.copy()
         # self.check_df(df)
         df_checks(df_out)
-        c_mask = df_out['CharacteristicName'] == char_val
+        c_mask = df_out["CharacteristicName"] == char_val
         self.c_mask = c_mask
         # Deal with units: set out = in
-        cols = {'unit_in': 'ResultMeasure/MeasureUnitCode',
-                'unit_out': 'Units',
-                'measure': 'ResultMeasureValue',
-                'basis': 'Speciation', }
+        cols = {
+            "unit_in": "ResultMeasure/MeasureUnitCode",
+            "unit_out": "Units",
+            "measure": "ResultMeasureValue",
+            "basis": "Speciation",
+        }
         self.col = SimpleNamespace(**cols)
-        df_out.loc[c_mask, self.col.unit_out] = df_out.loc[c_mask,
-                                                           self.col.unit_in]
+        df_out.loc[c_mask, self.col.unit_out] = df_out.loc[c_mask, self.col.unit_in]
         self.df = df_out
         # Deal with values: set out_col = in
         self.out_col = domains.out_col_lookup[char_val]
@@ -148,14 +149,13 @@ class WQCharData():
         meas_col = self.col.measure
 
         # Coerce bad measures in series to NaN
-        meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col],
-                                   errors='coerce')
+        meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col], errors="coerce")
         # Create a list of the bad measures in the series
         bad_measures = [df_out.iloc[i][meas_col] for i in meas_s[meas_s.isna()].index]
         for bad_meas in pandas.unique(bad_measures):
             # Flag each unique bad measure one measure (not row) at a time
             if pandas.isna(bad_meas):
-                flag = f'{meas_col}: missing (NaN) result'
+                flag = f"{meas_col}: missing (NaN) result"
                 cond = c_mask & (df_out[meas_col].isna())
             else:
                 flag = f'{meas_col}: "{bad_meas}" result cannot be used'
@@ -184,14 +184,13 @@ class WQCharData():
             The default None uses WQCharData.col.unit_out instead.
         """
         # QA flag for missing units
-        flag = self._unit_qa_flag('MISSING', flag_col)
+        flag = self._unit_qa_flag("MISSING", flag_col)
         # Update mask for missing units
         units_mask = self.c_mask & self.df[self.col.unit_out].isna()
         self.df = add_qa_flag(self.df, units_mask, flag)  # Assign flag
         # Update with infered unit
         self.df.loc[units_mask, self.col.unit_out] = self.units
         # Note: .fillna(self.units) is slightly faster but hits datatype issues
-
 
     def _unit_qa_flag(self, trouble, flag_col=None):
         """Generate a QA_flag flag string for the units column.
@@ -213,9 +212,9 @@ class WQCharData():
             Flag to use in QA_flag column.
         """
         if flag_col:
-            return f'{flag_col}: {trouble} UNITS, {self.units} assumed'
+            return f"{flag_col}: {trouble} UNITS, {self.units} assumed"
         # Else: Used when flag_col is None, typically the column being checked
-        return f'{self.col.unit_out}: {trouble} UNITS, {self.units} assumed'
+        return f"{self.col.unit_out}: {trouble} UNITS, {self.units} assumed"
 
     def _replace_in_col(self, col, old_val, new_val, mask=None):
         """Replace string throughout column, filter rows to skip by mask.
@@ -245,9 +244,9 @@ class WQCharData():
         df_in = self.df
         # Note: Timing is just as fast as long as df isn't copied
         #       Timing for replace vs set unkown
-        mask_old = mask & (df_in[col]==old_val)
-        #str.replace did not work for short str to long str (over-replaces)
-        #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
+        mask_old = mask & (df_in[col] == old_val)
+        # str.replace did not work for short str to long str (over-replaces)
+        # df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
         df_in.loc[mask_old, col] = new_val  # This should be more explicit
 
         return df_in
@@ -278,25 +277,25 @@ class WQCharData():
             ureg = pint.UnitRegistry()
 
         # Conversion to moles performed a level up from here (class method)
-        if ureg(units).check({'[length]': -3, '[mass]': 1}):
+        if ureg(units).check({"[length]": -3, "[mass]": 1}):
             # Convert to density, e.g., '%' -> 'mg/l'
-            if ureg(unit).check({'[substance]': 1}):
+            if ureg(unit).check({"[substance]": 1}):
                 if quant:
                     # Moles -> mg/l; dim = ' / l'
-                    return {unit: quant + ' / l'}, [quant + ' / l']
+                    return {unit: quant + " / l"}, [quant + " / l"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is dimensionless (e.g. unit = 'g/kg')
-            return {unit: unit + ' * H2O'}, []
+            return {unit: unit + " * H2O"}, []
         if ureg(units).dimensionless:
             # Convert to dimensionless, e.g., 'mg/l' -> '%'
-            if ureg(unit).check({'[substance]': 1}):
+            if ureg(unit).check({"[substance]": 1}):
                 if quant:
                     # Moles -> g/kg; dim = ' / l / H2O'
-                    return {unit: quant + ' / l / H2O'}, [quant + ' / l / H2O']
+                    return {unit: quant + " / l / H2O"}, [quant + " / l / H2O"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is density (e.g. unit = 'mg/l')
-            return {unit: unit + ' / H2O'}, []
-        warn('WARNING: Unexpected dimensionality')
+            return {unit: unit + " / H2O"}, []
+        warn("WARNING: Unexpected dimensionality")
         return {}, []
 
     def check_units(self, flag_col=None):
@@ -384,7 +383,7 @@ class WQCharData():
                 df_out.loc[u_mask, self.col.unit_out] = self.units  # Replace w/ default
         self.df = df_out
 
-    def check_basis(self, basis_col='MethodSpecificationName'):
+    def check_basis(self, basis_col="MethodSpecificationName"):
         """Determine speciation (basis) for measure.
 
         Parameters
@@ -451,8 +450,7 @@ class WQCharData():
         df_checks(self.df, [basis_col])
 
         # Basis from MethodSpecificationName
-        if basis_col == 'MethodSpecificationName':
-
+        if basis_col == "MethodSpecificationName":
             # Add basis out column (i.e., 'Speciation') if it doesn't exist
             if self.col.basis not in self.df.columns:
                 self.df[self.col.basis] = nan
@@ -463,9 +461,9 @@ class WQCharData():
             # Basis from unit
             try:
                 basis_dict = basis.unit_basis_dict[self.out_col]
-                self.df[c_mask] = basis.basis_from_unit(self.df[c_mask],
-                                                        basis_dict,
-                                                        self.col.unit_out)
+                self.df[c_mask] = basis.basis_from_unit(
+                    self.df[c_mask], basis_dict, self.col.unit_out
+                )
             except KeyError:
                 pass
             # Finish by filling any NAs with char_val based default
@@ -478,14 +476,15 @@ class WQCharData():
             self.df.loc[c_mask, col] = self.df.loc[c_mask, col].fillna(char_val)
 
             # Drop instances of 'as '
-            self.df.loc[c_mask, col] = [bas[3:]
-                                        if bas.startswith('as ') else bas
-                                        for bas in self.df.loc[c_mask, col]]
+            self.df.loc[c_mask, col] = [
+                bas[3:] if bas.startswith("as ") else bas
+                for bas in self.df.loc[c_mask, col]
+            ]
 
         else:
-            self.df[c_mask] = basis.update_result_basis(self.df[c_mask],
-                                                        basis_col,
-                                                        self.col.unit_out)
+            self.df[c_mask] = basis.update_result_basis(
+                self.df[c_mask], basis_col, self.col.unit_out
+            )
 
     def update_ureg(self):
         """Update class unit registry to define units based on out_col."""
@@ -572,7 +571,7 @@ class WQCharData():
             return self.c_mask & self.df[column].notna()
         return self.c_mask & self.df[self.out_col].notna()
 
-    def convert_units(self, default_unit=None, errors='raise'):
+    def convert_units(self, default_unit=None, errors="raise"):
         """Update out-col to convert units.
 
         Update class out-col used to convert :class:`pandas.DataFrame`. from old
@@ -622,11 +621,13 @@ class WQCharData():
         df_out = self.df
         m_mask = self.measure_mask()
 
-        params = {'quantity_series': df_out.loc[m_mask, self.out_col],
-                  'unit_series': df_out.loc[m_mask, self.col.unit_out],
-                  'units': self.units,
-                  'ureg': self.ureg,
-                  'errors': errors}
+        params = {
+            "quantity_series": df_out.loc[m_mask, self.out_col],
+            "unit_series": df_out.loc[m_mask, self.col.unit_out],
+            "units": self.units,
+            "ureg": self.ureg,
+            "errors": errors,
+        }
         df_out.loc[m_mask, self.out_col] = convert_unit_series(**params)
         self.df = df_out
 
@@ -681,13 +682,13 @@ class WQCharData():
         unit = self.ureg.Quantity(unit)  # Pint quantity object from unit
         old_vals = df_out.loc[u_mask, self.out_col]
         try:
-            new_quants = [convert_fun(x*unit) for x in old_vals]
+            new_quants = [convert_fun(x * unit) for x in old_vals]
         except ValueError:
-            #print(old_vals.iloc[0]*unit)
+            # print(old_vals.iloc[0]*unit)
             # string to avoid altered ureg issues
-            new_quants = [convert_fun(str(x*unit)) for x in old_vals]
+            new_quants = [convert_fun(str(x * unit)) for x in old_vals]
         # 1run=6505.62ms (may be slower) vs apply (5888.43ms)
-        #new_vals = old_vals.apply(lambda x: convert_fun(x*unit).magnitude)
+        # new_vals = old_vals.apply(lambda x: convert_fun(x*unit).magnitude)
         new_vals = [quant.magnitude for quant in new_quants]
         df_out.loc[u_mask, self.out_col] = new_vals
         df_out.loc[u_mask, self.col.unit_out] = str(new_quants[0].units)
@@ -733,10 +734,9 @@ class WQCharData():
         """
         if m_mask is None:
             m_mask = self.measure_mask()
-        return units_dimension(self.df.loc[m_mask,
-                                           self.col.unit_out],
-                               self.units,
-                               self.ureg)
+        return units_dimension(
+            self.df.loc[m_mask, self.col.unit_out], self.units, self.ureg
+        )
 
     def replace_unit_str(self, old, new, mask=None):
         """Replace ALL instances of old with in WQCharData.col.unit_out column.
@@ -841,8 +841,13 @@ class WQCharData():
         for item in val_dict.items():
             self._replace_in_col(col, item[0], item[1], mask)
 
-    def fraction(self, frac_dict=None, catch_all=None, suffix=None,
-                 fract_col='ResultSampleFractionText'):
+    def fraction(
+        self,
+        frac_dict=None,
+        catch_all=None,
+        suffix=None,
+        fract_col="ResultSampleFractionText",
+    ):
         """Create columns for sample fractions using frac_dict to set names.
 
         Parameters
@@ -921,7 +926,8 @@ class WQCharData():
         0  1.0 milligram / liter                                   NaN
         1                    NaN  10.000000000000002 milligram / liter
 
-        Alternatively, the sample fraction lists from tada can be used, in this case they are added:
+        Alternatively, the sample fraction lists from tada can be used, in this case
+        they are added:
 
         >>> wq.fraction('TADA')
         >>> wq.df.columns
@@ -942,25 +948,25 @@ class WQCharData():
 
         fracs = list(set(self.df[c_mask][fract_col]))  # List of fracs in data
 
-        if ' ' in fracs:
-            #TODO: new col instead of overwrite
+        if " " in fracs:
+            # TODO: new col instead of overwrite
             # Replace bad sample fraction w/ nan
-            self.df = self._replace_in_col(fract_col, ' ', nan, c_mask)
-            fracs.remove(' ')
+            self.df = self._replace_in_col(fract_col, " ", nan, c_mask)
+            fracs.remove(" ")
 
         df_out = self.df  # Set var for easier referencing
-        char = list(set(df_out[self.c_mask]['CharacteristicName']))[0]
+        char = list(set(df_out[self.c_mask]["CharacteristicName"]))[0]
 
         # Deal with lack of args
         if suffix is None:
             suffix = self.out_col
         if catch_all is None:
-            catch_all = f'Other_{suffix}'
+            catch_all = f"Other_{suffix}"
 
         # Set up dict for what sample fraction to what col
         if frac_dict is None:
             frac_dict = {}
-        elif frac_dict=='TADA':
+        elif frac_dict == "TADA":
             # Get dictionary for updates from TADA (note keys are all caps)
             tada = domains.harmonize_TADA_dict()[char.upper()]
             frac_dict = {}
@@ -969,40 +975,40 @@ class WQCharData():
                 frac_dict[key] = list(tada[key])
                 # Add their values
                 frac_dict[key] += [x for v in tada[key].values() for x in v]
-        #else: dict was already provided
+        # else: dict was already provided
         if catch_all not in frac_dict.keys():
-            frac_dict[catch_all] = ['', nan]
+            frac_dict[catch_all] = ["", nan]
         # Make sure catch_all exists
         if not isinstance(frac_dict[catch_all], list):
             frac_dict[catch_all] = [frac_dict[catch_all]]
 
         # First cut to make the keys work as column names
         for key in frac_dict:
-            frac_dict[key.replace(',', '_')] = frac_dict.pop(key)
+            frac_dict[key.replace(",", "_")] = frac_dict.pop(key)
         for key in frac_dict:
             if key == self.out_col:
-                #TODO: prevent it from over-writing any col
+                # TODO: prevent it from over-writing any col
                 # If it is the same col name as the out_col add '_1'
-                frac_dict[key+'_1'] = frac_dict.pop(key)
+                frac_dict[key + "_1"] = frac_dict.pop(key)
 
         # Compare sample fractions against expected
         init_fracs = [x for v in frac_dict.values() for x in v]
         not_init = [frac for frac in fracs if frac not in init_fracs]
-        if len(not_init)>0:
+        if len(not_init) > 0:
             # TODO: when to add QA_flag?
-            smp = f'{char} sample fractions not in frac_dict'
+            smp = f"{char} sample fractions not in frac_dict"
             solution = f'expected domains, mapped to "{catch_all}"'
-            print(f'{len(not_init)} {smp}')
+            print(f"{len(not_init)} {smp}")
             # Compare against domains
-            all_fracs = list(domains.get_domain_dict('ResultSampleFraction'))
+            all_fracs = list(domains.get_domain_dict("ResultSampleFraction"))
             add_fracs = [frac for frac in not_init if frac in all_fracs]
             # Add new fractions to frac_dict mapped to catch_all
-            if len(add_fracs)>0:
-                print(f'{len(add_fracs)} {smp} found in {solution}')
+            if len(add_fracs) > 0:
+                print(f"{len(add_fracs)} {smp} found in {solution}")
                 frac_dict[catch_all] += add_fracs
             bad_fracs = [frac for frac in not_init if frac not in all_fracs]
-            if len(bad_fracs)>0:
-                warn(f'{len(bad_fracs)} {smp} or {solution}')
+            if len(bad_fracs) > 0:
+                warn(f"{len(bad_fracs)} {smp} or {solution}")
                 frac_dict[catch_all] += bad_fracs
 
         # Loop through dictionary making updates based on sample fraction
@@ -1061,29 +1067,28 @@ class WQCharData():
         mol_list = []  # Empty list to append to
 
         # If converting to/from moles has extra steps
-        if self.ureg(self.units).check({'[substance]': 1}):
+        if self.ureg(self.units).check({"[substance]": 1}):
             # Convert everything to MOLES!!!
             # Must consider the different speciation for each
-            #TODO: This could be problematic given umol/l
-            warn('This feature is not available yet')
+            # TODO: This could be problematic given umol/l
+            warn("This feature is not available yet")
             return {}, []
         for unit in self.dimensions_list():
-            if self.ureg(unit).check({'[substance]': 1}):
-                mol_params = {'ureg': self.ureg,
-                              'Q_': self.ureg.Quantity(1, unit),}
+            if self.ureg(unit).check({"[substance]": 1}):
+                mol_params = {
+                    "ureg": self.ureg,
+                    "Q_": self.ureg.Quantity(1, unit),
+                }
                 # Moles need to be further split by basis
                 basis_lst = list(set(self.df.loc[self.c_mask, self.col.basis]))
                 for speciation in basis_lst:
-                    mol_params['basis'] = speciation
+                    mol_params["basis"] = speciation
                     quant = str(moles_to_mass(**mol_params))
-                    dim_tup = self._dimension_handling(unit,
-                                                       quant,
-                                                       self.ureg)
+                    dim_tup = self._dimension_handling(unit, quant, self.ureg)
                     dimension_dict.update(dim_tup[0])
-                    mol_list+= dim_tup[1]
+                    mol_list += dim_tup[1]
             else:
-                dim_tup = self._dimension_handling(unit,
-                                                   ureg = self.ureg)
+                dim_tup = self._dimension_handling(unit, ureg=self.ureg)
                 dimension_dict.update(dim_tup[0])
         return dimension_dict, mol_list
 
