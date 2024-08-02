@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions to help re-shape the WQP pandas DataFrame."""
+
 import geopandas
 import pandas
 from dataretrieval import wqp
@@ -40,12 +41,12 @@ def split_table(df_in):
 
     """
     # Run datetime on activity fields if not already done
-    if 'Activity_datetime' not in list(df_in.columns):
+    if "Activity_datetime" not in list(df_in.columns):
         df_out = datetime(df_in)
     else:
         df_out = df_in.copy()
     # Run depth if not already done
-    if 'Depth' not in list(df_in.columns):
+    if "Depth" not in list(df_in.columns):
         df_out = harmonize_depth(df_out)
 
     chars_cols = domains.characteristic_cols()  # Characteristic columns list
@@ -55,7 +56,7 @@ def split_table(df_in):
     return main_df, chars_df
 
 
-def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
+def split_col(df_in, result_col="QA_flag", col_prefix="QA"):
     """Move each row value from a column to a characteristic specific column.
 
     Values are moved from the result_col in df_in to a new column where the
@@ -85,21 +86,21 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
     """
     # TODO: is this function doing too much?
     df_out = df_in.copy()
-    char_list = list(set(df_out['CharacteristicName']))
+    char_list = list(set(df_out["CharacteristicName"]))
 
     # TODO: try/catch on key error
     col_list = [domains.out_col_lookup[char_name] for char_name in char_list]
 
     # TODO: generalize to multi-characteristics other than phosphorus
-    char = 'Phosphorus'
+    char = "Phosphorus"
     if char in char_list:
         i = char_list.index(char)
-        suffix = '_' + domains.out_col_lookup[char]
+        suffix = "_" + domains.out_col_lookup[char]
         col_list[i] = [col for col in df_out.columns if col.endswith(suffix)]
 
     # Drop rows where result na
     for i, char in enumerate(char_list):
-        mask = (df_out['CharacteristicName'] == char)
+        mask = df_out["CharacteristicName"] == char
         if isinstance(col_list[i], list):
             # All columns with that suffix must be nan
             for col in col_list[i]:
@@ -114,12 +115,12 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
         # Currently written to drop NaN qa flags, to keep them filter on char
         if isinstance(out_col, list):
             for col_out in out_col:
-                new_col = col_prefix + '_' + col_out
+                new_col = col_prefix + "_" + col_out
                 mask = df_out[col_out].notna()
                 df_out.loc[mask, new_col] = df_out.loc[mask, result_col]
         else:
             mask = df_out[out_col].notna()
-            new_col = col_prefix + '_' + out_col
+            new_col = col_prefix + "_" + out_col
             # Create characteristic specific QA field
             df_out.loc[mask, new_col] = df_out.loc[mask, result_col]
 
@@ -130,11 +131,11 @@ def split_col(df_in, result_col='QA_flag', col_prefix='QA'):
 
 
 # def split_unit(series):
-    # If results are being written to another format that does not support
-    # pint objects the units must be recorded. If in the standard ureg it seems
-    # to write them as string, otherwise it errors. Ideally we'd either
-    # transfer the units to within the column name or in a seperate column (not
-    # preffered, only is multiple units).
+# If results are being written to another format that does not support
+# pint objects the units must be recorded. If in the standard ureg it seems
+# to write them as string, otherwise it errors. Ideally we'd either
+# transfer the units to within the column name or in a seperate column (not
+# preffered, only is multiple units).
 #    return series
 
 
@@ -170,15 +171,18 @@ def collapse_results(df_in, cols=None):
 
     # TODO: use date instead of datetime if na?   (date_idx)
     if not cols:
-        cols = ['MonitoringLocationIdentifier',
-                'Activity_datetime',
-                'ActivityIdentifier',
-                'OrganizationIdentifier']
+        cols = [
+            "MonitoringLocationIdentifier",
+            "Activity_datetime",
+            "ActivityIdentifier",
+            "OrganizationIdentifier",
+        ]
     df_indexed = df.groupby(by=cols, dropna=False).first()
     # TODO: warn about multi-lines with values (only returns first)
     problems = df.groupby(by=cols, dropna=False).first(min_count=2)
-    problems = problems.dropna(axis=1, how='all')
+    problems = problems.dropna(axis=1, how="all")
     return df_indexed
+
 
 # def combine_results(df_in):
 #     """
@@ -265,9 +269,8 @@ def get_activities_by_loc(characteristic_names, locations):
     # Split loc_list as query by list may cause the query url to be too long
     seg = 200  # Max length of each segment
     activities_list, md_list = [], []
-    for loc_que in [locations[x:x+seg] for x in range(0, len(locations), seg)]:
-        query = {'characteristicName': characteristic_names,
-                 'siteid': loc_que}
+    for loc_que in [locations[x : x + seg] for x in range(0, len(locations), seg)]:
+        query = {"characteristicName": characteristic_names, "siteid": loc_que}
         res = wqp.what_activities(**query)
         activities_list.append(res[0])  # Query response DataFrame
         md_list.append(res[1])  # Query response metadata
@@ -364,16 +367,16 @@ def add_activities_to_df(df_in, mask=None):
     """
     df_out = df_in.copy()
     # Check df for loc_field
-    loc_col = 'MonitoringLocationIdentifier'
+    loc_col = "MonitoringLocationIdentifier"
     df_checks(df_out, [loc_col])
     # List of unique sites and characteristicNames
     if mask:
         loc_list = list(set(df_out.loc[mask, loc_col].dropna()))
-        char_vals = list(set(df_out.loc[mask, 'CharacteristicName'].dropna()))
+        char_vals = list(set(df_out.loc[mask, "CharacteristicName"].dropna()))
     else:
         # Get all
         loc_list = list(set(df_out[loc_col].dropna()))
-        char_vals = list(set(df_out['CharacteristicName'].dropna()))
+        char_vals = list(set(df_out["CharacteristicName"].dropna()))
     # Get results
     act_df = get_activities_by_loc(char_vals, loc_list)
     # Merge results
@@ -433,16 +436,16 @@ def add_detection(df_in, char_val):
     """
     df_out = df_in.copy()
     # Check df for loc_field
-    loc_col = 'MonitoringLocationIdentifier'
-    res_id = 'ResultIdentifier'
+    loc_col = "MonitoringLocationIdentifier"
+    res_id = "ResultIdentifier"
     df_checks(df_out, [loc_col, res_id])
-    c_mask = df_out['CharacteristicName'] == char_val  # Mask to limit rows
+    c_mask = df_out["CharacteristicName"] == char_val  # Mask to limit rows
     loc_series = df_out.loc[c_mask, loc_col]  # Location Series
     res_series = df_out.loc[c_mask, res_id]  # Location Series
     # Get results
     detect_df = get_detection_by_loc(loc_series, res_series, char_val)
     # Merge results to table
-    df_merged = merge_tables(df_out, detect_df, merge_cols='all')
+    df_merged = merge_tables(df_out, detect_df, merge_cols="all")
     return df_merged
 
 
@@ -484,21 +487,21 @@ def get_detection_by_loc(loc_series, result_id_series, char_val=None):
     # Split list - query by full list may cause the query url to be too long
     seg = 200  # Max length of each segment
     detection_list, md_list = [], []
-    for id_que in [id_list[x:x+seg] for x in range(0, len(id_list), seg)]:
-        query = {'siteid': id_que}
+    for id_que in [id_list[x : x + seg] for x in range(0, len(id_list), seg)]:
+        query = {"siteid": id_que}
         if char_val:
-            query['characteristicName'] = char_val
+            query["characteristicName"] = char_val
         res = wqp.what_detection_limits(**query)
         detection_list.append(res[0])  # Query response DataFrame
         md_list.append(res[1])  # Query response metadata
     # Combine the dataframe results in the list
     detection_df = pandas.concat(detection_list).drop_duplicates()
     # Filter on resultID
-    df_out = detection_df[detection_df['ResultIdentifier'].isin(result_idx)]
+    df_out = detection_df[detection_df["ResultIdentifier"].isin(result_idx)]
     return df_out
 
 
-def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
+def merge_tables(df1, df2, df2_cols="all", merge_cols="activity"):
     """Merge df1 and df2.
 
     Merge tables(df1 and df2), adding df2_cols to df1 where merge_cols match.
@@ -544,17 +547,18 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
     # TODO: change merge_cols default to all?
     col2_list = list(df2.columns)
 
-    test = merge_cols == 'activity'  # Special activity test = true/false
+    test = merge_cols == "activity"  # Special activity test = true/false
 
-    if merge_cols == 'activity':
+    if merge_cols == "activity":
         # ActivityIdentifiers are non-unique. More cols for one-to-one match.
-        merge_cols = ['ActivityIdentifier',
-                      'ActivityStartDate',
-                      'ActivityStartTime/Time',
-                      'ActivityStartTime/TimeZoneCode',
-                      'MonitoringLocationIdentifier',
-                      ]
-    elif merge_cols == 'all':
+        merge_cols = [
+            "ActivityIdentifier",
+            "ActivityStartDate",
+            "ActivityStartTime/Time",
+            "ActivityStartTime/TimeZoneCode",
+            "MonitoringLocationIdentifier",
+        ]
+    elif merge_cols == "all":
         # Use ALL shared columns. For activity this is +=
         # 'OrganizationIdentifier', 'OrganizationFormalName', 'ProviderName'
         merge_cols = [x for x in list(df1.columns) if x in col2_list]
@@ -562,21 +566,21 @@ def merge_tables(df1, df2, df2_cols='all', merge_cols='activity'):
         # Check columns in both tables
         shared = [x for x in list(df1.columns) if x in col2_list]
         for col in merge_cols:
-            assert col in shared, f'{col} not in both DataFrames'
+            assert col in shared, f"{col} not in both DataFrames"
     # Columns to add from df2
-    if df2_cols == 'all':
+    if df2_cols == "all":
         # All columns not in df1
         df2_cols = [x for x in col2_list if x not in list(df1.columns)]
     else:
         for col in df2_cols:
-            assert col in col2_list, f'{col} not in DataFrame'
+            assert col in col2_list, f"{col} not in DataFrame"
 
     # Merge activity columns to narrow results
     df2 = df2[merge_cols + df2_cols]  # Limit df2 to columns we want
     df2 = df2.drop_duplicates()  # Reduces many to one joins
 
     # Merge activity columns to narrow results
-    merged_results = pandas.merge(df1, df2, how='left', on=merge_cols)
+    merged_results = pandas.merge(df1, df2, how="left", on=merge_cols)
     if test:
         # Many df2 to one df1 gets multiple rows, test for extra activities
         # TODO: Throw more descriptive error?
@@ -643,13 +647,13 @@ def get_bounding_box(shp, idx=None):
     if idx is None:
         bbox = shp.total_bounds
     else:
-        xmin = shp.bounds['minx'][idx]
-        xmax = shp.bounds['maxx'][idx]
-        ymin = shp.bounds['miny'][idx]
-        ymax = shp.bounds['maxy'][idx]
+        xmin = shp.bounds["minx"][idx]
+        xmax = shp.bounds["maxx"][idx]
+        ymin = shp.bounds["miny"][idx]
+        ymax = shp.bounds["maxy"][idx]
         bbox = [xmin, ymin, xmax, ymax]
 
-    return ','.join(map(str, bbox))
+    return ",".join(map(str, bbox))
 
 
 def clip_stations(stations, aoi):
@@ -767,13 +771,15 @@ def to_simple_shape(gdf, out_shp):
 
     # Results columns need to be str not pint (.astype(str))
     # Narrow based on out_col lookup dictionary
-    results_cols = [col for col in possible_results if col in domains.out_col_lookup.values()]
+    results_cols = [
+        col for col in possible_results if col in domains.out_col_lookup.values()
+    ]
     # TODO: check based on suffix: e.g. Phosphorus
     # Rename each column w/ units and write results as str
     for col in results_cols:
         gdf[col] = gdf[col].astype(str)
     # Drop dateime
-    gdf = gdf.drop(columns=['Activity_datetime'])
+    gdf = gdf.drop(columns=["Activity_datetime"])
     # date yyyy-mm-dd (shp)
     # schema = geopandas.io.file.infer_schema(gdf)
     # schema['properties']['StartDate'] = 'date'

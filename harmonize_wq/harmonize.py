@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions to harmonize data retrieved from EPA's Water Quality Portal."""
+
 from warnings import warn
 
 from numpy import nan

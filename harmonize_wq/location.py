@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Functions to clean/correct location data."""
+
 import geopandas
 import pandas
 from dataretrieval import wqp
