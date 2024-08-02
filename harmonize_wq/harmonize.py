@@ -232,7 +232,8 @@ def harmonize_all(df_in, errors="raise"):
     >>> from harmonize_wq import harmonize
     >>> df_result_all = harmonize.harmonize_all(df1)
     1 Phosphorus sample fractions not in frac_dict
-    1 Phosphorus sample fractions not in frac_dict found in expected domains, mapped to "Other_Phosphorus"
+    1 Phosphorus sample fractions not in frac_dict found in expected domains, 
+    mapped to "Other_Phosphorus"
 
     >>> df_result_all
            OrganizationIdentifier  ...           Temperature
