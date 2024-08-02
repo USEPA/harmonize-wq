@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Class for harmonizing data retrieved from EPA's Water Quality Portal."""
+
 from types import SimpleNamespace
 from warnings import warn
 

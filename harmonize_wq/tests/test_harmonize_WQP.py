@@ -7,6 +7,7 @@ used to construct the query.
 
 @author: jbousqui
 """
+
 import os
 
 import geopandas
