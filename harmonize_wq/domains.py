@@ -19,46 +19,46 @@ accepted_methods : dict
 
 stations_rename : dict
   Get shortened column names for shapefile (.shp) fields.
-  
+
   Dictionary where key = WQP field name and value = short name for .shp.
 
   ESRI places a length restriction on shapefile (.shp) field names. This
   returns a dictionary with the original water quality portal field name (as
   key) and shortened column name for writing as .shp. We suggest using the
   longer original name as the field alias when writing as .shp.
-  
+
   Examples
   --------
   Although running the function returns the full dictionary of Key:Value
   pairs, here we show how the current name can be used as a key to get the
   new name:
-  
+
   >>> domains.stations_rename['OrganizationIdentifier']
   'org_ID'
-  
+
 xy_datum : dict
-  
+
   Get dictionary of expected horizontal datums, where exhaustive:
           {HorizontalCoordinateReferenceSystemDatumName: {Description:str,
           EPSG:int}}
-  
+
   The structure has {key as expected string: value as {"Description": string
   and "EPSG": integer (4-digit code)}.
-  
+
   Notes
   -----
   source WQP: HorizontalCoordinateReferenceSystemDatum_CSV.zip
-  
+
   Anything not in dict will be NaN, and non-integer EPSG will be missing:
   "OTHER": {"Description": 'Other', "EPSG": nan},
   "UNKWN": {"Description": 'Unknown', "EPSG": nan}
-  
+
   Examples
   --------
   Running the function returns the full dictionary with {abbreviation:
   {'Description':values, 'EPSG':values}}. The abbreviation key can be used to
   get the EPSG code:
-  
+
   >>> domains.xy_datum['NAD83']
   {'Description': 'North American Datum 1983', 'EPSG': 4269}
   >>> domains.xy_datum['NAD83']['EPSG']
@@ -187,7 +187,10 @@ def harmonize_TADA_dict():
     Returns
     -------
     full_dict : dict
-        {'TADA.CharacteristicName': {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText [Target.TADA.ResultSampleFractionText]}}}
+        {'TADA.CharacteristicName':
+         {Target.TADA.CharacteristicName:
+          {Target.TADA.ResultSampleFractionText :
+           [Target.TADA.ResultSampleFractionText]}}}
     """
     # Note: too nested for refactor into single function w/ char_tbl_TADA
 
