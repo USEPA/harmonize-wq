@@ -567,9 +567,16 @@ class WQCharData:
 
         >>> from pandas import DataFrame
         >>> from numpy import nan
-        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus', 'Phosphorus',],
-        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l', 'mg/l',],
-        ...                 'ResultMeasureValue': ['1.0', '67.0', '10', 'None'],
+        >>> df = DataFrame(
+        ...     {
+        ...       'CharacteristicName': [
+        ...         'Phosphorus',
+        ...         'Temperature, water',
+        ...         'Phosphorus',
+        ...         'Phosphorus',
+        ...       ],
+        ...       'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l', 'mg/l',],
+        ...       'ResultMeasureValue': ['1.0', '67.0', '10', 'None'],
         ...                 })
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
