@@ -688,10 +688,16 @@ class WQCharData:
         Build pandas DataFrame to use as input:
 
         >>> from pandas import DataFrame
-        >>> df = DataFrame({'CharacteristicName': ['Dissolved oxygen (DO)', 'Dissolved oxygen (DO)',],
-        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', '%'],
-        ...                 'ResultMeasureValue': ['1.0', '10.0',],
-        ...                 })
+        >>> df = DataFrame(
+        ...   {
+        ...     'CharacteristicName': [
+        ...       'Dissolved oxygen (DO)',
+        ...       'Dissolved oxygen (DO)',
+        ...     ],
+        ...     'ResultMeasure/MeasureUnitCode': ['mg/l', '%'],
+        ...     'ResultMeasureValue': ['1.0', '10.0',],
+        ...   }
+        ... )
         >>> df
               CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0  Dissolved oxygen (DO)                          mg/l                1.0
@@ -788,10 +794,13 @@ class WQCharData:
         Build pandas DataFrame to use as input:
 
         >>> from pandas import DataFrame
-        >>> df = DataFrame({'CharacteristicName': ['Temperature, water', 'Temperature, water',],
-        ...                 'ResultMeasure/MeasureUnitCode': ['deg C', 'deg F',],
-        ...                 'ResultMeasureValue': ['31', '87',],
-        ...                 })
+        >>> df = DataFrame(
+        ...     {
+        ...       "CharacteristicName": ["Temperature, water", "Temperature, water",],
+        ...       "ResultMeasure/MeasureUnitCode": ["deg C", "deg F",],
+        ...       "ResultMeasureValue": ["31", "87",],
+        ...     }
+        ... )
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0  Temperature, water                         deg C                 31
