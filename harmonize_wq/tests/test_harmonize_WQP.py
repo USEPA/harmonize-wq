@@ -394,6 +394,7 @@ def test_harmonize_temperature():
     actual2 = harmonize.harmonize(
         NARROW_RESULTS.iloc[0:10], "Temperature, water", units_out="deg F"
     )
+    assert isinstance(actual2, pandas.core.frame.DataFrame)  # Test type
     # Test that the dataframe has expected type, size, cols, and rows
     assert isinstance(actual, pandas.core.frame.DataFrame)  # Test type
     assert actual.size == 13301685  # Test size #14784040
