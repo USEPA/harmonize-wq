@@ -3,7 +3,7 @@ name: test
 on:
   push:
     branches:
-      [main, pyOpenSci-review]
+      [main]
   pull_request:
     branches:
       [main]
