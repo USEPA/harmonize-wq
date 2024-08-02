@@ -11,7 +11,7 @@ accepted_methods : dict
   Get accepted methods for each characteristic. Dictionary where key is
   characteristic column name and value is list of dictionaries each with Source
   and Method keys.
-  
+
   Notes
   -----
   Source should be in 'ResultAnalyticalMethod/MethodIdentifierContext'
@@ -68,66 +68,66 @@ import pandas
 import requests
 
 
-BASE_URL = 'https://cdx.epa.gov/wqx/download/DomainValues/'
-TADA_DATA_URL = 'https://raw.githubusercontent.com/USEPA/EPATADA/'
+BASE_URL = "https://cdx.epa.gov/wqx/download/DomainValues/"
+TADA_DATA_URL = "https://raw.githubusercontent.com/USEPA/EPATADA/"
 
-UNITS_REPLACE = {'Secchi': {},
-                 'DO': {'%': 'percent'},
-                 'Temperature': {},
-                 'Salinity': {'ppt': 'ppth',
-                              '0/00': 'ppth'},
-                 'pH': {'None': 'dimensionless',
-                        'std units': 'dimensionless'},
-                 'Nitrogen': {'cm3/g @STP': 'cm3/g',
-                              'cm3/g STP': 'cm3/g',
-                              '%': 'percent'},
-                 'Conductivity': {'uS': 'uS/cm',
-                                  'umho': 'umho/cm'},
-                 'Carbon': {'% by wt': '%',
-                            '%': 'percent'},
-                 'Chlorophyll': {'mg/cm3': 'mg/cm**3',
-                                 'mg/m3': 'mg/m**3',
-                                 'mg/m2': 'mg/m**3',
-                                 'ug/cm3': 'ug/cm**3'},
-                 'Turbidity': {'mg/l SiO2': 'SiO2',
-                               'ppm SiO2': 'SiO2'},
-                 'Sediment': {'%': 'percent'},
-                 'Fecal_Coliform': {'#/100ml': 'CFU/(100ml)',
-                                    'CFU': 'CFU/(100ml)',
-                                    'MPN': 'MPN/(100ml)'},
-                 'E_coli': {'#/100ml': 'CFU/(100ml)',
-                            'CFU': 'CFU/(100ml)',
-                            'MPN': 'MPN/(100ml)'},
-                 'Phosphorus': {'%': 'percent'},
-                 }
+UNITS_REPLACE = {
+    "Secchi": {},
+    "DO": {"%": "percent"},
+    "Temperature": {},
+    "Salinity": {"ppt": "ppth", "0/00": "ppth"},
+    "pH": {"None": "dimensionless", "std units": "dimensionless"},
+    "Nitrogen": {"cm3/g @STP": "cm3/g", "cm3/g STP": "cm3/g", "%": "percent"},
+    "Conductivity": {"uS": "uS/cm", "umho": "umho/cm"},
+    "Carbon": {"% by wt": "%", "%": "percent"},
+    "Chlorophyll": {
+        "mg/cm3": "mg/cm**3",
+        "mg/m3": "mg/m**3",
+        "mg/m2": "mg/m**3",
+        "ug/cm3": "ug/cm**3",
+    },
+    "Turbidity": {"mg/l SiO2": "SiO2", "ppm SiO2": "SiO2"},
+    "Sediment": {"%": "percent"},
+    "Fecal_Coliform": {
+        "#/100ml": "CFU/(100ml)",
+        "CFU": "CFU/(100ml)",
+        "MPN": "MPN/(100ml)",
+    },
+    "E_coli": {"#/100ml": "CFU/(100ml)", "CFU": "CFU/(100ml)", "MPN": "MPN/(100ml)"},
+    "Phosphorus": {"%": "percent"},
+}
 
-OUT_UNITS = {'Secchi': 'm',
-             'DO': 'mg/l',
-             'Temperature': 'degC',
-             'Salinity': 'PSU',
-             'pH': 'dimensionless',
-             'Nitrogen': 'mg/l',
-             'Conductivity': 'uS/cm',
-             'Carbon': 'mg/l',
-             'Chlorophyll': 'mg/l',
-             'Turbidity': 'NTU',
-             'Sediment': 'g/kg',
-             'Fecal_Coliform': 'CFU/(100ml)',
-             'E_coli': 'CFU/(100ml)',
-             'Phosphorus': 'mg/l'
-             }
+OUT_UNITS = {
+    "Secchi": "m",
+    "DO": "mg/l",
+    "Temperature": "degC",
+    "Salinity": "PSU",
+    "pH": "dimensionless",
+    "Nitrogen": "mg/l",
+    "Conductivity": "uS/cm",
+    "Carbon": "mg/l",
+    "Chlorophyll": "mg/l",
+    "Turbidity": "NTU",
+    "Sediment": "g/kg",
+    "Fecal_Coliform": "CFU/(100ml)",
+    "E_coli": "CFU/(100ml)",
+    "Phosphorus": "mg/l",
+}
 
 # Temporary (these are confirmed)
-domain_tables = {'ActivityMedia': 'ActivityMedia_CSV',
-                 'SampleFraction': 'ResultSampleFraction_CSV',
-                 'ActivityMediaSubdivision': 'ActivityMediaSubdivision_CSV',
-                 'ResultValueType': 'ResultValueType_CSV'}
+domain_tables = {
+    "ActivityMedia": "ActivityMedia_CSV",
+    "SampleFraction": "ResultSampleFraction_CSV",
+    "ActivityMediaSubdivision": "ActivityMediaSubdivision_CSV",
+    "ResultValueType": "ResultValueType_CSV",
+}
 # Replaces:
 # get_ActivityMediaName():
 # get_SampleFraction():
 # get_ActivityMediaSubdivisionName():
 # get_ResultValueTypeName():
 # get_domain_list(field):
+
 
 def get_domain_dict(table, cols=None):
     """Get domain values for specified table.
@@ -167,10 +167,10 @@ def get_domain_dict(table, cols=None):
 
     """
     if cols is None:
-        cols = ['Name', 'Description']
-    if not table.endswith('_CSV'):
-        table += '_CSV'
-    url = f'{BASE_URL}{table}.zip'
+        cols = ["Name", "Description"]
+    if not table.endswith("_CSV"):
+        table += "_CSV"
+    url = f"{BASE_URL}{table}.zip"
     # Very limited url handling
     if requests.get(url).status_code != 200:
         status_code = requests.get(url).status_code
@@ -192,15 +192,15 @@ def harmonize_TADA_dict():
     # Note: too nested for refactor into single function w/ char_tbl_TADA
 
     # Read from github
-    csv = f'{TADA_DATA_URL}develop/inst/extdata/HarmonizationTemplate.csv'
+    csv = f"{TADA_DATA_URL}develop/inst/extdata/HarmonizationTemplate.csv"
     df = pandas.read_csv(csv)  # Read csv url to DataFrame
     full_dict = {}  # Setup results dict
     # Build dict one unique characteristicName at a time
-    for char, sub_df in df.groupby('TADA.CharacteristicName'):
+    for char, sub_df in df.groupby("TADA.CharacteristicName"):
         full_dict[char] = char_tbl_TADA(sub_df, char)  # Build dictionary
 
     # Domains to check agaisnt
-    domain_list = list(get_domain_dict('ResultSampleFraction').keys())
+    domain_list = list(get_domain_dict("ResultSampleFraction").keys())
 
     # Update in/out with expected sample Fraction case
     for k_char, v_char in full_dict.items():
@@ -256,9 +256,11 @@ def char_tbl_TADA(df, char):
     new_char_dict : dict
         {Target.TADA.CharacteristicName: {Target.TADA.ResultSampleFractionText: [Target.TADA.ResultSampleFractionText]}
     """
-    cols = ['Target.TADA.CharacteristicName',
-            'TADA.ResultSampleFractionText',
-            'Target.TADA.ResultSampleFractionText']
+    cols = [
+        "Target.TADA.CharacteristicName",
+        "TADA.ResultSampleFractionText",
+        "Target.TADA.ResultSampleFractionText",
+    ]
     sub_df = df[cols].drop_duplicates()  # TODO: superfluous?
 
     # Update Output/target columns
@@ -270,12 +272,12 @@ def char_tbl_TADA(df, char):
     # loop over new chars, getting {new_fract: [old fracts]}
     new_char_dict = {}
     for new_char in sub_df[cols[0]].unique():
-        new_char_df = sub_df[sub_df[cols[0]]==new_char]  # Mask by new_char
+        new_char_df = sub_df[sub_df[cols[0]] == new_char]  # Mask by new_char
         new_fract_dict = {}
         for new_fract in new_char_df[cols[2]].unique():
             # TODO: {nan: []}? Doesn't break but needs handling later
             # Mask by new_fract
-            new_fract_df = new_char_df[new_char_df[cols[2]]==new_fract]
+            new_fract_df = new_char_df[new_char_df[cols[2]] == new_fract]
             # Add a list of possible old_fract for new_fract key
             new_fract_dict[new_fract] = new_fract_df[cols[1]].unique()
         new_char_dict[new_char] = new_fract_dict
@@ -314,39 +316,43 @@ def registry_adds_list(out_col):
 
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
     # Standard pint unit registry additions for dimensionless portions
-    pct_list = ['fraction = [] = frac',
-                'percent = 1e-2 frac',
-                'parts_per_thousand = 1e-3 = ppth',
-                'parts_per_million = 1e-6 fraction = ppm',
-                ]
+    pct_list = [
+        "fraction = [] = frac",
+        "percent = 1e-2 frac",
+        "parts_per_thousand = 1e-3 = ppth",
+        "parts_per_million = 1e-6 fraction = ppm",
+    ]
     # Standard pint unit registry additions for dimensionless bacteria units
-    bacteria_list = ['Colony_Forming_Units = [] = CFU = cfu',
-                     'Most_Probable_Number = CFU = MPN = mpn',
-                     ]
+    bacteria_list = [
+        "Colony_Forming_Units = [] = CFU = cfu",
+        "Most_Probable_Number = CFU = MPN = mpn",
+    ]
     # characteristic based dict
-    ureg_adds = {'Secchi': [],
-                 'DO': pct_list,
-                 'Temperature': [],
-                 'Salinity': pct_list +
-                             ['Practical_Salinity_Units = ppth = PSU = PSS'],
-                 'pH': [],
-                 'Nitrogen': [],
-                 'Conductivity': [],
-                 'Carbon': pct_list,
-                 'Chlorophyll': [],
-                 'Turbidity': ['Nephelometric_Turbidity_Units = [turbidity] = NTU',
-                               'Nephelometric_Turbidity_Ratio_Units = NTU = NTRU',
-                               'Nephelometric_Turbidity_Multibeam_Units = NTU = NTMU',
-                               'Formazin_Nephelometric_Units = NTU = FNU',
-                               'Formazin_Nephelometric_Ratio_Units = FNRU = FNU',
-                               'Formazin_Turbidity_Units = NTU = FNU = FTU = FAU',
-                               'Jackson_Turbidity_Units = [] = JTU',
-                               'SiO2 = []'],
-                 'Sediment': pct_list,
-                 'Fecal_Coliform': bacteria_list,
-                 'E_coli': bacteria_list,
-                 'Phosphorus': [],
-                 }
+    ureg_adds = {
+        "Secchi": [],
+        "DO": pct_list,
+        "Temperature": [],
+        "Salinity": pct_list + ["Practical_Salinity_Units = ppth = PSU = PSS"],
+        "pH": [],
+        "Nitrogen": [],
+        "Conductivity": [],
+        "Carbon": pct_list,
+        "Chlorophyll": [],
+        "Turbidity": [
+            "Nephelometric_Turbidity_Units = [turbidity] = NTU",
+            "Nephelometric_Turbidity_Ratio_Units = NTU = NTRU",
+            "Nephelometric_Turbidity_Multibeam_Units = NTU = NTMU",
+            "Formazin_Nephelometric_Units = NTU = FNU",
+            "Formazin_Nephelometric_Ratio_Units = FNRU = FNU",
+            "Formazin_Turbidity_Units = NTU = FNU = FTU = FAU",
+            "Jackson_Turbidity_Units = [] = JTU",
+            "SiO2 = []",
+        ],
+        "Sediment": pct_list,
+        "Fecal_Coliform": bacteria_list,
+        "E_coli": bacteria_list,
+        "Phosphorus": [],
+    }
     return ureg_adds[out_col]
 
 
@@ -386,7 +392,7 @@ out_col_lookup = {
     "Fecal Coliform": "Fecal_Coliform",
     "Escherichia coli": "E_coli",
     "Phosphorus": "Phosphorus",
-    }
+}
 
 
 def characteristic_cols(category=None):
@@ -415,144 +421,146 @@ def characteristic_cols(category=None):
      'LowerConfidenceLimitValue', 'ResultCommentText', 'ResultSamplingPointName',
      'ResultDetectionQuantitationLimitUrl']
     """
-    cols = {'ActivityStartDate': 'activity',
-            'ActivityStartTime/Time': 'activity',
-            'ActivityStartTime/TimeZoneCode': 'activity',
-            'DataLoggerLine': 'measure',
-            'ResultDetectionConditionText': 'QA',
-            'MethodSpecificationName': 'measure',
-            'CharacteristicName': 'measure',
-            'ResultSampleFractionText': 'measure',
-            'ResultMeasureValue': 'measure',
-            'ResultMeasure/MeasureUnitCode': 'measure',
-            'MeasureQualifierCode': 'measure',
-            'ResultStatusIdentifier': 'QA',
-            'ResultIdentifier': 'measure',
-            'StatisticalBaseCode': 'measure',
-            'ResultValueTypeName': 'measure',
-            'ResultWeightBasisText': 'Basis',
-            'ResultTimeBasisText': 'Basis',
-            'ResultTemperatureBasisText': 'Basis',
-            'ResultParticleSizeBasisText': 'Basis',
-            'PrecisionValue': 'QA',
-            'DataQuality/BiasValue': 'QA',
-            'ConfidenceIntervalValue': 'QA',
-            'UpperConfidenceLimitValue': 'QA',
-            'LowerConfidenceLimitValue': 'QA',
-            'ResultCommentText': 'QA',
-            'USGSPCode': 'measure',
-            'ResultDepthHeightMeasure/MeasureValue': 'Depth',
-            'ResultDepthHeightMeasure/MeasureUnitCode': 'Depth',
-            'ResultDepthAltitudeReferencePointText': 'Depth',
-            'ResultSamplingPointName': 'QA',
-            'BiologicalIntentName': 'Bio',
-            'BiologicalIndividualIdentifier': 'BIO',
-            'SubjectTaxonomicName': 'Bio',
-            'UnidentifiedSpeciesIdentifier': 'BIO',
-            'SampleTissueAnatomyName': 'Bio',
-            'GroupSummaryCountWeight/MeasureValue': 'Bio',
-            'GroupSummaryCountWeight/MeasureUnitCode': 'Bio',
-            'CellFormName': 'Bio',
-            'CellShapeName': 'Bio',
-            'HabitName': 'Bio',
-            'VoltismName': 'Bio',
-            'TaxonomicPollutionTolerance': 'Bio',
-            'TaxonomicPollutionToleranceScaleText': 'Bio',
-            'TrophicLevelName': 'Bio',
-            'FunctionalFeedingGroupName': 'Bio',
-            'TaxonomicDetailsCitation/ResourceTitleName': 'Bio',
-            'TaxonomicDetailsCitation/ResourceCreatorName': 'Bio',
-            'TaxonomicDetailsCitation/ResourceSubjectText': 'Bio',
-            'TaxonomicDetailsCitation/ResourcePublisherName': 'Bio',
-            'TaxonomicDetailsCitation/ResourceDate': 'Bio',
-            'TaxonomicDetailsCitation/ResourceIdentifier': 'Bio',
-            'FrequencyClassInformationUrl': 'Bio',
-            'ResultAnalyticalMethod/MethodIdentifier': 'measure',
-            'ResultAnalyticalMethod/MethodIdentifierContext': 'measure',
-            'ResultAnalyticalMethod/MethodName': 'measure',
-            'ResultAnalyticalMethod/MethodUrl': 'measure',
-            'ResultAnalyticalMethod/MethodQualifierTypeName': 'measure',
-            'MethodDescriptionText': 'measure',
-            'LaboratoryName': 'analysis',
-            'AnalysisStartDate': 'analysis',
-            'AnalysisStartTime/Time': 'analysis',
-            'AnalysisStartTime/TimeZoneCode': 'analysis',
-            'AnalysisEndDate': 'analysis',
-            'AnalysisEndTime/Time': 'analysis',
-            'AnalysisEndTime/TimeZoneCode': 'analysis',
-            'ResultLaboratoryCommentCode': 'analysis',
-            'ResultLaboratoryCommentText': 'analysis',
-            'ResultDetectionQuantitationLimitUrl': 'QA',
-            'LaboratoryAccreditationIndicator': 'analysis',
-            'LaboratoryAccreditationAuthorityName': 'analysis',
-            'TaxonomistAccreditationIndicator': 'analysis',
-            'TaxonomistAccreditationAuthorityName': 'analysis',
-            'LabSamplePreparationUrl': 'analysis',
-            'ActivityTypeCode': 'activity',
-            'ActivityMediaName': 'activity',
-            'ActivityMediaSubdivisionName': 'activity',
-            'ActivityEndDate': 'activity',
-            'ActivityEndTime/Time': 'activity',
-            'ActivityEndTime/TimeZoneCode': 'activity',
-            'ActivityRelativeDepthName': 'depth',
-            'ActivityDepthHeightMeasure/MeasureValue': 'depth',
-            'ActivityDepthHeightMeasure/MeasureUnitCode': 'depth',
-            'ActivityDepthAltitudeReferencePointText': 'depth',
-            'ActivityTopDepthHeightMeasure/MeasureValue': 'depth',
-            'ActivityTopDepthHeightMeasure/MeasureUnitCode': 'depth',
-            'ActivityBottomDepthHeightMeasure/MeasureValue': 'depth',
-            'ActivityBottomDepthHeightMeasure/MeasureUnitCode': 'depth',
-            'ActivityConductingOrganizationText': 'activity',
-            'ActivityCommentText': 'activity',
-            'SampleAquifer': 'activity',
-            'HydrologicCondition': 'activity',
-            'HydrologicEvent': 'activity',
-            'ActivityLocation/LatitudeMeasure': 'activity',
-            'ActivityLocation/LongitudeMeasure': 'activity',
-            'ActivityLocation/SourceMapScaleNumeric': 'activity',
-            'ActivityLocation/HorizontalAccuracyMeasure/MeasureValue': 'activity',
-            'ActivityLocation/HorizontalAccuracyMeasure/MeasureUnitCode': 'activity',
-            'ActivityLocation/HorizontalCollectionMethodName': 'activity',
-            'ActivityLocation/HorizontalCoordinateReferenceSystemDatumName': 'activity',
-            'AssemblageSampledName': 'sample',
-            'CollectionDuration/MeasureValue': 'sample',
-            'CollectionDuration/MeasureUnitCode': 'sample',
-            'SamplingComponentName': 'sample',
-            'SamplingComponentPlaceInSeriesNumeric': 'sample',
-            'ReachLengthMeasure/MeasureValue': 'sample',
-            'ReachLengthMeasure/MeasureUnitCode': 'sample',
-            'ReachWidthMeasure/MeasureValue': 'sample',
-            'ReachWidthMeasure/MeasureUnitCode': 'sample',
-            'PassCount': 'sample',
-            'NetTypeName': 'sample',
-            'NetSurfaceAreaMeasure/MeasureValue': 'sample',
-            'NetSurfaceAreaMeasure/MeasureUnitCode': 'sample',
-            'NetMeshSizeMeasure/MeasureValue': 'sample',
-            'NetMeshSizeMeasure/MeasureUnitCode': 'sample',
-            'BoatSpeedMeasure/MeasureValue': 'sample',
-            'BoatSpeedMeasure/MeasureUnitCode': 'sample',
-            'CurrentSpeedMeasure/MeasureValue': 'sample',
-            'CurrentSpeedMeasure/MeasureUnitCode': 'sample',
-            'ToxicityTestType': 'analysis',
-            'SampleCollectionMethod/MethodIdentifier': 'sample',
-            'SampleCollectionMethod/MethodIdentifierContext': 'sample',
-            'SampleCollectionMethod/MethodName': 'sample',
-            'SampleCollectionMethod/MethodQualifierTypeName': 'sample',
-            'SampleCollectionMethod/MethodDescriptionText': 'sample',
-            'SampleCollectionEquipmentName': 'sample',
-            'SampleCollectionMethod/SampleCollectionEquipmentCommentText': 'sample',
-            'SamplePreparationMethod/MethodIdentifier': 'sample',
-            'SamplePreparationMethod/MethodIdentifierContext': 'sample',
-            'SamplePreparationMethod/MethodName': 'sample',
-            'SamplePreparationMethod/MethodQualifierTypeName': 'sample',
-            'SamplePreparationMethod/MethodDescriptionText': 'sample',
-            'SampleContainerTypeName': 'sample',
-            'SampleContainerColorName': 'sample',
-            'ChemicalPreservativeUsedName': 'analysis',
-            'ThermalPreservativeUsedName': 'analysis',
-            'SampleTransportStorageDescription': 'analysis',
-            'ActivityMetricUrl': 'activity',
-            'PreparationStartDate': 'analysis',}
+    cols = {
+        "ActivityStartDate": "activity",
+        "ActivityStartTime/Time": "activity",
+        "ActivityStartTime/TimeZoneCode": "activity",
+        "DataLoggerLine": "measure",
+        "ResultDetectionConditionText": "QA",
+        "MethodSpecificationName": "measure",
+        "CharacteristicName": "measure",
+        "ResultSampleFractionText": "measure",
+        "ResultMeasureValue": "measure",
+        "ResultMeasure/MeasureUnitCode": "measure",
+        "MeasureQualifierCode": "measure",
+        "ResultStatusIdentifier": "QA",
+        "ResultIdentifier": "measure",
+        "StatisticalBaseCode": "measure",
+        "ResultValueTypeName": "measure",
+        "ResultWeightBasisText": "Basis",
+        "ResultTimeBasisText": "Basis",
+        "ResultTemperatureBasisText": "Basis",
+        "ResultParticleSizeBasisText": "Basis",
+        "PrecisionValue": "QA",
+        "DataQuality/BiasValue": "QA",
+        "ConfidenceIntervalValue": "QA",
+        "UpperConfidenceLimitValue": "QA",
+        "LowerConfidenceLimitValue": "QA",
+        "ResultCommentText": "QA",
+        "USGSPCode": "measure",
+        "ResultDepthHeightMeasure/MeasureValue": "Depth",
+        "ResultDepthHeightMeasure/MeasureUnitCode": "Depth",
+        "ResultDepthAltitudeReferencePointText": "Depth",
+        "ResultSamplingPointName": "QA",
+        "BiologicalIntentName": "Bio",
+        "BiologicalIndividualIdentifier": "BIO",
+        "SubjectTaxonomicName": "Bio",
+        "UnidentifiedSpeciesIdentifier": "BIO",
+        "SampleTissueAnatomyName": "Bio",
+        "GroupSummaryCountWeight/MeasureValue": "Bio",
+        "GroupSummaryCountWeight/MeasureUnitCode": "Bio",
+        "CellFormName": "Bio",
+        "CellShapeName": "Bio",
+        "HabitName": "Bio",
+        "VoltismName": "Bio",
+        "TaxonomicPollutionTolerance": "Bio",
+        "TaxonomicPollutionToleranceScaleText": "Bio",
+        "TrophicLevelName": "Bio",
+        "FunctionalFeedingGroupName": "Bio",
+        "TaxonomicDetailsCitation/ResourceTitleName": "Bio",
+        "TaxonomicDetailsCitation/ResourceCreatorName": "Bio",
+        "TaxonomicDetailsCitation/ResourceSubjectText": "Bio",
+        "TaxonomicDetailsCitation/ResourcePublisherName": "Bio",
+        "TaxonomicDetailsCitation/ResourceDate": "Bio",
+        "TaxonomicDetailsCitation/ResourceIdentifier": "Bio",
+        "FrequencyClassInformationUrl": "Bio",
+        "ResultAnalyticalMethod/MethodIdentifier": "measure",
+        "ResultAnalyticalMethod/MethodIdentifierContext": "measure",
+        "ResultAnalyticalMethod/MethodName": "measure",
+        "ResultAnalyticalMethod/MethodUrl": "measure",
+        "ResultAnalyticalMethod/MethodQualifierTypeName": "measure",
+        "MethodDescriptionText": "measure",
+        "LaboratoryName": "analysis",
+        "AnalysisStartDate": "analysis",
+        "AnalysisStartTime/Time": "analysis",
+        "AnalysisStartTime/TimeZoneCode": "analysis",
+        "AnalysisEndDate": "analysis",
+        "AnalysisEndTime/Time": "analysis",
+        "AnalysisEndTime/TimeZoneCode": "analysis",
+        "ResultLaboratoryCommentCode": "analysis",
+        "ResultLaboratoryCommentText": "analysis",
+        "ResultDetectionQuantitationLimitUrl": "QA",
+        "LaboratoryAccreditationIndicator": "analysis",
+        "LaboratoryAccreditationAuthorityName": "analysis",
+        "TaxonomistAccreditationIndicator": "analysis",
+        "TaxonomistAccreditationAuthorityName": "analysis",
+        "LabSamplePreparationUrl": "analysis",
+        "ActivityTypeCode": "activity",
+        "ActivityMediaName": "activity",
+        "ActivityMediaSubdivisionName": "activity",
+        "ActivityEndDate": "activity",
+        "ActivityEndTime/Time": "activity",
+        "ActivityEndTime/TimeZoneCode": "activity",
+        "ActivityRelativeDepthName": "depth",
+        "ActivityDepthHeightMeasure/MeasureValue": "depth",
+        "ActivityDepthHeightMeasure/MeasureUnitCode": "depth",
+        "ActivityDepthAltitudeReferencePointText": "depth",
+        "ActivityTopDepthHeightMeasure/MeasureValue": "depth",
+        "ActivityTopDepthHeightMeasure/MeasureUnitCode": "depth",
+        "ActivityBottomDepthHeightMeasure/MeasureValue": "depth",
+        "ActivityBottomDepthHeightMeasure/MeasureUnitCode": "depth",
+        "ActivityConductingOrganizationText": "activity",
+        "ActivityCommentText": "activity",
+        "SampleAquifer": "activity",
+        "HydrologicCondition": "activity",
+        "HydrologicEvent": "activity",
+        "ActivityLocation/LatitudeMeasure": "activity",
+        "ActivityLocation/LongitudeMeasure": "activity",
+        "ActivityLocation/SourceMapScaleNumeric": "activity",
+        "ActivityLocation/HorizontalAccuracyMeasure/MeasureValue": "activity",
+        "ActivityLocation/HorizontalAccuracyMeasure/MeasureUnitCode": "activity",
+        "ActivityLocation/HorizontalCollectionMethodName": "activity",
+        "ActivityLocation/HorizontalCoordinateReferenceSystemDatumName": "activity",
+        "AssemblageSampledName": "sample",
+        "CollectionDuration/MeasureValue": "sample",
+        "CollectionDuration/MeasureUnitCode": "sample",
+        "SamplingComponentName": "sample",
+        "SamplingComponentPlaceInSeriesNumeric": "sample",
+        "ReachLengthMeasure/MeasureValue": "sample",
+        "ReachLengthMeasure/MeasureUnitCode": "sample",
+        "ReachWidthMeasure/MeasureValue": "sample",
+        "ReachWidthMeasure/MeasureUnitCode": "sample",
+        "PassCount": "sample",
+        "NetTypeName": "sample",
+        "NetSurfaceAreaMeasure/MeasureValue": "sample",
+        "NetSurfaceAreaMeasure/MeasureUnitCode": "sample",
+        "NetMeshSizeMeasure/MeasureValue": "sample",
+        "NetMeshSizeMeasure/MeasureUnitCode": "sample",
+        "BoatSpeedMeasure/MeasureValue": "sample",
+        "BoatSpeedMeasure/MeasureUnitCode": "sample",
+        "CurrentSpeedMeasure/MeasureValue": "sample",
+        "CurrentSpeedMeasure/MeasureUnitCode": "sample",
+        "ToxicityTestType": "analysis",
+        "SampleCollectionMethod/MethodIdentifier": "sample",
+        "SampleCollectionMethod/MethodIdentifierContext": "sample",
+        "SampleCollectionMethod/MethodName": "sample",
+        "SampleCollectionMethod/MethodQualifierTypeName": "sample",
+        "SampleCollectionMethod/MethodDescriptionText": "sample",
+        "SampleCollectionEquipmentName": "sample",
+        "SampleCollectionMethod/SampleCollectionEquipmentCommentText": "sample",
+        "SamplePreparationMethod/MethodIdentifier": "sample",
+        "SamplePreparationMethod/MethodIdentifierContext": "sample",
+        "SamplePreparationMethod/MethodName": "sample",
+        "SamplePreparationMethod/MethodQualifierTypeName": "sample",
+        "SamplePreparationMethod/MethodDescriptionText": "sample",
+        "SampleContainerTypeName": "sample",
+        "SampleContainerColorName": "sample",
+        "ChemicalPreservativeUsedName": "analysis",
+        "ThermalPreservativeUsedName": "analysis",
+        "SampleTransportStorageDescription": "analysis",
+        "ActivityMetricUrl": "activity",
+        "PreparationStartDate": "analysis",
+    }
     if category:
         # List of key where value is category
         col_list = [key for key, value in cols.items() if value == category]
@@ -579,8 +587,8 @@ xy_datum = {
     "HARN": {
         "Description": "High Accuracy Reference Network for NAD83",
         "EPSG": 4152,
-        },
-    }
+    },
+}
 
 #     Default field mapping writes full name to alias but a short name to field
 stations_rename = {
@@ -622,7 +630,7 @@ stations_rename = {
     "ProviderName": "provider",
     "ActivityIdentifier": "activity_ID",
     "ResultIdentifier": "result_ID",
-    }
+}
 
 accepted_methods = {
     "Secchi": [
@@ -630,13 +638,13 @@ accepted_methods = {
         {"Source": "ASTM", "Method": "D1889"},
         {"Source": "USEPA", "Method": "NRSA09 W QUAL (BOAT)"},
         {"Source": "USEPA", "Method": "841-B-11-003"},
-        ],
+    ],
     "DO": [
         {"Source": "USEPA", "Method": "360.2"},
         {"Source": "USEPA", "Method": "130.1"},
         {"Source": "APHA", "Method": "4500-O-G"},
         {"Source": "USEPA", "Method": "160.3"},
-        {"Source": "AOAC",  "Method": "973.45"},
+        {"Source": "AOAC", "Method": "973.45"},
         {"Source": "USDOI/USGS", "Method": "I-1576-78"},
         {"Source": "USDOI/USGS", "Method": "NFM 6.2.1-LUM"},
         {"Source": "ASTM", "Method": "D888(B)"},
@@ -651,7 +659,7 @@ accepted_methods = {
         {"Source": "USEPA", "Method": "841-B-11-003"},
         {"Source": "ASTM", "Method": "D888-12"},
         {"Source": "YSI", "Method": "EXO WQ SONDE"},
-        ],
+    ],
     "Temperature": [
         {"Source": "USEPA", "Method": "170.1"},
         {"Source": "USEPA", "Method": "130.1"},
@@ -659,7 +667,7 @@ accepted_methods = {
         {"Source": "APHA", "Method": "2550"},
         {"Source": "YSI", "Method": "EXO WQ SONDE"},
         {"Source": "APHA", "Method": "2550 B"},
-        ],
+    ],
     "Salinity": [
         {"Source": "YSI", "Method": "EXO WQ SONDE"},
         {"Source": "HACH", "Method": "8160"},
@@ -667,7 +675,7 @@ accepted_methods = {
         {"Source": "APHA", "Method": "2130"},
         {"Source": "APHA", "Method": "3.2-B"},
         {"Source": "APHA", "Method": "2520-C"},
-        ],
+    ],
     "pH": [
         {"Source": "ASTM", "Method": "D1293(B)"},
         {"Source": "YSI", "Method": "EXO WQ SONDE"},
@@ -687,7 +695,7 @@ accepted_methods = {
         {"Source": "HACH", "Method": "8156"},
         {"Source": "ASTM", "Method": "D1293(A)"},
         {"Source": "APHA", "Method": "4500-H+B"},
-        ],
+    ],
     "Nitrogen": [
         {"Source": "USEPA", "Method": "353.1"},
         {"Source": "USEPA", "Method": "353.2"},
@@ -745,7 +753,7 @@ accepted_methods = {
         {"Source": "APHA", "Method": "5310-B"},
         {"Source": "APHA", "Method": "4500-P-J"},
         {"Source": "APHA", "Method": "4500-N-C"},
-        ],
+    ],
     "Conductivity": [
         {"Source": "ASTM", "Method": "D1125(A)"},
         {"Source": "APHA", "Method": "2510"},
@@ -759,7 +767,7 @@ accepted_methods = {
         {"Source": "USEPA", "Method": "120.1"},
         {"Source": "USEPA", "Method": "841-B-11-003"},
         {"Source": "YSI", "Method": "EXO WQ SONDE"},
-        ],
+    ],
     "Carbon": [
         {"Source": "USEPA", "Method": "9060"},
         {"Source": "APHA_SM20ED", "Method": "5310-B"},
@@ -778,7 +786,7 @@ accepted_methods = {
         {"Source": "USEPA", "Method": "415.2"},
         {"Source": "APHA", "Method": "5310-B"},
         {"Source": "APHA", "Method": "4500-H+B"},
-        ],
+    ],
     "Chlorophyll": [
         {"Source": "YSI", "Method": "EXO WQ SONDE"},
         {"Source": "USEPA", "Method": "446"},
@@ -791,7 +799,7 @@ accepted_methods = {
         {"Source": "APHA", "Method": "10200H(2)"},
         {"Source": "APHA", "Method": "9222B"},
         {"Source": "APHA", "Method": "5310-C"},
-        ],
+    ],
     "Turbidity": [
         {"Source": "USEPA", "Method": "160.2_M"},
         {"Source": "USDOI/USGS", "Method": "I3860"},
@@ -804,7 +812,7 @@ accepted_methods = {
         {"Source": "HACH", "Method": "8195"},
         {"Source": "LECK MITCHELL", "Method": "M5331"},
         {"Source": "ASTM", "Method": "D1889"},
-        ],
+    ],
     "Sediment": [],
     "Fecal_Coliform": [
         {"Source": "IDEXX", "Method": "COLILERT-18"},
@@ -822,7 +830,7 @@ accepted_methods = {
         {"Source": "APHA", "Method": "10200-G"},
         {"Source": "APHA", "Method": "9222-E"},
         {"Source": "APHA", "Method": "9221-B"},
-        ],
+    ],
     "E_coli": [
         {"Source": "APHA", "Method": "9221A-B-C-F"},
         {"Source": "IDEXX", "Method": "COLILERT/2000"},
@@ -859,7 +867,7 @@ accepted_methods = {
         {"Source": "ASTM", "Method": "D5392"},
         {"Source": "HACH", "Method": "10018"},
         {"Source": "USEPA", "Method": "1600"},
-        ],
+    ],
     "Phosphorus": [
         {"Source": "APHA", "Method": "3125"},
         {"Source": "APHA", "Method": "4500-P-C"},
@@ -952,5 +960,5 @@ accepted_methods = {
         {"Source": "USDOI/USGS", "Method": "I-2601-90"},
         {"Source": "USDOI/USGS", "Method": "I-6600-88"},
         {"Source": "ASTM", "Method": "D515"},
-        ],
-    }
+    ],
+}
