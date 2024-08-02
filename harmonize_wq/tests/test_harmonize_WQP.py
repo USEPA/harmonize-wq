@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-This will import when run from CI because sys.path[0] == cur_dir
-DIRPATH = r'L:\Public\jbousqui\Code\GitHub\harmonize-wq\harmonize_wq\tests'
-
 This script doesn't test query/download of the data using dataretrieval,
 instead the script is focused on processing, tidying and harmonizing data
 results from a query read from a ?csv. The exception is the bounding box query
@@ -24,11 +21,12 @@ from harmonize_wq import visualize as viz
 
 # CI
 DIRPATH = os.path.dirname(os.path.realpath(__file__))
+# DIRPATH = r"L:\Public\jbousqui\Code\GitHub\harmonize-wq\harmonize_wq\tests"
 
 # Test datasets
 test_dir = os.path.join(DIRPATH, "data")
 
-AOI_URL = r"https://github.com/USEPA/Coastal_Ecological_Indicators/raw/master/DGGS_Coastal/temperature_data/TampaBay.geojson"
+AOI_URL = "https://github.com/USEPA/Coastal_Ecological_Indicators/raw/master/DGGS_Coastal/temperature_data/TampaBay.geojson"
 
 # results for dataretrieval.wqp.what_sites(**query)
 STATIONS = pandas.read_csv(os.path.join(test_dir, "wqp_sites.txt"))
