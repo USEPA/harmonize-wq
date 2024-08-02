@@ -13,31 +13,32 @@ from numpy import nan
 from harmonize_wq.domains import registry_adds_list
 
 # TODO: does this constant belong here or in domains?
-PERIODIC_MW = {'Organic carbon': 180.16,
-               'C6H12O6': 180.16,
-               'Phosphorus': 30.97,
-               'P': 30.97,
-               'PO4': 94.97,
-               'Nitrogen': 14.01,
-               'N': 14.01,
-               'NO3': 62.01,
-               'NO2': 46.01,
-               'NH4': 18.04,
-               'NH3': 17.03,
-               'SiO3': 76.08,
-               }
+PERIODIC_MW = {
+    "Organic carbon": 180.16,
+    "C6H12O6": 180.16,
+    "Phosphorus": 30.97,
+    "P": 30.97,
+    "PO4": 94.97,
+    "Nitrogen": 14.01,
+    "N": 14.01,
+    "NO3": 62.01,
+    "NO2": 46.01,
+    "NH4": 18.04,
+    "NH3": 17.03,
+    "SiO3": 76.08,
+}
 # Molecular weight assumptions: Organic carbon = C6H12O6
 # NOTE: for a more complete handling of MW: CalebBell/chemicals
 
 u_reg = pint.UnitRegistry()  # For use in wrappers
 # TODO: find more elegant way to do this with all definitions
-for definition in registry_adds_list('Turbidity'):
+for definition in registry_adds_list("Turbidity"):
     u_reg.define(definition)
-for definition in registry_adds_list('Salinity'):
+for definition in registry_adds_list("Salinity"):
     u_reg.define(definition)
 
 
-#timeit: 159.17
+# timeit: 159.17
 # def convert_unit_series(quantity_series, unit_series, units, ureg=None):
 #     # Convert quantities to float if they aren't already (should be)
 #     if quantity_series.dtype=='O':
@@ -53,8 +54,8 @@ for definition in registry_adds_list('Salinity'):
 #     out_list = [val.to(ureg(units)) for val in val_list]
 #     # Re-index to return series
 #     return pandas.Series(out_list, index=quantity_series.index)
-#timeit: 27.08
-def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='raise'):
+# timeit: 27.08
+def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors="raise"):
     """Convert quantities to consistent units.
 
     Convert list of quantities (quantity_list), each with a specified old unit,
@@ -98,18 +99,18 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
     1    10000.000000000002 milligram / liter
     dtype: object
     """
-    if quantity_series.dtype=='O':
+    if quantity_series.dtype == "O":
         quantity_series = pandas.to_numeric(quantity_series)
     # Initialize classes from pint
     if ureg is None:
         ureg = pint.UnitRegistry()
     Q_ = ureg.Quantity
 
-    lst_series = [pandas.Series(dtype='object')]
+    lst_series = [pandas.Series(dtype="object")]
     # Note: set of series does not preservce order and must be sorted at end
     for unit in list(set(unit_series)):
         # Filter quantity_series by unit_series where == unit
-        f_quant_series = quantity_series.where(unit_series==unit).dropna()
+        f_quant_series = quantity_series.where(unit_series == unit).dropna()
         unit_ = ureg(unit)  # Set unit once per unit
         result_list = [Q_(q, unit_) for q in f_quant_series]
         if unit != units:
@@ -117,10 +118,10 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors='
             try:
                 result_list = [val.to(ureg(units)) for val in result_list]
             except pint.DimensionalityError as exception:
-                if errors=='skip':
+                if errors == "skip":
                     # do nothing, leave result_list unconverted
                     warn(f"WARNING: '{unit}' not converted")
-                elif errors=='ignore':
+                elif errors == "ignore":
                     # convert to NaN
                     result_list = [nan for val in result_list]
                     warn(f"WARNING: '{unit}' converted to NaN")
@@ -166,7 +167,7 @@ def mass_to_moles(ureg, char_val, Q_):
     """
     # TODO: Not used yet
     m_w = PERIODIC_MW[char_val]
-    return Q_.to('moles', 'chemistry', mw=m_w * ureg('g/mol'))
+    return Q_.to("moles", "chemistry", mw=m_w * ureg("g/mol"))
 
 
 def moles_to_mass(ureg, Q_, basis=None, char_val=None):
@@ -210,14 +211,14 @@ def moles_to_mass(ureg, Q_, basis=None, char_val=None):
     if basis:
         # Clean-up basis
         # print(basis)
-        if basis.startswith('as '):
+        if basis.startswith("as "):
             basis = basis[3:]
         m_w = PERIODIC_MW[basis]
     elif char_val:
         m_w = PERIODIC_MW[char_val]
     else:
         raise ValueError("Characteristic Name or basis (Speciation) required")
-    return Q_.to('g', 'chemistry', mw=m_w / ureg('mol/g'))
+    return Q_.to("g", "chemistry", mw=m_w / ureg("mol/g"))
 
 
 @u_reg.wraps(u_reg.NTU, u_reg.centimeter)
@@ -363,7 +364,7 @@ def JTU_to_NTU(val):
     # from Maceina, M. J., & Soballe, D. M. (1990).
     #      Wind-related limnological variation in Lake Okeechobee, Florida.
     #      Lake and Reservoir Management, 6(1), 93-100.
-    return 19.025*val - 0.0477
+    return 19.025 * val - 0.0477
 
 
 @u_reg.wraps(u_reg.NTU, u_reg.dimensionless)
@@ -439,12 +440,13 @@ def FNU_to_NTU(val):
     return val * 1.267
 
 
-@u_reg.wraps(u_reg.gram/u_reg.kilogram, (u_reg.gram/u_reg.liter,
-                                         u_reg.standard_atmosphere,
-                                         u_reg.degree_Celsius))
-def density_to_PSU(val,
-                   pressure=1*u_reg("atm"),
-                   temperature=u_reg.Quantity(25, u_reg("degC"))):
+@u_reg.wraps(
+    u_reg.gram / u_reg.kilogram,
+    (u_reg.gram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+)
+def density_to_PSU(
+    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+):
     """Convert salinity as density (mass/volume) to Practical Salinity Units.
 
     Parameters
@@ -483,24 +485,25 @@ def density_to_PSU(val,
     <Quantity(4.71542857, 'gram / kilogram')>
     """
     # Standard Reference Value
-    ref = 35.16504/35.0
+    ref = 35.16504 / 35.0
     # density of pure water is ~1000 mg/mL
     if val > 1000:
-        PSU = (float(val)*ref)-1000
+        PSU = (float(val) * ref) - 1000
     else:
-        PSU = ((float(val)+1000)*ref)-1000
+        PSU = ((float(val) + 1000) * ref) - 1000
     # print('{} mg/ml == {} ppth'.format(val, PSU))
     # multiply by 33.45 @26C, 33.44 @25C
 
     return PSU
 
 
-@u_reg.wraps(u_reg.milligram/u_reg.milliliter, (u_reg.dimensionless,
-                                                u_reg.standard_atmosphere,
-                                                u_reg.degree_Celsius))
-def PSU_to_density(val,
-                   pressure=1*u_reg("atm"),
-                   temperature=u_reg.Quantity(25, u_reg("degC"))):
+@u_reg.wraps(
+    u_reg.milligram / u_reg.milliliter,
+    (u_reg.dimensionless, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+)
+def PSU_to_density(
+    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+):
     """Convert salinity as Practical Salinity Units (PSU) to density.
 
     Dimensionality changes from dimensionless Practical Salinity Units (PSU) to
@@ -554,22 +557,29 @@ def PSU_to_density(val,
     _p, t = pressure, temperature
 
     # Pure water density (see SMOW, Craig 1961)
-    x = [999.842594,
-         6.793952e-2 * t,
-         -9.095290e-3 * t**2,
-         1.001685e-4 * t**3,
-         -1.120083e-6 * t**4,
-         6.536336e-9 * t**5]
+    x = [
+        999.842594,
+        6.793952e-2 * t,
+        -9.095290e-3 * t**2,
+        1.001685e-4 * t**3,
+        -1.120083e-6 * t**4,
+        6.536336e-9 * t**5,
+    ]
     pure_water = sum(x)
 
     # Constants
-    a0 = [-4.0899e-3*t, 7.6438e-5*(t**2), -8.2467e-7*(t**3), 5.3875e-9*(t**4)]
+    a0 = [
+        -4.0899e-3 * t,
+        7.6438e-5 * (t**2),
+        -8.2467e-7 * (t**3),
+        5.3875e-9 * (t**4),
+    ]
     a = 8.24493e-1 + sum(a0)
 
-    b0 = [-5.72466e-3, 1.0227e-4*t, -1.6546e-6*(t**2)]
+    b0 = [-5.72466e-3, 1.0227e-4 * t, -1.6546e-6 * (t**2)]
     b = sum(b0)
 
-    density = pure_water + a*val + b*(val**(3/2)) + 4.8314e-4*(val**2)
+    density = pure_water + a * val + b * (val ** (3 / 2)) + 4.8314e-4 * (val**2)
 
     # # UNESCO 1983 Eqn.(13) p17.
 
@@ -586,12 +596,13 @@ def PSU_to_density(val,
     return density
 
 
-@u_reg.wraps(u_reg.milligram/u_reg.liter, (None,
-                                           u_reg.standard_atmosphere,
-                                           u_reg.degree_Celsius))
-def DO_saturation(val,
-                  pressure=1*u_reg("atm"),
-                  temperature=u_reg.Quantity(25, u_reg("degC"))):
+@u_reg.wraps(
+    u_reg.milligram / u_reg.liter,
+    (None, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+)
+def DO_saturation(
+    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+):
     """Convert Dissolved Oxygen (DO) from saturation (%) to concentration (mg/l).
 
     Defaults assume STP where pressure is 1 atmosphere and temperature 25C.
@@ -625,15 +636,16 @@ def DO_saturation(val,
         cP = 8.262332418
     else:
         cP = _DO_concentration_eq(p, t)
-    return float(val)/100 * cP  # Divide by 100?
+    return float(val) / 100 * cP  # Divide by 100?
 
 
-@u_reg.wraps(None, (u_reg.milligram/u_reg.liter,
-                    u_reg.standard_atmosphere,
-                    u_reg.degree_Celsius))
-def DO_concentration(val,
-                     pressure=1*u_reg("atm"),
-                     temperature=u_reg.Quantity(25, u_reg("degC"))):
+@u_reg.wraps(
+    None,
+    (u_reg.milligram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+)
+def DO_concentration(
+    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+):
     """Convert Dissolved Oxygen (DO) from concentration (mg/l) to saturation (%).
 
     Parameters
@@ -665,32 +677,37 @@ def DO_concentration(val,
         cP = 8.262332418
     else:
         cP = _DO_concentration_eq(p, t)
-    return 100*val /cP
+    return 100 * val / cP
 
 
 def _DO_concentration_eq(p, t):
-    """ Equilibrium oxygen concentration at non-standard"""
+    """Equilibrium oxygen concentration at non-standard"""
     # https://www.waterontheweb.org/under/waterquality/oxygen.html#:~:
     # text=Oxygen%20saturation%20is%20calculated%20as,
     # concentration%20at%20100%25%20saturation%20decreases.
     tk = t + 273.15  # t in kelvin (t is in C)
-    standard = 0.000975 - (1.426e-05*t) + (6.436e-08*(t**2))  # Theta
+    standard = 0.000975 - (1.426e-05 * t) + (6.436e-08 * (t**2))  # Theta
     # partial pressure of water vapor, atm
-    Pwv = math.exp(11.8571 - (3840.7/tk) - (216961/(tk**2)))
+    Pwv = math.exp(11.8571 - (3840.7 / tk) - (216961 / (tk**2)))
     # equilibrium oxygen concentration at std pres of 1 atm
     cStar = math.exp(7.7117 - 1.31403 * math.log(t + 45.93))
-    numerator = (1-Pwv/p)*(1-(standard*p))
-    denominator = (1-Pwv)*(1-standard)
+    numerator = (1 - Pwv / p) * (1 - (standard * p))
+    denominator = (1 - Pwv) * (1 - standard)
 
-    return cStar*p*(numerator/denominator)
+    return cStar * p * (numerator / denominator)
 
 
-@u_reg.wraps(u_reg.dimensionless, (u_reg.microsiemens / u_reg.centimeter,
-                                   u_reg.standard_atmosphere,
-                                   u_reg.degree_Celsius))
-def conductivity_to_PSU(val,
-                        pressure=0*u_reg("atm"),
-                        temperature=u_reg.Quantity(25, u_reg("degC"))):
+@u_reg.wraps(
+    u_reg.dimensionless,
+    (
+        u_reg.microsiemens / u_reg.centimeter,
+        u_reg.standard_atmosphere,
+        u_reg.degree_Celsius,
+    ),
+)
+def conductivity_to_PSU(
+    val, pressure=0 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+):
     """Estimate salinity (PSU) from conductivity.
 
     Parameters
@@ -761,22 +778,35 @@ def conductivity_to_PSU(val,
     # Csw = 42.914
     K = 0.0162
     Ct = round(val * (1 + 0.0191 * (t - 25)), 0)
-    R = (Ct/1000)/42.914
+    R = (Ct / 1000) / 42.914
     # Was rt
     c = c[0] + (c[1] * t) + (c[2] * t**2) + (c[3] * t**3) + (c[4] * t**4)
 
-    Rp = (1 + (p * e[0] + e[1] * p**2 + e[2] * p**3) /
-          (1 + D[0] * t + D[1] * t**2 + (D[2] + D[3] * t) * R))
-    Rt1 = R/(Rp * c)
-    dS = ((b[0] + b[1] * Rt1**(1/2) +
-           b[2] * Rt1**(2/2) +
-           b[3] * Rt1**(3/2) +
-           b[4] * Rt1**(4/2) +
-           b[5] * Rt1**(5/2)) *
-          (t - 15)/(1 + K * (t - 15)))
-    S = (a[0] + a[1] * Rt1**(1/2) +
-         a[2] * Rt1**(2/2) + a[3] * Rt1**(3/2) +
-         a[4] * Rt1**(4/2) + a[5] * Rt1**(5/2) + dS)
+    Rp = 1 + (p * e[0] + e[1] * p**2 + e[2] * p**3) / (
+        1 + D[0] * t + D[1] * t**2 + (D[2] + D[3] * t) * R
+    )
+    Rt1 = R / (Rp * c)
+    dS = (
+        (
+            b[0]
+            + b[1] * Rt1 ** (1 / 2)
+            + b[2] * Rt1 ** (2 / 2)
+            + b[3] * Rt1 ** (3 / 2)
+            + b[4] * Rt1 ** (4 / 2)
+            + b[5] * Rt1 ** (5 / 2)
+        )
+        * (t - 15)
+        / (1 + K * (t - 15))
+    )
+    S = (
+        a[0]
+        + a[1] * Rt1 ** (1 / 2)
+        + a[2] * Rt1 ** (2 / 2)
+        + a[3] * Rt1 ** (3 / 2)
+        + a[4] * Rt1 ** (4 / 2)
+        + a[5] * Rt1 ** (5 / 2)
+        + dS
+    )
 
     # TODO: implement these two lines? Shouldn't encounter NaN.
     # S[is.na(S<0)]<-NA  # if <0 or NA set as nan

@@ -11,11 +11,13 @@ from harmonize_wq.domains import xy_datum
 from harmonize_wq.wrangle import clip_stations
 
 
-def infer_CRS(df_in,
-              out_EPSG,
-              out_col='EPSG',
-              bad_crs_val=None,
-              crs_col='HorizontalCoordinateReferenceSystemDatumName'):
+def infer_CRS(
+    df_in,
+    out_EPSG,
+    out_col="EPSG",
+    bad_crs_val=None,
+    crs_col="HorizontalCoordinateReferenceSystemDatumName",
+):
     """Replace missing or unrecognized Coordinate Reference System (CRS).
 
     Replaces with desired CRS and notes it was missing in 'QA_flag' column.
@@ -71,11 +73,11 @@ def infer_CRS(df_in,
     df_out = df_in.copy()
     if bad_crs_val:
         # QA flag for bad CRS based on bad_crs_val
-        flag = f'{crs_col}: Bad datum {bad_crs_val}, EPSG:{out_EPSG} assumed'
+        flag = f"{crs_col}: Bad datum {bad_crs_val}, EPSG:{out_EPSG} assumed"
         c_mask = df_out[crs_col] == bad_crs_val  # Mask for bad CRS value
     else:
         # QA flag for missing CRS
-        flag = f'{crs_col}: MISSING datum, EPSG:{out_EPSG} assumed'
+        flag = f"{crs_col}: MISSING datum, EPSG:{out_EPSG} assumed"
         c_mask = df_out[crs_col].isna()  # Mask for missing units
     df_out = add_qa_flag(df_out, c_mask, flag)  # Assign flag
     df_out.loc[c_mask, out_col] = out_EPSG  # Update with infered unit
@@ -83,8 +85,7 @@ def infer_CRS(df_in,
     return df_out
 
 
-def harmonize_locations(df_in, out_EPSG=4326,
-                        intermediate_columns=False, **kwargs):
+def harmonize_locations(df_in, out_EPSG=4326, intermediate_columns=False, **kwargs):
     """Create harmonized geopandas GeoDataframe from pandas DataFrame.
 
     Takes a :class:`~pandas.DataFrame` with lat/lon in multiple Coordinate
@@ -124,16 +125,14 @@ def harmonize_locations(df_in, out_EPSG=4326,
     --------
     Build pandas DataFrame to use in example:
 
-    >>> df_in = pandas.DataFrame({'LatitudeMeasure': [27.5950355,
-    ...                                               27.52183,
-    ...                                               28.0661111],
-    ...                          'LongitudeMeasure': [-82.0300865,
-    ...                                               -82.64476,
-    ...                                               -82.3775],
-    ...                          'HorizontalCoordinateReferenceSystemDatumName': ['NAD83',
-    ...                                                                           'WGS84',
-    ...                                                                           'NAD27'],
-    ...                          })
+    >>> df_in = pandas.DataFrame(
+    ...     {
+    ...         "LatitudeMeasure": [27.5950355, 27.52183, 28.0661111],
+    ...         "LongitudeMeasure": [-82.0300865, -82.64476, -82.3775],
+    ...         "HorizontalCoordinateReferenceSystemDatumName":
+    ...             ["NAD83", "WGS84", "NAD27"],
+    ...     }
+    ... )
     >>> df_in
        LatitudeMeasure  ...  HorizontalCoordinateReferenceSystemDatumName
     0        27.595036  ...                                         NAD83
@@ -154,10 +153,9 @@ def harmonize_locations(df_in, out_EPSG=4326,
     df2 = df_in.copy()
 
     # Default columns
-    crs_col = kwargs.get('crs_col',
-                         "HorizontalCoordinateReferenceSystemDatumName")
-    lat_col = kwargs.get('lat_col', 'LatitudeMeasure')
-    lon_col = kwargs.get('lon_col', 'LongitudeMeasure')
+    crs_col = kwargs.get("crs_col", "HorizontalCoordinateReferenceSystemDatumName")
+    lat_col = kwargs.get("lat_col", "LatitudeMeasure")
+    lon_col = kwargs.get("lon_col", "LongitudeMeasure")
 
     # Check columns are in df
     df_checks(df2, [crs_col, lat_col, lon_col])
@@ -167,12 +165,13 @@ def harmonize_locations(df_in, out_EPSG=4326,
     df2 = check_precision(df2, lon_col)
 
     # Create tuple column
-    df2['geom_orig'] = list(zip(df2[lon_col], df2[lat_col]))
+    df2["geom_orig"] = list(zip(df2[lon_col], df2[lat_col]))
 
     # Create/populate EPSG column
     crs_mask = df2[crs_col].isin(xy_datum.keys())  # w/ known datum
-    df2.loc[crs_mask, 'EPSG'] = [xy_datum[crs]['EPSG'] for crs
-                                 in df2.loc[crs_mask, crs_col]]
+    df2.loc[crs_mask, "EPSG"] = [
+        xy_datum[crs]["EPSG"] for crs in df2.loc[crs_mask, crs_col]
+    ]
 
     # Fix/flag missing
     df2 = infer_CRS(df2, out_EPSG, crs_col=crs_col)
@@ -182,16 +181,17 @@ def harmonize_locations(df_in, out_EPSG=4326,
         df2 = infer_CRS(df2, out_EPSG, bad_crs_val=crs, crs_col=crs_col)
 
     # Transform points by vector (sub-set by datum)
-    for datum in set(df2['EPSG'].astype(int)):
+    for datum in set(df2["EPSG"].astype(int)):
         df2 = transform_vector_of_points(df2, datum, out_EPSG)
 
     # Convert geom to shape object to use with geopandas
-    df2['geom'] = [shape({'type': 'Point', 'coordinates': pnt})
-                   for pnt in list(df2['geom'])]
-    gdf = geopandas.GeoDataFrame(df2, geometry=df2['geom'], crs=out_EPSG)
+    df2["geom"] = [
+        shape({"type": "Point", "coordinates": pnt}) for pnt in list(df2["geom"])
+    ]
+    gdf = geopandas.GeoDataFrame(df2, geometry=df2["geom"], crs=out_EPSG)
     if not intermediate_columns:
         # Drop intermediate columns
-        gdf = gdf.drop(['geom', 'geom_orig', 'EPSG'], axis=1)
+        gdf = gdf.drop(["geom", "geom_orig", "EPSG"], axis=1)
 
     return gdf
 
@@ -215,13 +215,12 @@ def transform_vector_of_points(df_in, datum, out_EPSG):
     """
     # Create transform object for input datum (EPSG colum) and out_EPSG
     transformer = Transformer.from_crs(datum, out_EPSG)
-    d_mask = df_in['EPSG'] == datum  # Mask for datum in subset
-    points = df_in.loc[d_mask, 'geom_orig']  # Points series
+    d_mask = df_in["EPSG"] == datum  # Mask for datum in subset
+    points = df_in.loc[d_mask, "geom_orig"]  # Points series
     # List of transformed point geometries
     new_geoms = [transformer.transform(pnt[0], pnt[1]) for pnt in points]
     # Assign list to df.geom using Index from mask to re-index list
-    df_in.loc[d_mask, 'geom'] = pandas.Series(new_geoms,
-                                              index=df_in.loc[d_mask].index)
+    df_in.loc[d_mask, "geom"] = pandas.Series(new_geoms, index=df_in.loc[d_mask].index)
     return df_in
 
 
@@ -262,8 +261,8 @@ def get_harmonized_stations(query, aoi=None):
     # TODO: **kwargs instead of query dict?
 
     # Query stations (can be slow)
-    if 'dataProfile' in query.keys():
-        query.pop('dataProfile')  # TODO: this changes query arg (mutable)
+    if "dataProfile" in query.keys():
+        query.pop("dataProfile")  # TODO: this changes query arg (mutable)
     stations, site_md = wqp.what_sites(**query)
 
     # Harmonize stations
