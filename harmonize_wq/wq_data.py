@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 """Class for harmonizing data retrieved from EPA's Water Quality Portal."""
+
 from types import SimpleNamespace
 from warnings import warn
+
 import pandas
 import pint
 from numpy import nan
-from harmonize_wq import domains
-from harmonize_wq import basis
-from harmonize_wq.clean import df_checks, add_qa_flag
+
+from harmonize_wq import basis, domains
+from harmonize_wq.clean import add_qa_flag, df_checks
 from harmonize_wq.convert import convert_unit_series, moles_to_mass
 
 
@@ -32,7 +34,7 @@ def units_dimension(series_in, units, ureg=None):
     Examples
     --------
     Build series to use as input:
-    
+
     >>> from pandas import Series
     >>> unit_series = Series(['mg/l', 'mg/ml', 'g/kg'])
     >>> unit_series
@@ -42,12 +44,12 @@ def units_dimension(series_in, units, ureg=None):
     dtype: object
 
     Get list of unique units not in desired units dimension 'mg/l':
-    
+
     >>> from harmonize_wq import wq_data
     >>> wq_data.units_dimension(unit_series, units='mg/l')
     ['g/kg']
     """
-    #TODO: this should be a method
+    # TODO: this should be a method
     if ureg is None:
         ureg = pint.UnitRegistry()
     dim_list = []  # List for units with mismatched dimensions
@@ -60,7 +62,7 @@ def units_dimension(series_in, units, ureg=None):
     return dim_list
 
 
-class WQCharData():
+class WQCharData:
     """Class for specific characteristic in Water Quality Portal results.
 
     Parameters
@@ -86,11 +88,11 @@ class WQCharData():
     units : str
         Units all results in out_col column will be converted into.
         Default units are returned from :func:`domains.OUT_UNITS` [out_col].
-    
+
     Examples
     --------
     Build pandas DataFrame to use as input:
-    
+
     >>> from pandas import DataFrame
     >>> from numpy import nan
     >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water',],
@@ -101,7 +103,7 @@ class WQCharData():
        CharacteristicName  ResultMeasure/MeasureUnitCode ResultMeasureValue
     0          Phosphorus                            NaN                1.0
     1  Temperature, water                            NaN               10.0
-    
+
     >>> from harmonize_wq import wq_data
     >>> wq = wq_data.WQCharData(df, 'Phosphorus')
     >>> wq.df
@@ -110,7 +112,7 @@ class WQCharData():
     1  Temperature, water                            NaN  ...   NaN         NaN
     <BLANKLINE>
     [2 rows x 5 columns]
-    
+
     >>> wq.df.columns
     Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
            'ResultMeasureValue', 'Units', 'Phosphorus'],
@@ -122,16 +124,17 @@ class WQCharData():
         df_out = df_in.copy()
         # self.check_df(df)
         df_checks(df_out)
-        c_mask = df_out['CharacteristicName'] == char_val
+        c_mask = df_out["CharacteristicName"] == char_val
         self.c_mask = c_mask
         # Deal with units: set out = in
-        cols = {'unit_in': 'ResultMeasure/MeasureUnitCode',
-                'unit_out': 'Units',
-                'measure': 'ResultMeasureValue',
-                'basis': 'Speciation', }
+        cols = {
+            "unit_in": "ResultMeasure/MeasureUnitCode",
+            "unit_out": "Units",
+            "measure": "ResultMeasureValue",
+            "basis": "Speciation",
+        }
         self.col = SimpleNamespace(**cols)
-        df_out.loc[c_mask, self.col.unit_out] = df_out.loc[c_mask,
-                                                           self.col.unit_in]
+        df_out.loc[c_mask, self.col.unit_out] = df_out.loc[c_mask, self.col.unit_in]
         self.df = df_out
         # Deal with values: set out_col = in
         self.out_col = domains.out_col_lookup[char_val]
@@ -149,14 +152,13 @@ class WQCharData():
         meas_col = self.col.measure
 
         # Coerce bad measures in series to NaN
-        meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col],
-                                   errors='coerce')
+        meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col], errors="coerce")
         # Create a list of the bad measures in the series
         bad_measures = [df_out.iloc[i][meas_col] for i in meas_s[meas_s.isna()].index]
         for bad_meas in pandas.unique(bad_measures):
             # Flag each unique bad measure one measure (not row) at a time
             if pandas.isna(bad_meas):
-                flag = f'{meas_col}: missing (NaN) result'
+                flag = f"{meas_col}: missing (NaN) result"
                 cond = c_mask & (df_out[meas_col].isna())
             else:
                 flag = f'{meas_col}: "{bad_meas}" result cannot be used'
@@ -185,7 +187,7 @@ class WQCharData():
             The default None uses WQCharData.col.unit_out instead.
         """
         # QA flag for missing units
-        flag = self._unit_qa_flag('MISSING', flag_col)
+        flag = self._unit_qa_flag("MISSING", flag_col)
         # Update mask for missing units
         units_mask = self.c_mask & self.df[self.col.unit_out].isna()
         self.df = add_qa_flag(self.df, units_mask, flag)  # Assign flag
@@ -193,13 +195,12 @@ class WQCharData():
         self.df.loc[units_mask, self.col.unit_out] = self.units
         # Note: .fillna(self.units) is slightly faster but hits datatype issues
 
-
     def _unit_qa_flag(self, trouble, flag_col=None):
         """Generate a QA_flag flag string for the units column.
-        
+
         If unit_col is a copy flag_col can specify the original column name for
         the flag. The default units, self.units replaces the problem unit.
-    
+
         Parameters
         ----------
         trouble : str
@@ -207,20 +208,20 @@ class WQCharData():
         flag_col : str, optional
             String to use when referring to the unit_col.
             The default None uses WQCharData.col.unit_out instead.
-    
+
         Returns
         -------
         string
             Flag to use in QA_flag column.
         """
         if flag_col:
-            return f'{flag_col}: {trouble} UNITS, {self.units} assumed'
+            return f"{flag_col}: {trouble} UNITS, {self.units} assumed"
         # Else: Used when flag_col is None, typically the column being checked
-        return f'{self.col.unit_out}: {trouble} UNITS, {self.units} assumed'
+        return f"{self.col.unit_out}: {trouble} UNITS, {self.units} assumed"
 
     def _replace_in_col(self, col, old_val, new_val, mask=None):
         """Replace string throughout column, filter rows to skip by mask.
-    
+
         Parameters
         ----------
         df_in : pandas.DataFrame
@@ -234,28 +235,28 @@ class WQCharData():
         mask : pandas.Series
             Row conditional mask to only update a sub-set of rows.
             The default None uses 'CharacteristicName' mask instead.
-    
+
         Returns
         -------
         df_in : pandas.DataFrame
             Updated DataFrame.
-    
+
         """
         if mask is None:
             mask = self.c_mask
         df_in = self.df
         # Note: Timing is just as fast as long as df isn't copied
         #       Timing for replace vs set unkown
-        mask_old = mask & (df_in[col]==old_val)
-        #str.replace did not work for short str to long str (over-replaces)
-        #df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
+        mask_old = mask & (df_in[col] == old_val)
+        # str.replace did not work for short str to long str (over-replaces)
+        # df.loc[mask, col] = df.loc[mask, col].str.replace(old_val, new_val)
         df_in.loc[mask_old, col] = new_val  # This should be more explicit
 
         return df_in
 
     def _dimension_handling(self, unit, quant=None, ureg=None):
         """Handle and routes common dimension conversions/contexts.
-    
+
         Parameters
         ----------
         unit : str
@@ -265,44 +266,44 @@ class WQCharData():
         ureg : pint.UnitRegistry, optional
             Unit Registry Object with any custom units defined.
             The default is None
-    
+
         Returns
         -------
         dict
             Dictionary with old_unit:new_unit.
         list
             List of Mole (substance) units.
-    
+
         """
         units = self.units
         if ureg is None:
             ureg = pint.UnitRegistry()
 
         # Conversion to moles performed a level up from here (class method)
-        if ureg(units).check({'[length]': -3, '[mass]': 1}):
+        if ureg(units).check({"[length]": -3, "[mass]": 1}):
             # Convert to density, e.g., '%' -> 'mg/l'
-            if ureg(unit).check({'[substance]': 1}):
+            if ureg(unit).check({"[substance]": 1}):
                 if quant:
                     # Moles -> mg/l; dim = ' / l'
-                    return {unit: quant + ' / l'}, [quant + ' / l']
+                    return {unit: quant + " / l"}, [quant + " / l"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is dimensionless (e.g. unit = 'g/kg')
-            return {unit: unit + ' * H2O'}, []
+            return {unit: unit + " * H2O"}, []
         if ureg(units).dimensionless:
             # Convert to dimensionless, e.g., 'mg/l' -> '%'
-            if ureg(unit).check({'[substance]': 1}):
+            if ureg(unit).check({"[substance]": 1}):
                 if quant:
                     # Moles -> g/kg; dim = ' / l / H2O'
-                    return {unit: quant + ' / l / H2O'}, [quant + ' / l / H2O']
+                    return {unit: quant + " / l / H2O"}, [quant + " / l / H2O"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is density (e.g. unit = 'mg/l')
-            return {unit: unit + ' / H2O'}, []
-        warn('WARNING: Unexpected dimensionality')
+            return {unit: unit + " / H2O"}, []
+        warn("WARNING: Unexpected dimensionality")
         return {}, []
 
     def check_units(self, flag_col=None):
         """Check units.
-        
+
         Checks for bad units that are missing (assumes default_unit) or
         unrecognized as valid by unit registry (ureg). Does not check for units
         in the correct dimensions, or a mistaken identity (e.g. 'deg F'
@@ -313,29 +314,44 @@ class WQCharData():
         flag_col : str, optional
             Column to reference in string for 'QA_flags'.
             The default None uses WQCharData.col.unit_out attribute.
-        
+
         Returns
         -------
         None.
-        
+
         Examples
         --------
         Build DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> from numpy import nan
-        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus',],
-        ...                 'ResultMeasure/MeasureUnitCode': [nan, nan, 'Unknown',],
-        ...                 'ResultMeasureValue': ['1.0', '67.0', '10',],
-        ...                 })
+        >>> df = DataFrame(
+        ...   {
+        ...     "CharacteristicName": [
+        ...       "Phosphorus",
+        ...       "Temperature, water",
+        ...       "Phosphorus",
+        ...     ],
+        ...     "ResultMeasure/MeasureUnitCode": [
+        ...       nan,
+        ...       nan,
+        ...       "Unknown",
+        ...     ],
+        ...     "ResultMeasureValue": [
+        ...       "1.0",
+        ...       "67.0",
+        ...       "10",
+        ...     ],
+        ...   }
+        ... )
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0          Phosphorus                           NaN                1.0
         1  Temperature, water                           NaN               67.0
         2          Phosphorus                       Unknown                 10
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-        
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         >>> wq.df.Units
@@ -343,18 +359,18 @@ class WQCharData():
         1        NaN
         2    Unknown
         Name: Units, dtype: object
-        
+
         Run check_units method to replace bad or missing units for phosphorus:
-    
+
         >>> wq.check_units()  # doctest: +IGNORE_RESULT
         UserWarning: WARNING: 'Unknown' UNDEFINED UNIT for Phosphorus
-        
+
         >>> wq.df[['CharacteristicName', 'Units', 'QA_flag']]
            CharacteristicName Units                                            QA_flag
         0          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: MISSING UNITS, ...
         1  Temperature, water   NaN                                                NaN
         2          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: 'Unknown' UNDEF...
-        
+
         Note: it didn't infer units for 'Temperature, water' because wq is
         Phosphorus specific.
         """
@@ -385,7 +401,7 @@ class WQCharData():
                 df_out.loc[u_mask, self.col.unit_out] = self.units  # Replace w/ default
         self.df = df_out
 
-    def check_basis(self, basis_col='MethodSpecificationName'):
+    def check_basis(self, basis_col="MethodSpecificationName"):
         """Determine speciation (basis) for measure.
 
         Parameters
@@ -393,46 +409,53 @@ class WQCharData():
         basis_col : str, optional
             Basis column name. Default is 'MethodSpecificationName' which is
             replaced by 'Speciation'. Other columns are updated in place.
-            
+
         Returns
         -------
         None.
-        
+
         Examples
         --------
         Build DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> from numpy import nan
-        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus',],
-        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l',],
-        ...                 'ResultMeasureValue': ['1.0', '67.0', '10',],
-        ...                 'MethodSpecificationName': [nan, nan, 'as PO4',],        
-        ...                 })
+        >>> df = DataFrame(
+        ...     {
+        ...       "CharacteristicName": [
+        ...         "Phosphorus",
+        ...         "Temperature, water",
+        ...         "Phosphorus",
+        ...       ],
+        ...       "ResultMeasure/MeasureUnitCode": ["mg/l as P", nan, "mg/l",],
+        ...       "ResultMeasureValue": ["1.0", "67.0", "10",],
+        ...       "MethodSpecificationName": [nan, nan, "as PO4",],
+        ...     }
+        ... )
         >>> df[['ResultMeasure/MeasureUnitCode', 'MethodSpecificationName']]
           ResultMeasure/MeasureUnitCode MethodSpecificationName
         0                     mg/l as P                     NaN
         1                           NaN                     NaN
         2                          mg/l                  as PO4
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-        
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         >>> wq.df.columns  # doctest: +NORMALIZE_WHITESPACE
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
                'ResultMeasureValue', 'MethodSpecificationName', 'Units', 'Phosphorus'],
               dtype='object')
-        
+
         Run check_basis method to speciation for phosphorus:
-        
+
         >>> wq.check_basis()
         >>> wq.df[['MethodSpecificationName', 'Speciation']]
           MethodSpecificationName Speciation
         0                     NaN          P
         1                     NaN        NaN
         2                  as PO4        PO4
-        
+
         Note where basis was part of 'ResultMeasure/MeasureUnitCode' it has
         been removed in 'Units':
 
@@ -452,8 +475,7 @@ class WQCharData():
         df_checks(self.df, [basis_col])
 
         # Basis from MethodSpecificationName
-        if basis_col == 'MethodSpecificationName':
-
+        if basis_col == "MethodSpecificationName":
             # Add basis out column (i.e., 'Speciation') if it doesn't exist
             if self.col.basis not in self.df.columns:
                 self.df[self.col.basis] = nan
@@ -464,9 +486,9 @@ class WQCharData():
             # Basis from unit
             try:
                 basis_dict = basis.unit_basis_dict[self.out_col]
-                self.df[c_mask] = basis.basis_from_unit(self.df[c_mask],
-                                                        basis_dict,
-                                                        self.col.unit_out)
+                self.df[c_mask] = basis.basis_from_unit(
+                    self.df[c_mask], basis_dict, self.col.unit_out
+                )
             except KeyError:
                 pass
             # Finish by filling any NAs with char_val based default
@@ -479,14 +501,15 @@ class WQCharData():
             self.df.loc[c_mask, col] = self.df.loc[c_mask, col].fillna(char_val)
 
             # Drop instances of 'as '
-            self.df.loc[c_mask, col] = [bas[3:]
-                                        if bas.startswith('as ') else bas
-                                        for bas in self.df.loc[c_mask, col]]
+            self.df.loc[c_mask, col] = [
+                bas[3:] if bas.startswith("as ") else bas
+                for bas in self.df.loc[c_mask, col]
+            ]
 
         else:
-            self.df[c_mask] = basis.update_result_basis(self.df[c_mask],
-                                                        basis_col,
-                                                        self.col.unit_out)
+            self.df[c_mask] = basis.update_result_basis(
+                self.df[c_mask], basis_col, self.col.unit_out
+            )
 
     def update_ureg(self):
         """Update class unit registry to define units based on out_col."""
@@ -495,27 +518,27 @@ class WQCharData():
 
     def update_units(self, units_out):
         """Update class units attribute to convert everything into.
-        
+
         This just updates the attribute, it does not perform the conversion.
-        
+
         Parameters
         ----------
         units_out : str
             Units to convert results into.
-            
+
         Returns
         -------
         None.
-        
+
         Examples
         --------
         Build WQ Characteristic Data class:
-            
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
         >>> wq.units
         'mg/l'
-        
+
         >>> wq.update_units('mg/kg')
         >>> wq.units
         'mg/kg'
@@ -524,29 +547,36 @@ class WQCharData():
 
     def measure_mask(self, column=None):
         """Get mask for characteristic and valid measure.
-        
+
         Mask is characteristic specific (c_mask) and only has valid col
         measures (Non-NA).
-        
+
         Parameters
         ----------
         column : str, optional
             DataFrame column name to use. Default None uses WQCharData.out_col
             attribute.
-        
+
         Returns
         -------
         None.
-        
+
         Examples
         --------
         Build DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> from numpy import nan
-        >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water', 'Phosphorus', 'Phosphorus',],
-        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l', 'mg/l',],
-        ...                 'ResultMeasureValue': ['1.0', '67.0', '10', 'None'],       
+        >>> df = DataFrame(
+        ...     {
+        ...       'CharacteristicName': [
+        ...         'Phosphorus',
+        ...         'Temperature, water',
+        ...         'Phosphorus',
+        ...         'Phosphorus',
+        ...       ],
+        ...       'ResultMeasure/MeasureUnitCode': ['mg/l as P', nan, 'mg/l', 'mg/l',],
+        ...       'ResultMeasureValue': ['1.0', '67.0', '10', 'None'],
         ...                 })
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
@@ -554,14 +584,14 @@ class WQCharData():
         1  Temperature, water                           NaN               67.0
         2          Phosphorus                          mg/l                 10
         3          Phosphorus                          mg/l               None
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-        
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
-        
+
         Check measure mask:
-        
+
         >>> wq.measure_mask()
         0     True
         1    False
@@ -573,9 +603,9 @@ class WQCharData():
             return self.c_mask & self.df[column].notna()
         return self.c_mask & self.df[self.out_col].notna()
 
-    def convert_units(self, default_unit=None, errors='raise'):
+    def convert_units(self, default_unit=None, errors="raise"):
         """Update out-col to convert units.
-        
+
         Update class out-col used to convert :class:`pandas.DataFrame`. from old
         units to default_unit.
 
@@ -588,15 +618,15 @@ class WQCharData():
             If ‘raise’, invalid dimension conversions will raise an exception.
             If ‘skip’, invalid dimension conversions will not be converted.
             If ‘ignore’, invalid dimension conversions will be NaN.
-        
+
         Returns
         -------
         None.
-        
+
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Temperature, water',],
         ...                 'ResultMeasure/MeasureUnitCode': ['mg/ml', 'deg C'],
@@ -606,12 +636,12 @@ class WQCharData():
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0          Phosphorus                         mg/ml                1.0
         1  Temperature, water                         deg C               10.0
-        
+
         Build WQ Characteristic Data class from  pandas DataFrame:
-        
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
-        
+
         >>> wq.convert_units()
         >>> wq.df[['ResultMeasureValue', 'Units', 'Phosphorus']]
           ResultMeasureValue  Units                            Phosphorus
@@ -623,17 +653,19 @@ class WQCharData():
         df_out = self.df
         m_mask = self.measure_mask()
 
-        params = {'quantity_series': df_out.loc[m_mask, self.out_col],
-                  'unit_series': df_out.loc[m_mask, self.col.unit_out],
-                  'units': self.units,
-                  'ureg': self.ureg,
-                  'errors': errors}
+        params = {
+            "quantity_series": df_out.loc[m_mask, self.out_col],
+            "unit_series": df_out.loc[m_mask, self.col.unit_out],
+            "units": self.units,
+            "ureg": self.ureg,
+            "errors": errors,
+        }
         df_out.loc[m_mask, self.out_col] = convert_unit_series(**params)
         self.df = df_out
 
     def apply_conversion(self, convert_fun, unit, u_mask=None):
         """Apply special dimension changing conversions.
-        
+
         This uses functions in convert module and apply them across all cases
         of current unit.
 
@@ -654,21 +686,27 @@ class WQCharData():
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
-        >>> df = DataFrame({'CharacteristicName': ['Dissolved oxygen (DO)', 'Dissolved oxygen (DO)',],
-        ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', '%'],
-        ...                 'ResultMeasureValue': ['1.0', '10.0',],
-        ...                 })
+        >>> df = DataFrame(
+        ...   {
+        ...     'CharacteristicName': [
+        ...       'Dissolved oxygen (DO)',
+        ...       'Dissolved oxygen (DO)',
+        ...     ],
+        ...     'ResultMeasure/MeasureUnitCode': ['mg/l', '%'],
+        ...     'ResultMeasureValue': ['1.0', '10.0',],
+        ...   }
+        ... )
         >>> df
               CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0  Dissolved oxygen (DO)                          mg/l                1.0
         1  Dissolved oxygen (DO)                             %               10.0
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-            
+
         >>> from harmonize_wq import wq_data
-        >>> wq = wq_data.WQCharData(df, 'Dissolved oxygen (DO)')        
+        >>> wq = wq_data.WQCharData(df, 'Dissolved oxygen (DO)')
         >>> wq.apply_conversion(convert.DO_saturation, '%')
         >>> wq.df[['Units', 'DO']]
                        Units        DO
@@ -682,13 +720,13 @@ class WQCharData():
         unit = self.ureg.Quantity(unit)  # Pint quantity object from unit
         old_vals = df_out.loc[u_mask, self.out_col]
         try:
-            new_quants = [convert_fun(x*unit) for x in old_vals]
+            new_quants = [convert_fun(x * unit) for x in old_vals]
         except ValueError:
-            #print(old_vals.iloc[0]*unit)
+            # print(old_vals.iloc[0]*unit)
             # string to avoid altered ureg issues
-            new_quants = [convert_fun(str(x*unit)) for x in old_vals]
+            new_quants = [convert_fun(str(x * unit)) for x in old_vals]
         # 1run=6505.62ms (may be slower) vs apply (5888.43ms)
-        #new_vals = old_vals.apply(lambda x: convert_fun(x*unit).magnitude)
+        # new_vals = old_vals.apply(lambda x: convert_fun(x*unit).magnitude)
         new_vals = [quant.magnitude for quant in new_quants]
         df_out.loc[u_mask, self.out_col] = new_vals
         df_out.loc[u_mask, self.col.unit_out] = str(new_quants[0].units)
@@ -713,31 +751,30 @@ class WQCharData():
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
         ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'mg/kg',],
-        ...                 'ResultMeasureValue': ['1.0', '10',],      
+        ...                 'ResultMeasureValue': ['1.0', '10',],
         ...                 })
         >>> df
           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0         Phosphorus                          mg/l                1.0
         1         Phosphorus                         mg/kg                 10
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-            
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
-        
+
         >>> wq.dimensions_list()
         ['mg/kg']
         """
         if m_mask is None:
             m_mask = self.measure_mask()
-        return units_dimension(self.df.loc[m_mask,
-                                           self.col.unit_out],
-                               self.units,
-                               self.ureg)
+        return units_dimension(
+            self.df.loc[m_mask, self.col.unit_out], self.units, self.ureg
+        )
 
     def replace_unit_str(self, old, new, mask=None):
         """Replace ALL instances of old with in WQCharData.col.unit_out column.
@@ -751,30 +788,33 @@ class WQCharData():
         mask : pandas.Series, optional
             Conditional mask to limit rows.
             The default None, uses the c_mask attribute.
-            
+
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
-        >>> df = DataFrame({'CharacteristicName': ['Temperature, water', 'Temperature, water',],
-        ...                 'ResultMeasure/MeasureUnitCode': ['deg C', 'deg F',],
-        ...                 'ResultMeasureValue': ['31', '87',],      
-        ...                 })
+        >>> df = DataFrame(
+        ...     {
+        ...       "CharacteristicName": ["Temperature, water", "Temperature, water",],
+        ...       "ResultMeasure/MeasureUnitCode": ["deg C", "deg F",],
+        ...       "ResultMeasureValue": ["31", "87",],
+        ...     }
+        ... )
         >>> df
            CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0  Temperature, water                         deg C                 31
         1  Temperature, water                         deg F                 87
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-        
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Temperature, water')
         >>> wq.df[['ResultMeasure/MeasureUnitCode', 'Units', 'Temperature']]
           ResultMeasure/MeasureUnitCode  Units  Temperature
         0                         deg C  deg C           31
         1                         deg F  deg F           87
-         
+
         >>> wq.replace_unit_str(' ', '')
         >>> wq.df[['ResultMeasure/MeasureUnitCode', 'Units', 'Temperature']]
           ResultMeasure/MeasureUnitCode Units  Temperature
@@ -790,7 +830,7 @@ class WQCharData():
 
     def replace_unit_by_dict(self, val_dict, mask=None):
         """Do multiple replace_in_col() replacements using val_dict.
-        
+
         Replaces instances of val_dict key with val_dict value.
 
         Parameters
@@ -800,27 +840,27 @@ class WQCharData():
         mask : pandas.Series, optional
             Conditional mask to limit rows.
             The default None, uses the c_mask attribute.
-            
+
         Returns
         -------
         None.
-        
+
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Fecal Coliform', 'Fecal Coliform',],
         ...                 'ResultMeasure/MeasureUnitCode': ['#/100ml', 'MPN',],
-        ...                 'ResultMeasureValue': ['1.0', '10',],      
+        ...                 'ResultMeasureValue': ['1.0', '10',],
         ...                 })
         >>> df
           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
         0     Fecal Coliform                       #/100ml                1.0
         1     Fecal Coliform                           MPN                 10
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-        
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Fecal Coliform')
         >>> wq.df
@@ -829,7 +869,7 @@ class WQCharData():
         1     Fecal Coliform                           MPN  ...      MPN           10.0
         <BLANKLINE>
         [2 rows x 5 columns]
-         
+
         >>> wq.replace_unit_by_dict(domains.UNITS_REPLACE['Fecal_Coliform'])
         >>> wq.df
           CharacteristicName ResultMeasure/MeasureUnitCode  ...        Units Fecal_Coliform
@@ -837,13 +877,18 @@ class WQCharData():
         1     Fecal Coliform                           MPN  ...  MPN/(100ml)           10.0
         <BLANKLINE>
         [2 rows x 5 columns]
-        """
+        """  # noqa: E501
         col = self.col.unit_out
         for item in val_dict.items():
             self._replace_in_col(col, item[0], item[1], mask)
 
-    def fraction(self, frac_dict=None, catch_all=None, suffix=None,
-                 fract_col='ResultSampleFractionText'):
+    def fraction(
+        self,
+        frac_dict=None,
+        catch_all=None,
+        suffix=None,
+        fract_col="ResultSampleFractionText",
+    ):
         """Create columns for sample fractions using frac_dict to set names.
 
         Parameters
@@ -864,11 +909,11 @@ class WQCharData():
         -------
         frac_dict : dict
             frac_dict updated to include any fract_col not already defined.
-            
+
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
         ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'mg/kg',],
@@ -878,17 +923,17 @@ class WQCharData():
         >>> df
           CharacteristicName  ... ResultSampleFractionText
         0         Phosphorus  ...                Dissolved
-        1         Phosphorus  ...                         
+        1         Phosphorus  ...
         <BLANKLINE>
         [2 rows x 4 columns]
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-            
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
-        
+
         Go through required checks and conversions
-        
+
         >>> wq.check_units()
         >>> dimension_dict, mol_list = wq.dimension_fixes()
         >>> wq.replace_unit_by_dict(dimension_dict, wq.measure_mask())
@@ -903,7 +948,7 @@ class WQCharData():
         0                   1.0 milligram / liter
         1    10.000000000000002 milligram / liter
         Name: Phosphorus, dtype: object
-        
+
         These results may have differen, non-comprable sample fractions. First,
         split results using a provided frac_dict (as used in harmonize()):
 
@@ -921,9 +966,10 @@ class WQCharData():
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
         1                    NaN  10.000000000000002 milligram / liter
-        
-        Alternatively, the sample fraction lists from tada can be used, in this case they are added:
-            
+
+        Alternatively, the sample fraction lists from tada can be used, in this case
+        they are added:
+
         >>> wq.fraction('TADA')
         >>> wq.df.columns
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
@@ -943,25 +989,25 @@ class WQCharData():
 
         fracs = list(set(self.df[c_mask][fract_col]))  # List of fracs in data
 
-        if ' ' in fracs:
-            #TODO: new col instead of overwrite
+        if " " in fracs:
+            # TODO: new col instead of overwrite
             # Replace bad sample fraction w/ nan
-            self.df = self._replace_in_col(fract_col, ' ', nan, c_mask)
-            fracs.remove(' ')
+            self.df = self._replace_in_col(fract_col, " ", nan, c_mask)
+            fracs.remove(" ")
 
         df_out = self.df  # Set var for easier referencing
-        char = list(set(df_out[self.c_mask]['CharacteristicName']))[0]
+        char = list(set(df_out[self.c_mask]["CharacteristicName"]))[0]
 
         # Deal with lack of args
         if suffix is None:
             suffix = self.out_col
         if catch_all is None:
-            catch_all = f'Other_{suffix}'
+            catch_all = f"Other_{suffix}"
 
         # Set up dict for what sample fraction to what col
         if frac_dict is None:
             frac_dict = {}
-        elif frac_dict=='TADA':
+        elif frac_dict == "TADA":
             # Get dictionary for updates from TADA (note keys are all caps)
             tada = domains.harmonize_TADA_dict()[char.upper()]
             frac_dict = {}
@@ -970,40 +1016,40 @@ class WQCharData():
                 frac_dict[key] = list(tada[key])
                 # Add their values
                 frac_dict[key] += [x for v in tada[key].values() for x in v]
-        #else: dict was already provided
+        # else: dict was already provided
         if catch_all not in frac_dict.keys():
-            frac_dict[catch_all] = ['', nan]
+            frac_dict[catch_all] = ["", nan]
         # Make sure catch_all exists
         if not isinstance(frac_dict[catch_all], list):
             frac_dict[catch_all] = [frac_dict[catch_all]]
 
         # First cut to make the keys work as column names
         for key in frac_dict:
-            frac_dict[key.replace(',', '_')] = frac_dict.pop(key)
+            frac_dict[key.replace(",", "_")] = frac_dict.pop(key)
         for key in frac_dict:
             if key == self.out_col:
-                #TODO: prevent it from over-writing any col
+                # TODO: prevent it from over-writing any col
                 # If it is the same col name as the out_col add '_1'
-                frac_dict[key+'_1'] = frac_dict.pop(key)
+                frac_dict[key + "_1"] = frac_dict.pop(key)
 
         # Compare sample fractions against expected
         init_fracs = [x for v in frac_dict.values() for x in v]
         not_init = [frac for frac in fracs if frac not in init_fracs]
-        if len(not_init)>0:
+        if len(not_init) > 0:
             # TODO: when to add QA_flag?
-            smp = f'{char} sample fractions not in frac_dict'
+            smp = f"{char} sample fractions not in frac_dict"
             solution = f'expected domains, mapped to "{catch_all}"'
-            print(f'{len(not_init)} {smp}')
+            print(f"{len(not_init)} {smp}")
             # Compare against domains
-            all_fracs = list(domains.get_domain_dict('ResultSampleFraction'))
+            all_fracs = list(domains.get_domain_dict("ResultSampleFraction"))
             add_fracs = [frac for frac in not_init if frac in all_fracs]
             # Add new fractions to frac_dict mapped to catch_all
-            if len(add_fracs)>0:
-                print(f'{len(add_fracs)} {smp} found in {solution}')
+            if len(add_fracs) > 0:
+                print(f"{len(add_fracs)} {smp} found in {solution}")
                 frac_dict[catch_all] += add_fracs
             bad_fracs = [frac for frac in not_init if frac not in all_fracs]
-            if len(bad_fracs)>0:
-                warn(f'{len(bad_fracs)} {smp} or {solution}')
+            if len(bad_fracs) > 0:
+                warn(f"{len(bad_fracs)} {smp} or {solution}")
                 frac_dict[catch_all] += bad_fracs
 
         # Loop through dictionary making updates based on sample fraction
@@ -1019,7 +1065,7 @@ class WQCharData():
     def dimension_fixes(self):
         """
         Input/output for dimension handling.
-        
+
         Result dictionary key is old_unit and value is equation to get it into
         the desired dimension. Result list has substance to include as part of
         unit.
@@ -1039,11 +1085,11 @@ class WQCharData():
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> df = DataFrame({'CharacteristicName': ['Phosphorus', 'Phosphorus',],
         ...                 'ResultMeasure/MeasureUnitCode': ['mg/l', 'mg/kg',],
-        ...                 'ResultMeasureValue': ['1.0', '10',],      
+        ...                 'ResultMeasureValue': ['1.0', '10',],
         ...                 })
         >>> df
           CharacteristicName ResultMeasure/MeasureUnitCode ResultMeasureValue
@@ -1051,10 +1097,10 @@ class WQCharData():
         1         Phosphorus                         mg/kg                 10
 
         Build WQ Characteristic Data class from pandas DataFrame:
-            
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
-        
+
         >>> wq.dimension_fixes()
         ({'mg/kg': 'mg/kg * H2O'}, [])
         """
@@ -1062,29 +1108,28 @@ class WQCharData():
         mol_list = []  # Empty list to append to
 
         # If converting to/from moles has extra steps
-        if self.ureg(self.units).check({'[substance]': 1}):
+        if self.ureg(self.units).check({"[substance]": 1}):
             # Convert everything to MOLES!!!
             # Must consider the different speciation for each
-            #TODO: This could be problematic given umol/l
-            warn('This feature is not available yet')
+            # TODO: This could be problematic given umol/l
+            warn("This feature is not available yet")
             return {}, []
         for unit in self.dimensions_list():
-            if self.ureg(unit).check({'[substance]': 1}):
-                mol_params = {'ureg': self.ureg,
-                              'Q_': self.ureg.Quantity(1, unit),}
+            if self.ureg(unit).check({"[substance]": 1}):
+                mol_params = {
+                    "ureg": self.ureg,
+                    "Q_": self.ureg.Quantity(1, unit),
+                }
                 # Moles need to be further split by basis
                 basis_lst = list(set(self.df.loc[self.c_mask, self.col.basis]))
                 for speciation in basis_lst:
-                    mol_params['basis'] = speciation
+                    mol_params["basis"] = speciation
                     quant = str(moles_to_mass(**mol_params))
-                    dim_tup = self._dimension_handling(unit,
-                                                       quant,
-                                                       self.ureg)
+                    dim_tup = self._dimension_handling(unit, quant, self.ureg)
                     dimension_dict.update(dim_tup[0])
-                    mol_list+= dim_tup[1]
+                    mol_list += dim_tup[1]
             else:
-                dim_tup = self._dimension_handling(unit,
-                                                   ureg = self.ureg)
+                dim_tup = self._dimension_handling(unit, ureg=self.ureg)
                 dimension_dict.update(dim_tup[0])
         return dimension_dict, mol_list
 
@@ -1095,15 +1140,15 @@ class WQCharData():
         ----------
         mol_list : list
             List of Mole (substance) units.
-            
+
         Returns
         -------
         None.
-        
+
         Examples
         --------
         Build pandas DataFrame to use as input:
-        
+
         >>> from pandas import DataFrame
         >>> from numpy import nan
         >>> df = DataFrame({'CharacteristicName': ['Organic carbon', 'Organic carbon',],
@@ -1115,9 +1160,9 @@ class WQCharData():
           ResultMeasure/MeasureUnitCode ResultMeasureValue
         0                          mg/l                1.0
         1                          umol              0.265
-        
+
         Build WQ Characteristic Data class from pandas DataFrame:
-            
+
         >>> from harmonize_wq import wq_data
         >>> wq = wq_data.WQCharData(df, 'Organic carbon')
         >>> wq.df
@@ -1126,12 +1171,12 @@ class WQCharData():
         1     Organic carbon                          umol  ...  umol   0.265
         <BLANKLINE>
         [2 rows x 6 columns]
-        
+
         Run required checks:
-            
+
         >>> wq.check_basis()
         >>> wq.check_units()
-        
+
         Assemble dimensions dict and moles list:
 
         >>> dimension_dict, mol_list = wq.dimension_fixes()
@@ -1139,25 +1184,25 @@ class WQCharData():
         {'umol': '0.00018015999999999998 gram / l'}
         >>> mol_list
         ['0.00018015999999999998 gram / l']
-        
+
         Replace units by dimension_dict:
-            
+
         >>> wq.replace_unit_by_dict(dimension_dict, wq.measure_mask())
         >>> wq.df[['Units', 'Carbon']]
                                      Units  Carbon
         0                             mg/l   1.000
-        1  0.00018015999999999998 gram / l   0.265        
-        
+        1  0.00018015999999999998 gram / l   0.265
+
         Convert Carbon measure into whole units:
-        
+
         >>> wq.moles_convert(mol_list)
         >>> wq.df[['Units', 'Carbon']]
                   Units    Carbon
         0          mg/l  1.000000
         1  gram / liter  0.000048
-        
+
         This allows final conversion without dimensionality issues:
-            
+
         >>> wq.convert_units()
         >>> wq.df['Carbon']
         0          1.0 milligram / liter

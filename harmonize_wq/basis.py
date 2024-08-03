@@ -1,36 +1,55 @@
 # -*- coding: utf-8 -*-
-"""Functions to process characteristic basis or return basis dictionary."""
+"""Functions to process characteristic basis or return basis dictionary.
+
+Attributes
+----------
+unit_basis_dict : dict
+  Characteristic specific basis dictionary to define basis from units.
+
+  Notes
+  -----
+  Dictionary with logic for determining basis from units string and
+  standard :mod:`pint` units to replace those with.
+  The structure is {Basis: {standard units: [unit strings with basis]}}.
+
+  The out_col is often derived from :attr:`WQCharData.char_val`. The desired
+  basis can be used as a key to subset result.
+
+  Examples
+  --------
+  Get dictionary for Phosphorus and subset for 'as P':
+
+  >>> from harmonize_wq import basis
+  >>> basis.unit_basis_dict['Phosphorus']['as P']
+  {'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']}
+
+basis_conversion : dict
+  Get dictionary of conversion factors to convert basis/speciation.
+  For example, this is used to convert 'as PO4' to 'as P'.
+  Dictionary structure {basis: conversion factor}.
+
+  See Also
+  --------
+  :func:`convert.moles_to_mass`
+
+  `Best Practices for Submitting Nutrient Data to the Water Quality eXchange
+  <www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>`_
+
+stp_dict : dict
+  Get standard temperature and pressure to define basis from units.
+  Dictionary structure {'standard temp' : {'units': [values to replace]}}.
+
+  Notes
+  -----
+  This needs to be updated to include pressure or needs to be renamed.
+"""
+
+from warnings import warn
 
 import numpy
-from warnings import warn
+
 from harmonize_wq.clean import add_qa_flag
 
-
-"""Characteristic specific basis dictionary to define basis from units.
-
-The out_col is often derived from :attr:`WQCharData.char_val`. The desired
-basis can be used as a key to subset result.
-
-Parameters
-----------
-out_col : str
-    Column name where results are written.
-
-Returns
--------
- dict
-     Dictionary with logic for determining basis from units string and
-     standard :mod:`pint` units to replace those with.
-     The structure is {Basis: {standard units: [unit strings with basis]}}.
-
-Examples
---------
-Get dictionary for Phosphorus and subset for 'as P':
-
->>> from harmonize_wq import basis
->>> basis.unit_basis_dict['Phosphorus']['as P']
-{'mg/l': ['mg/l as P', 'mg/l P'], 'mg/kg': ['mg/kg as P', 'mg/kg P']}
-"""
 unit_basis_dict = {
     "Phosphorus": {
         "as P": {"mg/l": ["mg/l as P", "mg/l P"], "mg/kg": ["mg/kg as P", "mg/kg P"]},
@@ -43,22 +62,6 @@ unit_basis_dict = {
     "Carbon": {},
 }
 
-"""basis.bass_conversionGet dictionary of conversion factors to convert basis/speciation.
-
-basis.bass_conversion. For example, this is used to convert 'as PO4' to 'as P'.
-
-Returns
--------
-dict
-    Dictionary with structure {basis: conversion factor}
-     
-See Also
---------
-:func:`convert.moles_to_mass`
-
-`Best Practices for Submitting Nutrient Data to the Water Quality eXchange
-<www.epa.gov/sites/default/files/2017-06/documents/wqx_nutrient_best_practices_guide.pdf>`_
-"""
 basis_conversion = {
     "NH3": 0.822,
     "NH4": 0.776,
@@ -67,17 +70,6 @@ basis_conversion = {
     "PO4": 0.326,
 }
 
-"""basis.stp_dict: Get standard temperature and pressure to define basis from units.
-
-Notes
------
-    This needs to be updated to include pressure or needs to be renamed.
-    
-Returns
--------
-dict
-    Dictionary with {'standard temp' : {'units': [values to replace]}}.
-"""
 stp_dict = {"@25C": {"mg/mL": ["mg/mL @25C"]}}
 
 
@@ -145,26 +137,25 @@ def basis_from_unit(df_in, basis_dict, unit_col="Units", basis_col="Speciation")
     """
     df = df_in.copy()
     for base in basis_dict.keys():
-        for (new_unit, old_units) in basis_dict[base].items():
+        for new_unit, old_units in basis_dict[base].items():
             for old_unit in old_units:
                 # TODO: Time test if old_unit in unit_col first?
                 mask = df[unit_col] == old_unit  # Update mask
                 if basis_col in df.columns:
                     # Add flags anywhere the values are updated
-                    flag1 = f'{basis_col}: updated from '
+                    flag1 = f"{basis_col}: updated from "
                     # List of unique basis values
                     basis_list = df.loc[mask, basis_col].dropna().unique()
                     # Loop over existing values in basis field
                     for old_basis in basis_list:
-                        flag = f'{flag1}{old_basis} to {base} (units)'
+                        flag = f"{flag1}{old_basis} to {base} (units)"
                         if old_basis != base:
                             qa_mask = mask & (df[basis_col] == old_basis)
-                            warn(f'Mismatched {flag}', UserWarning)
+                            warn(f"Mismatched {flag}", UserWarning)
                             df = add_qa_flag(df, qa_mask, flag)
                 # Add/update basis from unit
                 df = set_basis(df, mask, base, basis_col)
-                df[unit_col] = [new_unit if x == old_unit else x
-                                for x in df[unit_col]]
+                df[unit_col] = [new_unit if x == old_unit else x for x in df[unit_col]]
     return df
 
 
@@ -203,7 +194,7 @@ def basis_from_method_spec(df_in):
     1         Phosphorus                     NaN         NWIS        NaN
     """
     # Basis from MethodSpecificationName
-    old_col = 'MethodSpecificationName'
+    old_col = "MethodSpecificationName"
     df = df_in.copy()
     # TODO: this seems overly-complex to do a pop from one column to another,
     # consider _coerce_basis()
@@ -229,8 +220,8 @@ def update_result_basis(df_in, basis_col, unit_col):
 
     Notes
     -----
-    Rather than creating many new empty columns this function currently overwrites the original
-    basis_col values. The original values are noted in the QA_flag.
+    Currently overwrites the original basis_col values rather than create many new empty
+    columns. The original values are noted in the QA_flag.
 
     Parameters
     ----------
@@ -267,7 +258,8 @@ def update_result_basis(df_in, basis_col, unit_col):
     ...                                           'ResultTemperatureBasisText',
     ...                                           'Units')
     ... # doctest: +IGNORE_RESULT
-    UserWarning: Mismatched ResultTemperatureBasisText: updated from 25 deg C to @25C (units)
+    UserWarning: Mismatched ResultTemperatureBasisText: updated from 25 deg C to @25C
+    (units)
     >>> df_temp_basis[['Units']]
        Units
     0  mg/mL
@@ -281,23 +273,23 @@ def update_result_basis(df_in, basis_col, unit_col):
     # df = df_in.copy()
 
     # Basis from unit
-    if basis_col == 'ResultTemperatureBasisText':
+    if basis_col == "ResultTemperatureBasisText":
         df_out = basis_from_unit(df_in.copy(), stp_dict, unit_col, basis_col)
         # NOTE: in the test case 25 deg C -> @25C
-    elif basis_col == 'ResultParticleSizeBasisText':
+    elif basis_col == "ResultParticleSizeBasisText":
         # NOTE: These are normally 'less than x mm', no errors so far to fix
         df_out = df_in.copy()
-    elif basis_col == 'ResultWeightBasisText':
+    elif basis_col == "ResultWeightBasisText":
         df_out = df_in.copy()
-    elif basis_col == 'ResultTimeBasisText':
+    elif basis_col == "ResultTimeBasisText":
         df_out = df_in.copy()
     else:
-        raise ValueError(f'{basis_col} not recognized basis column')
+        raise ValueError(f"{basis_col} not recognized basis column")
 
     return df_out
 
 
-def set_basis(df_in, mask, basis, basis_col='Speciation'):
+def set_basis(df_in, mask, basis, basis_col="Speciation"):
     """Update or create basis_col with basis as value.
 
     Parameters
