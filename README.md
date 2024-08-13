@@ -22,13 +22,13 @@ For complete documentation see [docs](https://usepa.github.io/harmonize-wq/index
 ## Quick Start
 
 harmonize_wq can be installed using pip:
-```
-$ python3 -m pip install harmonize-wq
+```bash
+python3 -m pip install harmonize-wq
 ```
 
 To install the latest development version of harmonize_wq using pip:
 
-```
+```bash
 pip install git+https://github.com/USEPA/harmonize-wq.git
 ```
 
