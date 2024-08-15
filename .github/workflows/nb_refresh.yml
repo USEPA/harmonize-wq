@@ -1,9 +1,6 @@
 name: Update Notebook
 
 on:
-  push:
-    branches:
-      [80-refresh-demo-nb-using-actions]
   pull_request:
     branches:
       [main]
