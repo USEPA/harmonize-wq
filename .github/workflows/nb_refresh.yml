@@ -1,0 +1,43 @@
+name: Update Notebook
+
+on:
+  push:
+    branches:
+      [nb_refresh]
+  pull_request:
+    branches:
+      [nb_refresh]
+
+jobs:
+  notebook_update:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - name: Update pip and install depends
+        run: |
+          python -VV
+          python -m pip install --upgrade pip
+          python -m pip install --no-deps .
+          pip install -r requirements.txt
+          pip install jupyter nbconvert nbformat
+      - name: Update analysis notebook
+        run: |
+          jupyter nbconvert --to notebook --execute demos/Harmonize_CapeCod_Detailed.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_CapeCod_Detailed
+          jupyter nbconvert --to notebook --execute demos/Harmonize_CapeCod_Simple.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_CapeCod_Simple
+          jupyter nbconvert --to notebook --execute demos/Harmonize_Pensacola_Detailed.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Pensacola_Detailed
+          jupyter nbconvert --to notebook --execute demos/Harmonize_Pensacola_Simple.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Pensacola_Simple
+          jupyter nbconvert --to notebook --execute demos/Harmonize_Tampa_Detailed.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Tampa_Detailed
+          jupyter nbconvert --to notebook --execute demos/Harmonize_Tampa_Simple.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Tampa_Simple
+      - name: commit updated notebook
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: nb update bot
+          message: "Update Notebook"
+          add: '["demos/Harmonize_CapeCod_Detailed.ipynb", "demos/Harmonize_CapeCod_Simple.ipynb", "demos/Harmonize_Pensacola_Detailed.ipynb", "demos/Harmonize_Pensacola_Simple.ipynb", "demos/Harmonize_Tampa_Detailed.ipynb","demos/Harmonize_Tampa_Simple.ipynb"]'
