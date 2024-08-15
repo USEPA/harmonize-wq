@@ -3,10 +3,10 @@ name: Update Notebook
 on:
   push:
     branches:
-      [nb_refresh]
+      [80-refresh-demo-nb-using-actions]
   pull_request:
     branches:
-      [nb_refresh]
+      [main]
 
 jobs:
   notebook_update:
