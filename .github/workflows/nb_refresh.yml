@@ -35,6 +35,6 @@ jobs:
       - name: commit updated notebook
         uses: EndBug/add-and-commit@v7
         with:
-          author_name: nb update bot
+          committer_name: nb update bot
           message: "Update Notebook"
           add: '["demos/Harmonize_CapeCod_Detailed.ipynb", "demos/Harmonize_CapeCod_Simple.ipynb", "demos/Harmonize_Pensacola_Detailed.ipynb", "demos/Harmonize_Pensacola_Simple.ipynb", "demos/Harmonize_Tampa_Detailed.ipynb","demos/Harmonize_Tampa_Simple.ipynb"]'
