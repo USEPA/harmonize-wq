@@ -12,9 +12,9 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - name: Update pip and install depends
@@ -33,7 +33,7 @@ jobs:
           jupyter nbconvert --to notebook --execute demos/Harmonize_Tampa_Detailed.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Tampa_Detailed
           jupyter nbconvert --to notebook --execute demos/Harmonize_Tampa_Simple.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Tampa_Simple
       - name: commit updated notebook
-        uses: EndBug/add-and-commit@v7
+        uses: EndBug/add-and-commit@v9
         with:
           author_name: 'github-actions[bot]'
           author_email: 'github-actions[bot]@users.noreply.github.com'

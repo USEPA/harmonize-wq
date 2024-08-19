@@ -19,12 +19,12 @@ jobs:
   build_doc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
       - uses: r-lib/actions/setup-pandoc@v2
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.9
       - name: Install dependencies
@@ -38,7 +38,7 @@ jobs:
           make html
           make doctest
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v4
         with:
           # Upload entire repository
           path: './docs/build/html'
