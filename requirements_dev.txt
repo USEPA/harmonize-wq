@@ -6,3 +6,4 @@ sphinxcontrib-spelling
 nbsphinx
 nbsphinx_link
 notebook
+ruff

@@ -16,12 +16,12 @@ jobs:
   build_doc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
       - uses: r-lib/actions/setup-pandoc@v2
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
@@ -32,7 +32,7 @@ jobs:
           cd docs
           make html
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
           path: './docs/build/html'
@@ -45,4 +45,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4

@@ -1,23 +1,22 @@
 name: lint
 
 on:
-  push:
-    branches:
-      [pyOpenSci-review]
   pull_request:
     branches:
-      [pyOpenSci-review]
-
+      [main]
+  push:
+    branches:
+      [main, dev]
     
 jobs:
   lint:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
          
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
 
