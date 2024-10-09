@@ -1,4 +1,4 @@
-numpy<2.0
+numpy==1.26.4
 pandas<2.0
 geopandas>=0.10.2, <0.13           # Has additional dependencies (pandas, numpy, shapely, fiona, etc.), tested on 0.10.2
 pint>=0.18          # May work on earlier versions but this is what it was tested on
