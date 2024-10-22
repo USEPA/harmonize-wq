@@ -4,6 +4,7 @@
 [![test](https://github.com/USEPA/harmonize-wq/actions/workflows/test.yml/badge.svg)](https://github.com/USEPA/harmonize-wq/actions/workflows/test.yml)
 [![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/USEPA/harmonize-wq/main/pyproject.toml)](https://www.python.org/downloads/)
 [![pyOpenSci Peer-Reviewed](https://pyopensci.org/badges/peer-reviewed.svg)](https://github.com/pyOpenSci/software-review/issues/157)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.07305/status.svg)](https://doi.org/10.21105/joss.07305)
 
 # harmonize-wq
 Standardize, clean, and wrangle Water Quality Portal data into more analytic-ready formats
