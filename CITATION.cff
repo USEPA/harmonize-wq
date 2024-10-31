@@ -1,0 +1,36 @@
+CITATION.cff
+
+cff-version: "1.2.0"
+authors:
+- family-names: Bousquin
+  given-names: Justin
+  orcid: "https://orcid.org/0000-0001-5797-4322"
+- family-names: Mullin
+  given-names: Cristina A.
+  orcid: "https://orcid.org/0000-0002-0615-6087"
+doi: 10.5281/zenodo.13356847
+message: If you use this package, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Bousquin
+    given-names: Justin
+    orcid: "https://orcid.org/0000-0001-5797-4322"
+  - family-names: Mullin
+    given-names: Cristina A.
+    orcid: "https://orcid.org/0000-0002-0615-6087"
+  date-published: 2024-10-22
+  doi: 10.21105/joss.07305
+  issn: 2475-9066
+  issue: 102
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 7305
+  title: "harmonize-wq: Standardize, clean and wrangle Water Quality
+    Portal data into more analytic-ready formats"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.07305"
+  volume: 9
+title: "harmonize-wq: Standardize, clean and wrangle Water Quality
+  Portal data into more analytic-ready formats"
