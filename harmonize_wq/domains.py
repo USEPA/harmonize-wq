@@ -155,14 +155,14 @@ def get_domain_dict(table, cols=None):
     dict_keys(['Acid Soluble', 'Bed Sediment', 'Bedload', 'Bioavailable', 'Comb Available',
                'Dissolved', 'Extractable', 'Extractable, CaCO3-bound', 'Extractable, exchangeable',
                'Extractable, organic-bnd', 'Extractable, other', 'Extractable, oxide-bound',
-               'Extractable, residual', 'Field***', 'Filter/sieve residue', 'Filterable',
+               'Extractable, residual', 'Filter/sieve residue', 'Filterable',
                'Filtered field and/or lab', 'Filtered, field', 'Filtered, lab',
                'Fixed', 'Free Available', 'Inorganic', 'Leachable', 'Net (Hot)',
                'Non-Filterable (Particle)', 'Non-settleable', 'Non-volatile',
                'None', 'Organic', 'Pot. Dissolved', 'Semivolatile', 'Settleable',
                'Sieved', 'Strong Acid Diss', 'Supernate', 'Suspended', 'Total',
                'Total Recoverable', 'Total Residual', 'Total Soluble',
-               'Unfiltered', 'Unfiltered, field', 'Vapor', 'Volatile',
+               'Unfiltered', 'Unfiltered, field', 'Unfiltered, lab', 'Vapor', 'Volatile',
                'Weak Acid Diss', 'Yield', 'non-linear function'])
     """  # noqa: E501
     if cols is None:
