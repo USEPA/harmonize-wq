@@ -21,7 +21,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - uses: r-lib/actions/setup-pandoc@v2
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
