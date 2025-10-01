@@ -38,7 +38,7 @@ jobs:
           make html
           make doctest
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           # Upload entire repository
           path: './docs/build/html'
