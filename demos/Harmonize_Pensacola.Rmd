@@ -154,7 +154,7 @@ your Python environment is set up correctly.
 
 ```{r}
 # Specify environment to be used
-reticulate::use_condaenv("wq_harmonize")
+#reticulate::use_condaenv("wq_harmonize")
 
 # Test set up is correct
 # Both imports should return "Module(package_name)"

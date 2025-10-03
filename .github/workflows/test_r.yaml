@@ -46,6 +46,7 @@ jobs:
       - name: Print Conda environment
         shell: bash -l {0}
         run: |
+          conda activate wq_harmonize
           conda info
           conda list
 
@@ -64,6 +65,8 @@ jobs:
           install.packages(c("knitr", "rmarkdown", "reticulate"))
         
       - name: setup r-reticulate venv & render rmd
+        env:
+          RETICULATE_PYTHON_ENV: "${{ env.CONDA }}/envs/wq_harmonize"
         shell: Rscript {0}
         run: |
           library(reticulate)
@@ -83,8 +86,8 @@ jobs:
           #  packages
           # )
           # use_virtualenv("wq_harmonize")
-          
-          reticulate::use_condaenv("wq_harmonize")
+          reticulate::py_discover_config()
+          #reticulate::use_condaenv("wq_harmonize")
           #reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 
           rmarkdown::render(input = "demos/Harmonize_Pensacola.Rmd")
