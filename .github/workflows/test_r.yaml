@@ -6,7 +6,7 @@ on:
       [main]
   push:
     branches:
-      [main, dev]
+      [main, dev, 122-get-r-tests-passing-again]
   schedule:
     - cron: '11 1 1 * *'
   # Allows you to run this workflow manually from the Actions tab
@@ -46,6 +46,7 @@ jobs:
       - name: Print Conda environment
         shell: bash -l {0}
         run: |
+          conda activate wq_harmonize
           conda info
           conda list
 
