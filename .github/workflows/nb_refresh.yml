@@ -3,11 +3,14 @@ name: Update Notebook
 on:
   pull_request:
     branches:
-      [main]
+      [main, 126-problem-writing-workflow-updated-notebooks]
   schedule:
     - cron: '15 2 5 * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+permissions:
+  write-all
 
 jobs:
   notebook_update:
