@@ -271,9 +271,12 @@ def get_activities_by_loc(characteristic_names, locations):
     activities_list, md_list = [], []
     for loc_que in [locations[x : x + seg] for x in range(0, len(locations), seg)]:
         query = {"characteristicName": characteristic_names, "siteid": loc_que}
-        res = wqp.what_activities(**query)
-        activities_list.append(res[0])  # Query response DataFrame
-        md_list.append(res[1])  # Query response metadata
+        try:
+            res = wqp.what_activities(**query)
+            activities_list.append(res[0])  # Query response DataFrame
+            md_list.append(res[1])  # Query response metadata
+        except pandas.errors.EmptyDataError:
+            continue
     # Combine the dataframe results
     activities = pandas.concat(activities_list).drop_duplicates()
     return activities
@@ -309,7 +312,7 @@ def add_activities_to_df(df_in, mask=None):
 
     Run on the first 1000 results:
 
-    >>> df2 = df1[:1000]
+    >>> df2 = df1.iloc[:1000]
 
     >>> from harmonize_wq import wrangle
     >>> df_activities = wrangle.add_activities_to_df(df2)
