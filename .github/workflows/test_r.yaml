@@ -6,7 +6,7 @@ on:
       [main]
   push:
     branches:
-      [main, dev, 122-get-r-tests-passing-again]
+      [main, dev]
   schedule:
     - cron: '11 1 1 * *'
   # Allows you to run this workflow manually from the Actions tab
