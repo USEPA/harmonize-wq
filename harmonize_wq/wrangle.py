@@ -695,7 +695,7 @@ def clip_stations(stations, aoi):
     >>> stations_gdf
       MonitoringLocationIdentifier              geometry
     0                           In  POINT (-87.125 30.5)
-    1                          Out  POINT (-87.5 30.5)
+    1                          Out    POINT (-87.5 30.5)
 
     Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
     harmonize_wq tests:
@@ -742,7 +742,7 @@ def to_simple_shape(gdf, out_shp):
     >>> gdf
       MonitoringLocationIdentifier              geometry
     0                           In  POINT (-87.125 30.5)
-    1                          Out  POINT (-87.5 30.5)
+    1                          Out    POINT (-87.5 30.5)
 
     Add datetime column
 
