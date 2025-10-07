@@ -109,18 +109,18 @@ def map_counts(df_in, gdf, col=None):
     ...      'geometry': [Point(1, 2), Point(2, 1)]}
     >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
     >>> gdf
-      MonitoringLocationIdentifier  QA_flag                 geometry
-    0                          ID1      NaN  POINT (1.00000 2.00000)
-    1                          ID2      NaN  POINT (2.00000 1.00000)
+      MonitoringLocationIdentifier  QA_flag     geometry
+    0                          ID1      NaN  POINT (1 2)
+    1                          ID2      NaN  POINT (2 1)
 
     Combine these to get an aggregation of results per station:
 
     >>> import harmonize_wq
     >>> cnt_gdf = harmonize_wq.visualize.map_counts(df_in, gdf)
     >>> cnt_gdf
-      MonitoringLocationIdentifier  cnt                 geometry  QA_flag
-    0                          ID1    2  POINT (1.00000 2.00000)      NaN
-    1                          ID2    1  POINT (2.00000 1.00000)      NaN
+      MonitoringLocationIdentifier  cnt     geometry  QA_flag
+    0                          ID1    2  POINT (1 2)      NaN
+    1                          ID2    1  POINT (2 1)      NaN
 
     These aggregate results can then be plotted:
 
@@ -195,18 +195,18 @@ def map_measure(df_in, gdf, col):
     ...      'geometry': [Point(1, 2), Point(2, 1)]}
     >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
     >>> gdf
-      MonitoringLocationIdentifier  QA_flag                 geometry
-    0                          ID1      NaN  POINT (1.00000 2.00000)
-    1                          ID2      NaN  POINT (2.00000 1.00000)
+      MonitoringLocationIdentifier  QA_flag     geometry
+    0                          ID1      NaN  POINT (1 2)
+    1                          ID2      NaN  POINT (2 1)
 
     Combine these to get an aggregation of results per station:
 
     >>> from harmonize_wq import visualize
     >>> avg_temp = visualize.map_measure(df_in, gdf, 'Temperature')
     >>> avg_temp
-      MonitoringLocationIdentifier  cnt  mean                 geometry  QA_flag
-    0                          ID1    2   6.9  POINT (1.00000 2.00000)      NaN
-    1                          ID2    1   1.2  POINT (2.00000 1.00000)      NaN
+      MonitoringLocationIdentifier  cnt  mean     geometry  QA_flag
+    0                          ID1    2   6.9  POINT (1 2)      NaN
+    1                          ID2    1   1.2  POINT (2 1)      NaN
 
     These aggregate results can then be plotted:
 

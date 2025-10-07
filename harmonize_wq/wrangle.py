@@ -693,9 +693,9 @@ def clip_stations(stations, aoi):
     ...                   Point (-87.5000, 30.50000),]}
     >>> stations_gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
     >>> stations_gdf
-      MonitoringLocationIdentifier                    geometry
-    0                           In  POINT (-87.12500 30.50000)
-    1                          Out  POINT (-87.50000 30.50000)
+      MonitoringLocationIdentifier              geometry
+    0                           In  POINT (-87.125 30.5)
+    1                          Out  POINT (-87.5 30.5)
 
     Use area of interest GeoJSON for Pensacola and Perdido Bays, FL from
     harmonize_wq tests:
@@ -704,8 +704,8 @@ def clip_stations(stations, aoi):
 
     >>> stations_in_aoi = harmonize_wq.wrangle.clip_stations(stations_gdf, aoi_url)
     >>> stations_in_aoi
-      MonitoringLocationIdentifier                    geometry
-    0                           In  POINT (-87.12500 30.50000)
+      MonitoringLocationIdentifier              geometry
+    0                           In  POINT (-87.125 30.5)
     """
     stations_gdf = as_gdf(stations)  # Ensure it is geodataframe
     aoi_gdf = as_gdf(aoi)  # Ensure it is geodataframe
@@ -740,9 +740,9 @@ def to_simple_shape(gdf, out_shp):
     ...                   Point (-87.5000, 30.50000),]}
     >>> gdf = geopandas.GeoDataFrame(d, crs="EPSG:4326")
     >>> gdf
-      MonitoringLocationIdentifier                    geometry
-    0                           In  POINT (-87.12500 30.50000)
-    1                          Out  POINT (-87.50000 30.50000)
+      MonitoringLocationIdentifier              geometry
+    0                           In  POINT (-87.125 30.5)
+    1                          Out  POINT (-87.5 30.5)
 
     Add datetime column
 
