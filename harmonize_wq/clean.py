@@ -2,8 +2,9 @@
 """Functions to clean/correct additional columns in subset/entire dataset."""
 
 # from warnings import warn
-import dataretrieval.utils
+from dataretrieval.codes import tz
 from numpy import nan
+from pandas import to_datetime
 
 from harmonize_wq.convert import convert_unit_series
 from harmonize_wq.domains import accepted_methods
@@ -47,15 +48,21 @@ def datetime(df_in):
     [2 rows x 4 columns]
     """
     # Expected columns
-    date, time, tz = (
+    date, time, tz_col = (
         "ActivityStartDate",
         "ActivityStartTime/Time",
         "ActivityStartTime/TimeZoneCode",
     )
     df_out = df_in.copy()
+    tz_series = df_out[tz_col].map(tz)  # replace codes with UTC offset
+    # NOTE: tz will NaT anything not a tz code, including valid UTC offset
+    tz_series = tz_series.fillna(df_out[tz_col])
     # NOTE: even if date, if time is NA datetime is NaT
-    df_out = dataretrieval.utils.format_datetime(df_out, date, time, tz)
-    df_out = df_out.rename(columns={"datetime": "Activity_datetime"})
+    dt_series = to_datetime(df_out[date] + " " + df_out[time] + tz_series,
+        format="ISO8601",
+        utc=True,
+    )
+    df_out["Activity_datetime"] = dt_series
 
     return df_out
 
