@@ -36,8 +36,7 @@ ACTIVITIES = pandas.read_csv(os.path.join(test_dir, "wqp_activities.txt"))
 NARROW_RESULTS1 = pandas.read_csv(os.path.join(test_dir, "wqp_results1.txt"))
 # pH & Salinity
 NARROW_RESULTS2 = pandas.read_csv(
-    os.path.join(test_dir, "wqp_results2.txt"), keep_default_na=False,
-    na_values = [""]
+    os.path.join(test_dir, "wqp_results2.txt"), keep_default_na=False, na_values=[""]
     )
 # Nitrogen & Conductivity
 NARROW_RESULTS3 = pandas.read_csv(os.path.join(test_dir, "wqp_results3.txt"))
