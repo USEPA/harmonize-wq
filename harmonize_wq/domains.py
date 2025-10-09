@@ -174,7 +174,7 @@ def get_domain_dict(table, cols=None):
     if requests.get(url).status_code != 200:
         status_code = requests.get(url).status_code
         print(f"{url} web service response {status_code}")
-    df = pandas.read_csv(url, usecols=cols)
+    df = pandas.read_csv(url, usecols=cols, keep_default_na=False)
     return dict(df.values)
 
 
@@ -214,7 +214,7 @@ def harmonize_TADA_dict():
                 # re-case old values
                 new_v_sf = [re_case(x, domain_list) for x in v_sf]
                 new_target[new_k_sf] = new_v_sf
-            # Replace old smaple fraction dict with new using keys
+            # Replace old sample fraction dict with new using keys
             full_dict[k_char][k_target] = new_target
 
     return full_dict
