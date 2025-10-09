@@ -235,7 +235,7 @@ def re_case(word, domain_list):
     str
         Word from domain_list in UPPERCASE.
     """
-    domain_list_upper = [x.upper() for x in domain_list]
+    domain_list_upper = [str(x).upper() for x in domain_list]
     try:
         idx = domain_list_upper.index(word)
     except ValueError:
