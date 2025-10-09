@@ -58,7 +58,8 @@ def datetime(df_in):
     # NOTE: tz will NaT anything not a tz code, including valid UTC offset
     tz_series = tz_series.fillna(df_out[tz_col])
     # NOTE: even if date, if time is NA datetime is NaT
-    dt_series = to_datetime(df_out[date] + " " + df_out[time] + tz_series,
+    dt_series = to_datetime(
+        df_out[date] + " " + df_out[time] + tz_series,
         format="ISO8601",
         utc=True,
     )
