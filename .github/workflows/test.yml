@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.9', '3.10']
+        python-version: ['3.10', '3.11']
 
     steps:
       - uses: actions/checkout@v5
@@ -42,11 +42,6 @@ jobs:
       #pipwin install gdal
       #pipwin install fiona
 
-      - if: ${{ (matrix.os == 'windows-latest') && (matrix.python-version == 3.9) }}
-        run: |
-          pip install https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/GDAL-3.7.1-cp39-cp39-win_amd64.whl
-          pip install https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/Fiona-1.9.4.post1-cp39-cp39-win_amd64.whl
-      
       - if: ${{ (matrix.os == 'windows-latest') && (matrix.python-version == 3.10) }}
         run: |
           pip install https://github.com/cgohlke/geospatial-wheels/releases/download/v2023.7.16/GDAL-3.7.1-cp310-cp310-win_amd64.whl
