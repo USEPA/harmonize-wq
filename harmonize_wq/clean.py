@@ -31,21 +31,28 @@ def datetime(df_in):
 
     >>> from pandas import DataFrame
     >>> from numpy import nan
-    >>> df = DataFrame({'ActivityStartDate': ['2004-09-01', '2004-07-01',],
-    ...                 'ActivityStartTime/Time': ['10:01:00', nan,],
-    ...                 'ActivityStartTime/TimeZoneCode':  ['EST', nan],
+    >>> time_zones = ['EST', 'DST', '-0500', nan, nan]
+    >>> df = DataFrame({'ActivityStartDate': ['2004-09-01']*3 + ['2004-07-01']*2,
+    ...                 'ActivityStartTime/Time': ['10:01:00']*4 + [nan],
+    ...                 'ActivityStartTime/TimeZoneCode':  time_zones,
     ...                 })
     >>> df
       ActivityStartDate ActivityStartTime/Time ActivityStartTime/TimeZoneCode
     0        2004-09-01               10:01:00                            EST
-    1        2004-07-01                    NaN                            NaN
+    1        2004-09-01               10:01:00                            DST
+    2        2004-09-01               10:01:00                          -0500
+    3        2004-07-01               10:01:00                            NaN
+    4        2004-07-01                    NaN                            NaN
     >>> from harmonize_wq import clean
     >>> clean.datetime(df)
       ActivityStartDate  ...         Activity_datetime
     0        2004-09-01  ... 2004-09-01 15:01:00+00:00
-    1        2004-07-01  ...                       NaT
+    1        2004-09-01  ...                       NaT
+    2        2004-09-01  ... 2004-09-01 15:01:00+00:00
+    3        2004-07-01  ...                       NaT
+    4        2004-07-01  ...                       NaT
     <BLANKLINE>
-    [2 rows x 4 columns]
+    [5 rows x 4 columns]
     """
     # Expected columns
     date, time, tz_col = (
@@ -60,8 +67,9 @@ def datetime(df_in):
     # NOTE: even if date, if time is NA datetime is NaT
     dt_series = to_datetime(
         df_out[date] + " " + df_out[time] + tz_series,
-        format="ISO8601",
+        errors='coerce',
         utc=True,
+        format="ISO8601",
     )
     df_out["Activity_datetime"] = dt_series
 
