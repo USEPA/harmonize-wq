@@ -1228,9 +1228,8 @@ def test_datetime(harmonized_tables):
     # Testit
     actual = clean.datetime(harmonized_tables)
     # Type for time field
-    assert isinstance(
-        actual["Activity_datetime"][0], pandas._libs.tslibs.timestamps.Timestamp
-    )
+    expected_type = pandas._libs.tslibs.timestamps.Timestamp
+    assert isinstance(actual["Activity_datetime"][0], expected_type)
 
 
 # @pytest.mark.skip(reason="no change")
