@@ -67,7 +67,7 @@ def datetime(df_in):
     # NOTE: even if date, if time is NA datetime is NaT
     dt_series = to_datetime(
         df_out[date] + " " + df_out[time] + tz_series,
-        errors='coerce',
+        errors="coerce",
         utc=True,
         format="ISO8601",
     )
