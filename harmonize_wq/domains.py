@@ -115,12 +115,7 @@ OUT_UNITS = {
 }
 
 # Temporary (these are confirmed)
-domain_tables = {
-    "ActivityMedia": "ActivityMedia_CSV",
-    "SampleFraction": "ResultSampleFraction_CSV",
-    "ActivityMediaSubdivision": "ActivityMediaSubdivision_CSV",
-    "ResultValueType": "ResultValueType_CSV",
-}
+domain_tables = {"ActivityMedia": "ActivityMedia_CSV", "SampleFraction": "ResultSampleFraction_CSV", "ActivityMediaSubdivision": "ActivityMediaSubdivision_CSV", "ResultValueType": "ResultValueType_CSV",}
 # Replaces:
 # get_ActivityMediaName():
 # get_SampleFraction():
