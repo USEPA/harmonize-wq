@@ -39,7 +39,7 @@ jobs:
           jupyter nbconvert --to notebook --execute demos/Harmonize_Tampa_Detailed.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Tampa_Detailed
           jupyter nbconvert --to notebook --execute demos/Harmonize_Tampa_Simple.ipynb --ExecutePreprocessor.kernel_name='python3' --output ../demos/Harmonize_Tampa_Simple
       - name: commit updated notebook
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           author_name: 'github-actions[bot]'
           author_email: 'github-actions[bot]@users.noreply.github.com'
