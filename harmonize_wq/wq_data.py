@@ -490,7 +490,10 @@ class WQCharData:
                     self.df[c_mask], basis_dict, self.col.unit_out
                 )
             except KeyError:
-                pass
+                warn(
+                    f"No unit-basis mapping found for out_col '{self.out_col}'; "
+                    "skipping basis_from_unit and using default/fallback basis values."
+                )
             # Finish by filling any NAs with char_val based default
             col = self.col.basis
 
