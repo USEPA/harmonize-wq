@@ -267,7 +267,7 @@ def get_activities_by_loc(characteristic_names, locations):
     See :func:`wrangle.add_activities_to_df`
     """
     # Split loc_list as query by list may cause the query url to be too long
-    seg = 200  # Max length of each segment
+    seg = 100  # Max length of each segment
     activities_list, md_list = [], []
     for loc_que in [locations[x : x + seg] for x in range(0, len(locations), seg)]:
         query = {"characteristicName": characteristic_names, "siteid": loc_que}
