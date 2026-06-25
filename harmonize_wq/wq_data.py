@@ -962,7 +962,7 @@ class WQCharData:
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
                'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus'],
               dtype='object')
-        >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]  # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+        >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]  # doctest: +NORMALIZE_WHITESPACE
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
         1                    NaN             10.0... milligram / liter
