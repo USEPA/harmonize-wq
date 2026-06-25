@@ -20,6 +20,7 @@ jobs:
       REPO_NAME: ${{ github.event.repository.name }}
       
     strategy:
+      fail-fast: false 
       matrix:
         os: [windows-latest, macos-latest]
         python-version: ['3.11', '3.12', '3.13', '3.14']
