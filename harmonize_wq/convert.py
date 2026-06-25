@@ -57,7 +57,7 @@ for definition in registry_adds_list("Salinity"):
 #     return pandas.Series(out_list, index=quantity_series.index)
 # timeit: 27.08
 def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors="raise"):
-    r"""Convert quantities to consistent units.
+    """Convert quantities to consistent units.
 
     Convert list of quantities (quantity_list), each with a specified old unit,
     to a quantity in units using :mod:`pint` constructor method.
