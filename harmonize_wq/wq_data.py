@@ -288,16 +288,16 @@ class WQCharData:
                     return {unit: quant + " / l"}, [quant + " / l"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is dimensionless (e.g. unit = 'g/kg')
-            return {unit: unit + " * H2O"}, []
+            return {unit: unit + " * ρH2O"}, []
         if ureg(units).dimensionless:
             # Convert to dimensionless, e.g., 'mg/l' -> '%'
             if ureg(unit).check({"[substance]": 1}):
                 if quant:
-                    # Moles -> g/kg; dim = ' / l / H2O'
-                    return {unit: quant + " / l / H2O"}, [quant + " / l / H2O"]
+                    # Moles -> g/kg; dim = ' / l / ρH2O'
+                    return {unit: quant + " / l / ρH2O"}, [quant + " / l / ρH2O"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is density (e.g. unit = 'mg/l')
-            return {unit: unit + " / H2O"}, []
+            return {unit: unit + " / ρH2O"}, []
         warn("WARNING: Unexpected dimensionality")
         return {}, []
 
@@ -1107,7 +1107,7 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.dimension_fixes()
-        ({'mg/kg': 'mg/kg * H2O'}, [])
+        ({'mg/kg': 'mg/kg * ρH2O'}, [])
         """
         dimension_dict = {}  # Empty dict to update to
         mol_list = []  # Empty list to append to
