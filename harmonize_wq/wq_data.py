@@ -604,7 +604,7 @@ class WQCharData:
         return self.c_mask & self.df[self.out_col].notna()
 
     def convert_units(self, default_unit=None, errors="raise"):
-        r"""Update out-col to convert units.
+        """Update out-col to convert units.
 
         Update class out-col used to convert :class:`pandas.DataFrame`. from old
         units to default_unit.
@@ -889,7 +889,7 @@ class WQCharData:
         suffix=None,
         fract_col="ResultSampleFractionText",
     ):
-        r"""Create columns for sample fractions using frac_dict to set names.
+        """Create columns for sample fractions using frac_dict to set names.
 
         Parameters
         ----------
