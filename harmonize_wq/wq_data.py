@@ -1102,7 +1102,7 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.dimension_fixes()
-        ({'mg/kg': 'mg/kg * H2O'}, [])
+        ({'mg/kg': 'mg/kg * ρH2O'}, [])
         """
         dimension_dict = {}  # Empty dict to update to
         mol_list = []  # Empty list to append to
