@@ -645,7 +645,7 @@ class WQCharData:
         >>> wq.convert_units()
         >>> wq.df[['ResultMeasureValue', 'Units', 'Phosphorus']]
           ResultMeasureValue  Units                            Phosphorus
-        0                1.0  mg/ml  1000.0... milligram / liter
+        0                1.0  mg/ml           1000.0... milligram / liter
         1               10.0    NaN                                   NaN
         # doctest: +ELLIPSIS
         """
@@ -966,7 +966,7 @@ class WQCharData:
         >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
-        1                    NaN  10.0... milligram / liter
+        1                    NaN             10.0... milligram / liter
         # doctest: +ELLIPSIS
 
         Alternatively, the sample fraction lists from tada can be used, in this case
