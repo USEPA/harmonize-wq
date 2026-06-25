@@ -963,8 +963,7 @@ class WQCharData:
         >>> wq.df.columns
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
-               'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus',
-               'TOTAL PHOSPHORUS_ MIXED FORMS'],
+               'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus],
               dtype='object')
         >>> wq.df[['TDP_Phosphorus',
         ...        'Other_Phosphorus'
@@ -980,7 +979,8 @@ class WQCharData:
         >>> wq.df.columns
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
-               'QA_flag', 'TOTAL PHOSPHORUS_ MIXED FORMS', 'Other_Phosphorus'],
+               'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus',
+               'TOTAL PHOSPHORUS_ MIXED FORMS'],
               dtype='object')
         >>> wq.df[['TOTAL PHOSPHORUS_ MIXED FORMS', 'Other_Phosphorus']]
           TOTAL PHOSPHORUS_ MIXED FORMS                      Other_Phosphorus
