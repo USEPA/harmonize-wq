@@ -643,7 +643,10 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.convert_units()
-        >>> wq.df[['ResultMeasureValue', 'Units', 'Phosphorus']]  # doctest: +NORMALIZE_WHITESPACE  # noqa: E501
+        >>> wq.df[['ResultMeasureValue',
+        ...        'Units',
+        ...        'Phosphorus'
+        ... ]]  # doctest: +NORMALIZE_WHITESPACE
           ResultMeasureValue  Units                            Phosphorus
         0                1.0  mg/ml           1000.0... milligram / liter
         1               10.0    NaN                                   NaN
@@ -962,7 +965,9 @@ class WQCharData:
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
                'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus'],
               dtype='object')
-        >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]  # doctest: +NORMALIZE_WHITESPACE  # noqa: E501
+        >>> wq.df[['TDP_Phosphorus',
+        ...        'Other_Phosphorus'
+        ... ]]  # doctest: +NORMALIZE_WHITESPACE
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
         1                    NaN             10.0... milligram / liter
@@ -974,8 +979,7 @@ class WQCharData:
         >>> wq.df.columns
         Index(['CharacteristicName', 'ResultMeasure/MeasureUnitCode',
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
-               'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus',
-               'TOTAL PHOSPHORUS_ MIXED FORMS'],
+               'QA_flag', 'TOTAL PHOSPHORUS_ MIXED FORMS', 'Other_Phosphorus'],
               dtype='object')
         >>> wq.df[['TOTAL PHOSPHORUS_ MIXED FORMS', 'Other_Phosphorus']]
           TOTAL PHOSPHORUS_ MIXED FORMS                      Other_Phosphorus
