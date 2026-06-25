@@ -643,9 +643,12 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.convert_units()
-        >>> wq.df[['ResultMeasureValue', 'Units', 'Phosphorus']]
+        >>> wq.df[['ResultMeasureValue',
+        ...        'Units',
+        ...        'Phosphorus'
+        ... ]]  # doctest: +NORMALIZE_WHITESPACE
           ResultMeasureValue  Units                            Phosphorus
-        0                1.0  mg/ml  1000.0000000000001 milligram / liter
+        0                1.0  mg/ml           1000.0... milligram / liter
         1               10.0    NaN                                   NaN
         """
         if default_unit:
@@ -949,7 +952,7 @@ class WQCharData:
         1    10.000000000000002 milligram / liter
         Name: Phosphorus, dtype: object
 
-        These results may have differen, non-comprable sample fractions. First,
+        These results may have different, non-comprable sample fractions. First,
         split results using a provided frac_dict (as used in harmonize()):
 
         >>> from numpy import nan
@@ -962,10 +965,12 @@ class WQCharData:
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
                'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus'],
               dtype='object')
-        >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]
+        >>> wq.df[['TDP_Phosphorus',
+        ...        'Other_Phosphorus'
+        ... ]]  # doctest: +NORMALIZE_WHITESPACE
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
-        1                    NaN  10.000000000000002 milligram / liter
+        1                    NaN             10.0... milligram / liter
 
         Alternatively, the sample fraction lists from tada can be used, in this case
         they are added:

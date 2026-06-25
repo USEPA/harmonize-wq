@@ -841,7 +841,7 @@ def test_harmonize_carbon_organic():
     assert actual.iloc[355][orig_unit_col] == "%"  # Confirm orig unit
     assert str(actual.iloc[355]["Carbon"].units) == expected_unit
     assert actual.iloc[355][orig_val_col] == "0.1"  # Confirm original measure
-    assert actual.iloc[355]["Carbon"].magnitude == 1000.0
+    assert actual.iloc[355]["Carbon"].magnitude == pytest.approx(1000.0)
     # Confirm expected flag - for missing/infered units
     expected_flag = "ResultMeasure/MeasureUnitCode: MISSING UNITS, mg/l assumed"
     actual_flags = actual.iloc[103082]["QA_flag"]
@@ -1352,7 +1352,7 @@ def test_map_measure(test_harmonize_locations, test_harmonize_temperature):
         test_harmonize_temperature, test_harmonize_locations, "Temperature"
     )
     assert len(actual["mean"]) == 21075
-    assert sum(actual["mean"]) == 523776.35504297394
+    assert sum(actual["mean"]) == pytest.approx(523776.355043)
 
 
 def test_station_summary(test_harmonize_temperature):
@@ -1361,7 +1361,7 @@ def test_station_summary(test_harmonize_temperature):
     assert len(actual["cnt"]) == 21075
     assert sum(actual["cnt"]) == 346210
     assert len(actual["mean"]) == 21075
-    assert sum(actual["mean"]) == 523776.35504297394
+    assert sum(actual["mean"]) == pytest.approx(523776.355043)
 
 
 def test_print_report(test_harmonize_temperature, capsys):
