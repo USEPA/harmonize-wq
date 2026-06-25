@@ -647,7 +647,7 @@ class WQCharData:
           ResultMeasureValue  Units                            Phosphorus
         0                1.0  mg/ml           1000.0... milligram / liter
         1               10.0    NaN                                   NaN
-        # doctest: +ELLIPSIS
+        # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
         """
         if default_unit:
             self.units = default_unit
@@ -967,7 +967,7 @@ class WQCharData:
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
         1                    NaN             10.0... milligram / liter
-        # doctest: +ELLIPSIS
+        # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
 
         Alternatively, the sample fraction lists from tada can be used, in this case
         they are added:
