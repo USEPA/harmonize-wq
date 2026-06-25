@@ -604,7 +604,7 @@ class WQCharData:
         return self.c_mask & self.df[self.out_col].notna()
 
     def convert_units(self, default_unit=None, errors="raise"):
-        """Update out-col to convert units.
+        r"""Update out-col to convert units.
 
         Update class out-col used to convert :class:`pandas.DataFrame`. from old
         units to default_unit.
@@ -643,7 +643,7 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.convert_units()
-        >>> wq.df[['ResultMeasureValue', 'Units', \\ # doctest: +NORMALIZE_WHITESPACE
+        >>> wq.df[['ResultMeasureValue', 'Units', \ # doctest: +NORMALIZE_WHITESPACE
         ...        'Phosphorus']]
           ResultMeasureValue  Units                            Phosphorus
         0                1.0  mg/ml           1000.0... milligram / liter
