@@ -1376,5 +1376,5 @@ def test_print_report(test_harmonize_temperature, capsys):
     expected += "max       72000.000000\ndtype: float64\n"
     expected += "Unusable results: 13295\n"
     expected += "Usable results with inferred units: 0\n"
-    expected += "Results outside threshold (0.0 to 884.2295835882991): 4\n"
+    expected += "Results outside threshold (0.0 to 884.229584): 4\n"
     assert captured == expected
