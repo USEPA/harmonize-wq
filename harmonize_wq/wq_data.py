@@ -643,8 +643,7 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.convert_units()
-        >>> wq.df[['ResultMeasureValue', 'Units', \ # doctest: +NORMALIZE_WHITESPACE
-        ...        'Phosphorus']]
+        >>> wq.df[['ResultMeasureValue', 'Units', 'Phosphorus']]  # doctest: +NORMALIZE_WHITESPACE  # noqa: E501
           ResultMeasureValue  Units                            Phosphorus
         0                1.0  mg/ml           1000.0... milligram / liter
         1               10.0    NaN                                   NaN
@@ -963,8 +962,7 @@ class WQCharData:
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
                'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus'],
               dtype='object')
-        >>> wq.df[['TDP_Phosphorus', \ # doctest: +NORMALIZE_WHITESPACE
-        ...        'Other_Phosphorus']]
+        >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]  # doctest: +NORMALIZE_WHITESPACE  # noqa: E501
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
         1                    NaN             10.0... milligram / liter
