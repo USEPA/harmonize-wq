@@ -97,8 +97,9 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors="
     >>> from harmonize_wq import convert
     >>> convert.convert_unit_series(quantity_series, unit_series, units = 'mg/l')
     0                   1.0 milligram / liter
-    1    10000.000000000002 milligram / liter
+    1    10000.0... milligram / liter
     dtype: object
+    # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     """
     if quantity_series.dtype == "O":
         quantity_series = pandas.to_numeric(quantity_series)
