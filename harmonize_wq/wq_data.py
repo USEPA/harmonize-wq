@@ -890,7 +890,7 @@ class WQCharData:
         suffix=None,
         fract_col="ResultSampleFractionText",
     ):
-        """Create columns for sample fractions using frac_dict to set names.
+        r"""Create columns for sample fractions using frac_dict to set names.
 
         Parameters
         ----------
@@ -963,7 +963,7 @@ class WQCharData:
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
                'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus'],
               dtype='object')
-        >>> wq.df[['TDP_Phosphorus', \\ # doctest: +NORMALIZE_WHITESPACE
+        >>> wq.df[['TDP_Phosphorus', \ # doctest: +NORMALIZE_WHITESPACE
         ...        'Other_Phosphorus']]
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
