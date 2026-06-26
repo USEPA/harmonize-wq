@@ -446,14 +446,20 @@ def FNU_to_NTU(val):
 
 @u_reg.wraps(
     u_reg.gram / u_reg.kilogram,
-    (u_reg.gram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    (
+        u_reg.gram / u_reg.liter,
+        u_reg.standard_atmosphere,
+        u_reg.degree_Celsius,
+        None,  # For tolerance
+        None,  # For max_iter
+    ),
 )
 def density_to_PSU(
     val,
     pressure=1 * u_reg("atm"),
     temperature=u_reg.Quantity(25, u_reg("degC")),
     tolerance=1e8,
-    max_iter=50
+    max_iter=50,
 ):
     """Convert salinity as density (mass/volume) to Practical Salinity Units.
 
