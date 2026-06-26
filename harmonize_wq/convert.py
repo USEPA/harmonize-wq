@@ -449,7 +449,11 @@ def FNU_to_NTU(val):
     (u_reg.gram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
 )
 def density_to_PSU(
-    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"), tolerance=1e8, max_iter=50)
+    val,
+    pressure=1 * u_reg("atm"),
+    temperature=u_reg.Quantity(25, u_reg("degC")),
+    tolerance=1e8,
+    max_iter=50
 ):
     """Convert salinity as density (mass/volume) to Practical Salinity Units.
 
@@ -506,25 +510,25 @@ def density_to_PSU(
         rho_calc = PSU_to_density(PSU, pressure, temperature)
 
         # Calculate the density difference
-        diff = rho_calc - density_kgm3
+        diff = rho_calc - val
 
-        if abs(diff)< tolerance:
+        if abs(diff) < tolerance:
             # Dynamically calculate required decimal places from tolerance
             decimals = max(0, int(math.ceil(-math.log10(tolerance))))
             return round(PSU, decimals)
-        
+
         # Central difference approximation: f'(x) ≈ (f(x + h) - f(x - h)) / (2 * h)
         rho_plus = PSU_to_density(PSU + h, pressure, temperature)
         rho_minus = PSU_to_density(PSU - h, pressure, temperature)
         d_rho_d_SP = (rho_plus - rho_minus) / (2 * h)
-        
+
         # Fallback to prevent division by zero in extreme, non-physical cases
         if d_rho_d_SP == 0:
-            d_rho_d_SP = 0.8 
-        
+            d_rho_d_SP = 0.8
+
         # Newton-Raphson update step
         PSU = PSU - (diff / d_rho_d_SP)
-    
+
     raise ValueError(f"Did not converge to the specified density in {i} iterations.")
 
 
