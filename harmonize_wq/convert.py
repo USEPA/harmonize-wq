@@ -503,17 +503,18 @@ def density_to_PSU(
     <Quantity(3.93837189, 'gram / kilogram')>
     """
     # Default to surface pressure if under 1 atm
-    if pressure < 0:
-        pressure = 0.0 * u_reg("atm")
+    if pressure < 1:
+        pressure = 1.0 * u_reg("atm")
 
     # Initial PSU value (seawater)
-    PSU = u_reg.Quantity(35.0, u_reg("dimensionless"))
+    PSU = 35.0
     # Step size for numerical derivative calculation
     h = 1e-4
 
     for i in range(max_iter):
         # Calculate density (rho) from current salinity guess
-        rho_calc = PSU_to_density(PSU, pressure, temperature)
+        #WARNIGN: THIS ASSUMES CONSISTENT UNITS BETWEEN THE FUNCTIONS!
+        rho_calc = PSU_to_density.__wrapped__(PSU, pressure, temperature)
 
         # Calculate the density difference
         diff = rho_calc - val
@@ -524,8 +525,8 @@ def density_to_PSU(
             return round(PSU, decimals)
 
         # Central difference approximation: f'(x) ≈ (f(x + h) - f(x - h)) / (2 * h)
-        rho_plus = PSU_to_density(PSU + h, pressure, temperature)
-        rho_minus = PSU_to_density(PSU - h, pressure, temperature)
+        rho_plus = PSU_to_density.__wrapped__(PSU + h, pressure, temperature)
+        rho_minus = PSU_to_density.__wrapped__(PSU - h, pressure, temperature)
         d_rho_d_SP = (rho_plus - rho_minus) / (2 * h)
 
         # Fallback to prevent division by zero in extreme, non-physical cases
