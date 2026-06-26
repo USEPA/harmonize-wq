@@ -456,7 +456,7 @@ def FNU_to_NTU(val):
 )
 def density_to_PSU(
     val,
-    pressure=u_reg.Quantity(1, u_reg("atmosphere")),
+    pressure="1 atmosphere",
     temperature=u_reg.Quantity(25, u_reg("degC")),
     tolerance=1e8,
     max_iter=50,
