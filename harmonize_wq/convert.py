@@ -504,7 +504,7 @@ def density_to_PSU(
     """
     # Default to surface pressure if under 1 atm
     if pressure < 0:
-        pressure = 0.0
+        pressure = 0.0 * u_reg("atm")
 
     # Initial PSU value (seawater)
     PSU = u_reg.Quantity(35.0, u_reg("dimensionless"))
