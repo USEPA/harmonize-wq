@@ -448,7 +448,7 @@ def FNU_to_NTU(val):
     u_reg.dimensionless,
     (
         u_reg.gram / u_reg.liter,
-        u_reg.standard_atmosphere,
+        u_reg.atmosphere,
         u_reg.degree_Celsius,
         None,  # For tolerance
         None,  # For max_iter
@@ -456,7 +456,7 @@ def FNU_to_NTU(val):
 )
 def density_to_PSU(
     val,
-    pressure=1 * u_reg("atm"),
+    pressure=1 * u_reg("atmosphere"),
     temperature=u_reg.Quantity(25, u_reg("degC")),
     tolerance=1e8,
     max_iter=50,
@@ -540,7 +540,7 @@ def density_to_PSU(
 
 @u_reg.wraps(
     u_reg.milligram / u_reg.milliliter,
-    (u_reg.dimensionless, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    (u_reg.dimensionless, u_reg.atmosphere, u_reg.degree_Celsius),
 )
 def PSU_to_density(
     val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
@@ -639,7 +639,7 @@ def PSU_to_density(
 
 @u_reg.wraps(
     u_reg.milligram / u_reg.liter,
-    (None, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    (None, u_reg.atmosphere, u_reg.degree_Celsius),
 )
 def DO_saturation(
     val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
