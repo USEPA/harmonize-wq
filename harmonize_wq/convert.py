@@ -671,7 +671,7 @@ def DO_saturation(
     <Quantity(5.78363269, 'milligram / liter')>
 
     At 2 atm (10m depth)
-    >>> convert.DO_saturation(70, ('2 standard_atmosphere'))
+    >>> convert.DO_saturation(70, ('2 atmosphere'))
     ￼￼11.746159340060716 milligram / liter
     """
     p, t = pressure, temperature
@@ -684,7 +684,7 @@ def DO_saturation(
 
 @u_reg.wraps(
     None,
-    (u_reg.milligram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    (u_reg.milligram / u_reg.liter, u_reg.atmosphere, u_reg.degree_Celsius),
 )
 def DO_concentration(
     val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
@@ -744,7 +744,7 @@ def _DO_concentration_eq(p, t):
     u_reg.dimensionless,
     (
         u_reg.microsiemens / u_reg.centimeter,
-        u_reg.standard_atmosphere,
+        u_reg.atmosphere,
         u_reg.degree_Celsius,
     ),
 )
