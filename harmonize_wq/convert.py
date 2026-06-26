@@ -445,7 +445,7 @@ def FNU_to_NTU(val):
 
 
 @u_reg.wraps(
-    u_reg.gram / u_reg.kilogram,
+    u_reg.dimensionless,
     (
         u_reg.gram / u_reg.liter,
         u_reg.standard_atmosphere,
@@ -507,7 +507,7 @@ def density_to_PSU(
         pressure = 0.0
 
     # Initial PSU value (seawater)
-    PSU = 35.0
+    PSU = u_reg.Quantity(35.0, u_reg("dimensionless"))
     # Step size for numerical derivative calculation
     h = 1e-4
 
