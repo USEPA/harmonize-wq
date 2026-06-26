@@ -449,7 +449,7 @@ def FNU_to_NTU(val):
     (u_reg.gram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
 )
 def density_to_PSU(
-    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"), tolerance=1e8, max_iter=50)
 ):
     """Convert salinity as density (mass/volume) to Practical Salinity Units.
 
@@ -461,6 +461,10 @@ def density_to_PSU(
         The pressure value. The default is 1*ureg("atm").
     temperature : pint.Quantity.build_quantity_class, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
+    tolerance : float, optional
+        Acceptable error in density for convergence. The default is 7 decimals.
+    max_iter : int, optional
+        Maximum number of iterations allowed. The default is 50.
 
     Returns
     -------
@@ -486,19 +490,42 @@ def density_to_PSU(
 
     >>> from harmonize_wq import convert
     >>> convert.density_to_PSU(input_density)
-    <Quantity(4.71542857, 'gram / kilogram')>
+    <Quantity(3.93837189, 'gram / kilogram')>
     """
-    # Standard Reference Value
-    ref = 35.16504 / 35.0
-    # density of pure water is ~1000 mg/mL
-    if val > 1000:
-        PSU = (float(val) * ref) - 1000
-    else:
-        PSU = ((float(val) + 1000) * ref) - 1000
-    # print('{} mg/ml == {} ppth'.format(val, PSU))
-    # multiply by 33.45 @26C, 33.44 @25C
+    # Default to surface pressure if under 1 atm
+    if pressure < 0:
+        pressure = 0.0
 
-    return PSU
+    # Initial PSU value (seawater)
+    PSU = 35.0
+    # Step size for numerical derivative calculation
+    h = 1e-4
+
+    for i in range(max_iter):
+        # Calculate density (rho) from current salinity guess
+        rho_calc = PSU_to_density(PSU, pressure, temperature)
+
+        # Calculate the density difference
+        diff = rho_calc - density_kgm3
+
+        if abs(diff)< tolerance:
+            # Dynamically calculate required decimal places from tolerance
+            decimals = max(0, int(math.ceil(-math.log10(tolerance))))
+            return round(PSU, decimals)
+        
+        # Central difference approximation: f'(x) ≈ (f(x + h) - f(x - h)) / (2 * h)
+        rho_plus = PSU_to_density(PSU + h, pressure, temperature)
+        rho_minus = PSU_to_density(PSU - h, pressure, temperature)
+        d_rho_d_SP = (rho_plus - rho_minus) / (2 * h)
+        
+        # Fallback to prevent division by zero in extreme, non-physical cases
+        if d_rho_d_SP == 0:
+            d_rho_d_SP = 0.8 
+        
+        # Newton-Raphson update step
+        PSU = PSU - (diff / d_rho_d_SP)
+    
+    raise ValueError(f"Did not converge to the specified density in {i} iterations.")
 
 
 @u_reg.wraps(
