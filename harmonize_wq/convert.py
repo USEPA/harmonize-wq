@@ -456,7 +456,7 @@ def FNU_to_NTU(val):
 )
 def density_to_PSU(
     val,
-    pressure=1 * u_reg("atmosphere"),
+    pressure=u_reg.Quantity(1, u_reg("atmosphere")),
     temperature=u_reg.Quantity(25, u_reg("degC")),
     tolerance=1e8,
     max_iter=50,
@@ -543,7 +543,9 @@ def density_to_PSU(
     (u_reg.dimensionless, u_reg.atmosphere, u_reg.degree_Celsius),
 )
 def PSU_to_density(
-    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+    val,
+    pressure=u_reg.Quantity(1, u_reg("atmosphere")),
+    temperature=u_reg.Quantity(25, u_reg("degC")),
 ):
     """Convert salinity as Practical Salinity Units (PSU) to density.
 
