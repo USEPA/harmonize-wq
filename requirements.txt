@@ -1,6 +1,6 @@
 numpy>2.0
 pandas<3.0
-geopandas>=0.10.2
+geopandas>=1.1.4
 pint>=0.24.4          # May work on earlier versions but this is what it was tested on
 dataretrieval >1.0.5  # 1.0.5 updated datetime handling
 descartes>=1.1.0           # May be required for mapping in some jupyter notebooks
