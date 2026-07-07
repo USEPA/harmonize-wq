@@ -458,7 +458,7 @@ def density_to_PSU(
     val,
     pressure="1 atmosphere",
     temperature=u_reg.Quantity(25, u_reg("degC")),
-    tolerance=1e8,
+    tolerance=1e-8,
     max_iter=50,
 ):
     """Convert salinity as density (mass/volume) to Practical Salinity Units.
