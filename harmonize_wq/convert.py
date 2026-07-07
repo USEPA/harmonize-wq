@@ -533,15 +533,15 @@ def density_to_PSU(
         if d_rho_d_SP == 0:
             d_rho_d_SP = 0.8
 
+        # Newton-Raphson update step
+        PSU = PSU - (diff / d_rho_d_SP)
+
         # If val was too small it will end up at complex negative number
         if isinstance(PSU, complex):
             if val<1000:
                 warn(f"WARNING: Increasing salinity density {val} by density of water")
                 val += 1000
                 PSU = 35.0
-
-        # Newton-Raphson update step
-        PSU = PSU - (diff / d_rho_d_SP)
 
     raise ValueError(f"Did not converge to the specified density in {i} iterations.")
 
