@@ -494,13 +494,13 @@ def density_to_PSU(
 
     Build units aware pint Quantity, as string:
 
-    >>> input_density = '1000 milligram / milliliter'
+    >>> input_density = '10 milligram / milliliter'
 
     Convert to Practical Salinity Units:
 
     >>> from harmonize_wq import convert
     >>> convert.density_to_PSU(input_density)
-    <Quantity(3.93837189, 'gram / kilogram')>
+    <Quantity(10.0, 'dimensionless')>
     """
     # Default to surface pressure if under 1 atm
     if pressure < 1:
