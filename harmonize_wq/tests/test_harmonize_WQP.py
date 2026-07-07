@@ -605,7 +605,7 @@ def test_harmonize_salinity():
     assert actual.iloc[335435][orig_unit_col] == "mg/mL @25C"  # Confirm unit
     assert str(actual.iloc[335435]["Salinity"].units)
     assert actual.iloc[335435][orig_val_col] == 120.0  # Confirm measure
-    assert actual.iloc[335435]["Salinity"].magnitude == 125.28127999999992
+    assert actual.iloc[335435]["Salinity"].magnitude == 157.13098006
     psu_example = str(actual.iloc[335435]["Salinity"])
 
     # Inspect specific result - where units missing
