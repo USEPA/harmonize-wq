@@ -513,7 +513,7 @@ def density_to_PSU(
 
     for i in range(max_iter):
         # Calculate density (rho) from current salinity guess
-        #WARNIGN: THIS ASSUMES CONSISTENT UNITS BETWEEN THE FUNCTIONS!
+        # WARNING: THIS ASSUMES CONSISTENT UNITS BETWEEN THE FUNCTIONS!
         rho_calc = PSU_to_density.__wrapped__(PSU, pressure, temperature)
 
         # Calculate the density difference
