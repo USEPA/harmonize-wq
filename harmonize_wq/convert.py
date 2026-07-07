@@ -538,7 +538,7 @@ def density_to_PSU(
 
         # If val was too small it will end up at complex negative number
         if isinstance(PSU, complex):
-            if val<1000:
+            if val < 1000:
                 warn(f"WARNING: Increasing salinity density {val} by density of water")
                 val += 1000
                 PSU = 35.0
