@@ -532,11 +532,11 @@ def density_to_PSU(
         # Fallback to prevent division by zero in extreme, non-physical cases
         if d_rho_d_SP == 0:
             d_rho_d_SP = 0.8
+
         # If val was too small it will end up at complex negative number
         if isinstance(PSU, complex):
             warn(f"WARNING: Increasing salinity density {val} by density of water")
             val += 1000
-
 
         # Newton-Raphson update step
         PSU = PSU - (diff / d_rho_d_SP)
