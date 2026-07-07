@@ -500,7 +500,7 @@ def density_to_PSU(
 
     >>> from harmonize_wq import convert
     >>> convert.density_to_PSU(input_density)
-    <Quantity(17.26663417, 'dimensionless')>
+    <Quantity(17.2666342, 'dimensionless')>
     """
     # Default to surface pressure if under 1 atm
     if pressure < 1:
