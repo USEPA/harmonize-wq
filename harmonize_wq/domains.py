@@ -316,10 +316,7 @@ def registry_adds_list(out_col):
 
     >>> from harmonize_wq import domains
     >>> domains.registry_adds_list('Sediment')  # doctest: +NORMALIZE_WHITESPACE
-    ['fraction = [] = frac',
-     'percent = 1e-2 frac',
-     'parts_per_thousand = 1e-3 = ppth',
-     'parts_per_million = 1e-6 fraction = ppm']
+    ['fraction = [] = frac', 'parts_per_thousand = 1e-3 = ppth']
     """
     # TODO: 'PSU' = 'PSS' ~ ppth/1.004715
 
@@ -327,9 +324,7 @@ def registry_adds_list(out_col):
     # Standard pint unit registry additions for dimensionless portions
     pct_list = [
         "fraction = [] = frac",
-        "percent = 1e-2 frac",
         "parts_per_thousand = 1e-3 = ppth",
-        "parts_per_million = 1e-6 fraction = ppm",
     ]
     # Standard pint unit registry additions for dimensionless bacteria units
     bacteria_list = [
