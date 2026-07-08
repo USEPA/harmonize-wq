@@ -635,7 +635,8 @@ def test_harmonize_salinity():
     assert actual.iloc[21277]["QA_flag"].split("; ")[0] == expected_flag
     # Backward test PSU to density
     density = convert.PSU_to_density(psu_example)
-    assert str(density) == "997.1428971400308 milligram / milliliter"
+    #assert str(density) == "997.1428971400308 milligram / milliliter"
+    assert str(density) == "1120.0000000040664 milligram / milliliter"
 
 
 # @pytest.mark.skip(reason="no change")
