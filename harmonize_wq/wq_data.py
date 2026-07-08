@@ -6,7 +6,7 @@ from warnings import warn
 
 import pandas
 import pint
-from numpy import nan, array
+from numpy import array, nan
 
 from harmonize_wq import basis, domains
 from harmonize_wq.clean import add_qa_flag, df_checks
