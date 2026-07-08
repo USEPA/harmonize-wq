@@ -445,11 +445,21 @@ def FNU_to_NTU(val):
 
 
 @u_reg.wraps(
-    u_reg.gram / u_reg.kilogram,
-    (u_reg.gram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    u_reg.dimensionless,
+    (
+        u_reg.gram / u_reg.liter,
+        u_reg.atmosphere,
+        u_reg.degree_Celsius,
+        None,  # For tolerance
+        None,  # For max_iter
+    ),
 )
 def density_to_PSU(
-    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+    val,
+    pressure="1 atmosphere",
+    temperature=u_reg.Quantity(25, u_reg("degC")),
+    tolerance=1e-8,
+    max_iter=50,
 ):
     """Convert salinity as density (mass/volume) to Practical Salinity Units.
 
@@ -461,6 +471,10 @@ def density_to_PSU(
         The pressure value. The default is 1*ureg("atm").
     temperature : pint.Quantity.build_quantity_class, optional
         The temperature value. The default is ureg.Quantity(25, ureg("degC")).
+    tolerance : float, optional
+        Acceptable error in density for convergence. The default is 7 decimals.
+    max_iter : int, optional
+        Maximum number of iterations allowed. The default is 50.
 
     Returns
     -------
@@ -480,33 +494,66 @@ def density_to_PSU(
 
     Build units aware pint Quantity, as string:
 
-    >>> input_density = '1000 milligram / milliliter'
+    >>> input_density = '1010 milligram / milliliter'
 
     Convert to Practical Salinity Units:
 
     >>> from harmonize_wq import convert
     >>> convert.density_to_PSU(input_density)
-    <Quantity(4.71542857, 'gram / kilogram')>
+    <Quantity(17.2666342, 'dimensionless')>
     """
-    # Standard Reference Value
-    ref = 35.16504 / 35.0
-    # density of pure water is ~1000 mg/mL
-    if val > 1000:
-        PSU = (float(val) * ref) - 1000
-    else:
-        PSU = ((float(val) + 1000) * ref) - 1000
-    # print('{} mg/ml == {} ppth'.format(val, PSU))
-    # multiply by 33.45 @26C, 33.44 @25C
+    # Default to surface pressure if under 1 atm
+    if pressure < 1:
+        pressure = 1.0 * u_reg("atm")
 
-    return PSU
+    # Initial PSU value (seawater)
+    PSU = 35.0
+    # Step size for numerical derivative calculation
+    h = 1e-4
+
+    for i in range(max_iter):
+        # Calculate density (rho) from current salinity guess
+        # WARNING: THIS ASSUMES CONSISTENT UNITS BETWEEN THE FUNCTIONS!
+        rho_calc = PSU_to_density.__wrapped__(PSU, pressure, temperature)
+
+        # Calculate the density difference
+        diff = rho_calc - val
+
+        if abs(diff) < tolerance:
+            # Dynamically calculate required decimal places from tolerance
+            decimals = max(0, int(math.ceil(-math.log10(tolerance))))
+            return round(PSU, decimals)
+
+        # Central difference approximation: f'(x) ≈ (f(x + h) - f(x - h)) / (2 * h)
+        rho_plus = PSU_to_density.__wrapped__(PSU + h, pressure, temperature)
+        rho_minus = PSU_to_density.__wrapped__(PSU - h, pressure, temperature)
+        d_rho_d_SP = (rho_plus - rho_minus) / (2 * h)
+
+        # Fallback to prevent division by zero in extreme, non-physical cases
+        if d_rho_d_SP == 0:
+            d_rho_d_SP = 0.8
+
+        # Newton-Raphson update step
+        PSU = PSU - (diff / d_rho_d_SP)
+
+        # If val was too small it will end up at complex negative number
+        if isinstance(PSU, complex):
+            if val < 1000:
+                warn(f"WARNING: Increasing salinity density {val} by density of water")
+                val += 1000
+                PSU = 35.0
+
+    raise ValueError(f"Did not converge to the specified density in {i} iterations.")
 
 
 @u_reg.wraps(
     u_reg.milligram / u_reg.milliliter,
-    (u_reg.dimensionless, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    (u_reg.dimensionless, u_reg.atmosphere, u_reg.degree_Celsius),
 )
 def PSU_to_density(
-    val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
+    val,
+    pressure=u_reg.Quantity(1, u_reg("atmosphere")),
+    temperature=u_reg.Quantity(25, u_reg("degC")),
 ):
     """Convert salinity as Practical Salinity Units (PSU) to density.
 
@@ -602,7 +649,7 @@ def PSU_to_density(
 
 @u_reg.wraps(
     u_reg.milligram / u_reg.liter,
-    (None, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    (None, u_reg.atmosphere, u_reg.degree_Celsius),
 )
 def DO_saturation(
     val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
@@ -632,7 +679,7 @@ def DO_saturation(
     <Quantity(5.78363269, 'milligram / liter')>
 
     At 2 atm (10m depth)
-    >>> convert.DO_saturation(70, ('2 standard_atmosphere'))
+    >>> convert.DO_saturation(70, ('2 atmosphere'))
     ￼￼11.746159340060716 milligram / liter
     """
     p, t = pressure, temperature
@@ -645,7 +692,7 @@ def DO_saturation(
 
 @u_reg.wraps(
     None,
-    (u_reg.milligram / u_reg.liter, u_reg.standard_atmosphere, u_reg.degree_Celsius),
+    (u_reg.milligram / u_reg.liter, u_reg.atmosphere, u_reg.degree_Celsius),
 )
 def DO_concentration(
     val, pressure=1 * u_reg("atm"), temperature=u_reg.Quantity(25, u_reg("degC"))
@@ -705,7 +752,7 @@ def _DO_concentration_eq(p, t):
     u_reg.dimensionless,
     (
         u_reg.microsiemens / u_reg.centimeter,
-        u_reg.standard_atmosphere,
+        u_reg.atmosphere,
         u_reg.degree_Celsius,
     ),
 )
