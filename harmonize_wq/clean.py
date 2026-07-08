@@ -351,6 +351,7 @@ def add_qa_flag(df_in, mask, flag):
     df_out = df_in.copy()
     if "QA_flag" not in list(df_out.columns):
         df_out["QA_flag"] = nan
+        df_out["QA_flag"] = df_out["QA_flag"].astype("string")
 
     # Append flag where QA_flag is not nan
     cond_notna = mask & (df_out["QA_flag"].notna())  # Mask cond and not NA
