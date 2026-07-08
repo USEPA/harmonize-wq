@@ -602,6 +602,12 @@ def test_harmonize_salinity():
     assert actual.iloc[0]["Salinity"].magnitude == 40
     # Inspect specific result - where units converted (mg/ml)
     # TODO: need a different test value (something weird here)
+    # Unit test
+    unit_test_input_density = '120 milligram / milliliter'
+    unit_actual = convert.density_to_PSU(unit_test_input_density)
+    assert unit_actual.magnitude == 157.13098006 
+    assert unit_actual.units == "dimensionless"
+    # check against weird in data integration test
     assert actual.iloc[335435][orig_unit_col] == "mg/mL @25C"  # Confirm unit
     assert str(actual.iloc[335435]["Salinity"].units)
     assert actual.iloc[335435][orig_val_col] == 120.0  # Confirm measure
