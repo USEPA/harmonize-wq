@@ -6,7 +6,7 @@ from warnings import warn
 
 import pandas
 import pint
-from numpy import array, nan
+from numpy import nan
 
 from harmonize_wq import basis, domains
 from harmonize_wq.clean import add_qa_flag, df_checks
@@ -155,7 +155,9 @@ class WQCharData:
         meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col], errors="coerce")
         # Create a list of the bad measures in the series
         bad_measures = [df_out.iloc[i][meas_col] for i in meas_s[meas_s.isna()].index]
-        for bad_meas in pandas.unique(array(bad_measures)):
+        if isinstance(bad_measures, list):
+            bad_measures = pandas.Series(bad_measures)
+        for bad_meas in pandas.unique(bad_measures):
             # Flag each unique bad measure one measure (not row) at a time
             if pandas.isna(bad_meas):
                 flag = f"{meas_col}: missing (NaN) result"
