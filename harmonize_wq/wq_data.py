@@ -665,6 +665,8 @@ class WQCharData:
             "ureg": self.ureg,
             "errors": errors,
         }
+        # Cast the target column in df_out to dtype object 
+        df_out[self.out_col] = df_out[self.out_col].astype(object)
         df_out.loc[m_mask, self.out_col] = convert_unit_series(**params)
         self.df = df_out
 
