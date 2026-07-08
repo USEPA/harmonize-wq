@@ -345,7 +345,7 @@ def add_qa_flag(df_in, mask, flag):
     >>> clean.add_qa_flag(df, mask, flag)
       CharacteristicName ResultMeasureValue QA_flag
     0             Carbon                1.0   words
-    1         Phosphorus              0.265     NaN
+    1         Phosphorus              0.265    <NA>
     2             Carbon                2.1   words
     """
     df_out = df_in.copy()

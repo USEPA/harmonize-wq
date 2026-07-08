@@ -132,7 +132,7 @@ def basis_from_unit(df_in, basis_dict, unit_col="Units", basis_col="Speciation")
     UserWarning: Mismatched Speciation: updated from as PO4 to as P (units)
     >>> df_speciation_change[['Speciation', 'QA_flag']]
       Speciation                                          QA_flag
-    0       as P                                              NaN
+    0       as P                                             <NA>
     1       as P  Speciation: updated from as PO4 to as P (units)
     """
     df = df_in.copy()
@@ -267,7 +267,7 @@ def update_result_basis(df_in, basis_col, unit_col):
     >>> df_temp_basis[['ResultTemperatureBasisText', 'QA_flag']]
       ResultTemperatureBasisText                                            QA_flag
     0                       @25C  ResultTemperatureBasisText: updated from 25 de...
-    1                       @25C                                                NaN
+    1                       @25C                                               <NA>
     """
     # TODO: make these columns units aware?
     # df = df_in.copy()
