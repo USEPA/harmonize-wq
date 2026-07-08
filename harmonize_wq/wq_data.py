@@ -368,7 +368,7 @@ class WQCharData:
         >>> wq.df[['CharacteristicName', 'Units', 'QA_flag']]
            CharacteristicName Units                                            QA_flag
         0          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: MISSING UNITS, ...
-        1  Temperature, water   NaN                                                NaN
+        1  Temperature, water   NaN                                               <NA>
         2          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: 'Unknown' UNDEF...
 
         Note: it didn't infer units for 'Temperature, water' because wq is
