@@ -67,21 +67,17 @@ jobs:
       - name: setup r-reticulate venv & render rmd
         env:
           RETICULATE_PYTHON_ENV: "${{ env.CONDA }}/envs/wq_harmonize"
-        shell: bash -l {0}
+        shell: Rscript {0}
         run: |
-          # Ensure conda is available in this shell and activate the env
-          source "$(conda info --base)/etc/profile.d/conda.sh"
-          conda activate wq_harmonize
-          
           # Run R code (just uses Rscript -e to run the string
-          Rscript -e "library(reticulate)"
+          library(reticulate)
 
           # Have reticulate use the conda environment we created earlier.
-          Rscript -e "reticulate::use_condaenv('${{ env.CONDA }}/envs/wq_harmonize', required = TRUE)"
-                    
+          reticulate::use_condaenv("${{ env.CONDA }}/envs/wq_harmonize", required = TRUE)
+
           # Check
-          Rscript -e "reticulate::py_discover_config()"
-          Rscript -e "print(reticulate::py_config())"
+          "reticulate::py_discover_config()"
+          "print(reticulate::py_config())"
           
           # Alternative approach creating the env in R
           # packages = c(
@@ -101,7 +97,7 @@ jobs:
           #reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 
           # Render the vignette
-          Rscript -e "rmarkdown::render(input = 'demos/Harmonize_Pensacola.Rmd')"
+          rmarkdown::render(input = "demos/Harmonize_Pensacola.Rmd")
 
       - name: Upload artifact
         if: ${{ (matrix.os == 'windows-latest') && (matrix.python-version == 3.11) }}
