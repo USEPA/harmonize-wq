@@ -62,9 +62,9 @@ def infer_CRS(
     >>> location.infer_CRS(df_in, out_EPSG=4326, crs_col='Datum')
     ... # doctest: +NORMALIZE_WHITESPACE
        Datum                                  QA_flag    EPSG
-    0  NAD83                                      NaN     NaN
-    1  WGS84                                      NaN     NaN
-    2                                             NaN     NaN
+    0  NAD83                                     <NA>     NaN
+    1  WGS84                                     <NA>     NaN
+    2                                            <NA>     NaN
     3   None  Datum: MISSING datum, EPSG:4326 assumed  4326.0
     4    NaN  Datum: MISSING datum, EPSG:4326 assumed  4326.0
 
@@ -145,9 +145,9 @@ def harmonize_locations(df_in, out_EPSG=4326, intermediate_columns=False, **kwar
     >>> from harmonize_wq import location
     >>> location.harmonize_locations(df_in)
        LatitudeMeasure  LongitudeMeasure  ... QA_flag                    geometry
-    0        27.595036        -82.030086  ...     NaN  POINT (-82.03009 27.59504)
-    1        27.521830        -82.644760  ...     NaN  POINT (-82.64476 27.52183)
-    2        28.066111        -82.377500  ...     NaN   POINT (-82.3775 28.06611)
+    0        27.595036        -82.030086  ...    <NA>  POINT (-82.03009 27.59504)
+    1        27.521830        -82.644760  ...    <NA>  POINT (-82.64476 27.52183)
+    2        28.066111        -82.377500  ...    <NA>   POINT (-82.3775 28.06611)
     <BLANKLINE>
     [3 rows x 5 columns]
     """
