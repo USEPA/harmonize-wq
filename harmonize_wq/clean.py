@@ -4,7 +4,7 @@
 # from warnings import warn
 from dataretrieval.codes import tz
 from numpy import nan
-from pandas import to_datetime
+from pandas import to_datetime, Series
 
 from harmonize_wq.convert import convert_unit_series
 from harmonize_wq.domains import accepted_methods
@@ -348,7 +348,7 @@ def add_qa_flag(df_in, mask, flag):
     1         Phosphorus              0.265    <NA>
     2             Carbon                2.1   words
     """
-    if not isinstance(mask, pandas.Series):
+    if not isinstance(mask, Series):
       raise TypeError(f"mask must be a pandas Series not {type(mask)}. {mask}")
     df_out = df_in.copy()
     if "QA_flag" not in list(df_out.columns):
