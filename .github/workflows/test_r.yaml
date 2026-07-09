@@ -73,7 +73,7 @@ jobs:
           library(reticulate)
 
           # Have reticulate use the conda environment we created earlier.
-          reticulate::use_condaenv("${{ env.CONDA }}/envs/wq_harmonize", required = TRUE)
+          reticulate::use_condaenv(r"${{ env.CONDA }}/envs/wq_harmonize", required = TRUE)
 
           # Check
           reticulate::py_discover_config()
