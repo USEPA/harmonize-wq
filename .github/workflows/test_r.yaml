@@ -63,6 +63,12 @@ jobs:
         shell: Rscript {0}
         run: |
           install.packages(c("knitr", "rmarkdown", "reticulate"))
+
+
+      - name: Ubuntu: export LD_LIBRARY_PATH to conda env
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        env:
+          LD_LIBRARY_PATH: ${CONDA}/envs/wq_harmonize/lib:${LD_LIBRARY_PATH}
         
       - name: setup r-reticulate venv & render rmd
         env:
