@@ -155,6 +155,8 @@ class WQCharData:
         meas_s = pandas.to_numeric(df_out.loc[c_mask, meas_col], errors="coerce")
         # Create a list of the bad measures in the series
         bad_measures = [df_out.iloc[i][meas_col] for i in meas_s[meas_s.isna()].index]
+        if isinstance(bad_measures, list):
+            bad_measures = pandas.Series(bad_measures)
         for bad_meas in pandas.unique(bad_measures):
             # Flag each unique bad measure one measure (not row) at a time
             if pandas.isna(bad_meas):
@@ -288,16 +290,16 @@ class WQCharData:
                     return {unit: quant + " / l"}, [quant + " / l"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is dimensionless (e.g. unit = 'g/kg')
-            return {unit: unit + " * H2O"}, []
+            return {unit: unit + " * ρH2O"}, []
         if ureg(units).dimensionless:
             # Convert to dimensionless, e.g., 'mg/l' -> '%'
             if ureg(unit).check({"[substance]": 1}):
                 if quant:
-                    # Moles -> g/kg; dim = ' / l / H2O'
-                    return {unit: quant + " / l / H2O"}, [quant + " / l / H2O"]
+                    # Moles -> g/kg; dim = ' / l / ρH2O'
+                    return {unit: quant + " / l / ρH2O"}, [quant + " / l / ρH2O"]
                 raise ValueError("Pint Quantity required for moles conversions")
             # Else assume it is density (e.g. unit = 'mg/l')
-            return {unit: unit + " / H2O"}, []
+            return {unit: unit + " / ρH2O"}, []
         warn("WARNING: Unexpected dimensionality")
         return {}, []
 
@@ -368,7 +370,7 @@ class WQCharData:
         >>> wq.df[['CharacteristicName', 'Units', 'QA_flag']]
            CharacteristicName Units                                            QA_flag
         0          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: MISSING UNITS, ...
-        1  Temperature, water   NaN                                                NaN
+        1  Temperature, water   NaN                                               <NA>
         2          Phosphorus  mg/l  ResultMeasure/MeasureUnitCode: 'Unknown' UNDEF...
 
         Note: it didn't infer units for 'Temperature, water' because wq is
@@ -643,9 +645,12 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.convert_units()
-        >>> wq.df[['ResultMeasureValue', 'Units', 'Phosphorus']]
+        >>> wq.df[['ResultMeasureValue',
+        ...        'Units',
+        ...        'Phosphorus'
+        ... ]]  # doctest: +NORMALIZE_WHITESPACE
           ResultMeasureValue  Units                            Phosphorus
-        0                1.0  mg/ml  1000.0000000000001 milligram / liter
+        0                1.0  mg/ml           1000.0... milligram / liter
         1               10.0    NaN                                   NaN
         """
         if default_unit:
@@ -660,6 +665,8 @@ class WQCharData:
             "ureg": self.ureg,
             "errors": errors,
         }
+        # Cast the target column in df_out to dtype object
+        df_out[self.out_col] = df_out[self.out_col].astype(object)
         df_out.loc[m_mask, self.out_col] = convert_unit_series(**params)
         self.df = df_out
 
@@ -949,7 +956,7 @@ class WQCharData:
         1    10.000000000000002 milligram / liter
         Name: Phosphorus, dtype: object
 
-        These results may have differen, non-comprable sample fractions. First,
+        These results may have different, non-comprable sample fractions. First,
         split results using a provided frac_dict (as used in harmonize()):
 
         >>> from numpy import nan
@@ -962,10 +969,12 @@ class WQCharData:
                'ResultMeasureValue', 'ResultSampleFractionText', 'Units', 'Phosphorus',
                'QA_flag', 'TDP_Phosphorus', 'Other_Phosphorus'],
               dtype='object')
-        >>> wq.df[['TDP_Phosphorus', 'Other_Phosphorus']]
+        >>> wq.df[['TDP_Phosphorus',
+        ...        'Other_Phosphorus'
+        ... ]]  # doctest: +NORMALIZE_WHITESPACE
                   TDP_Phosphorus                      Other_Phosphorus
         0  1.0 milligram / liter                                   NaN
-        1                    NaN  10.000000000000002 milligram / liter
+        1                    NaN             10.0... milligram / liter
 
         Alternatively, the sample fraction lists from tada can be used, in this case
         they are added:
@@ -1102,7 +1111,7 @@ class WQCharData:
         >>> wq = wq_data.WQCharData(df, 'Phosphorus')
 
         >>> wq.dimension_fixes()
-        ({'mg/kg': 'mg/kg * H2O'}, [])
+        ({'mg/kg': 'mg/kg * ρH2O'}, [])
         """
         dimension_dict = {}  # Empty dict to update to
         mol_list = []  # Empty list to append to

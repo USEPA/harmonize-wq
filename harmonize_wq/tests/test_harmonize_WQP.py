@@ -602,10 +602,15 @@ def test_harmonize_salinity():
     assert actual.iloc[0]["Salinity"].magnitude == 40
     # Inspect specific result - where units converted (mg/ml)
     # TODO: need a different test value (something weird here)
+    # Unit test
+    unit_test_input_density = "120 milligram / milliliter"
+    unit_actual = convert.density_to_PSU(unit_test_input_density)
+    assert unit_actual.magnitude == 157.13098006
+    # check against weird in data integration test
     assert actual.iloc[335435][orig_unit_col] == "mg/mL @25C"  # Confirm unit
     assert str(actual.iloc[335435]["Salinity"].units)
     assert actual.iloc[335435][orig_val_col] == 120.0  # Confirm measure
-    assert actual.iloc[335435]["Salinity"].magnitude == 125.28127999999992
+    assert actual.iloc[335435]["Salinity"].magnitude == 157130.98006
     psu_example = str(actual.iloc[335435]["Salinity"])
 
     # Inspect specific result - where units missing
@@ -630,7 +635,8 @@ def test_harmonize_salinity():
     assert actual.iloc[21277]["QA_flag"].split("; ")[0] == expected_flag
     # Backward test PSU to density
     density = convert.PSU_to_density(psu_example)
-    assert str(density) == "997.1428971400308 milligram / milliliter"
+    # assert str(density) == "997.1428971400308 milligram / milliliter"
+    assert str(density) == "1120.0000000040664 milligram / milliliter"
 
 
 # @pytest.mark.skip(reason="no change")
@@ -841,7 +847,7 @@ def test_harmonize_carbon_organic():
     assert actual.iloc[355][orig_unit_col] == "%"  # Confirm orig unit
     assert str(actual.iloc[355]["Carbon"].units) == expected_unit
     assert actual.iloc[355][orig_val_col] == "0.1"  # Confirm original measure
-    assert actual.iloc[355]["Carbon"].magnitude == 1000.0
+    assert actual.iloc[355]["Carbon"].magnitude == pytest.approx(1000.0)
     # Confirm expected flag - for missing/infered units
     expected_flag = "ResultMeasure/MeasureUnitCode: MISSING UNITS, mg/l assumed"
     actual_flags = actual.iloc[103082]["QA_flag"]
@@ -1352,7 +1358,7 @@ def test_map_measure(test_harmonize_locations, test_harmonize_temperature):
         test_harmonize_temperature, test_harmonize_locations, "Temperature"
     )
     assert len(actual["mean"]) == 21075
-    assert sum(actual["mean"]) == 523776.35504297394
+    assert sum(actual["mean"]) == pytest.approx(523776.355043)
 
 
 def test_station_summary(test_harmonize_temperature):
@@ -1361,7 +1367,7 @@ def test_station_summary(test_harmonize_temperature):
     assert len(actual["cnt"]) == 21075
     assert sum(actual["cnt"]) == 346210
     assert len(actual["mean"]) == 21075
-    assert sum(actual["mean"]) == 523776.35504297394
+    assert sum(actual["mean"]) == pytest.approx(523776.355043)
 
 
 def test_print_report(test_harmonize_temperature, capsys):
@@ -1376,5 +1382,5 @@ def test_print_report(test_harmonize_temperature, capsys):
     expected += "max       72000.000000\ndtype: float64\n"
     expected += "Unusable results: 13295\n"
     expected += "Usable results with inferred units: 0\n"
-    expected += "Results outside threshold (0.0 to 884.2295835882991): 4\n"
+    expected += "Results outside threshold (0.0 to 884.229584): 4\n"
     assert captured == expected

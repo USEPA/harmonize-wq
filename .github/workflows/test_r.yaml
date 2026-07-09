@@ -20,12 +20,13 @@ jobs:
       REPO_NAME: ${{ github.event.repository.name }}
       
     strategy:
+      fail-fast: false 
       matrix:
-        os: [windows-latest, macos-latest]
-        python-version: ['3.9', '3.10']
+        os: [macos-latest, windows-latest]
+        python-version: ['3.11', '3.12', '3.13', '3.14']
         
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: conda-incubator/setup-miniconda@v4
         with:
@@ -36,12 +37,11 @@ jobs:
       - name: Conda install
         shell: bash -el {0}
         run: |
-          # conda deactivate
-          # conda rename -n test wq_harmonize
-          conda install "pytest" "numpy>2.0" "pandas>2.0" "geopandas>=0.10.2" "pint>=0.18" "dataretrieval>1.0.5" "requests"
-          conda install pip
-          pip install .
-          conda create --name wq_harmonize --clone test
+          conda create -y -n wq_harmonize python=${{ matrix.python-version }}
+          conda activate wq_harmonize
+          conda install -n wq_harmonize --file requirements.txt
+          conda install -n wq_harmonize pytest pip
+          conda run -n wq_harmonize pip install .
 
       - name: Print Conda environment
         shell: bash -l {0}
@@ -63,33 +63,43 @@ jobs:
         shell: Rscript {0}
         run: |
           install.packages(c("knitr", "rmarkdown", "reticulate"))
-        
+
       - name: setup r-reticulate venv & render rmd
         env:
-          RETICULATE_PYTHON_ENV: "${{ env.CONDA }}/envs/wq_harmonize"
+          RETICULATE_PYTHON: ${{ matrix.os == 'windows-latest' &&
+            format('{0}\\envs\\wq_harmonize\\python.exe', env.CONDA) ||
+            format('{0}/envs/wq_harmonize/bin/python', env.CONDA) }}
         shell: Rscript {0}
         run: |
+          # Run R code (just uses Rscript -e to run the string
           library(reticulate)
 
+          # Have reticulate use the conda environment we created earlier.
+          reticulate::use_python(Sys.getenv("RETICULATE_PYTHON"), required = TRUE)
+          #reticulate::use_condaenv("${{ env.CONDA }}/envs/wq_harmonize", required = TRUE)
+
+          # Check
+          reticulate::py_discover_config()
+          print(reticulate::py_config())
+          
+          # Alternative approach creating the env in R
           # packages = c(
           #     "pytest", "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18",
           #     "dataretrieval>=1.0, <1.0.5", "requests"
           #     )
-          
           # reticulate::install_miniconda()
           # reticulate::conda_create("wq_harmonize", python_version = "${{ matrix.python-version }}")
           # reticulate::conda_install("wq_harmonize", packages)
-
           # path_to_venv <- virtualenv_create(
           #  envname = "wq_harmonize",
           #  python = Sys.which("python"), # placed on PATH by the setup-python action
           #  packages
           # )
           # use_virtualenv("wq_harmonize")
-          reticulate::py_discover_config()
           #reticulate::use_condaenv("wq_harmonize")
           #reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 
+          # Render the vignette
           rmarkdown::render(input = "demos/Harmonize_Pensacola.Rmd")
 
       - name: Upload artifact

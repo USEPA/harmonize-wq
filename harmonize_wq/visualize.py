@@ -57,7 +57,7 @@ def print_report(results_in, out_col, unit_col_in, threshold=None):
         (results_s <= threshold["max"]) & (results_s >= threshold["min"])
     ]
     diff = len(results) - len(inside)
-    threshold_range = f"{threshold['min']} to {threshold['max']}"
+    threshold_range = f"{threshold['min']} to {threshold['max']:.6f}"
     print(f"Results outside threshold ({threshold_range}): {diff}")
 
     # Graphic representation of stats

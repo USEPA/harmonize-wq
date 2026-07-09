@@ -4,7 +4,7 @@
 # from warnings import warn
 from dataretrieval.codes import tz
 from numpy import nan
-from pandas import to_datetime
+from pandas import Series, to_datetime
 
 from harmonize_wq.convert import convert_unit_series
 from harmonize_wq.domains import accepted_methods
@@ -214,7 +214,7 @@ def check_precision(df_in, col, limit=3):
     """
     df_out = df_in.copy()
     # Create T/F mask based on len of everything after the decimal
-    c_mask = [len(str(x).split(".")[1]) < limit for x in df_out[col]]
+    c_mask = Series(len(str(x).split(".")[1]) < limit for x in df_out[col])
     flag = f"{col}: Imprecise: lessthan{limit}decimaldigits"
     df_out = add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
@@ -345,12 +345,15 @@ def add_qa_flag(df_in, mask, flag):
     >>> clean.add_qa_flag(df, mask, flag)
       CharacteristicName ResultMeasureValue QA_flag
     0             Carbon                1.0   words
-    1         Phosphorus              0.265     NaN
+    1         Phosphorus              0.265    <NA>
     2             Carbon                2.1   words
     """
+    if not isinstance(mask, Series):
+        raise TypeError(f"mask must be Series not {type(mask)}. {mask[:5]}")
     df_out = df_in.copy()
     if "QA_flag" not in list(df_out.columns):
         df_out["QA_flag"] = nan
+        df_out["QA_flag"] = df_out["QA_flag"].astype("string")
 
     # Append flag where QA_flag is not nan
     cond_notna = mask & (df_out["QA_flag"].notna())  # Mask cond and not NA
