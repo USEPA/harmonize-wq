@@ -65,6 +65,8 @@ jobs:
           install.packages(c("knitr", "rmarkdown", "reticulate"))
         
       - name: setup r-reticulate venv & render rmd
+        env:
+          RETICULATE_PYTHON_ENV: "${{ env.CONDA }}/envs/wq_harmonize"
         shell: bash -l {0}
         run: |
           # Ensure conda is available in this shell and activate the env
