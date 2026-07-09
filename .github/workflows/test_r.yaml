@@ -66,12 +66,13 @@ jobs:
           install.packages(c("knitr", "rmarkdown", "reticulate"))
         
       - name: setup r-reticulate venv & render rmd
-        env:
-          RETICULATE_PYTHON_ENV: "${{ env.CONDA }}/envs/wq_harmonize"
         shell: Rscript {0}
         run: |
           library(reticulate)
 
+          # Have reticulate use the conda environment we created earlier.
+          reticulate::use_condaenv("wq_harmonize", required = TRUE)
+          
           # packages = c(
           #     "pytest", "numpy<2.0", "pandas<2.0", "geopandas>=0.10.2, <0.13", "pint>=0.18",
           #     "dataretrieval>=1.0, <1.0.5", "requests"
@@ -87,10 +88,15 @@ jobs:
           #  packages
           # )
           # use_virtualenv("wq_harmonize")
+          
+          # Check
           reticulate::py_discover_config()
+          print(reticulate::py_config())
+          
           #reticulate::use_condaenv("wq_harmonize")
           #reticulate::py_install("git+https://github.com/USEPA/harmonize-wq.git", pip = TRUE, envname = "wq_harmonize")
 
+          # Render the vignette
           rmarkdown::render(input = "demos/Harmonize_Pensacola.Rmd")
 
       - name: Upload artifact
