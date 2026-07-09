@@ -37,12 +37,10 @@ jobs:
       - name: Conda install
         shell: bash -el {0}
         run: |
-          # conda deactivate
-          # conda rename -n test wq_harmonize
-          conda install "pytest" "numpy>2.0" "pandas>2.0" "geopandas>=0.10.2" "pint>=0.18" "dataretrieval>1.0.5" "requests"
-          conda install pip
+          conda create -y -n wq_harmonize python=${{ matrix.python-version }}
+          conda install -n wq_harmonize --file requirements.txt
+          conda install pytest pip
           pip install .
-          conda create --name wq_harmonize --clone test
 
       - name: Print Conda environment
         shell: bash -l {0}
