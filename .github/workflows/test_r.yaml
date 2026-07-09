@@ -76,8 +76,8 @@ jobs:
           reticulate::use_condaenv("${{ env.CONDA }}/envs/wq_harmonize", required = TRUE)
 
           # Check
-          "reticulate::py_discover_config()"
-          "print(reticulate::py_config())"
+          reticulate::py_discover_config()
+          print(reticulate::py_config())
           
           # Alternative approach creating the env in R
           # packages = c(
