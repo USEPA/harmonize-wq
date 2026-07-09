@@ -349,7 +349,7 @@ def add_qa_flag(df_in, mask, flag):
     2             Carbon                2.1   words
     """
     if not isinstance(mask, Series):
-      raise TypeError(f"mask must be Series not {type(mask)}. {mask[:5]}")
+        raise TypeError(f"mask must be Series not {type(mask)}. {mask[:5]}")
     df_out = df_in.copy()
     if "QA_flag" not in list(df_out.columns):
         df_out["QA_flag"] = nan
