@@ -64,17 +64,14 @@ jobs:
         run: |
           install.packages(c("knitr", "rmarkdown", "reticulate"))
 
-      - name: Export LD_LIBRARY_PATH to conda env (Ubuntu only)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        env:
-          LD_LIBRARY_PATH: ${CONDA}/envs/wq_harmonize/lib:${LD_LIBRARY_PATH}
-        
       - name: setup r-reticulate venv & render rmd
         env:
           RETICULATE_PYTHON: ${{ matrix.os == 'windows-latest' &&
             format('{0}\\envs\\wq_harmonize\\python.exe', env.CONDA) ||
             format('{0}/envs/wq_harmonize/bin/python', env.CONDA) }}
-
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+          env:
+            LD_LIBRARY_PATH: ${CONDA}/envs/wq_harmonize/lib:${LD_LIBRARY_PATH}
         shell: Rscript {0}
         run: |
           # Run R code (just uses Rscript -e to run the string
