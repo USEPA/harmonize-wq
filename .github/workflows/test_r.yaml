@@ -66,7 +66,10 @@ jobs:
         
       - name: setup r-reticulate venv & render rmd
         env:
-          RETICULATE_PYTHON: "${{ env.CONDA }}/envs/wq_harmonize/bin/python"
+        RETICULATE_PYTHON: ${{ matrix.os == 'windows-latest' &&
+          format('{0}\\envs\\wq_harmonize\\python.exe', env.CONDA) ||
+          format('{0}/envs/wq_harmonize/bin/python', env.CONDA) }}
+
         shell: Rscript {0}
         run: |
           # Run R code (just uses Rscript -e to run the string
@@ -74,7 +77,7 @@ jobs:
 
           # Have reticulate use the conda environment we created earlier.
           reticulate::use_python(Sys.getenv("RETICULATE_PYTHON"), required = TRUE)
-          reticulate::use_condaenv(r"${{ env.CONDA }}/envs/wq_harmonize", required = TRUE)
+          #reticulate::use_condaenv("${{ env.CONDA }}/envs/wq_harmonize", required = TRUE)
 
           # Check
           reticulate::py_discover_config()
