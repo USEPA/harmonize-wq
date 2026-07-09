@@ -4,7 +4,7 @@
 # from warnings import warn
 from dataretrieval.codes import tz
 from numpy import nan
-from pandas import to_datetime, Series
+from pandas import Series, to_datetime
 
 from harmonize_wq.convert import convert_unit_series
 from harmonize_wq.domains import accepted_methods
