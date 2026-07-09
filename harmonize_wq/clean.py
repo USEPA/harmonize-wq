@@ -214,7 +214,7 @@ def check_precision(df_in, col, limit=3):
     """
     df_out = df_in.copy()
     # Create T/F mask based on len of everything after the decimal
-    c_mask = Series(len(str(x).split(".")[1]) < limit for x in df_out[col]])
+    c_mask = Series(len(str(x).split(".")[1]) < limit for x in df_out[col])
     flag = f"{col}: Imprecise: lessthan{limit}decimaldigits"
     df_out = add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
