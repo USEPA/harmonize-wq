@@ -77,9 +77,9 @@ UNITS_REPLACE = {
     "Temperature": {},
     "Salinity": {"ppt": "ppth", "0/00": "ppth"},
     "pH": {"None": "dimensionless", "std units": "dimensionless"},
-    "Nitrogen": {"cm3/g @STP": "cm3/g", "cm3/g STP": "cm3/g", "%": "percent"},
+    "Nitrogen": {"cm3/g @STP": "cm3/g", "cm3/g STP": "cm3/g"},
     "Conductivity": {"uS": "uS/cm", "umho": "umho/cm"},
-    "Carbon": {"% by wt": "%", "%": "percent"},
+    "Carbon": {"% by wt": "%"},
     "Chlorophyll": {
         "mg/cm3": "mg/cm**3",
         "mg/m3": "mg/m**3",
@@ -87,14 +87,14 @@ UNITS_REPLACE = {
         "ug/cm3": "ug/cm**3",
     },
     "Turbidity": {"mg/l SiO2": "SiO2", "ppm SiO2": "SiO2"},
-    "Sediment": {"%": "percent"},
+    "Sediment": {},
     "Fecal_Coliform": {
         "#/100ml": "CFU/(100ml)",
         "CFU": "CFU/(100ml)",
         "MPN": "MPN/(100ml)",
     },
     "E_coli": {"#/100ml": "CFU/(100ml)", "CFU": "CFU/(100ml)", "MPN": "MPN/(100ml)"},
-    "Phosphorus": {"%": "percent"},
+    "Phosphorus": {},
 }
 
 OUT_UNITS = {
