@@ -73,7 +73,7 @@ TADA_DATA_URL = "https://raw.githubusercontent.com/USEPA/EPATADA/"
 
 UNITS_REPLACE = {
     "Secchi": {},
-    "DO": {"%": "percent"},
+    "DO": {},
     "Temperature": {},
     "Salinity": {"ppt": "ppth", "0/00": "ppth"},
     "pH": {"None": "dimensionless", "std units": "dimensionless"},
