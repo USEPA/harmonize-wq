@@ -75,7 +75,7 @@ UNITS_REPLACE = {
     "Secchi": {},
     "DO": {},
     "Temperature": {},
-    "Salinity": {"ppt": "ppth", "0/00": "ppth"},
+    "Salinity": {"ppt": "ppth"},
     "pH": {"None": "dimensionless", "std units": "dimensionless"},
     "Nitrogen": {"cm3/g @STP": "cm3/g", "cm3/g STP": "cm3/g"},
     "Conductivity": {"uS": "uS/cm", "umho": "umho/cm"},
