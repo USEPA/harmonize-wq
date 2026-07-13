@@ -73,13 +73,13 @@ TADA_DATA_URL = "https://raw.githubusercontent.com/USEPA/EPATADA/"
 
 UNITS_REPLACE = {
     "Secchi": {},
-    "DO": {"%": "percent"},
+    "DO": {},
     "Temperature": {},
-    "Salinity": {"ppt": "ppth", "0/00": "ppth"},
+    "Salinity": {"ppt": "ppth", "0/00": "‰"},
     "pH": {"None": "dimensionless", "std units": "dimensionless"},
-    "Nitrogen": {"cm3/g @STP": "cm3/g", "cm3/g STP": "cm3/g", "%": "percent"},
+    "Nitrogen": {"cm3/g @STP": "cm3/g", "cm3/g STP": "cm3/g"},
     "Conductivity": {"uS": "uS/cm", "umho": "umho/cm"},
-    "Carbon": {"% by wt": "%", "%": "percent"},
+    "Carbon": {"% by wt": "%"},
     "Chlorophyll": {
         "mg/cm3": "mg/cm**3",
         "mg/m3": "mg/m**3",
@@ -87,14 +87,14 @@ UNITS_REPLACE = {
         "ug/cm3": "ug/cm**3",
     },
     "Turbidity": {"mg/l SiO2": "SiO2", "ppm SiO2": "SiO2"},
-    "Sediment": {"%": "percent"},
+    "Sediment": {},
     "Fecal_Coliform": {
         "#/100ml": "CFU/(100ml)",
         "CFU": "CFU/(100ml)",
         "MPN": "MPN/(100ml)",
     },
     "E_coli": {"#/100ml": "CFU/(100ml)", "CFU": "CFU/(100ml)", "MPN": "MPN/(100ml)"},
-    "Phosphorus": {"%": "percent"},
+    "Phosphorus": {},
 }
 
 OUT_UNITS = {
@@ -316,16 +316,13 @@ def registry_adds_list(out_col):
 
     >>> from harmonize_wq import domains
     >>> domains.registry_adds_list('Sediment')  # doctest: +NORMALIZE_WHITESPACE
-    ['fraction = [] = frac', 'parts_per_thousand = 1e-3 = ppth']
+    ['parts_per_thousand = 1e-3 = ppth']
     """
     # TODO: 'PSU' = 'PSS' ~ ppth/1.004715
 
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
     # Standard pint unit registry additions for dimensionless portions
-    pct_list = [
-        "fraction = [] = frac",
-        "parts_per_thousand = 1e-3 = ppth",
-    ]
+    ratios_list = ["parts_per_thousand = 1e-3 = ppth"]
     # Standard pint unit registry additions for dimensionless bacteria units
     bacteria_list = [
         "Colony_Forming_Units = [] = CFU = cfu",
@@ -334,13 +331,13 @@ def registry_adds_list(out_col):
     # characteristic based dict
     ureg_adds = {
         "Secchi": [],
-        "DO": pct_list,
+        "DO": ratios_list,
         "Temperature": [],
-        "Salinity": pct_list + ["Practical_Salinity_Units = ppth = PSU = PSS"],
+        "Salinity": ratios_list + ["Practical_Salinity_Units = ppth = PSU = PSS"],
         "pH": [],
         "Nitrogen": [],
         "Conductivity": [],
-        "Carbon": pct_list,
+        "Carbon": ratios_list,
         "Chlorophyll": [],
         "Turbidity": [
             "Nephelometric_Turbidity_Units = [turbidity] = NTU",
@@ -352,7 +349,7 @@ def registry_adds_list(out_col):
             "Jackson_Turbidity_Units = [] = JTU",
             "SiO2 = []",
         ],
-        "Sediment": pct_list,
+        "Sediment": ratios_list,
         "Fecal_Coliform": bacteria_list,
         "E_coli": bacteria_list,
         "Phosphorus": [],
