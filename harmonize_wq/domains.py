@@ -322,9 +322,7 @@ def registry_adds_list(out_col):
 
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
     # Standard pint unit registry additions for dimensionless portions
-    pct_list = [
-        "parts_per_thousand = 1e-3 = ppth",
-    ]
+    ratios_list = ["parts_per_thousand = 1e-3 = ppth"]
     # Standard pint unit registry additions for dimensionless bacteria units
     bacteria_list = [
         "Colony_Forming_Units = [] = CFU = cfu",
@@ -333,13 +331,13 @@ def registry_adds_list(out_col):
     # characteristic based dict
     ureg_adds = {
         "Secchi": [],
-        "DO": pct_list,
+        "DO": ratios_list,
         "Temperature": [],
-        "Salinity": pct_list + ["Practical_Salinity_Units = ppth = PSU = PSS"],
+        "Salinity": ratios_list + ["Practical_Salinity_Units = ppth = PSU = PSS"],
         "pH": [],
         "Nitrogen": [],
         "Conductivity": [],
-        "Carbon": pct_list,
+        "Carbon": ratios_list,
         "Chlorophyll": [],
         "Turbidity": [
             "Nephelometric_Turbidity_Units = [turbidity] = NTU",
@@ -351,7 +349,7 @@ def registry_adds_list(out_col):
             "Jackson_Turbidity_Units = [] = JTU",
             "SiO2 = []",
         ],
-        "Sediment": pct_list,
+        "Sediment": ratios_list,
         "Fecal_Coliform": bacteria_list,
         "E_coli": bacteria_list,
         "Phosphorus": [],
