@@ -316,7 +316,7 @@ def registry_adds_list(out_col):
 
     >>> from harmonize_wq import domains
     >>> domains.registry_adds_list('Sediment')  # doctest: +NORMALIZE_WHITESPACE
-    ['fraction = [] = frac', 'parts_per_thousand = 1e-3 = ppth']
+    ['parts_per_thousand = 1e-3 = ppth']
     """
     # TODO: 'PSU' = 'PSS' ~ ppth/1.004715
 
