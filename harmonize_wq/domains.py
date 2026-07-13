@@ -323,7 +323,6 @@ def registry_adds_list(out_col):
     # define is 1% (0.08s) slower than replacement (ppm->mg/l) but more robust
     # Standard pint unit registry additions for dimensionless portions
     pct_list = [
-        "fraction = [] = frac",
         "parts_per_thousand = 1e-3 = ppth",
     ]
     # Standard pint unit registry additions for dimensionless bacteria units
