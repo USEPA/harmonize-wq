@@ -4,7 +4,7 @@
 # from warnings import warn
 from dataretrieval.codes import tz
 from numpy import nan
-from pandas import Series, to_datetime
+from pandas import Series, isna, to_datetime
 
 from harmonize_wq.convert import convert_unit_series
 from harmonize_wq.domains import accepted_methods
@@ -213,8 +213,19 @@ def check_precision(df_in, col, limit=3):
 
     """
     df_out = df_in.copy()
-    # Create T/F mask based on len of everything after the decimal
-    c_mask = Series(len(str(x).split(".")[1]) < limit for x in df_out[col])
+
+    def decimal_places(x):
+        # Digits after the decimal point. Whole numbers (and any value with
+        # no decimal point, e.g. an integer or string coordinate) have 0.
+        text = str(x)
+        return len(text.split(".")[1]) if "." in text else 0
+
+    # Create T/F mask based on len of everything after the decimal. Missing
+    # values are skipped: a blank measurement is not a precision issue and
+    # str(NaN) has no decimal point, which previously raised IndexError.
+    c_mask = Series(
+        (not isna(x)) and decimal_places(x) < limit for x in df_out[col]
+    )
     flag = f"{col}: Imprecise: lessthan{limit}decimaldigits"
     df_out = add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
