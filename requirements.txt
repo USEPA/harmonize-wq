@@ -1,5 +1,5 @@
 numpy>2.0
-pandas<3.0
+pandas>=2.3.3, <3.0
 geopandas>=0.10.2
 pint>=0.25.3
 dataretrieval >1.0.5  # 1.0.5 updated datetime handling
