@@ -237,6 +237,29 @@ def test_harmonize_locations():
     return actual
 
 
+def test_check_precision():
+    """Test check_precision flags low-precision values without crashing.
+
+    Values with no decimal point (whole numbers, or a missing/NaN coordinate)
+    used to raise IndexError because str(x).split('.')[1] has no second element.
+    """
+    df = pandas.DataFrame(
+        {
+            "LatitudeMeasure": [27.595036, 45, float("nan")],
+            "QA_flag": [None, None, None],
+        }
+    )
+    out = clean.check_precision(df, "LatitudeMeasure")
+
+    flag = "LatitudeMeasure: Imprecise: lessthan3decimaldigits"
+    # Six decimal places: precise, not flagged
+    assert pandas.isna(out.iloc[0]["QA_flag"])
+    # Whole number: fewer than three decimals, flagged as imprecise
+    assert out.iloc[1]["QA_flag"] == flag
+    # Missing value: not a precision issue, not flagged (and no crash)
+    assert pandas.isna(out.iloc[2]["QA_flag"])
+
+
 # @pytest.mark.skip(reason="no change")
 def test_harmonize_phosphorus(merged_tables):
     """
