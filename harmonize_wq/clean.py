@@ -223,9 +223,7 @@ def check_precision(df_in, col, limit=3):
     # Create T/F mask based on len of everything after the decimal. Missing
     # values are skipped: a blank measurement is not a precision issue and
     # str(NaN) has no decimal point, which previously raised IndexError.
-    c_mask = Series(
-        (not isna(x)) and decimal_places(x) < limit for x in df_out[col]
-    )
+    c_mask = Series((not isna(x)) and decimal_places(x) < limit for x in df_out[col])
     flag = f"{col}: Imprecise: lessthan{limit}decimaldigits"
     df_out = add_qa_flag(df_out, c_mask, flag)  # Assign flags
     return df_out
