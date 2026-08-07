@@ -1,0 +1,59 @@
+name: pytest-coverage-comment
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main"]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.11
+
+      # Runs a set of commands using the runners shell          
+      - name: Update pip and install testing pkgs
+        run: |
+          python -VV
+          python -m pip install --upgrade pip
+          pip install pytest-cov
+          pip install pytest
+          pip install coverage
+
+      - name: Install package and dependencies
+        run: |
+          python -m pip install --no-deps .
+          pip install -r requirements.txt
+
+      - name: Run tests with coverage
+        run: |
+          pytest --junitxml=pytest.xml \
+          --cov-report=term-missing:skip-covered \
+          --cov=harmonize_wq | tee pytest-coverage.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Upload test_results
+          path: |
+            pytest-coverage.txt
+            pytest.xml
+            
+
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
