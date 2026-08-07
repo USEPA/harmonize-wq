@@ -127,7 +127,7 @@ def convert_unit_series(quantity_series, unit_series, units, ureg=None, errors="
                     warn(f"WARNING: '{unit}' not converted")
                 elif errors == "ignore":
                     # convert to NaN
-                    result_list = [nan for val in result_list]
+                    result_list = [nan for _ in result_list]
                     warn(f"WARNING: '{unit}' converted to NaN")
                 else:
                     # errors=='raise', or anything else just in case
