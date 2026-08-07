@@ -186,6 +186,8 @@ def df_checks(df_in, columns=None):
             "ResultMeasureValue",
             "CharacteristicName",
         )
+    if isinstance(columns, str):
+        columns = [columns]
     for col in columns:
         assert col in df_in.columns, f"{col} not in DataFrame"
 
