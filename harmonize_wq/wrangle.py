@@ -373,7 +373,7 @@ def add_activities_to_df(df_in, mask=None):
     loc_col = "MonitoringLocationIdentifier"
     df_checks(df_out, [loc_col])
     # List of unique sites and characteristicNames
-    if mask:
+    if mask is not None:
         loc_list = list(set(df_out.loc[mask, loc_col].dropna()))
         char_vals = list(set(df_out.loc[mask, "CharacteristicName"].dropna()))
     else:
