@@ -1407,3 +1407,45 @@ def test_print_report(test_harmonize_temperature, capsys):
     expected += "Usable results with inferred units: 0\n"
     expected += "Results outside threshold (0.0 to 884.229584): 4\n"
     assert captured == expected
+
+
+def test_wet_dry_checks_accepts_a_mask():
+    """Test wet_dry_checks with the documented mask argument.
+
+    mask is documented as a pandas.Series, but the guard tested it for truth
+    rather than for None, so any Series raised "The truth value of a Series is
+    ambiguous".
+    """
+    df = pandas.DataFrame(
+        {
+            "ActivityMediaName": ["Water", "Water", "Sediment"],
+            "ResultSampleFractionText": ["Bed Sediment", "Total", "Bed Sediment"],
+            "ResultWeightBasisText": ["Dry", "Wet", "Dry"],
+        }
+    )
+    mask = df["ActivityMediaName"] == "Water"
+
+    out = clean.wet_dry_checks(df, mask=mask)
+
+    # Row 0 is Water reported as dry bed sediment, so it is corrected.
+    assert list(out["ActivityMediaName"]) == ["Sediment", "Water", "Sediment"]
+    # The same call without a mask reaches the same answer here.
+    assert list(clean.wet_dry_checks(df)["ActivityMediaName"]) == list(
+        out["ActivityMediaName"]
+    )
+
+
+def test_wet_dry_checks_mask_limits_rows():
+    """Test that a mask excluding a row leaves that row alone."""
+    df = pandas.DataFrame(
+        {
+            "ActivityMediaName": ["Water", "Water"],
+            "ResultSampleFractionText": ["Bed Sediment", "Bed Sediment"],
+            "ResultWeightBasisText": ["Dry", "Dry"],
+        }
+    )
+    mask = pandas.Series([True, False])
+
+    out = clean.wet_dry_checks(df, mask=mask)
+
+    assert list(out["ActivityMediaName"]) == ["Sediment", "Water"]
