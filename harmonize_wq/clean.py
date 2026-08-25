@@ -307,7 +307,7 @@ def wet_dry_checks(df_in, mask=None):
         & (df_out["ActivityMediaName"] == "Water")
     )
     # Use mask if user specified, else run on all rows
-    if mask:
+    if mask is not None:
         media_mask = mask & (media_mask)
     # Assign QA flag where data was bad
     df_out = add_qa_flag(df_out, media_mask, qa_flag)
