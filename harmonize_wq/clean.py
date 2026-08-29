@@ -425,8 +425,13 @@ def wet_dry_drop(df_in, wet_dry="wet", char_val=None):
     elif wet_dry == "dry":
         media_mask = df2[media_col] == "Sediment"
 
-    # Filter characteristic rows
+    # Restrict to the requested media. media_mask.index is every row label, not
+    # only the matching ones, so dropping it discarded the whole frame.
     if char_val:
-        media_mask = media_mask & c_mask
+        # Only the rows for this characteristic are restricted; rows for other
+        # characteristics are left as they are.
+        drop_mask = c_mask & ~media_mask
+    else:
+        drop_mask = ~media_mask
 
-    return df2.drop(media_mask.index)
+    return df2.drop(df2.index[drop_mask])
