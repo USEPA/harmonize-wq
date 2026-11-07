@@ -1449,3 +1449,58 @@ def test_wet_dry_checks_mask_limits_rows():
     out = clean.wet_dry_checks(df, mask=mask)
 
     assert list(out["ActivityMediaName"]) == ["Sediment", "Water"]
+
+
+def _wet_dry_frame():
+    """Frame from the pseudo-code in #193, used by the wet_dry_drop tests."""
+    return pandas.DataFrame(
+        {
+            "ResultIdentifier": ["ID1", "ID2", "ID3"],
+            "CharacteristicName": ["Temperature, water"] * 3,
+            "ActivityMediaName": ["Water", "Water", "Sediment"],
+            "ResultSampleFractionText": ["Bed Sediment", "Total", "Bed Sediment"],
+            "ResultWeightBasisText": ["Dry", "Wet", "Dry"],
+        }
+    )
+
+
+def test_wet_dry_drop_keeps_water():
+    """Test wet_dry_drop keeps only the water rows.
+
+    ID1 arrives labelled Water but is dry bed sediment, so wet_dry_checks
+    reclassifies it before the filter runs and only ID2 is left. That is why
+    this expects one row rather than the two in the issue's pseudo-code.
+    """
+    out = clean.wet_dry_drop(_wet_dry_frame(), wet_dry="wet")
+
+    assert list(out["ResultIdentifier"]) == ["ID2"]
+    assert "Sediment" not in list(out["ActivityMediaName"])
+
+
+def test_wet_dry_drop_keeps_sediment():
+    """Test wet_dry_drop keeps only the sediment rows, including the corrected one."""
+    out = clean.wet_dry_drop(_wet_dry_frame(), wet_dry="dry")
+
+    assert list(out["ResultIdentifier"]) == ["ID1", "ID3"]
+    assert set(out["ActivityMediaName"]) == {"Sediment"}
+
+
+def test_wet_dry_drop_char_val_leaves_other_characteristics():
+    """Test char_val restricts one characteristic and leaves the rest alone."""
+    df = _wet_dry_frame()
+    df.loc[3] = ["ID4", "Conductivity", "Sediment", "Total", "Wet"]
+
+    out = clean.wet_dry_drop(df, wet_dry="wet", char_val="Temperature, water")
+
+    # The temperature rows are filtered to water, and the conductivity row is
+    # untouched even though it is sediment.
+    assert list(out["ResultIdentifier"]) == ["ID2", "ID4"]
+
+
+def test_wet_dry_drop_char_val_absent_is_a_no_op():
+    """Test a characteristic that is not present returns the frame unchanged."""
+    df = _wet_dry_frame()
+
+    out = clean.wet_dry_drop(df, wet_dry="wet", char_val="Not a characteristic")
+
+    assert list(out["ResultIdentifier"]) == ["ID1", "ID2", "ID3"]
